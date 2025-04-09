@@ -33,7 +33,9 @@ from code_generation.systematics import SystematicShift, SystematicShiftByQuanti
 
 # all scopes containing hadronic taus
 GLOBAL_SCOPES = ["global"]
-HAD_TAU_SCOPES = ["et", "mt", "tt"]
+SL_SCOPES = ["et", "mt"]
+FH_SCOPES = ["tt"]
+HAD_TAU_SCOPES = SL_SCOPES + FH_SCOPES
 SCOPES = HAD_TAU_SCOPES
 
 ERAS = ["2016preVFP", "2016postVFP", "2017", "2018"]
@@ -449,10 +451,72 @@ def build_config(
         },
     )
 
-    ###### scope Specifics ######
-    # MT/TT/ET scope tau ID flags and SFs
+    #
+    # SCOPE-SPECIFIC SELECTIONS
+    #
+
+    #
+    # HADRONIC TAUS
+    #
+
+    # hadronic tau selection in semileptonic channels
     configuration.add_config_parameters(
-        ["mt", "tt", "et"],
+        SL_SCOPES,
+        {
+            "min_tau_pt": 20.0,
+            "max_tau_eta": 2.3,
+            "max_tau_dz": 0.2,
+            "vsjet_tau_id_bit": 1,  # VVVLoose working point
+            "vsele_tau_id_bit": 1, # VVVLoose working point
+            "vsmu_tau_id_bit": 1,  # VLoose working point
+        },
+    )
+
+    # boosted hadronic tau selection in semileptonic channels
+    configuration.add_config_parameters(
+        SL_SCOPES,
+        {
+            "min_boostedtau_pt": 30.0,
+            "max_boostedtau_eta": 2.3,
+            # "iso_boostedtau_id_bit": 1,
+            # "antiele_boostedtau_id_bit": 1,
+            # "antimu_boostedtau_id_bit": 1,
+            "boosted_pairselection_min_dR": 0.1,
+            "boosted_pairselection_max_dR": 5.0,
+        },
+    )
+
+    # hadronic tau selection in fullhadronic channels
+    configuration.add_config_parameters(
+        FH_SCOPES,
+        {
+            "min_tau_pt": 20.0,
+            "max_tau_eta": 2.1,
+            "max_tau_dz": 0.2,
+            "vsjet_tau_id_bit": 1,  # VVVLoose working point
+            "vsele_tau_id_bit": 1, # VVVLoose working point
+            "vsmu_tau_id_bit": 1,  # VLoose working point
+        },
+    )
+
+    # boosted hadronic tau selection in fullhadronic channels
+    configuration.add_config_parameters(
+        FH_SCOPES,
+        {
+            "min_boostedtau_pt": 30.0,
+            "max_boostedtau_eta": 2.3,
+            # "iso_boostedtau_id_bit": 2,
+            # "antiele_boostedtau_id_bit": 2,
+            # "antimu_boostedtau_id_bit": 1,
+            "boosted_pairselection_min_dR": 0.1,
+            "boosted_pairselection_max_dR": 5.0,
+        },
+    )
+
+    # hadronic tau identification
+    # recommendations: https://twiki.cern.ch/twiki/bin/viewauth/CMS/TauIDRecommendationForRun2
+    configuration.add_config_parameters(
+        HAD_TAU_SCOPES,
         {
             "vsjet_tau_id": [
                 {
@@ -464,7 +528,7 @@ def build_config(
                 }
                 for wp, bit in {
                     "VVVLoose": 1,
-                    # "VVLoose": 2,
+                    "VVLoose": 2,
                     # "VLoose": 3,
                     # "Loose": 4,
                     "Medium": 5,
@@ -488,10 +552,11 @@ def build_config(
                     "vsele_tau_id_WPbit": bit,
                 }
                 for wp, bit in {
+                    "VVVLoose": 1,
                     "VVLoose": 2,
                     # "VLoose": 3,
                     # "Loose": 4,
-                    # "Medium": 5,
+                    "Medium": 5,
                     "Tight": 6,
                     # "VTight": 7,
                     # "VVTight": 8,
@@ -514,14 +579,13 @@ def build_config(
                     "Tight": 4,
                 }.items()
             ],
-            "tau_sf_vsele_barrel": "nom",  # or "up"/"down" for up/down variation
-            "tau_sf_vsele_endcap": "nom",  # or "up"/"down" for up/down variation
-            "tau_sf_vsmu_wheel1": "nom",
-            "tau_sf_vsmu_wheel2": "nom",
-            "tau_sf_vsmu_wheel3": "nom",
-            "tau_sf_vsmu_wheel4": "nom",
-            "tau_sf_vsmu_wheel5": "nom",
-            # boosted Tau ID flags
+        },
+    )
+    
+    # boosted hadronic tau identification
+    configuration.add_config_parameters(
+        HAD_TAU_SCOPES,
+        {
             "iso_boostedtau_id": [
                 {
                     "boostedtau_id_discriminator": "MVAoldDM2017v2",
@@ -541,7 +605,7 @@ def build_config(
                     "iso_boostedtau_id_WPbit": bit,
                 }
                 for wp, bit in {
-                    # "VVLoose": 1,
+                    "VVLoose": 1,
                     "VLoose": 2,
                     "Loose": 3,
                     "Medium": 4,
@@ -608,36 +672,10 @@ def build_config(
             "boostedtau_sf_antimu_wheel5": "nom",
         },
     )
+
+    # hadronic tau identification corrections (tagging vs jets)
     configuration.add_config_parameters(
-        ["mt", "tt"],
-        {
-            "vsjet_tau_id_sf": [
-                {
-                    "tau_id_discriminator": "DeepTau2017v2p1VSjet",
-                    "tau_1_vsjet_sf_outputname": "id_wgt_tau_vsJet_{wp}_1".format(
-                        wp=wp
-                    ),
-                    "tau_2_vsjet_sf_outputname": "id_wgt_tau_vsJet_{wp}_2".format(
-                        wp=wp
-                    ),
-                    "vsjet_tau_id_WP": "{wp}".format(wp=wp),
-                    "tau_vsjet_vseleWP": "VVLoose",
-                }
-                for wp, bit in {
-                    # "VVVLoose": 1,
-                    # "VVLoose": 2,
-                    # "VLoose": 3,
-                    # "Loose": 4,
-                    "Medium": 5,
-                    "Tight": 6,
-                    # "VTight": 7,
-                    # "VVTight": 8,
-                }.items()
-            ],
-        },
-    )
-    configuration.add_config_parameters(
-        ["et"],
+        HAD_TAU_SCOPES,
         {
             "vsjet_tau_id_sf": [
                 {
@@ -664,9 +702,25 @@ def build_config(
             ],
         },
     )
-    # MT / ET tau id sf variations
+
+    # hadronic tau identification variations in all channels
     configuration.add_config_parameters(
-        ["mt", "et"],
+        SL_SCOPES,
+        {
+            "tau_sf_vsele_barrel": "nom",  # or "up"/"down" for up/down variation
+            "tau_sf_vsele_endcap": "nom",  # or "up"/"down" for up/down variation
+            "tau_sf_vsmu_wheel1": "nom",
+            "tau_sf_vsmu_wheel2": "nom",
+            "tau_sf_vsmu_wheel3": "nom",
+            "tau_sf_vsmu_wheel4": "nom",
+            "tau_sf_vsmu_wheel5": "nom",
+
+        },
+    )
+
+    # hadronic tau identification variations in semileptonic channels
+    configuration.add_config_parameters(
+        SL_SCOPES,
         {
             "tau_sf_vsjet_tau30to35": "nom",
             "tau_sf_vsjet_tau35to40": "nom",
@@ -674,6 +728,13 @@ def build_config(
             "tau_sf_vsjet_tau500to1000": "nom",
             "tau_sf_vsjet_tau1000toinf": "nom",
             "tau_vsjet_sf_dependence": "pt",  # or "dm", "eta"
+        },
+    )
+
+    # boosted hadronic tau identification variations in semileptonic channels
+    configuration.add_config_parameters(
+        FH_SCOPES,
+        {
             "boostedtau_sf_iso_tau30to35": "nom",
             "boostedtau_sf_iso_tau35to40": "nom",
             "boostedtau_sf_iso_tau40to500": "nom",
@@ -682,15 +743,23 @@ def build_config(
             "boostedtau_iso_sf_dependence": "pt",
         },
     )
-    # TT tau id sf variations
+
+    # hadronic tau identification variations in fullhadronic channels
     configuration.add_config_parameters(
-        ["tt"],
+        FH_SCOPES,
         {
             "tau_sf_vsjet_tauDM0": "nom",
             "tau_sf_vsjet_tauDM1": "nom",
             "tau_sf_vsjet_tauDM10": "nom",
             "tau_sf_vsjet_tauDM11": "nom",
             "tau_vsjet_sf_dependence": "dm",  # or "dm", "eta"
+        },
+    )
+    
+    # boosted hadronic tau identification variations in fullhadronic channels
+    configuration.add_config_parameters(
+        FH_SCOPES,
+        {
             "boostedtau_sf_iso_tauDM0": "nom",
             "boostedtau_sf_iso_tauDM1": "nom",
             "boostedtau_sf_iso_tauDM10": "nom",
@@ -699,66 +768,29 @@ def build_config(
         },
     )
 
-    # MT / ET tau selection
-    configuration.add_config_parameters(
-        ["et", "mt"],
-        {
-            "min_tau_pt": 20.0,
-            "max_tau_eta": 2.3,
-            "max_tau_dz": 0.2,
-            "vsjet_tau_id_bit": 1,
-            "vsele_tau_id_bit": 2,
-            "vsmu_tau_id_bit": 1,
-            "min_boostedtau_pt": 30.0,
-            "max_boostedtau_eta": 2.3,
-            # "iso_boostedtau_id_bit": 1,
-            # "antiele_boostedtau_id_bit": 1,
-            # "antimu_boostedtau_id_bit": 1,
-            "boosted_pairselection_min_dR": 0.1,
-            "boosted_pairselection_max_dR": 5.0,
-        },
-    )
-    # TT tau selection:
-    configuration.add_config_parameters(
-        ["tt"],
-        {
-            "min_tau_pt": 35.0,
-            "max_tau_eta": 2.1,
-            "max_tau_dz": 0.2,
-            "vsjet_tau_id_bit": 1,
-            "vsele_tau_id_bit": 2,
-            "vsmu_tau_id_bit": 1,
-            "min_boostedtau_pt": 30.0,
-            "max_boostedtau_eta": 2.3,
-            # "iso_boostedtau_id_bit": 2,
-            # "antiele_boostedtau_id_bit": 2,
-            # "antimu_boostedtau_id_bit": 1,
-            "boosted_pairselection_min_dR": 0.1,
-            "boosted_pairselection_max_dR": 5.0,
-        },
-    )
+    #
+    # MUONS
+    #
 
-    # MT/MM scope Muon selection
+    # muon selection
     configuration.add_config_parameters(
-        ["mt", "mm"],
+        ["mt"],
         {
             "muon_index_in_pair": 0,
             "min_muon_pt": 20.0,
             "max_muon_eta": 2.1,
-            "muon_iso_cut": 5.0,
+            "muon_iso_cut": 5.0,  # TODO reduce to 0.4 (loosest WP)?
         },
     )
 
-    # Muon scale factors configuration
+    # muon reconstructionm, identification, and isolation corrections
     configuration.add_config_parameters(
-        ["mt", "mm"],
+        ["mt"],
         {
             "muon_sf_file": EraModifier(
                 {
-                    "2016preBFP": "data/jsonpog-integration/POG/MUO/2016preVFP_UL/muon_Z.json.gz",
-                    "2016postVFP": "data/jsonpog-integration/POG/MUO/2016postVFP_UL/muon_Z.json.gz",
-                    "2017": "data/jsonpog-integration/POG/MUO/2017_UL/muon_Z.json.gz",
-                    "2018": "data/jsonpog-integration/POG/MUO/2018_UL/muon_Z.json.gz",
+                    _era: f"data/jsonpog-integration/POG/MUO/{_era}_UL/muon_Z.json.gz"
+                    for _era in ERAS
                 }
             ),
             "muon_reco_sf_name": "NUM_TrackerMuons_DEN_genTracks",
@@ -777,61 +809,62 @@ def build_config(
             "muon_iso_sf_variation": "sf",  # "sf" is nominal, "systup"/"systdown" are up/down variations
         },
     )
-    # electron scale factors configuration
-    configuration.add_config_parameters(
-        ["et"],
-        {
-            "ele_sf_file": EraModifier(
-                {
-                    "2016preVFP": "data/jsonpog-integration/POG/EGM/2016preVFP_UL/electron.json.gz",
-                    "2016postVFP": "data/jsonpog-integration/POG/EGM/2016postVFP_UL/electron.json.gz",
-                    "2017": "data/jsonpog-integration/POG/EGM/2017_UL/electron.json.gz",
-                    "2018": "data/jsonpog-integration/POG/EGM/2018_UL/electron.json.gz",
-                }
-            ),
-            "ele_id_sf_name": "UL-Electron-ID-SF",
-            "ele_sf_year_id": EraModifier(
-                {
-                    "2016preVFP": "2016preVFP",
-                    "2016postVFP": "2016postVFP",
-                    "2017": "2017",
-                    "2018": "2018",
-                }
-            ),
-            "ele_sf_variation": "sf",  # "sf" is nominal, "sfup"/"sfdown" are up/down variations
-        },
-    )
-    # ET scope electron selection
+
+    #
+    # ELECTRONS
+    #
+
+    # electron selection
     configuration.add_config_parameters(
         ["et"],
         {
             "electron_index_in_pair": 0,
             "min_electron_pt": 25.0,
             "max_electron_eta": 2.1,
-            "electron_iso_cut": 5.0,
-        },
-    )
-    configuration.add_config_parameters(
-        ["mm"],
-        {
-            "min_muon_pt": 20.0,
-            "max_muon_eta": 2.1,
-            "muon_iso_cut": 0.15,
-            "second_muon_index_in_pair": 1,
+            "electron_iso_cut": 5.0,  # TODO reduce to 0.4 (loosest WP)?
         },
     )
 
-    ## all scopes misc settings
+    # electron identification corrections
+    configuration.add_config_parameters(
+        ["et"],
+        {
+            "ele_sf_file": EraModifier(
+                {
+                    _era: f"data/jsonpog-integration/POG/EGM/{_era}_UL/electron.json.gz"
+                    for _era in ERAS
+                }
+            ),
+            "ele_id_sf_name": "UL-Electron-ID-SF",
+            "ele_sf_year_id": EraModifier(
+                {
+                    _era: _era
+                    for _era in ERAS
+                }
+            ),
+            "ele_sf_variation": "sf",  # "sf" is nominal, "sfup"/"sfdown" are up/down variations
+        },
+    )
+
+    #
+    # OBJECT CLEANING
+    #
+
+    # DeltaR thresholds for object cleaning and resolved tau definition
     configuration.add_config_parameters(
         HAD_TAU_SCOPES,
         {
             "deltaR_jet_veto": 0.4,
-            "deltaR_fatjet_veto": 0.6,
-            "pairselection_min_dR": 0.4,
+            "deltaR_fatjet_veto": 0.8,
+            "pairselection_min_dR": 0.5,
             "bb_pairselection_min_dR": 0.0,
-            # "fatjet_bpair_matching_max_dR": 0.2,
         },
     )
+
+    #
+    # RECOIL CALIBRATION
+    #
+
     ## all scopes MET selection
     configuration.add_config_parameters(
         HAD_TAU_SCOPES,
@@ -846,14 +879,16 @@ def build_config(
             ),
             "recoil_corrections_file": EraModifier(
                 {
-                    "2016": "data/recoil_corrections/Type1_PuppiMET_2016.root",
+                    "2016preVFP": "data/recoil_corrections/Type1_PuppiMET_2016.root",
+                    "2016postVFP": "data/recoil_corrections/Type1_PuppiMET_2016.root",
                     "2017": "data/recoil_corrections/Type1_PuppiMET_2017.root",
                     "2018": "data/recoil_corrections/Type1_PuppiMET_2018.root",
                 }
             ),
             "recoil_systematics_file": EraModifier(
                 {
-                    "2016": "data/recoil_corrections/PuppiMETSys_2016.root",
+                    "2016preVFP": "data/recoil_corrections/PuppiMETSys_2016.root",
+                    "2016postVFP": "data/recoil_corrections/PuppiMETSys_2016.root",
                     "2017": "data/recoil_corrections/PuppiMETSys_2017.root",
                     "2018": "data/recoil_corrections/PuppiMETSys_2018.root",
                 }
@@ -877,14 +912,14 @@ def build_config(
         },
     )
 
+    # Z pt reweighting
     configuration.add_config_parameters(
         HAD_TAU_SCOPES,
         {
-            # "ggHNNLOweightsRootfile": "data/htxs/NNLOPS_reweight.root",
-            # "ggH_generator": "powheg",
             "zptmass_file": EraModifier(
                 {
-                    "2016": "data/zpt/htt_scalefactors_legacy_2016.root",
+                    "2016preVFP": "data/zpt/htt_scalefactors_legacy_2016.root",
+                    "2016postVFP": "data/zpt/htt_scalefactors_legacy_2016.root",
                     "2017": "data/zpt/htt_scalefactors_legacy_2017.root",
                     "2018": "data/zpt/htt_scalefactors_legacy_2018.root",
                 }
@@ -896,7 +931,7 @@ def build_config(
 
     # add muon scalefactors from embedding measurements
     configuration.add_config_parameters(
-        ["mt", "mm"],
+        ["mt"],
         {
             "mc_muon_sf_file": EraModifier(
                 {
@@ -912,6 +947,7 @@ def build_config(
             "mc_muon_iso_extrapolation": 1.0,  # for nominal case
         },
     )
+
     # add electron scalefactors from embedding measurements
     configuration.add_config_parameters(
         ["et"],
@@ -930,9 +966,14 @@ def build_config(
             "mc_electron_iso_extrapolation": 1.0,  # for nominal case
         },
     )
+
+    #
+    # TRIGGERS
+    #
+
     # muon trigger SF settings from embedding measurements
     configuration.add_config_parameters(
-        ["mt", "mm"],
+        ["mt"],
         {
             "singlemuon_trigger_sf_mc": [
                 {
@@ -1028,6 +1069,7 @@ def build_config(
             "ditau_trigger_syst": "nom",
         },
     )
+
     # fatjet trigger settings
     configuration.add_config_parameters(
         ["tt"],
