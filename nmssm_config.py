@@ -31,6 +31,13 @@ from code_generation.rules import AppendProducer, RemoveProducer, ReplaceProduce
 from code_generation.systematics import SystematicShift, SystematicShiftByQuantity
 
 
+# all scopes containing hadronic taus
+GLOBAL_SCOPES = ["global"]
+HAD_TAU_SCOPES = ["et", "mt", "tt"]
+SCOPES = GLOBAL_SCOPES + HAD_TAU_SCOPES
+
+ERAS = ["2016preVFP", "2016postVFP", "2017", "2018"]
+
 def build_config(
     era: str,
     sample: str,
@@ -52,44 +59,79 @@ def build_config(
     )
 
     # first add default parameters necessary for all scopes
+
+    # weights for renormalization and factorization scale variations
     configuration.add_config_parameters(
         "global",
         {
-            # for LHE weights
             "muR": 1.0,
             "muF": 1.0,
+        },
+    )
+
+    # pileup reweighting
+    configuration.add_config_parameters(
+        "global",
+        {
+
             "PU_reweighting_file": EraModifier(
                 {
-                    "2016": "",
-                    "2017": "data/jsonpog-integration/POG/LUM/2017_UL/puWeights.json.gz",
-                    "2018": "data/jsonpog-integration/POG/LUM/2018_UL/puWeights.json.gz",
+                    _era: f"data/jsonpog-integration/POG/LUM/{_era}_UL/puWeights.json.gz"
+                    for _era in ERAS
                 }
             ),
             "PU_reweighting_era": EraModifier(
                 {
-                    "2016": "",
+                    "2016preVFP": "Collisions16_UltraLegacy_goldenJSON",
+                    "2016postVFP": "Collisions16_UltraLegacy_goldenJSON",
                     "2017": "Collisions17_UltraLegacy_goldenJSON",
                     "2018": "Collisions18_UltraLegacy_goldenJSON",
                 }
             ),
             "PU_reweighting_variation": "nominal",
+        },
+    )
+
+    # golden JSON filter
+    configuration.add_config_parameters(
+        "global",
+        {
             "golden_json_file": EraModifier(
                 {
-                    "2016": "data/golden_json/Cert_271036-284044_13TeV_Legacy2016_Collisions16_JSON.txt",
+                    "2016preVFP": "data/golden_json/Cert_271036-284044_13TeV_Legacy2016_Collisions16_JSON.txt",
+                    "2016postVFP": "data/golden_json/Cert_271036-284044_13TeV_Legacy2016_Collisions16_JSON.txt",
                     "2017": "data/golden_json/Cert_294927-306462_13TeV_UL2017_Collisions17_GoldenJSON.txt",
                     "2018": "data/golden_json/Cert_314472-325175_13TeV_Legacy2018_Collisions18_JSON.txt",
                 }
             ),
+        },
+    )
+
+    # noise filters
+    # recommendations: https://twiki.cern.ch/twiki/bin/viewauth/CMS/MissingETOptionalFiltersRun2#UL_data
+    configuration.add_config_parameters(
+        "global",
+        {
             "met_filters": EraModifier(
                 {
-                    "2016": [
-                        "Flag_goodVertices",
-                        "Flag_globalSuperTightHalo2016Filter",
-                        "Flag_HBHENoiseFilter",
-                        "Flag_HBHENoiseIsoFilter",
-                        "Flag_EcalDeadCellTriggerPrimitiveFilter",
-                        "Flag_BadPFMuonFilter",
-                        # "Flag_BadPFMuonDzFilter", # only since nanoAODv9 available
+                    "2016preVFP": [
+                        "Flag_goodVertices"
+                        "Flag_globalSuperTightHalo2016Filter"
+                        "Flag_HBHENoiseFilter"
+                        "Flag_HBHENoiseIsoFilter"
+                        "Flag_EcalDeadCellTriggerPrimitiveFilter"
+                        "Flag_BadPFMuonFilter"
+                        "Flag_BadPFMuonDzFilter"
+                        "Flag_eeBadScFilter",
+                    ],
+                    "2016postVFP": [
+                        "Flag_goodVertices"
+                        "Flag_globalSuperTightHalo2016Filter"
+                        "Flag_HBHENoiseFilter"
+                        "Flag_HBHENoiseIsoFilter"
+                        "Flag_EcalDeadCellTriggerPrimitiveFilter"
+                        "Flag_BadPFMuonFilter"
+                        "Flag_BadPFMuonDzFilter"
                         "Flag_eeBadScFilter",
                     ],
                     "2017": [
@@ -99,7 +141,7 @@ def build_config(
                         "Flag_HBHENoiseIsoFilter",
                         "Flag_EcalDeadCellTriggerPrimitiveFilter",
                         "Flag_BadPFMuonFilter",
-                        # "Flag_BadPFMuonDzFilter", # only since nanoAODv9 available
+                        "Flag_BadPFMuonDzFilter",
                         "Flag_eeBadScFilter",
                         "Flag_ecalBadCalibFilter",
                     ],
@@ -110,7 +152,7 @@ def build_config(
                         "Flag_HBHENoiseIsoFilter",
                         "Flag_EcalDeadCellTriggerPrimitiveFilter",
                         "Flag_BadPFMuonFilter",
-                        # "Flag_BadPFMuonDzFilter", # only since nanoAODv9 available, missing in embedding
+                        "Flag_BadPFMuonDzFilter",
                         "Flag_eeBadScFilter",
                         "Flag_ecalBadCalibFilter",
                     ],
@@ -118,15 +160,16 @@ def build_config(
             ),
         },
     )
+
+    # identification and energy scale corrections for hadronic taus (DeepTau)
     configuration.add_config_parameters(
-        ["et", "mt", "tt"],
+        HAD_TAU_SCOPES,
         {
             "tau_dms": "0,1,10,11",
             "tau_sf_file": EraModifier(
                 {
-                    "2016": "data/jsonpog-integration/POG/TAU/2016postVFP_UL/tau.json.gz",
-                    "2017": "data/jsonpog-integration/POG/TAU/2017_UL/tau.json.gz",
-                    "2018": "data/jsonpog-integration/POG/TAU/2018_UL/tau.json.gz",
+                    _era: f"data/jsonpog-integration/POG/TAU/{_era}_UL/tau.json.gz"
+                    for _era in ERAS
                 }
             ),
             "tau_ES_json_name": "tau_energy_scale",
@@ -140,6 +183,13 @@ def build_config(
             "tau_elefake_es_DM1_barrel": "nom",
             "tau_elefake_es_DM1_endcap": "nom",
             "tau_mufake_es": "nom",
+        },
+    )
+
+    # identification and energy scale corrections for hadronic taus (MVA)
+    configuration.add_config_parameters(
+        HAD_TAU_SCOPES,
+        {
             # boosted taus
             "boostedtau_dms": "0,1,10",
             "boostedtau_sf_file": EraModifier(
@@ -157,7 +207,25 @@ def build_config(
             "boostedtau_ES_shift_DM11": "nom",
         },
     )
-    # muon base selection:
+
+    #
+    # LOOSE OBJECT SELECTIONS
+    #
+
+    # loose electrons
+    configuration.add_config_parameters(
+        "global",
+        {
+            "min_ele_pt": 10.0,
+            "max_ele_eta": 2.5,
+            "max_ele_dxy": 0.045,
+            "max_ele_dz": 0.2,
+            "max_ele_iso": 4.0,  # TODO change to 0.4 (loosest working point available)?
+            "ele_id": "Electron_mvaFall17V2noIso_WP90",
+        },
+    )
+
+    # loose muons
     configuration.add_config_parameters(
         "global",
         {
@@ -166,103 +234,43 @@ def build_config(
             "max_muon_dxy": 0.045,
             "max_muon_dz": 0.2,
             "muon_id": "Muon_mediumId",
-            "muon_iso_cut": 4.0,
+            "muon_iso_cut": 4.0,  # TODO change to 0.4 (loosest working point available)?
         },
     )
-    # electron base selection:
-    configuration.add_config_parameters(
-        "global",
-        {
-            "min_ele_pt": 10.0,
-            "max_ele_eta": 2.5,
-            "max_ele_dxy": 0.045,
-            "max_ele_dz": 0.2,
-            "max_ele_iso": 4.0,
-            "ele_id": "Electron_mvaFall17V2noIso_WP90",
-            "ele_es_era": EraModifier(
-                {
-                    "2016preVFP": '"2016preVFP"',
-                    "2016postVFP": '"2016postVFP"',
-                    "2017": '2017"',
-                    "2018": '"2018"',
-                }
-            ),
-            "ele_es_variation": "nom",
-            "ele_es_file": EraModifier(
-                {
-                    "2016preVFP": '"data/electron_energy_scale/2016preVFP_UL/EGM_ScaleUnc.json.gz"',
-                    "2016postVFP": '"data/electron_energy_scale/2016postVFP_UL/EGM_ScaleUnc.json.gz"',
-                    "2017": '"data/electron_energy_scale/2017_UL/EGM_ScaleUnc.json.gz"',
-                    "2018": '"data/electron_energy_scale/2018_UL/EGM_ScaleUnc.json.gz"',
-                }
-            ),
-        },
-    )
-    # fatjet base selection:
-    configuration.add_config_parameters(
-        "global",
-        {
-            "min_fatjet_pt": 250,
-            "max_fatjet_eta": 2.5,
-            "fatjet_id": 6,
-            "fatjet_reapplyJES": False,
-            "fatjet_jes_sources": '{""}',
-            "fatjet_jes_shift": 0,
-            "fatjet_jer_shift": '"nom"',  # or '"up"', '"down"'
-            "fatjet_jec_file": EraModifier(
-                {
-                    "2016preVFP": '"data/jsonpog-integration/POG/JME/2016preVFP_UL/fatJet_jerc.json.gz"',
-                    "2016postVFP": '"data/jsonpog-integration/POG/JME/2016postVFP_UL/fatJet_jerc.json.gz"',
-                    "2017": '"data/jsonpog-integration/POG/JME/2017_UL/fatJet_jerc.json.gz"',
-                    "2018": '"data/jsonpog-integration/POG/JME/2018_UL/jet_jerc.json.gz"',  # using AK4 file for fatjets because it either was is just copied and the fatjet file has no merged uncertainty scheme
-                }
-            ),
-            "fatjet_jer_tag": EraModifier(
-                {
-                    "2016preVFP": '"Summer20UL16APV_JRV3_MC"',
-                    "2016postVFP": '"Summer20UL16_JRV3_MC"',
-                    "2017": '"Summer19UL17_JRV2_MC"',
-                    "2018": '"Summer19UL18_JRV2_MC"',
-                }
-            ),
-            "fatjet_jes_tag_data": '""',
-            "fatjet_jes_tag": EraModifier(
-                {
-                    "2016preVFP": '"Summer19UL16APV_V7_MC"',
-                    "2016postVFP": '"Summer19UL16_V7_MC"',
-                    "2017": '"Summer19UL17_V5_MC"',
-                    "2018": '"Summer19UL18_V5_MC"',
-                }
-            ),
-            "fatjet_jec_algo": '"AK4PFchs"',  # normally "AK8PFPuppi" would be used -> change to AK4 naming to get merged uncertainty scheme
-        },
-    )
-    # jet base selection:
+
+    # AK4 jets
+    # JetID recommendations: https://twiki.cern.ch/twiki/bin/view/CMS/JetID13TeVUL#Preliminary_Recommendations_for
     configuration.add_config_parameters(
         "global",
         {
             "min_jet_pt": 30,
             "max_jet_eta": 2.5,
-            "jet_id": 6,
+            "jet_id": 6,  # 0 == fail, 2 == pass(tight) & fail(tightLepVeto), 6 == pass(tight) & pass(tightLepVeto)
             "jet_puid": EraModifier(
                 {
-                    "2016preVFP": 1,  # 0==fail, 1==pass(loose), 3==pass(loose,medium), 7==pass(loose,medium,tight)
-                    "2016postVFP": 1,  # 0==fail, 1==pass(loose), 3==pass(loose,medium), 7==pass(loose,medium,tight)
-                    "2017": 4,  # 0==fail, 4==pass(loose), 6==pass(loose,medium), 7==pass(loose,medium,tight)
-                    "2018": 4,  # 0==fail, 4==pass(loose), 6==pass(loose,medium), 7==pass(loose,medium,tight)
+                    "2016preVFP": 1,  # 0 == fail, 1 == pass(loose), 3 == pass(loose,medium), 7 == pass(loose,medium,tight)
+                    "2016postVFP": 1,  # 0 == fail, 1 == pass(loose), 3 == pass(loose,medium), 7 == pass(loose,medium,tight)
+                    "2017": 4,  # 0 == fail, 4 == pass(loose), 6 == pass(loose,medium), 7 == pass(loose,medium,tight)
+                    "2018": 4,  # 0 == fail, 4 == pass(loose), 6 == pass(loose,medium), 7 == pass(loose,medium,tight)
                 }
             ),
-            "jet_puid_max_pt": 50,  # recommended to apply puID only for jets below 50 GeV
+            "jet_puid_max_pt": 50.,  # recommended to apply puID only for jets below 50 GeV
+        },
+    )
+
+    # AK4 jet energy calibration and resolution corrections
+    # JEC recommendations: https://twiki.cern.ch/twiki/bin/view/CMS/JECDataMC
+    configuration.add_config_parameters(
+        "global",
+        {
             "jet_reapplyJES": False,
             "jet_jes_sources": '{""}',
             "jet_jes_shift": 0,
             "jet_jer_shift": '"nom"',  # or '"up"', '"down"'
             "jet_jec_file": EraModifier(
                 {
-                    "2016preVFP": '"data/jsonpog-integration/POG/JME/2016preVFP_UL/jet_jerc.json.gz"',
-                    "2016postVFP": '"data/jsonpog-integration/POG/JME/2016postVFP_UL/jet_jerc.json.gz"',
-                    "2017": '"data/jsonpog-integration/POG/JME/2017_UL/jet_jerc.json.gz"',
-                    "2018": '"data/jsonpog-integration/POG/JME/2018_UL/jet_jerc.json.gz"',
+                    _era: f'"data/jsonpog-integration/POG/JME/{_era}_UL/jet_jerc.json.gz"'
+                    for _era in ERAS
                 }
             ),
             "jet_jer_tag": EraModifier(
@@ -285,46 +293,118 @@ def build_config(
             "jet_jec_algo": '"AK4PFchs"',
         },
     )
-    # bjet base selection:
+
+    # AK8 jet selection
+    # JEC recommendations: https://twiki.cern.ch/twiki/bin/view/CMS/JECDataMC
     configuration.add_config_parameters(
         "global",
         {
-            "min_bjet_pt": 20,
+            "min_fatjet_pt": 200.,
+            "max_fatjet_eta": 2.5,
+            "fatjet_id": 6,  # tight & tightLepVeto
+            "fatjet_reapplyJES": False,
+            "fatjet_jes_sources": '{""}',
+            "fatjet_jes_shift": 0,
+            "fatjet_jer_shift": '"nom"',  # or '"up"', '"down"'
+            "fatjet_jec_file": EraModifier(  # TODO use AK4 file for fatjets because it either was is just copied and the fatjet file has no merged uncertainty scheme?
+                {
+                    _era: f'"data/jsonpog-integration/POG/JME/{_era}_UL/fatJet_jerc.json.gz"'
+                    for _era in ERAS
+                }
+            ),
+            "fatjet_jer_tag": EraModifier(
+                {
+                    "2016preVFP": '"Summer20UL16APV_JRV3_MC"',
+                    "2016postVFP": '"Summer20UL16_JRV3_MC"',
+                    "2017": '"Summer19UL17_JRV2_MC"',
+                    "2018": '"Summer19UL18_JRV2_MC"',
+                }
+            ),
+            "fatjet_jes_tag_data": '""',
+            "fatjet_jes_tag": EraModifier(
+                {
+                    "2016preVFP": '"Summer19UL16APV_V7_MC"',
+                    "2016postVFP": '"Summer19UL16_V7_MC"',
+                    "2017": '"Summer19UL17_V5_MC"',
+                    "2018": '"Summer19UL18_V5_MC"',
+                }
+            ),
+            "fatjet_jec_algo": '"AK8PFPuppi"',  # TODO normally "AK8PFPuppi" would be used -> change to AK4 naming to get merged uncertainty scheme?
+        },
+    )
+
+    # b jet selection
+    configuration.add_config_parameters(
+        "global",
+        {
+            "min_bjet_pt": 20.,
             "max_bjet_eta": EraModifier(
                 {
-                    "2016": 2.4,
+                    "2016preVFP": 2.4,
+                    "2016postVFP": 2.4,
                     "2017": 2.5,
                     "2018": 2.5,
                 }
             ),
         },
     )
+
+    # electron energy scale corrections
     configuration.add_config_parameters(
-        (["global"] + scopes),
+        "global",
+        {
+            "ele_es_era": EraModifier(
+                {
+                    "2016preVFP": '"2016preVFP"',
+                    "2016postVFP": '"2016postVFP"',
+                    "2017": '2017"',
+                    "2018": '"2018"',
+                }
+            ),
+            "ele_es_variation": "nom",
+            "ele_es_file": EraModifier(
+                {
+                    _era: f'"data/electron_energy_scale/{_era}_UL/EGM_ScaleUnc.json.gz"'
+                    for _era in ["2016preVFP", "2016postVFP", "2017", "2018"]
+                }
+            ),
+        },
+    )
+
+    # b jet identification
+    # recommendations: https://btv-wiki.docs.cern.ch/ScaleFactors
+    configuration.add_config_parameters(
+        SCOPES,
         {
             "btag_cut": EraModifier(  # medium
                 {
-                    "2016": 0.3093,
+                    "2016preVFP": 0.2598,
+                    "2016postVFPP": 0.2489,
                     "2017": 0.3040,
                     "2018": 0.2783,
                 }
             ),
         },
     )
-    # bjet scale factors
+
     configuration.add_config_parameters(
-        scopes,
+        HAD_TAU_SCOPES,
         {
             "btag_sf_file": EraModifier(
                 {
-                    "2016preVFP": "data/jsonpog-integration/POG/BTV/2016preVFP_UL/btagging.json.gz",
-                    "2016postVFP": "data/jsonpog-integration/POG/BTV/2016postVFP_UL/btagging.json.gz",
-                    "2017": "data/jsonpog-integration/POG/BTV/2017_UL/btagging.json.gz",
-                    "2018": "data/jsonpog-integration/POG/BTV/2018_UL/btagging.json.gz",
+                    _era: "data/jsonpog-integration/POG/BTV/{_era}_UL/btagging.json.gz"
+                    for _era in ERAS
                 }
             ),
             "btag_sf_variation": "central",
             "btag_corr_algo": "deepJet_shape",
+        },
+    )
+
+    # AK8 X->bb jet identification
+    configuration.add_config_parameters(
+        HAD_TAU_SCOPES,
+        {
             "pNetXbb_sf_file": EraModifier(
                 {
                     "2016preVFP": "",
@@ -336,9 +416,10 @@ def build_config(
             "pNetXbb_sf_variation": "nominal",
         },
     )
+
     # gen b pair for NMSSM analysis
     configuration.add_config_parameters(
-        scopes,
+        SCOPES,
         {
             "bb_truegen_mother_pdgid": SampleModifier(
                 {"nmssm_Ybb": 35, "nmssm_Ytautau": 25}, default=-1
@@ -354,7 +435,8 @@ def build_config(
             "gen_taupair_match_deltaR": 0.2,
         },
     )
-    # leptonveto base selection:
+
+    # lepton vetoes
     configuration.add_config_parameters(
         "global",
         {
@@ -366,6 +448,7 @@ def build_config(
             "dileptonveto_dR": 0.15,
         },
     )
+
     ###### scope Specifics ######
     # MT/TT/ET scope tau ID flags and SFs
     configuration.add_config_parameters(
