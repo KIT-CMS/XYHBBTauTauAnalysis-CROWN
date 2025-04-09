@@ -30,15 +30,8 @@ from code_generation.modifiers import EraModifier, SampleModifier
 from code_generation.rules import AppendProducer, RemoveProducer, ReplaceProducer
 from code_generation.systematics import SystematicShift, SystematicShiftByQuantity
 
+from .constants import *
 
-# all scopes containing hadronic taus
-GLOBAL_SCOPES = ["global"]
-SL_SCOPES = ["et", "mt"]
-FH_SCOPES = ["tt"]
-HAD_TAU_SCOPES = SL_SCOPES + FH_SCOPES
-SCOPES = HAD_TAU_SCOPES
-
-ERAS = ["2016preVFP", "2016postVFP", "2017", "2018"]
 
 def build_config(
     era: str,
