@@ -1,91 +1,215 @@
 from ..quantities import output as q
 from ..quantities import nanoAOD as nanoAOD
 from code_generation.producer import Producer, ProducerGroup
+from code_generation.quantity import Quantity
+
+from ..constants import GLOBAL_SCOPES
+
+
+#
+# jet energy corrections
+#
+
+
+def jerc_producer_factory(
+    input: dict[str, Quantity],
+    output: dict[str, Quantity],
+    producer_prefix = "Jet",
+    config_parameter_prefix: str = "jet",
+):
+    """
+    Factory function to create producers needed for jet energy corrections.
+    """
+
+    # get input quantities
+    jet_pt = input["jet_pt"]  # nanoAOD.Jet_pt,
+    jet_eta = input["jet_eta"]  # nanoAOD.Jet_eta,
+    jet_phi = input["jet_phi"]  # nanoAOD.Jet_phi,
+    jet_mass = input["jet_mass"]  # nanoAOD.Jet_mass,
+    jet_area = input["jet_area"]  # nanoAOD.Jet_area,
+    jet_raw_factor = input["jet_raw_factor"]  # nanoAOD.Jet_rawFactor,
+    jet_id = input["jet_id"]  # nanoAOD.Jet_ID,
+    gen_jet_pt = input["gen_jet_pt"]  # nanoAOD.GenJet_pt,
+    gen_jet_eta = input["gen_jet_eta"]  # nanoAOD.GenJet_eta,
+    gen_jet_phi = input["gen_jet_phi"]  # nanoAOD.GenJet_phi,
+    rho = input["rho"]  # nanoAOD.rho,
+
+    # get outputs
+    jet_pt_corrected = output["jet_pt_corrected"]  # q.Jet_pt_corrected
+    jet_mass_corrected = output["jet_mass_corrected"]  # q.Jet_mass_corrected
+
+    # jet pt correction for data jets
+    jet_pt_correction_data = Producer(
+        name=f"{producer_prefix}JetPtCorrectionData",
+        call=(
+            "physicsobject::jet::JetPtCorrection_data("
+                "{df}, "
+                "{output}, "
+                "{input}, "
+                f"{{{config_parameter_prefix}_jec_file}}, "
+                f"{{{config_parameter_prefix}_jes_tag_data}}, "
+                f"{{{config_parameter_prefix}_jec_algo}}"
+            ")"
+        ),
+        input=[
+            jet_pt,
+            jet_eta,
+            jet_area,
+            jet_raw_factor,
+            rho,
+        ],
+        output=[jet_pt_corrected],
+        scopes=["global"],
+    )
+
+    # jet pt correction for MC jets
+    jet_pt_correction_mc = Producer(
+        name=f"{producer_prefix}PtCorrectionMC",
+        call=(
+            "physicsobject::jet::JetPtCorrection("
+                "{df}, "
+                "correctionManager, "
+                "{output}, "
+                "{input}, "
+                f"{{{config_parameter_prefix}_reapplyJES}}, "
+                f"{{{config_parameter_prefix}_jes_sources}}, "
+                f"{{{config_parameter_prefix}_jes_shift}}, "
+                f"{{{config_parameter_prefix}_jer_shift}}, "
+                f"{{{config_parameter_prefix}_jec_file}}, "
+                f"{{{config_parameter_prefix}_jer_tag}}, "
+                f"{{{config_parameter_prefix}_jes_tag}}, "
+                f"{{{config_parameter_prefix}_jec_algo}}"
+            ")"
+        ),
+        input=[
+            jet_pt,
+            jet_eta,
+            jet_phi,
+            jet_area,
+            jet_raw_factor,
+            jet_id,
+            gen_jet_pt,
+            gen_jet_eta,
+            gen_jet_phi,
+            rho,
+        ],
+        output=[],
+        scopes=["global"],
+    )
+
+    # jet pt correction for jets in embedded events (just rename column)
+    jet_pt_correction_emb = Producer(
+        name=f"{producer_prefix}JetPtCorrectionEmb",
+        call=(
+            "basefunctions::rename<ROOT::RVec<float>>("
+                "{df}, "
+                "{input}, "
+                "{output}"
+            ")"
+        ),
+        input=[jet_pt],
+        output=[jet_pt_corrected],
+        scopes=["global"],
+    )
+
+    # jet mass correction (data and MC)
+    jet_mass_correction = Producer(
+        name=f"{producer_prefix}MassCorrection",
+        call=(
+            "physicsobject::ObjectMassCorrectionWithPt("
+                "{df}, "
+                "{output}, "
+                "{input}"
+            ")"
+        ),
+        input=[
+            jet_mass,
+            jet_pt,
+            jet_pt_corrected,
+        ],
+        output=[jet_mass_corrected],
+        scopes=["global"],
+    )
+
+    # jet mass correction for jets in embedded events (just rename column)
+    jet_mass_correction_emb = Producer(
+        name=f"{producer_prefix}JetMassCorrectionEmb",
+        call=(
+            "basefunctions::rename<ROOT::RVec<float>>("
+                "{df}, "
+                "{input}, "
+                "{output}"
+            ")"
+        ),
+        input=[jet_mass],
+        output=[jet_mass_corrected],
+        scopes=["global"],
+    )
+
+    # create jet energy correction group (data)
+    jet_energy_correction_data = ProducerGroup(
+        name=f"{producer_prefix}EnergyCorrectionData",
+        call=None,
+        input=None,
+        output=None,
+        scopes=["global"],
+        subproducers=[jet_pt_correction_data, jet_mass_correction],
+    )
+
+    # create jet energy correction group (MC)
+    jet_energy_correction_mc = ProducerGroup(
+        name=f"{producer_prefix}EnergyCorrectionMC",
+        call=None,
+        input=None,
+        output=None,
+        scopes=["global"],
+        subproducers=[jet_pt_correction_mc, jet_mass_correction],
+    )
+
+    # create jet energy correction group (embedding, just rename columns)
+    jet_energy_correction_emb = ProducerGroup(
+        name=f"{producer_prefix}EnergyCorrectionEmb",
+        call=None,
+        input=None,
+        output=None,
+        scopes=["global"],
+        subproducers=[jet_pt_correction_emb, jet_mass_correction_emb],
+    )
+
+    return (
+        jet_energy_correction_data,
+        jet_energy_correction_mc,
+        jet_energy_correction_emb,
+    )
+
+
+# create jet energy correction producers for AK4 jets
+JetEnergyCorrection_data, JetEnergyCorrection, RenameJetsData = jerc_producer_factory(
+    input={
+        "jet_pt": nanoAOD.Jet_pt,
+        "jet_eta": nanoAOD.Jet_eta,
+        "jet_phi": nanoAOD.Jet_phi,
+        "jet_mass": nanoAOD.Jet_mass,
+        "jet_area": nanoAOD.Jet_area,
+        "jet_raw_factor": nanoAOD.Jet_rawFactor,
+        "jet_id": nanoAOD.Jet_ID,
+        "gen_jet_pt": nanoAOD.GenJet_pt,
+        "gen_jet_eta": nanoAOD.GenJet_eta,
+        "gen_jet_phi": nanoAOD.GenJet_phi,
+        "rho": nanoAOD.rho,
+    },
+    output={
+        "jet_pt_corrected": q.Jet_pt_corrected,
+        "jet_mass_corrected": q.Jet_mass_corrected,
+    },
+    producer_prefix="Jet",
+    config_parameter_prefix="jet",
+)
+
 
 ####################
 # Set of producers used for selection possible good jets
 ####################
-JetPtCorrection = Producer(
-    name="JetPtCorrection",
-    call="physicsobject::jet::JetPtCorrection({df}, correctionManager, {output}, {input}, {jet_reapplyJES}, {jet_jes_sources}, {jet_jes_shift}, {jet_jer_shift}, {jet_jec_file}, {jet_jer_tag}, {jet_jes_tag}, {jet_jec_algo})",
-    input=[
-        nanoAOD.Jet_pt,
-        nanoAOD.Jet_eta,
-        nanoAOD.Jet_phi,
-        nanoAOD.Jet_area,
-        nanoAOD.Jet_rawFactor,
-        nanoAOD.Jet_ID,
-        nanoAOD.GenJet_pt,
-        nanoAOD.GenJet_eta,
-        nanoAOD.GenJet_phi,
-        nanoAOD.rho,
-    ],
-    output=[q.Jet_pt_corrected],
-    scopes=["global"],
-)
-JetPtCorrection_data = Producer(
-    name="JetPtCorrection_data",
-    call="physicsobject::jet::JetPtCorrection_data({df}, {output}, {input}, {jet_jec_file}, {jet_jes_tag_data}, {jet_jec_algo})",
-    input=[
-        nanoAOD.Jet_pt,
-        nanoAOD.Jet_eta,
-        nanoAOD.Jet_area,
-        nanoAOD.Jet_rawFactor,
-        nanoAOD.rho,
-    ],
-    output=[q.Jet_pt_corrected],
-    scopes=["global"],
-)
-JetMassCorrection = Producer(
-    name="JetMassCorrection",
-    call="physicsobject::ObjectMassCorrectionWithPt({df}, {output}, {input})",
-    input=[
-        nanoAOD.Jet_mass,
-        nanoAOD.Jet_pt,
-        q.Jet_pt_corrected,
-    ],
-    output=[q.Jet_mass_corrected],
-    scopes=["global"],
-)
-# in embdedded sample, we simply rename the nanoAOD jets to the jet_pt_corrected column
-RenameJetPt = Producer(
-    name="RenameJetPt",
-    call="basefunctions::rename<ROOT::RVec<float>>({df}, {input}, {output})",
-    input=[nanoAOD.Jet_pt],
-    output=[q.Jet_pt_corrected],
-    scopes=["global"],
-)
-RenameJetMass = Producer(
-    name="RenameJetMass",
-    call="basefunctions::rename<ROOT::RVec<float>>({df}, {input}, {output})",
-    input=[nanoAOD.Jet_mass],
-    output=[q.Jet_mass_corrected],
-    scopes=["global"],
-)
-RenameJetsData = ProducerGroup(
-    name="RenameJetsData",
-    call=None,
-    input=None,
-    output=None,
-    scopes=["global"],
-    subproducers=[RenameJetPt, RenameJetMass],
-)
-JetEnergyCorrection = ProducerGroup(
-    name="JetEnergyCorrection",
-    call=None,
-    input=None,
-    output=None,
-    scopes=["global"],
-    subproducers=[JetPtCorrection, JetMassCorrection],
-)
-JetEnergyCorrection_data = ProducerGroup(
-    name="JetEnergyCorrection",
-    call=None,
-    input=None,
-    output=None,
-    scopes=["global"],
-    subproducers=[JetPtCorrection_data, JetMassCorrection],
-)
 JetPtCut = Producer(
     name="JetPtCut",
     call="physicsobject::CutPt({df}, {input}, {output}, {min_jet_pt})",
