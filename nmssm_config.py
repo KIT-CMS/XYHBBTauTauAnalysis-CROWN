@@ -34,7 +34,7 @@ from code_generation.systematics import SystematicShift, SystematicShiftByQuanti
 # all scopes containing hadronic taus
 GLOBAL_SCOPES = ["global"]
 HAD_TAU_SCOPES = ["et", "mt", "tt"]
-SCOPES = GLOBAL_SCOPES + HAD_TAU_SCOPES
+SCOPES = HAD_TAU_SCOPES
 
 ERAS = ["2016preVFP", "2016postVFP", "2017", "2018"]
 
@@ -243,7 +243,7 @@ def build_config(
     configuration.add_config_parameters(
         "global",
         {
-            "min_jet_pt": 30,
+            "min_jet_pt": 30.0,
             "max_jet_eta": 2.5,
             "jet_id": 6,  # 0 == fail, 2 == pass(tight) & fail(tightLepVeto), 6 == pass(tight) & pass(tightLepVeto)
             "jet_puid": EraModifier(
@@ -254,7 +254,7 @@ def build_config(
                     "2018": 4,  # 0 == fail, 4 == pass(loose), 6 == pass(loose,medium), 7 == pass(loose,medium,tight)
                 }
             ),
-            "jet_puid_max_pt": 50.,  # recommended to apply puID only for jets below 50 GeV
+            "jet_puid_max_pt": 50.0,  # recommended to apply puID only for jets below 50 GeV
         },
     )
 
@@ -374,7 +374,7 @@ def build_config(
     # b jet identification
     # recommendations: https://btv-wiki.docs.cern.ch/ScaleFactors
     configuration.add_config_parameters(
-        SCOPES,
+        GLOBAL_SCOPES + HAD_TAU_SCOPES,
         {
             "btag_cut": EraModifier(  # medium
                 {
@@ -419,7 +419,7 @@ def build_config(
 
     # gen b pair for NMSSM analysis
     configuration.add_config_parameters(
-        SCOPES,
+        HAD_TAU_SCOPES,
         {
             "bb_truegen_mother_pdgid": SampleModifier(
                 {"nmssm_Ybb": 35, "nmssm_Ytautau": 25}, default=-1
@@ -823,7 +823,7 @@ def build_config(
 
     ## all scopes misc settings
     configuration.add_config_parameters(
-        scopes,
+        HAD_TAU_SCOPES,
         {
             "deltaR_jet_veto": 0.4,
             "deltaR_fatjet_veto": 0.6,
@@ -834,7 +834,7 @@ def build_config(
     )
     ## all scopes MET selection
     configuration.add_config_parameters(
-        scopes,
+        HAD_TAU_SCOPES,
         {
             "propagateLeptons": SampleModifier(
                 {"data": False},
@@ -878,7 +878,7 @@ def build_config(
     )
 
     configuration.add_config_parameters(
-        scopes,
+        HAD_TAU_SCOPES,
         {
             # "ggHNNLOweightsRootfile": "data/htxs/NNLOPS_reweight.root",
             # "ggH_generator": "powheg",
@@ -1079,7 +1079,7 @@ def build_config(
         )
     # common
     configuration.add_producers(
-        scopes,
+        HAD_TAU_SCOPES,
         [
             fatjets.FatJetCollection,
             fatjets.FatJetCollection_boosted,
@@ -1342,7 +1342,7 @@ def build_config(
         ),
     )
     configuration.add_modification_rule(
-        scopes,
+        HAD_TAU_SCOPES,
         RemoveProducer(
             producers=[
                 scalefactors.btagging_SF,
@@ -1352,28 +1352,31 @@ def build_config(
         ),
     )
     configuration.add_modification_rule(
-        scopes,
+        HAD_TAU_SCOPES,
         RemoveProducer(
             producers=[
                 fatjets.fj_Xbb_hadflavor,
                 fatjets.fj_Xbb_nBhad,
                 fatjets.fj_Xbb_nChad,
+                scalefactors.Xbb_tagging_SF,
                 fatjets.fj_Xbb_hadflavor_boosted,
                 fatjets.fj_Xbb_nBhad_boosted,
                 fatjets.fj_Xbb_nChad_boosted,
+                scalefactors.Xbb_tagging_SF_boosted,
+
             ],
             samples=["data", "embedding", "embedding_mc"],
         ),
     )
     configuration.add_modification_rule(
-        ["et", "mt", "tt"],
+        HAD_TAU_SCOPES,
         ReplaceProducer(
             producers=[taus.TauEnergyCorrection, taus.TauEnergyCorrection_data],
             samples="data",
         ),
     )
     configuration.add_modification_rule(
-        ["et", "mt", "tt"],
+        HAD_TAU_SCOPES,
         ReplaceProducer(
             producers=[
                 boostedtaus.boostedTauEnergyCorrection,
@@ -1461,7 +1464,7 @@ def build_config(
     #     ),
     # )
     configuration.add_modification_rule(
-        scopes,
+        HAD_TAU_SCOPES,
         RemoveProducer(
             producers=[
                 genparticles.GenMatching,
@@ -1471,7 +1474,7 @@ def build_config(
         ),
     )
     configuration.add_modification_rule(
-        scopes,
+        HAD_TAU_SCOPES,
         RemoveProducer(
             producers=[
                 genparticles.GenDiBjetPairQuantities,
@@ -1494,11 +1497,11 @@ def build_config(
     #     ),
     # )
     configuration.add_modification_rule(
-        scopes,
+        HAD_TAU_SCOPES,
         AppendProducer(producers=event.TopPtReweighting, samples="ttbar"),
     )
     configuration.add_modification_rule(
-        scopes,
+        HAD_TAU_SCOPES,
         AppendProducer(
             producers=event.ZPtMassReweighting, samples=["dyjets", "electroweak_boson"]
         ),
@@ -1626,7 +1629,7 @@ def build_config(
     )
 
     configuration.add_outputs(
-        scopes,
+        HAD_TAU_SCOPES,
         [
             q.is_data,
             q.is_embedding,
@@ -1832,7 +1835,7 @@ def build_config(
     # add genWeight for everything but data
     if sample != "data":
         configuration.add_outputs(
-            scopes,
+            HAD_TAU_SCOPES,
             nanoAOD.genWeight,
         )
     configuration.add_outputs(
@@ -2052,7 +2055,7 @@ def build_config(
 
     if sample in ["nmssm_Ybb", "nmssm_Ytautau"]:
         configuration.add_outputs(
-            scopes,
+            HAD_TAU_SCOPES,
             [
                 q.gen_b_pt_1,
                 q.gen_b_eta_1,
@@ -3072,7 +3075,7 @@ def build_config(
     # Add additional producers and SFs related to embedded samples
     #########################
     if sample == "embedding" or sample == "embedding_mc":
-        setup_embedding(configuration, scopes)
+        setup_embedding(configuration, HAD_TAU_SCOPES)
 
     #########################
     # Jet energy resolution and jet energy scale
