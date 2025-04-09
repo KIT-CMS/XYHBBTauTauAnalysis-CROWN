@@ -22,21 +22,21 @@ def jerc_producer_factory(
     """
 
     # get input quantities
-    jet_pt = input["jet_pt"]  # nanoAOD.Jet_pt,
-    jet_eta = input["jet_eta"]  # nanoAOD.Jet_eta,
-    jet_phi = input["jet_phi"]  # nanoAOD.Jet_phi,
-    jet_mass = input["jet_mass"]  # nanoAOD.Jet_mass,
-    jet_area = input["jet_area"]  # nanoAOD.Jet_area,
-    jet_raw_factor = input["jet_raw_factor"]  # nanoAOD.Jet_rawFactor,
-    jet_id = input["jet_id"]  # nanoAOD.Jet_ID,
-    gen_jet_pt = input["gen_jet_pt"]  # nanoAOD.GenJet_pt,
-    gen_jet_eta = input["gen_jet_eta"]  # nanoAOD.GenJet_eta,
-    gen_jet_phi = input["gen_jet_phi"]  # nanoAOD.GenJet_phi,
-    rho = input["rho"]  # nanoAOD.rho,
+    jet_pt = input["jet_pt"]
+    jet_eta = input["jet_eta"]
+    jet_phi = input["jet_phi"]
+    jet_mass = input["jet_mass"]
+    jet_area = input["jet_area"]
+    jet_raw_factor = input["jet_raw_factor"]
+    jet_id = input["jet_id"]
+    gen_jet_pt = input["gen_jet_pt"]
+    gen_jet_eta = input["gen_jet_eta"]
+    gen_jet_phi = input["gen_jet_phi"]
+    rho = input["rho"]
 
     # get outputs
-    jet_pt_corrected = output["jet_pt_corrected"]  # q.Jet_pt_corrected
-    jet_mass_corrected = output["jet_mass_corrected"]  # q.Jet_mass_corrected
+    jet_pt_corrected = output["jet_pt_corrected"]
+    jet_mass_corrected = output["jet_mass_corrected"]
 
     # jet pt correction for data jets
     jet_pt_correction_data = Producer(
@@ -196,7 +196,7 @@ JetEnergyCorrection_data, JetEnergyCorrection, RenameJetsData = jerc_producer_fa
         "gen_jet_pt": nanoAOD.GenJet_pt,
         "gen_jet_eta": nanoAOD.GenJet_eta,
         "gen_jet_phi": nanoAOD.GenJet_phi,
-        "rho": nanoAOD.rho,
+        "rho": nanoAOD.rho_v12,
     },
     output={
         "jet_pt_corrected": q.Jet_pt_corrected,

@@ -535,7 +535,7 @@ def build_config(
             "max_ele_dxy": 0.045,
             "max_ele_dz": 0.2,
             "max_ele_iso": 0.3,
-            "ele_id": "Electron_mvaFall17V2noIso_WP90",
+            "ele_id": "Electron_mvaNoIso_WP90",
         },
     )
 
