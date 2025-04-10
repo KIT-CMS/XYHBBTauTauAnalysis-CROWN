@@ -179,7 +179,121 @@ def add_golden_json_config(configuration: Configuration):
     )
 
 
-def add_muon_config(configuration: Configuration, muon_id_loose: str = "Muon_mediumId"):
+def add_electron_config(
+    configuration: Configuration,
+    electron_id_loose: str = "Electron_mvaNoIso_WP90",
+    electron_id_loose_corrlib: str = "wp90noiso",
+):
+    """
+    Selection requirements and corrections for electrons.
+
+    The corrections include scale factors for reconstruction and identification
+    efficiencies at the working points used for electrons in this analysis. Separate corrections to
+    electrons in $\mu \to \tau$-embedded events are defined as well.
+
+    This function adds configuration parameters for two types of muon collections:
+
+    - The loose collection contains electrons selected with loose requirements. They are mainly used to
+      veto additional electrons in events and to remove electron-jet overlaps.
+
+    - The tight collection contains electrons that are candidates for electron+hadronic tau pairs.
+
+    The tight collection is a subset of the loose collection.
+
+    The following recommendations and corrections are implemented:
+
+    - [EGamma UL 2016-2018](https://twiki.cern.ch/twiki/bin/view/CMS/EgammaUL2016To2018)
+
+    - [EGamma Run 2 recommendations](https://twiki.cern.ch/twiki/bin/view/CMS/EgammaRunIIRecommendations)
+
+    Correction factors are obtained from the
+    [nanoaod-tools/jsonpog-integration](gitlab.cern.ch/nanoaod-tools/jsonpog-integration) repository.
+
+    :todo add 2022 and 2023:
+
+    :param configuration: the main configuration object
+    :type configuration: Configuration
+
+    :param electron_id_loose: name of the electron ID for the loose electron collection; default: `"Electron_mvaNoIso_WP90"`.
+    :type electron_id_loose: str
+ 
+    :param electron_id_loose_corrlib: name of the electron ID for the loose electron collection in the EGM correctionlib file; default: `"wp90noiso"`.
+    :type electron_id_loose: str   
+    """
+
+    # loose electrons, mainly used for vetoes
+    configuration.add_config_parameters(
+        GLOBAL_SCOPES,
+        {
+            "min_ele_pt": 10.0,
+            "max_ele_eta": 2.5,
+            "max_ele_dxy": 0.045,
+            "max_ele_dz": 0.2,
+            "max_ele_iso": 4.0,
+            "ele_id": electron_id_loose,  # NanoAOD v9: Electron_mvaFall17V2noIso_WP90,
+        },
+    )
+
+    # tight electrons, mainly used as candidates for electron+hadronic tau pairs
+    configuration.add_config_parameters(
+        ET_SCOPES,
+        {
+            "electron_index_in_pair": 0,
+            "min_electron_pt": 25.0,
+            "max_electron_eta": 2.1,
+            "electron_iso_cut": 4.0,
+        },
+    )
+
+    # electron reconstruction and identification corrections for simulated events
+    configuration.add_config_parameters(
+        ET_SCOPES,
+        {
+            "ele_sf_file": EraModifier(
+                {
+                    _era: f"data/jsonpog-integration/POG/EGM/{_era}_UL/electron.json.gz"
+                    for _era in ERAS
+                }
+            ),
+            "ele_sf_cset_name": "UL-Electron-ID-SF",
+            "ele_sf_year_id": EraModifier(
+                {
+                    _era: _era
+                    for _era in ERAS
+                }
+            ),
+            "ele_reco_sf_name": "RecoAbove20",
+            "ele_id_sf_name": electron_id_loose_corrlib,
+            "ele_reco_sf_variation": "sf",  # "sf" is nominal, "sfup"/"sfdown" are up/down variations
+            "ele_id_sf_variation": "sf",  # "sf" is nominal, "sfup"/"sfdown" are up/down variations
+        },
+    )
+
+    # electron identification and isolation corrections for mu->tau-embedded events
+    configuration.add_config_parameters(
+        ET_SCOPES,
+        {
+            "mc_electron_sf_file": EraModifier(
+                {
+                    "2016preVFP": "",
+                    "2016postVFP": "",
+                    "2017": "",
+                    "2018": "data/embedding/electron_2018UL.json.gz",
+                }
+            ),
+            "mc_electron_id_sf": "ID90_pt_eta_bins",
+            "mc_electron_iso_sf": "Iso_pt_eta_bins",
+            "mc_electron_id_extrapolation": 1.0,  # for nominal case
+            "mc_electron_iso_extrapolation": 1.0,  # for nominal case
+        },
+    )
+
+
+def add_muon_config(
+        configuration: Configuration,
+        muon_id_loose: str = "Muon_mediumId",
+        muon_id_loose_corrlib: str = "NUM_MediumID_DEN_TrackerMuons",
+):
     """
     Selection requirements and corrections for muons.
 
@@ -211,6 +325,9 @@ def add_muon_config(configuration: Configuration, muon_id_loose: str = "Muon_med
     :type configuration: Configuration
 
     :param muon_id_loose: name of the muon ID for the loose muon collection; default: `"Muon_mediumId"`.
+    :type muon_id_loose: str
+
+    :param muon_id_loose_corrlib: name of the muon ID for the loose muon collection in the MUO correctionlib file; default: `""`.
     :type muon_id_loose: str
     """
 
@@ -249,7 +366,7 @@ def add_muon_config(configuration: Configuration, muon_id_loose: str = "Muon_med
                 }
             ),
             "muon_reco_sf_name": "NUM_TrackerMuons_DEN_genTracks",
-            "muon_id_sf_name": "NUM_MediumID_DEN_TrackerMuons",  # correction for mediumId WP
+            "muon_id_sf_name": muon_id_loose_corrlib,  # correction for mediumId WP
             "muon_iso_sf_name": "NUM_LooseRelIso_DEN_MediumID",  # correction for TightPFIso WP (PF isolation < 0.15)
             "muon_reco_sf_variation": "nominal",  # "nominal" is nominal, "systup"/"systdown" are up/down variations
             "muon_id_sf_variation": "nominal",  # "nominal" is nominal, "systup"/"systdown" are up/down variations
@@ -259,7 +376,7 @@ def add_muon_config(configuration: Configuration, muon_id_loose: str = "Muon_med
 
     # muon  identification and isolation corrections for mu->tau-embedded events
     configuration.add_config_parameters(
-        ["mt"],
+        MT_SCOPES,
         {
             "mc_muon_sf_file": EraModifier(
                 {
@@ -306,12 +423,15 @@ def build_config(
     # variations of the renormalization and factorization scales
     add_mur_muf_weights_config(configuration)
 
-    # muon selection and corrections for reconstruction, identification, and isolation
-    add_muon_config(configuration, muon_id_loose="Muon_mediumId")
+    # electron selection and corrections for reconstruction and identification
+    add_electron_config(configuration, electron_id_loose="Electron_mvaNoIso_WP90", electron_id_loose_corrlib="wp90noiso")
 
-    # identification and energy scale corrections for hadronic taus (DeepTau)
+    # muon selection and corrections for reconstruction, identification, and isolation
+    add_muon_config(configuration, muon_id_loose="Muon_mediumId", muon_id_loose_corrlib="NUM_MediumID_DEN_TrackerMuons")
+
+    # identification and energy scale corrections for hadronic taus
     configuration.add_config_parameters(
-        HAD_TAU_SCOPES,
+        GLOBAL_SCOPES + HAD_TAU_SCOPES,
         {
             "tau_dms": "0,1,10,11",
             "tau_sf_file": EraModifier(
@@ -334,7 +454,7 @@ def build_config(
         },
     )
 
-    # identification and energy scale corrections for hadronic taus (MVA)
+    # identification and energy scale corrections for boosted hadronic taus
     configuration.add_config_parameters(
         HAD_TAU_SCOPES,
         {
@@ -359,19 +479,6 @@ def build_config(
     #
     # LOOSE OBJECT SELECTIONS
     #
-
-    # loose electrons
-    configuration.add_config_parameters(
-        "global",
-        {
-            "min_ele_pt": 10.0,
-            "max_ele_eta": 2.5,
-            "max_ele_dxy": 0.045,
-            "max_ele_dz": 0.2,
-            "max_ele_iso": 4.0,  # TODO change to 0.4 (loosest working point available)?
-            "ele_id": "Electron_mvaNoIso_WP90",  # NanoAOD v9: Electron_mvaFall17V2noIso_WP90,
-        },
-    )
 
     # AK4 jets
     # JetID recommendations: https://twiki.cern.ch/twiki/bin/view/CMS/JetID13TeVUL#Preliminary_Recommendations_for
@@ -907,37 +1014,6 @@ def build_config(
     # ELECTRONS
     #
 
-    # electron selection
-    configuration.add_config_parameters(
-        ["et"],
-        {
-            "electron_index_in_pair": 0,
-            "min_electron_pt": 25.0,
-            "max_electron_eta": 2.1,
-            "electron_iso_cut": 5.0,  # TODO reduce to 0.4 (loosest WP)?
-        },
-    )
-
-    # electron identification corrections
-    configuration.add_config_parameters(
-        ["et"],
-        {
-            "ele_sf_file": EraModifier(
-                {
-                    _era: f"data/jsonpog-integration/POG/EGM/{_era}_UL/electron.json.gz"
-                    for _era in ERAS
-                }
-            ),
-            "ele_id_sf_name": "UL-Electron-ID-SF",
-            "ele_sf_year_id": EraModifier(
-                {
-                    _era: _era
-                    for _era in ERAS
-                }
-            ),
-            "ele_sf_variation": "sf",  # "sf" is nominal, "sfup"/"sfdown" are up/down variations
-        },
-    )
 
     #
     # OBJECT CLEANING
@@ -1019,25 +1095,6 @@ def build_config(
             ),
             "zptmass_functor": "zptmass_weight_nom",
             "zptmass_arguments": "z_gen_mass,z_gen_pt",
-        },
-    )
-
-    # add electron scalefactors from embedding measurements
-    configuration.add_config_parameters(
-        ["et"],
-        {
-            "mc_electron_sf_file": EraModifier(
-                {
-                    "2016preVFP": "",
-                    "2016postVFP": "",
-                    "2017": "",
-                    "2018": "data/embedding/electron_2018UL.json.gz",
-                }
-            ),
-            "mc_electron_id_sf": "ID90_pt_eta_bins",
-            "mc_electron_iso_sf": "Iso_pt_eta_bins",
-            "mc_electron_id_extrapolation": 1.0,  # for nominal case
-            "mc_electron_iso_extrapolation": 1.0,  # for nominal case
         },
     )
 

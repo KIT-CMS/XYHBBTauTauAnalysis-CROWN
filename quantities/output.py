@@ -553,6 +553,8 @@ is_electroweak_boson = Quantity("is_electroweak_boson")
 
 
 # Electron Weights
+reco_wgt_ele_1 = Quantity("reco_wgt_ele_1")
+reco_wgt_ele_2 = Quantity("reco_wgt_ele_2")
 id_wgt_ele_wp90nonIso_1 = Quantity("id_wgt_ele_wp90nonIso_1")
 id_wgt_ele_wp90nonIso_2 = Quantity("id_wgt_ele_wp90nonIso_2")
 id_wgt_ele_wp80nonIso_1 = Quantity("id_wgt_ele_wp80nonIso_1")
@@ -561,6 +563,7 @@ id_wgt_ele_1 = Quantity("id_wgt_ele_1")
 id_wgt_ele_2 = Quantity("id_wgt_ele_2")
 iso_wgt_ele_1 = Quantity("iso_wgt_ele_1")
 iso_wgt_ele_2 = Quantity("iso_wgt_ele_2")
+reco_wgt_ele_boosted_1 = Quantity("reco_wgt_ele_boosted_1")
 id_wgt_ele_boosted_wp90nonIso_1 = Quantity("id_wgt_ele_boosted_wp90nonIso_1")
 id_wgt_ele_boosted_wp80nonIso_1 = Quantity("id_wgt_ele_boosted_wp80nonIso_1")
 id_wgt_ele_boosted_1 = Quantity("id_wgt_ele_boosted_1")

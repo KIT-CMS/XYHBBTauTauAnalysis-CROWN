@@ -272,30 +272,44 @@ BoostedTauID_SF = ProducerGroup(
 #########################
 # Electron ID/ISO SF
 #########################
+Ele_1_Reco_SF = Producer(
+    name="Ele_1_Reco_SF",
+    call='scalefactor::electron::id({df}, correctionManager, {input}, "{ele_sf_year_id}", "{ele_reco_sf_name}", "{ele_reco_sf_varation}", {output}, "{ele_sf_file}", "{ele_sf_cset_name}")',
+    input=[q.pt_1, q.eta_1],
+    output=[q.reco_wgt_ele_1],
+    scopes=["em", "ee", "et"],
+)
+Ele_2_Reco_SF = Producer(
+    name="Ele_2_Reco_SF",
+    call='scalefactor::electron::id({df}, correctionManager, {input}, "{ele_sf_year_id}", "{ele_reco_sf_name}", "{ele_reco_sf_varation}", {output}, "{ele_sf_file}", "{ele_sf_cset_name}")',
+    input=[q.pt_2, q.eta_2],
+    output=[q.reco_wgt_ele_2],
+    scopes=["ee"],
+)
 Ele_1_IDWP90_SF = Producer(
-    name="Ele_IDWP90_SF",
-    call='scalefactor::electron::id({df}, correctionManager, {input}, "{ele_sf_year_id}", "wp90noiso", "{ele_sf_varation}", {output}, "{ele_sf_file}", "{ele_id_sf_name}")',
+    name="Ele_1_IDWP90_SF",
+    call='scalefactor::electron::id({df}, correctionManager, {input}, "{ele_sf_year_id}", "{ele_id_sf_name}", "{ele_id_sf_varation}", {output}, "{ele_sf_file}", "{ele_sf_cset_name}")',
     input=[q.pt_1, q.eta_1],
     output=[q.id_wgt_ele_wp90nonIso_1],
     scopes=["em", "ee", "et"],
 )
 Ele_2_IDWP90_SF = Producer(
-    name="Ele_IDWP90_SF",
-    call='scalefactor::electron::id({df}, correctionManager, {input}, "{ele_sf_year_id}", "wp90noiso", "{ele_sf_varation}", {output}, "{ele_sf_file}", "{ele_id_sf_name}")',
+    name="Ele_2_IDWP90_SF",
+    call='scalefactor::electron::id({df}, correctionManager, {input}, "{ele_sf_year_id}", "{ele_id_sf_name}", "{ele_id_sf_varation}", {output}, "{ele_sf_file}", "{ele_sf_cset_name}")',
     input=[q.pt_2, q.eta_2],
     output=[q.id_wgt_ele_wp90nonIso_2],
     scopes=["ee"],
 )
 Ele_1_IDWP80_SF = Producer(
-    name="Ele_IDWP80_SF",
-    call='scalefactor::electron::id({df}, correctionManager, {input}, "{ele_sf_year_id}", "wp80noiso", "{ele_sf_varation}", {output}, "{ele_sf_file}", "{ele_id_sf_name}")',
+    name="Ele_1_IDWP80_SF",
+    call='scalefactor::electron::id({df}, correctionManager, {input}, "{ele_sf_year_id}", "{ele_id_sf_name}", "{ele_id_sf_varation}", {output}, "{ele_sf_file}", "{ele_sf_cset_name}")',
     input=[q.pt_1, q.eta_1],
     output=[q.id_wgt_ele_wp80nonIso_1],
     scopes=["em", "ee", "et"],
 )
 Ele_2_IDWP80_SF = Producer(
-    name="Ele_IDWP80_SF",
-    call='scalefactor::electron::id({df}, correctionManager, {input}, "{ele_sf_year_id}", "wp80noiso", "{ele_sf_varation}", {output}, "{ele_sf_file}", "{ele_id_sf_name}")',
+    name="Ele_2_IDWP80_SF",
+    call='scalefactor::electron::id({df}, correctionManager, {input}, "{ele_sf_year_id}", "{ele_id_sf_name}", "{ele_id_sf_varation}", {output}, "{ele_sf_file}", "{ele_sf_cset_name}")',
     input=[q.pt_2, q.eta_2],
     output=[q.id_wgt_ele_wp80nonIso_2],
     scopes=["ee"],
@@ -307,26 +321,35 @@ EleID_SF = ProducerGroup(
     output=None,
     scopes=["em", "ee", "et"],
     subproducers={
-        "em": [Ele_1_IDWP90_SF, Ele_1_IDWP80_SF],
+        "em": [Ele_1_Reco_SF, Ele_1_IDWP90_SF, Ele_1_IDWP80_SF],
         "ee": [
+            Ele_1_Reco_SF,
+            Ele_2_Reco_SF,
             Ele_1_IDWP90_SF,
             Ele_1_IDWP80_SF,
             Ele_2_IDWP90_SF,
             Ele_2_IDWP80_SF,
         ],
-        "et": [Ele_1_IDWP90_SF, Ele_1_IDWP80_SF],
+        "et": [Ele_1_Reco_SF, Ele_1_IDWP90_SF, Ele_1_IDWP80_SF],
     },
 )
+Ele_1_Reco_SF_boosted = Producer(
+    name="Ele_1_Reco_SF_boosted",
+    call='scalefactor::electron::id({df}, correctionManager, {input}, "{ele_sf_year_id}", "{ele_id_sf_name}", "{ele_reco_sf_variation}", {output}, "{ele_sf_file}", "{ele_sf_cset_name}")',
+    input=[q.boosted_pt_1, q.boosted_eta_1],
+    output=[q.reco_wgt_ele_boosted_1],
+    scopes=["et"],
+)
 Ele_1_IDWP90_SF_boosted = Producer(
-    name="Ele_IDWP90_SF_boosted",
-    call='scalefactor::electron::id({df}, correctionManager, {input}, "{ele_sf_year_id}", "wp90noiso", "{ele_sf_variation}", {output}, "{ele_sf_file}", "{ele_id_sf_name}")',
+    name="Ele_1_IDWP90_SF_boosted",
+    call='scalefactor::electron::id({df}, correctionManager, {input}, "{ele_sf_year_id}", "{ele_id_sf_name}", "{ele_id_sf_variation}", {output}, "{ele_sf_file}", "{ele_sf_cset_name}")',
     input=[q.boosted_pt_1, q.boosted_eta_1],
     output=[q.id_wgt_ele_boosted_wp90nonIso_1],
     scopes=["et"],
 )
 Ele_1_IDWP80_SF_boosted = Producer(
-    name="Ele_IDWP80_SF_boosted",
-    call='scalefactor::electron::id({df}, correctionManager, {input}, "{ele_sf_year_id}", "wp80noiso", "{ele_sf_variation}", {output}, "{ele_sf_file}", "{ele_id_sf_name}")',
+    name="Ele_1_IDWP80_SF_boosted",
+    call='scalefactor::electron::id({df}, correctionManager, {input}, "{ele_sf_year_id}", "{ele_id_sf_name}", "{ele_id_sf_variation}", {output}, "{ele_sf_file}", "{ele_sf_cset_name}")',
     input=[q.boosted_pt_1, q.boosted_eta_1],
     output=[q.id_wgt_ele_boosted_wp80nonIso_1],
     scopes=["et"],
@@ -338,7 +361,7 @@ EleID_SF_boosted = ProducerGroup(
     output=None,
     scopes=["et"],
     subproducers={
-        "et": [Ele_1_IDWP90_SF_boosted, Ele_1_IDWP80_SF_boosted],
+        "et": [Ele_1_Reco_SF_boosted, Ele_1_IDWP90_SF_boosted, Ele_1_IDWP80_SF_boosted],
     },
 )
 
