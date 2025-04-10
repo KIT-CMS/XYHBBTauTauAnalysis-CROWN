@@ -34,12 +34,15 @@ trigger(
     ROOT::RDF::RNode df,
     correctionManager::CorrectionManager &correctionManager,
     const std::string &pt,
-    const std::string &eta, const std::string &year_id,
+    const std::string &eta,
     const std::string &variation,
     const std::string &trigger_output,
     const std::string &sf_file,
     const std::string &idAlgorithm
 );
+
+} // end muon
+
 
 namespace tau {
 

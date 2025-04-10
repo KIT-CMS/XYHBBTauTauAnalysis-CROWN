@@ -162,7 +162,7 @@ namespace muon {
  */
 ROOT::RDF::RNode trigger(ROOT::RDF::RNode df, correctionManager::CorrectionManager &correctionManager, 
                          const std::string &pt,
-                         const std::string &eta, const std::string &year_id,
+                         const std::string &eta,
                          const std::string &variation,
                          const std::string &trigger_output,
                          const std::string &sf_file,
@@ -174,7 +174,7 @@ ROOT::RDF::RNode trigger(ROOT::RDF::RNode df, correctionManager::CorrectionManag
     auto evaluator = correctionManager.loadCorrection(sf_file, idAlgorithm);
     auto df1 =
         df.Define(trigger_output,
-                  [evaluator, year_id, variation,
+                  [evaluator, variation,
                    idAlgorithm](const float &pt, const float &eta) {
                       Logger::get("muonTriggerSF")
                           ->debug("Trigger - pt {}, eta {}", pt, eta);
@@ -188,7 +188,7 @@ ROOT::RDF::RNode trigger(ROOT::RDF::RNode df, correctionManager::CorrectionManag
                       if (pt > low_pt_threshold && std::abs(eta) >= 0.0 &&
                           std::abs(eta) < 2.4) {
                           sf = evaluator->evaluate(
-                              {year_id, std::abs(eta), pt, variation});
+                              {std::abs(eta), pt, variation});
                       }
                       return sf;
                   },
@@ -196,6 +196,7 @@ ROOT::RDF::RNode trigger(ROOT::RDF::RNode df, correctionManager::CorrectionManag
     return df1;
 }
 
+} // end muon
 
 namespace tau {
 /**
@@ -249,7 +250,7 @@ for nominal
  */
 ROOT::RDF::RNode
 id_mva_vsJet_lt(ROOT::RDF::RNode df,
-                    correctionManager::CorrectionManager &correctionManager,
+            correctionManager::CorrectionManager &correctionManager,
             const std::string &pt, const std::string &decayMode,
             const std::string &genMatch, const std::vector<int> &selectedDMs,
             const std::string &wp, const std::string &sf_vsjet_tau30to35,
@@ -258,8 +259,8 @@ id_mva_vsJet_lt(ROOT::RDF::RNode df,
             const std::string &sf_vsjet_tau500to1000,
             const std::string &sf_vsjet_tau1000toinf,
             const std::string &sf_dependence, const std::string &vsele_wp,
-                    const std::string &id_output, const std::string &sf_file,
-                    const std::string &idAlgorithm) {
+            const std::string &id_output, const std::string &sf_file,
+            const std::string &idAlgorithm) {
 
     Logger::get("TauIDMVAvsJet_lt_SF")
         ->debug("Setting up function for tau id vsJet sf");
@@ -275,7 +276,7 @@ id_mva_vsJet_lt(ROOT::RDF::RNode df,
         // only calculate SFs for allowed tau decay modes (also excludes default
         // values due to tau energy correction shifts below good tau pt
         // selection)
-            double sf = 1.;
+        double sf = 1.;
         if (std::find(selectedDMs.begin(), selectedDMs.end(), decayMode) !=
             selectedDMs.end()) {
             Logger::get("TauIDMVAvsJet_lt_SF")
@@ -312,7 +313,7 @@ id_mva_vsJet_lt(ROOT::RDF::RNode df,
             }
         }
         Logger::get("TauIDvsJet_lt_SF")->debug("Scale Factor {}", sf);
-            return sf;
+        return sf;
     };
     auto df1 = df.Define(id_output, idSF_calculator, {pt, decayMode, genMatch});
     return df1;
@@ -366,7 +367,7 @@ nominal
  */
 ROOT::RDF::RNode id_mva_vsJet_tt(
     ROOT::RDF::RNode df,
-                     correctionManager::CorrectionManager &correctionManager,
+    correctionManager::CorrectionManager &correctionManager,
     const std::string &pt, const std::string &decayMode,
     const std::string &genMatch, const std::vector<int> &selectedDMs,
     const std::string &wp, const std::string &sf_vsjet_tauDM0,
@@ -388,7 +389,7 @@ ROOT::RDF::RNode id_mva_vsJet_tt(
         // only calculate SFs for allowed tau decay modes (also excludes default
         // values due to tau energy correction shifts below good tau pt
         // selection)
-            double sf = 1.;
+        double sf = 1.;
         if (std::find(selectedDMs.begin(), selectedDMs.end(), decayMode) !=
             selectedDMs.end()) {
             Logger::get("TauIDMVAvsJet_tt_SF")
@@ -420,7 +421,7 @@ ROOT::RDF::RNode id_mva_vsJet_tt(
             }
         }
         Logger::get("TauIDMVAvsJet_tt_SF")->debug("Scale Factor {}", sf);
-            return sf;
+        return sf;
     };
     auto df1 = df.Define(id_output, idSF_calculator, {pt, decayMode, genMatch});
     return df1;
