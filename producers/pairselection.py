@@ -47,14 +47,14 @@ boostedMTPairSelection = Producer(
 
 GoodMTPairFlag = Producer(
     name="GoodMTPairFlag",
-    call="pairselection::flagGoodPairs({df}, {output}, {input})",
+    call="ditau_pairselection::flagGoodPairs({df}, {output}, {input})",
     input=[q.dileptonpair],
     output=[],
     scopes=["mt"],
 )
 GoodBoostedMTPairFlag = Producer(
     name="GoodboostedMTPairFlag",
-    call="pairselection::flagGoodPairs({df}, {output}, {input})",
+    call="ditau_pairselection::flagGoodPairs({df}, {output}, {input})",
     input=[q.boosteddileptonpair],
     output=[],
     scopes=["mt"],
@@ -124,7 +124,7 @@ ZMuMuPairSelectionOSPreferred = Producer(
 )
 GoodMuMuPairFlag = Producer(
     name="GoodMuMuPairFlag",
-    call="pairselection::flagGoodPairs({df}, {output}, {input})",
+    call="ditau_pairselection::flagGoodPairs({df}, {output}, {input})",
     input=[q.dileptonpair],
     output=[],
     scopes=["mm"],
@@ -167,7 +167,7 @@ ZElElPairSelection = Producer(
 
 GoodElElPairFlag = Producer(
     name="GoodElElPairFlag",
-    call="pairselection::flagGoodPairs({df}, {output}, {input})",
+    call="ditau_pairselection::flagGoodPairs({df}, {output}, {input})",
     input=[q.dileptonpair],
     output=[],
     scopes=["ee"],
@@ -222,14 +222,14 @@ boostedETPairSelection = Producer(
 
 GoodETPairFlag = Producer(
     name="GoodETPairFlag",
-    call="pairselection::flagGoodPairs({df}, {output}, {input})",
+    call="ditau_pairselection::flagGoodPairs({df}, {output}, {input})",
     input=[q.dileptonpair],
     output=[],
     scopes=["et"],
 )
 GoodBoostedETPairFlag = Producer(
     name="GoodboostedETPairFlag",
-    call="pairselection::flagGoodPairs({df}, {output}, {input})",
+    call="ditau_pairselection::flagGoodPairs({df}, {output}, {input})",
     input=[q.boosteddileptonpair],
     output=[],
     scopes=["et"],
@@ -276,14 +276,14 @@ boostedTTPairSelection = Producer(
 
 GoodTTPairFlag = Producer(
     name="GoodTTPairFlag",
-    call="pairselection::flagGoodPairs({df}, {output}, {input})",
+    call="ditau_pairselection::flagGoodPairs({df}, {output}, {input})",
     input=[q.dileptonpair],
     output=[],
     scopes=["tt"],
 )
 GoodBoostedTTPairFlag = Producer(
     name="GoodTTPairFlag",
-    call="pairselection::flagGoodPairs({df}, {output}, {input})",
+    call="ditau_pairselection::flagGoodPairs({df}, {output}, {input})",
     input=[q.boosteddileptonpair],
     output=[],
     scopes=["tt"],
@@ -323,7 +323,7 @@ EMPairSelection = Producer(
 
 GoodEMPairFlag = Producer(
     name="GoodEMPairFlag",
-    call="pairselection::flagGoodPairs({df}, {output}, {input})",
+    call="ditau_pairselection::flagGoodPairs({df}, {output}, {input})",
     input=[q.dileptonpair],
     output=[],
     scopes=["em"],
@@ -373,14 +373,14 @@ BBPairSelection_boosted = Producer(
 )
 GoodBBPairFlag = Producer(
     name="GoodBBPairFlag",
-    call="pairselection::flagGoodPairs({df}, {output}, {input})",
+    call="ditau_pairselection::flagGoodPairs({df}, {output}, {input})",
     input=[q.dibjetpair],
     output=[],
     scopes=["et", "mt", "tt", "mm"],
 )
 GoodBBPairFlag_boosted = Producer(
     name="GoodBBPairFlag",
-    call="pairselection::flagGoodPairs({df}, {output}, {input})",
+    call="ditau_pairselection::flagGoodPairs({df}, {output}, {input})",
     input=[q.dibjetpair_boosted],
     output=[],
     scopes=["et", "mt", "tt", "mm"],
@@ -561,7 +561,7 @@ LVTau2Uncorrected = Producer(
 
 additionalBoostedTau = Producer(
     name="additionalBoostedTau",
-    call="pairselection::findAdditionalTau({df}, {input}, {output})",
+    call="ditau_pairselection::findAdditionalTau({df}, {input}, {output})",
     input=[
         q.good_boostedtaus_mask,
         q.boosteddileptonpair,

@@ -7,42 +7,42 @@ from code_generation.producer import Producer, ProducerGroup
 ####################
 MTGenPair = Producer(
     name="MTGenPair",
-    call="pairselection::buildgenpair({df}, {input}, {output})",
+    call="ditau_pairselection::buildgenpair({df}, {input}, {output})",
     input=[q.dileptonpair, nanoAOD.Muon_indexToGen, nanoAOD.Tau_indexToGen],
     output=[q.gen_dileptonpair],
     scopes=["mt"],
 )
 ETGenPair = Producer(
     name="ETGenPair",
-    call="pairselection::buildgenpair({df}, {input}, {output})",
+    call="ditau_pairselection::buildgenpair({df}, {input}, {output})",
     input=[q.dileptonpair, nanoAOD.Electron_indexToGen, nanoAOD.Tau_indexToGen],
     output=[q.gen_dileptonpair],
     scopes=["et"],
 )
 TTGenPair = Producer(
     name="TTGenPair",
-    call="pairselection::buildgenpair({df}, {input}, {output})",
+    call="ditau_pairselection::buildgenpair({df}, {input}, {output})",
     input=[q.dileptonpair, nanoAOD.Tau_indexToGen, nanoAOD.Tau_indexToGen],
     output=[q.gen_dileptonpair],
     scopes=["tt"],
 )
 EMGenPair = Producer(
     name="EMGenPair",
-    call="pairselection::buildgenpair({df}, {input}, {output})",
+    call="ditau_pairselection::buildgenpair({df}, {input}, {output})",
     input=[q.dileptonpair, nanoAOD.Electron_indexToGen, nanoAOD.Muon_indexToGen],
     output=[q.gen_dileptonpair],
     scopes=["em"],
 )
 MuMuGenPair = Producer(
     name="MuMuGenPair",
-    call="pairselection::buildgenpair({df}, {input}, {output})",
+    call="ditau_pairselection::buildgenpair({df}, {input}, {output})",
     input=[q.dileptonpair, nanoAOD.Muon_indexToGen, nanoAOD.Muon_indexToGen],
     output=[q.gen_dileptonpair],
     scopes=["mm"],
 )
 ElElGenPair = Producer(
     name="ElElGenPair",
-    call="pairselection::buildgenpair({df}, {input}, {output})",
+    call="ditau_pairselection::buildgenpair({df}, {input}, {output})",
     input=[q.dileptonpair, nanoAOD.Electron_indexToGen, nanoAOD.Electron_indexToGen],
     output=[q.gen_dileptonpair],
     scopes=["ee"],
@@ -62,7 +62,7 @@ MuMuTrueGenPair = Producer(
 )
 BBGenPair = Producer(
     name="BBGenPair",
-    call="pairselection::buildgenpair({df}, {input}, {output})",
+    call="ditau_pairselection::buildgenpair({df}, {input}, {output})",
     input=[q.dibjetpair, nanoAOD.Jet_associatedGenJet, nanoAOD.Jet_associatedGenJet],
     output=[q.gen_dibjetpair],
     scopes=["mt", "et", "tt", "mm"],
