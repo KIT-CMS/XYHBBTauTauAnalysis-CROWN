@@ -33,79 +33,22 @@ from code_generation.systematics import SystematicShift, SystematicShiftByQuanti
 from .constants import ERAS, ET_SCOPES, MT_SCOPES, TT_SCOPES, SL_SCOPES, FH_SCOPES, HAD_TAU_SCOPES, GLOBAL_SCOPES
 
 
-def build_config(
-    era: str,
-    sample: str,
-    scopes: List[str],
-    shifts: List[str],
-    available_sample_types: List[str],
-    available_eras: List[str],
-    available_scopes: List[str],
-):
+def add_noise_filters_config(configuration: Configuration):
+    """
+    List of all noise filters to be applied.
 
-    configuration = Configuration(
-        era,
-        sample,
-        scopes,
-        shifts,
-        available_sample_types,
-        available_eras,
-        available_scopes,
-    )
+    The following recommendations are implemented:
 
-    # first add default parameters necessary for all scopes
+    - Run 2 UltraLegacy: https://twiki.cern.ch/twiki/bin/viewauth/CMS/MissingETOptionalFiltersRun2#UL_data
 
-    # weights for renormalization and factorization scale variations
+    :todo add 2022 and 2023:
+
+    :param configuration: the main configuration object
+    :type configuration: Configuration
+    """
+
     configuration.add_config_parameters(
-        "global",
-        {
-            "muR": 1.0,
-            "muF": 1.0,
-        },
-    )
-
-    # pileup reweighting
-    configuration.add_config_parameters(
-        "global",
-        {
-
-            "PU_reweighting_file": EraModifier(
-                {
-                    _era: f"data/jsonpog-integration/POG/LUM/{_era}_UL/puWeights.json.gz"
-                    for _era in ERAS
-                }
-            ),
-            "PU_reweighting_era": EraModifier(
-                {
-                    "2016preVFP": "Collisions16_UltraLegacy_goldenJSON",
-                    "2016postVFP": "Collisions16_UltraLegacy_goldenJSON",
-                    "2017": "Collisions17_UltraLegacy_goldenJSON",
-                    "2018": "Collisions18_UltraLegacy_goldenJSON",
-                }
-            ),
-            "PU_reweighting_variation": "nominal",
-        },
-    )
-
-    # golden JSON filter
-    configuration.add_config_parameters(
-        "global",
-        {
-            "golden_json_file": EraModifier(
-                {
-                    "2016preVFP": "data/golden_json/Cert_271036-284044_13TeV_Legacy2016_Collisions16_JSON.txt",
-                    "2016postVFP": "data/golden_json/Cert_271036-284044_13TeV_Legacy2016_Collisions16_JSON.txt",
-                    "2017": "data/golden_json/Cert_294927-306462_13TeV_UL2017_Collisions17_GoldenJSON.txt",
-                    "2018": "data/golden_json/Cert_314472-325175_13TeV_Legacy2018_Collisions18_JSON.txt",
-                }
-            ),
-        },
-    )
-
-    # noise filters
-    # recommendations: https://twiki.cern.ch/twiki/bin/viewauth/CMS/MissingETOptionalFiltersRun2#UL_data
-    configuration.add_config_parameters(
-        "global",
+        GLOBAL_SCOPES,
         {
             "met_filters": EraModifier(
                 {
@@ -151,10 +94,120 @@ def build_config(
                         "Flag_eeBadScFilter",
                         "Flag_ecalBadCalibFilter",
                     ],
+                },
+            ),
+        },
+    )
+
+
+def add_pileup_reweighting_config(configuration: Configuration):
+    """
+    Filepaths for pileup reweighting corrections, and additional settings for the producers.
+
+    The files with the correction are obtained from the
+    (nanoaod-tools/jsonpog-integration)[gitlab.cern.ch/nanoaod-tools/jsonpog-integration]
+    repository.
+
+    :todo add 2022 and 2023:
+
+    :param configuration: the main configuration object
+    :type configuration: Configuration
+    """
+    # pileup reweighting
+    configuration.add_config_parameters(
+        "global",
+        {
+
+            "PU_reweighting_file": EraModifier(
+                {
+                    _era: f"data/jsonpog-integration/POG/LUM/{_era}_UL/puWeights.json.gz"
+                    for _era in ERAS
+                }
+            ),
+            "PU_reweighting_era": EraModifier(
+                {
+                    "2016preVFP": "Collisions16_UltraLegacy_goldenJSON",
+                    "2016postVFP": "Collisions16_UltraLegacy_goldenJSON",
+                    "2017": "Collisions17_UltraLegacy_goldenJSON",
+                    "2018": "Collisions18_UltraLegacy_goldenJSON",
+                }
+            ),
+            "PU_reweighting_variation": "nominal",
+        },
+    )
+
+
+def add_mur_muf_weights_config(configuration: Configuration):
+    """
+    Variations of the weights for renormalization and factorization scale.
+
+    For the nominal samples, the nominal generator weights are applied.
+    For the up (down) shift of the scales, the weights corresponding to the
+    doubled or the halved value of the corresponding scale are applied.
+
+    :param configuration: the main configuration object
+    :type configuration: Configuration   
+    """
+    configuration.add_config_parameters(
+        GLOBAL_SCOPES,
+        {
+            "muR": 1.0,
+            "muF": 1.0,
+        },
+    )
+
+
+def add_golden_json_config(configuration: Configuration):
+    """
+    Filepaths to the `GoldenJSON` files to select certified data events.
+
+    :param configuration: the main configuration object
+    :type configuration: Configuration
+    """
+    configuration.add_config_parameters(
+        GLOBAL_SCOPES,
+        {
+            "golden_json_file": EraModifier(
+                {
+                    "2016preVFP": "data/golden_json/Cert_271036-284044_13TeV_Legacy2016_Collisions16_JSON.txt",
+                    "2016postVFP": "data/golden_json/Cert_271036-284044_13TeV_Legacy2016_Collisions16_JSON.txt",
+                    "2017": "data/golden_json/Cert_294927-306462_13TeV_UL2017_Collisions17_GoldenJSON.txt",
+                    "2018": "data/golden_json/Cert_314472-325175_13TeV_Legacy2018_Collisions18_JSON.txt",
                 }
             ),
         },
     )
+
+
+
+def build_config(
+    era: str,
+    sample: str,
+    scopes: List[str],
+    shifts: List[str],
+    available_sample_types: List[str],
+    available_eras: List[str],
+    available_scopes: List[str],
+):
+
+    configuration = Configuration(
+        era,
+        sample,
+        scopes,
+        shifts,
+        available_sample_types,
+        available_eras,
+        available_scopes,
+    )
+
+    # noise filters
+    add_noise_filters_config(configuration)
+
+    # pileup reweighting
+    add_pileup_reweighting_config(configuration)
+
+    # variations of the renormalization and factorization scales
+    add_mur_muf_weights_config(configuration)
 
     # identification and energy scale corrections for hadronic taus (DeepTau)
     configuration.add_config_parameters(
