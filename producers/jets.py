@@ -59,7 +59,7 @@ def jerc_producer_factory(
             rho,
         ],
         output=[jet_pt_corrected],
-        scopes=["global"],
+        scopes=GLOBAL_SCOPES,
     )
 
     # jet pt correction for MC jets
@@ -93,8 +93,8 @@ def jerc_producer_factory(
             gen_jet_phi,
             rho,
         ],
-        output=[],
-        scopes=["global"],
+        output=[jet_pt_corrected],
+        scopes=GLOBAL_SCOPES,
     )
 
     # jet pt correction for jets in embedded events (just rename column)
@@ -109,7 +109,7 @@ def jerc_producer_factory(
         ),
         input=[jet_pt],
         output=[jet_pt_corrected],
-        scopes=["global"],
+        scopes=GLOBAL_SCOPES,
     )
 
     # jet mass correction (data and MC)
@@ -128,7 +128,7 @@ def jerc_producer_factory(
             jet_pt_corrected,
         ],
         output=[jet_mass_corrected],
-        scopes=["global"],
+        scopes=GLOBAL_SCOPES,
     )
 
     # jet mass correction for jets in embedded events (just rename column)
@@ -143,7 +143,7 @@ def jerc_producer_factory(
         ),
         input=[jet_mass],
         output=[jet_mass_corrected],
-        scopes=["global"],
+        scopes=GLOBAL_SCOPES,
     )
 
     # create jet energy correction group (data)
@@ -152,7 +152,7 @@ def jerc_producer_factory(
         call=None,
         input=None,
         output=None,
-        scopes=["global"],
+        scopes=GLOBAL_SCOPES,
         subproducers=[jet_pt_correction_data, jet_mass_correction],
     )
 
@@ -162,7 +162,7 @@ def jerc_producer_factory(
         call=None,
         input=None,
         output=None,
-        scopes=["global"],
+        scopes=GLOBAL_SCOPES,
         subproducers=[jet_pt_correction_mc, jet_mass_correction],
     )
 
@@ -172,7 +172,7 @@ def jerc_producer_factory(
         call=None,
         input=None,
         output=None,
-        scopes=["global"],
+        scopes=GLOBAL_SCOPES,
         subproducers=[jet_pt_correction_emb, jet_mass_correction_emb],
     )
 
@@ -215,56 +215,56 @@ JetPtCut = Producer(
     call="physicsobject::CutPt({df}, {input}, {output}, {min_jet_pt})",
     input=[q.Jet_pt_corrected],
     output=[],
-    scopes=["global"],
+    scopes=GLOBAL_SCOPES,
 )
 BJetPtCut = Producer(
     name="BJetPtCut",
     call="physicsobject::CutPt({df}, {input}, {output}, {min_bjet_pt})",
     input=[q.Jet_pt_corrected],
     output=[],
-    scopes=["global"],
+    scopes=GLOBAL_SCOPES,
 )
 JetEtaCut = Producer(
     name="JetEtaCut",
     call="physicsobject::CutEta({df}, {input}, {output}, {max_jet_eta})",
     input=[nanoAOD.Jet_eta],
     output=[],
-    scopes=["global"],
+    scopes=GLOBAL_SCOPES,
 )
 BJetEtaCut = Producer(
     name="BJetEtaCut",
     call="physicsobject::CutEta({df}, {input}, {output}, {max_bjet_eta})",
     input=[nanoAOD.Jet_eta],
     output=[],
-    scopes=["global"],
+    scopes=GLOBAL_SCOPES,
 )
 JetIDCut = Producer(
     name="JetIDCut",
     call="physicsobject::jet::CutID({df}, {output}, {input}, {jet_id})",
     input=[nanoAOD.Jet_ID],
     output=[q.jet_id_mask],
-    scopes=["global"],
+    scopes=GLOBAL_SCOPES,
 )
 JetPUIDCut = Producer(
     name="JetPUIDCut",
     call="physicsobject::jet::CutPUID({df}, {output}, {input}, {jet_puid}, {jet_puid_max_pt})",
     input=[nanoAOD.Jet_PUID, q.Jet_pt_corrected],
     output=[q.jet_puid_mask],
-    scopes=["global"],
+    scopes=GLOBAL_SCOPES,
 )
 BTagCut = Producer(
     name="BTagCut",
     call="physicsobject::jet::CutRawID({df}, {input}, {output}, {btag_cut})",
     input=[nanoAOD.BJet_discriminator],
     output=[],
-    scopes=["global"],
+    scopes=GLOBAL_SCOPES,
 )
 GoodJets = ProducerGroup(
     name="GoodJets",
     call="physicsobject::CombineMasks({df}, {output}, {input})",
     input=[],
     output=[q.good_jets_mask],
-    scopes=["global"],
+    scopes=GLOBAL_SCOPES,
     subproducers=[JetPtCut, JetEtaCut, JetIDCut, JetPUIDCut],
 )
 GoodBJets = ProducerGroup(
@@ -272,7 +272,7 @@ GoodBJets = ProducerGroup(
     call="physicsobject::CombineMasks({df}, {output}, {input})",
     input=[q.jet_id_mask, q.jet_puid_mask],
     output=[q.good_bjets_mask],
-    scopes=["global"],
+    scopes=GLOBAL_SCOPES,
     subproducers=[BJetPtCut, BJetEtaCut, BTagCut],
 )
 BJetPtCorrection = Producer(
@@ -284,7 +284,7 @@ BJetPtCorrection = Producer(
         nanoAOD.BJet_bRegCorr,
     ],
     output=[q.Jet_pt_corrected_bReg],
-    scopes=["global"],
+    scopes=GLOBAL_SCOPES,
 )
 BJetMassCorrection = Producer(
     name="BJetMassCorrection",
@@ -295,14 +295,14 @@ BJetMassCorrection = Producer(
         q.Jet_pt_corrected_bReg,
     ],
     output=[q.Jet_mass_corrected_bReg],
-    scopes=["global"],
+    scopes=GLOBAL_SCOPES,
 )
 BJetEnergyCorrection = ProducerGroup(
     name="BJetEnergyCorrection",
     call=None,
     input=None,
     output=None,
-    scopes=["global"],
+    scopes=GLOBAL_SCOPES,
     subproducers=[BJetPtCorrection, BJetMassCorrection],
 )
 
