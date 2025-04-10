@@ -179,6 +179,103 @@ def add_golden_json_config(configuration: Configuration):
     )
 
 
+def add_muon_config(configuration: Configuration, muon_id_loose: str = "Muon_mediumId"):
+    """
+    Selection requirements and corrections for muons.
+
+    The corrections include scale factors for reconstruction, identification, and isolation
+    efficiencies at the working points used for muons in this analysis. Separate corrections to
+    muons in $\mu \to \tau$-embedded events are defined as well.
+
+    This function adds configuration parameters for two types of muon collections:
+
+    - The loose collection contains muons selected with loose requirements. They are mainly used to
+      veto additional muons in events and to remove muon-jet overlaps.
+
+    - The tight collection contains muons that are candidates for muon+hadronic tau pairs.
+
+    The tight collection is a subset of the loose collection.
+
+    The following recommendations for medium-$p_{\mathrm{T}}$ muons and corrections are implemented:
+
+    - [Muon Recommendations For Analysis](https://muon-wiki.docs.cern.ch/guidelines/recommendations/)
+
+    - [Muon correction recommendations](https://muon-wiki.docs.cern.ch/guidelines/corrections/)
+
+    Correction factors are obtained from the
+    [nanoaod-tools/jsonpog-integration](gitlab.cern.ch/nanoaod-tools/jsonpog-integration) repository.
+
+    :todo add 2022 and 2023:
+
+    :param configuration: the main configuration object
+    :type configuration: Configuration
+
+    :param muon_id_loose: name of the muon ID for the loose muon collection; default: `"Muon_mediumId"`.
+    :type muon_id_loose: str
+    """
+
+    # loose muons, mainly used for vetoes
+    configuration.add_config_parameters(
+        GLOBAL_SCOPES,
+        {
+            "min_muon_pt": 10.0,
+            "max_muon_eta": 2.4,
+            "max_muon_dxy": 0.045,
+            "max_muon_dz": 0.2,
+            "muon_id": muon_id_loose,
+            "muon_iso_cut": 4.0,
+        },
+    )
+
+    # tight muons, mainly used as candidates for muon+hadronic tau pairs
+    configuration.add_config_parameters(
+        MT_SCOPES,
+        {
+            "muon_index_in_pair": 0,
+            "min_muon_pt": 20.0,
+            "max_muon_eta": 2.1,
+            "muon_iso_cut": 4.0,
+        },
+    )
+
+    # muon reconstruction, identification, and isolation corrections for simulated events
+    configuration.add_config_parameters(
+        MT_SCOPES,
+        {
+            "muon_sf_file": EraModifier(
+                {
+                    _era: f"data/jsonpog-integration/POG/MUO/{_era}_UL/muon_Z.json.gz"
+                    for _era in ERAS
+                }
+            ),
+            "muon_reco_sf_name": "NUM_TrackerMuons_DEN_genTracks",
+            "muon_id_sf_name": "NUM_MediumID_DEN_TrackerMuons",  # correction for mediumId WP
+            "muon_iso_sf_name": "NUM_LooseRelIso_DEN_MediumID",  # correction for TightPFIso WP (PF isolation < 0.15)
+            "muon_reco_sf_variation": "nominal",  # "nominal" is nominal, "systup"/"systdown" are up/down variations
+            "muon_id_sf_variation": "nominal",  # "nominal" is nominal, "systup"/"systdown" are up/down variations
+            "muon_iso_sf_variation": "nominal",  # "nominal" is nominal, "systup"/"systdown" are up/down variations
+        },
+    )
+
+    # muon  identification and isolation corrections for mu->tau-embedded events
+    configuration.add_config_parameters(
+        ["mt"],
+        {
+            "mc_muon_sf_file": EraModifier(
+                {
+                    "2016preVFP": "DOES_NOT_EXIST",
+                    "2016postVFP": "DOES_NOT_EXIST",
+                    "2017": "DOES_NOT_EXIST",
+                    "2018": "data/embedding/muon_2018UL.json.gz",
+                }
+            ),
+            "mc_muon_id_sf": "ID_pt_eta_bins",
+            "mc_muon_iso_sf": "Iso_pt_eta_bins",
+            "mc_muon_id_extrapolation": 1.0,  # for nominal case
+            "mc_muon_iso_extrapolation": 1.0,  # for nominal case
+        },
+    )
+
 
 def build_config(
     era: str,
@@ -208,6 +305,9 @@ def build_config(
 
     # variations of the renormalization and factorization scales
     add_mur_muf_weights_config(configuration)
+
+    # muon selection and corrections for reconstruction, identification, and isolation
+    add_muon_config(configuration, muon_id_loose="Muon_mediumId")
 
     # identification and energy scale corrections for hadronic taus (DeepTau)
     configuration.add_config_parameters(
@@ -270,19 +370,6 @@ def build_config(
             "max_ele_dz": 0.2,
             "max_ele_iso": 4.0,  # TODO change to 0.4 (loosest working point available)?
             "ele_id": "Electron_mvaNoIso_WP90",  # NanoAOD v9: Electron_mvaFall17V2noIso_WP90,
-        },
-    )
-
-    # loose muons
-    configuration.add_config_parameters(
-        "global",
-        {
-            "min_muon_pt": 10.0,
-            "max_muon_eta": 2.4,
-            "max_muon_dxy": 0.045,
-            "max_muon_dz": 0.2,
-            "muon_id": "Muon_mediumId",
-            "muon_iso_cut": 4.0,  # TODO change to 0.4 (loosest working point available)?
         },
     )
 
@@ -816,45 +903,6 @@ def build_config(
     #
     # MUONS
     #
-
-    # muon selection
-    configuration.add_config_parameters(
-        ["mt"],
-        {
-            "muon_index_in_pair": 0,
-            "min_muon_pt": 20.0,
-            "max_muon_eta": 2.1,
-            "muon_iso_cut": 5.0,  # TODO reduce to 0.4 (loosest WP)?
-        },
-    )
-
-    # muon reconstructionm, identification, and isolation corrections
-    configuration.add_config_parameters(
-        ["mt"],
-        {
-            "muon_sf_file": EraModifier(
-                {
-                    _era: f"data/jsonpog-integration/POG/MUO/{_era}_UL/muon_Z.json.gz"
-                    for _era in ERAS
-                }
-            ),
-            "muon_reco_sf_name": "NUM_TrackerMuons_DEN_genTracks",
-            "muon_id_sf_name": "NUM_MediumID_DEN_TrackerMuons",
-            "muon_iso_sf_name": "NUM_LooseRelIso_DEN_MediumID",
-            "muon_sf_year_id": EraModifier(
-                {
-                    "2016preVFP": "2016preVFP_UL",
-                    "2016postVFP": "2016postVFP_UL",
-                    "2017": "2017_UL",
-                    "2018": "2018_UL",
-                }
-            ),
-            "muon_reco_sf_variation": "nominal",  # "nominal" is nominal, "systup"/"systdown" are up/down variations
-            "muon_id_sf_variation": "sf",  # "sf" is nominal, "systup"/"systdown" are up/down variations
-            "muon_iso_sf_variation": "sf",  # "sf" is nominal, "systup"/"systdown" are up/down variations
-        },
-    )
-
     #
     # ELECTRONS
     #
@@ -974,25 +1022,6 @@ def build_config(
         },
     )
 
-    # add muon scalefactors from embedding measurements
-    configuration.add_config_parameters(
-        ["mt"],
-        {
-            "mc_muon_sf_file": EraModifier(
-                {
-                    "2016preVFP": "",
-                    "2016postVFP": "",
-                    "2017": "",
-                    "2018": "data/embedding/muon_2018UL.json.gz",
-                }
-            ),
-            "mc_muon_id_sf": "ID_pt_eta_bins",
-            "mc_muon_iso_sf": "Iso_pt_eta_bins",
-            "mc_muon_id_extrapolation": 1.0,  # for nominal case
-            "mc_muon_iso_extrapolation": 1.0,  # for nominal case
-        },
-    )
-
     # add electron scalefactors from embedding measurements
     configuration.add_config_parameters(
         ["et"],
@@ -1046,12 +1075,12 @@ def build_config(
                 {
                     "flagname": "trg_wgt_single_mu24_boosted",
                     "muon_trigger_sf_name": "NUM_IsoMu24_DEN_CutBasedIdTight_and_PFIsoTight",
-                    "muon_trg_sf_variation": "sf",  # "sf" is nominal, "systup"/"systdown" are up/down variations
+                    "muon_trg_sf_variation": "nominal",  # "nominal" is nominal, "systup"/"systdown" are up/down variations
                 },
                 {
                     "flagname": "trg_wgt_single_mu50_boosted",
                     "muon_trigger_sf_name": "NUM_Mu50_or_OldMu100_or_TkMu100_DEN_CutBasedIdGlobalHighPt_and_TkIsoLoose",
-                    "muon_trg_sf_variation": "sf",  # "sf" is nominal, "systup"/"systdown" are up/down variations
+                    "muon_trg_sf_variation": "nominal",  # "nominal" is nominal, "systup"/"systdown" are up/down variations
                 },
             ]
         },
@@ -3056,12 +3085,12 @@ def build_config(
                         {
                             "flagname": "trg_wgt_single_mu24_boosted",
                             "muon_trigger_sf_name": "NUM_IsoMu24_DEN_CutBasedIdTight_and_PFIsoTight",
-                            "muon_trg_sf_variation": "systdown",  # "sf" is nominal, "systup"/"systdown" are up/down variations
+                            "muon_trg_sf_variation": "systdown",  # "nominal" is nominal, "systup"/"systdown" are up/down variations
                         },
                         {
                             "flagname": "trg_wgt_single_mu50_boosted",
                             "muon_trigger_sf_name": "NUM_Mu50_or_OldMu100_or_TkMu100_DEN_CutBasedIdGlobalHighPt_and_TkIsoLoose",
-                            "muon_trg_sf_variation": "systdown",  # "sf" is nominal, "systup"/"systdown" are up/down variations
+                            "muon_trg_sf_variation": "systdown",  # "nominal" is nominal, "systup"/"systdown" are up/down variations
                         },
                     ],
                 }
