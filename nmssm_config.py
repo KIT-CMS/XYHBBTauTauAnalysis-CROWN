@@ -30,7 +30,7 @@ from code_generation.modifiers import EraModifier, SampleModifier
 from code_generation.rules import AppendProducer, RemoveProducer, ReplaceProducer
 from code_generation.systematics import SystematicShift, SystematicShiftByQuantity
 
-from .constants import *
+from .constants import ERAS, SL_SCOPES, FH_SCOPES, HAD_TAU_SCOPES, GLOBAL_SCOPES
 
 
 def build_config(
@@ -387,7 +387,7 @@ def build_config(
         {
             "btag_sf_file": EraModifier(
                 {
-                    _era: "data/jsonpog-integration/POG/BTV/{_era}_UL/btagging.json.gz"
+                    _era: f"data/jsonpog-integration/POG/BTV/{_era}_UL/btagging.json.gz"
                     for _era in ERAS
                 }
             ),
@@ -698,7 +698,7 @@ def build_config(
 
     # hadronic tau identification variations in all channels
     configuration.add_config_parameters(
-        SL_SCOPES,
+        HAD_TAU_SCOPES,
         {
             "tau_sf_vsele_barrel": "nom",  # or "up"/"down" for up/down variation
             "tau_sf_vsele_endcap": "nom",  # or "up"/"down" for up/down variation
@@ -707,7 +707,6 @@ def build_config(
             "tau_sf_vsmu_wheel3": "nom",
             "tau_sf_vsmu_wheel4": "nom",
             "tau_sf_vsmu_wheel5": "nom",
-
         },
     )
 
@@ -726,7 +725,7 @@ def build_config(
 
     # boosted hadronic tau identification variations in semileptonic channels
     configuration.add_config_parameters(
-        FH_SCOPES,
+        SL_SCOPES,
         {
             "boostedtau_sf_iso_tau30to35": "nom",
             "boostedtau_sf_iso_tau35to40": "nom",
