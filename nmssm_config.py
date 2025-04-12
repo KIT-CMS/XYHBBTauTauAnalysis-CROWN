@@ -2,6 +2,7 @@ from __future__ import annotations  # needed for type annotations in > python 3.
 
 from typing import List
 
+from .producers import converters as converters
 from .producers import electrons as electrons
 from .producers import event as event
 from .producers import genparticles as genparticles
@@ -1221,6 +1222,7 @@ def build_config(
     configuration.add_producers(
         "global",
         [
+            converters.Convert,
             # event.RunLumiEventFilter,
             event.SampleFlags,
             event.Lumi,
@@ -2205,7 +2207,7 @@ def build_config(
             q.boosted_mt_2,
             q.boosted_pt_tautaubb,
             q.boosted_mass_tautaubb,
-            q.fj_leading_pt, 
+            q.fj_leading_pt,
             q.fj_leading_msoftdrop,
         ],
     )
@@ -2474,7 +2476,7 @@ def build_config(
             ),
             exclude_samples=["data", "embedding", "embedding_mc"],
         )
-    
+
     #########################
     # Electron energy correction shifts
     #########################
@@ -2736,7 +2738,7 @@ def build_config(
     #########################
     # Electron id/iso sf shifts
     #########################
-    
+
     # configuration.add_shift(
     #     SystematicShift(
     #         name="electronIdSFUp",
@@ -2831,7 +2833,7 @@ def build_config(
     #########################
     # Muon id/iso sf shifts
     #########################
-    
+
     # configuration.add_shift(
     #     SystematicShift(
     #         name="muonIdSFUp",
@@ -3165,7 +3167,7 @@ def build_config(
                         {
                             "flagname": "trg_wgt_single_ele_boosted",
                             "ele_trg_sf_name": "ElectronTriggerSF",
-                            "ele_trg_sf_variation": "up",  
+                            "ele_trg_sf_variation": "up",
                         },
                     ],
                 }
@@ -3183,7 +3185,7 @@ def build_config(
                         {
                             "flagname": "trg_wgt_single_ele_boosted",
                             "ele_trg_sf_name": "ElectronTriggerSF",
-                            "ele_trg_sf_variation": "down",  
+                            "ele_trg_sf_variation": "down",
                         },
                     ],
                 }
@@ -3213,7 +3215,7 @@ def build_config(
         ),
         exclude_samples=["data", "embedding", "embedding_mc"],
     )
-    
+
     configuration.add_shift(
         SystematicShift(
             name="fatjetTriggerSFUp",
