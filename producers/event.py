@@ -221,7 +221,7 @@ ZPtMassReweighting = Producer(
 
 TopPtReweighting = Producer(
     name="TopPtReweighting",
-    call="reweighting::topptreweighting({df}, {output}, {input})",
+    call="v12::reweighting::topptreweighting({df}, {output}, {input})",
     input=[
         nanoAOD.GenParticle_pdgId,
         nanoAOD.GenParticle_statusFlags,
