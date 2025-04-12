@@ -83,10 +83,11 @@ bRegRes(
                      [position](const ROOT::RVec<float> &resolution,
                                 const ROOT::RVec<int> &jetcollection) {
                          float reso = default_float;
-                         try {
+                         if (position >= 0) {
                              const int index = jetcollection.at(position);
-                             reso = resolution.at(index);
-                         } catch (const std::out_of_range &e) {
+                             if (index >= 0) {
+                                reso = resolution.at(index);
+                             }
                          }
                          return reso;
                      },

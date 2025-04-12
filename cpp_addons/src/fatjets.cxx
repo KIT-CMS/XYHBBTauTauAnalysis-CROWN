@@ -138,17 +138,18 @@ ROOT::RDF::RNode msoftdrop(ROOT::RDF::RNode df, const std::string &outputname,
                            const std::string &fatjetcollection,
                            const int &position) {
     return df.Define(outputname,
-                     [position](const ROOT::RVec<float> &softdrop_masses,
+                    [position](const ROOT::RVec<float> &softdrop_masses,
                                 const ROOT::RVec<int> &fatjetcollection) {
-                         float mass = default_float;
-                         try {
-                             const int index = fatjetcollection.at(position);
-                             mass = softdrop_masses.at(index);
-                         } catch (const std::out_of_range &e) {
-                         }
-                         return mass;
-                     },
-                     {m_softdrop, fatjetcollection});
+                        float mass = default_float;
+                        if (position >= 0) {
+                           const int index = fatjetcollection.at(position);
+                           if (index >= 0) {
+                               mass = softdrop_masses.at(index);
+                           }
+                        }
+                        return mass;
+                    },
+                    {m_softdrop, fatjetcollection});
 }
 /// Function to writeout the value of the particleNet Xbb vs QCD tagger for a
 /// fatjet.
@@ -173,17 +174,18 @@ particleNet_XbbvsQCD(ROOT::RDF::RNode df, const std::string &outputname,
                      [position](const ROOT::RVec<float> &Xbb_tagger,
                                 const ROOT::RVec<float> &QCD_tagger,
                                 const ROOT::RVec<int> &fatjetcollection) {
-                         float Xbb = default_float;
-                         float QCD = default_float;
-                         float Xbb_vs_QCD = default_float;
-                         try {
-                             const int index = fatjetcollection.at(position);
-                             Xbb = Xbb_tagger.at(index);
-                             QCD = QCD_tagger.at(index);
-                             Xbb_vs_QCD = Xbb / (Xbb + QCD);
-                         } catch (const std::out_of_range &e) {
-                         }
-                         return Xbb_vs_QCD;
+                        float Xbb = default_float;
+                        float QCD = default_float;
+                        float Xbb_vs_QCD = default_float;
+                        if (position >= 0) {
+                            const int index = fatjetcollection.at(position);
+                            if (index >= 0) {
+                                Xbb = Xbb_tagger.at(index);
+                                QCD = QCD_tagger.at(index);
+                                Xbb_vs_QCD = Xbb / (Xbb + QCD);
+                            }
+                        }
+                        return Xbb_vs_QCD;
                      },
                      {pNet_Xbb, pNet_QCD, fatjetcollection});
 }
@@ -209,22 +211,23 @@ nsubjettiness_ratio(ROOT::RDF::RNode df, const std::string &outputname,
                     const std::string &tauN, const std::string &tauNm1,
                     const std::string &fatjetcollection, const int &position) {
     return df.Define(outputname,
-                     [position](const ROOT::RVec<float> &nsubjettiness_N,
-                                const ROOT::RVec<float> &nsubjettiness_Nm1,
-                                const ROOT::RVec<int> &fatjetcollection) {
-                         float nsubjet_N = default_float;
-                         float nsubjet_Nm1 = default_float;
-                         float ratio = default_float;
-                         try {
-                             const int index = fatjetcollection.at(position);
-                             nsubjet_N = nsubjettiness_N.at(index);
-                             nsubjet_Nm1 = nsubjettiness_Nm1.at(index);
-                             ratio = nsubjet_N / nsubjet_Nm1;
-                         } catch (const std::out_of_range &e) {
-                         }
-                         return ratio;
-                     },
-                     {tauN, tauNm1, fatjetcollection});
+                    [position](const ROOT::RVec<float> &nsubjettiness_N,
+                               const ROOT::RVec<float> &nsubjettiness_Nm1,
+                               const ROOT::RVec<int> &fatjetcollection) {
+                        float nsubjet_N = default_float;
+                        float nsubjet_Nm1 = default_float;
+                        float ratio = default_float;
+                        if (position >= 0) { 
+                            const int index = fatjetcollection.at(position);
+                            if (index >= 0) {
+                                nsubjet_N = nsubjettiness_N.at(index);
+                                nsubjet_Nm1 = nsubjettiness_Nm1.at(index);
+                                ratio = nsubjet_N / nsubjet_Nm1;
+                            }
+                        }
+                        return ratio;
+                    },
+                    {tauN, tauNm1, fatjetcollection});
 }
 /// Function to writeout the value of the hadron flavor for a fatjet.
 ///
@@ -245,17 +248,18 @@ ROOT::RDF::RNode hadflavor(ROOT::RDF::RNode df, const std::string &outputname,
                            const std::string &fatjetcollection,
                            const int &position) {
     return df.Define(outputname,
-                     [position](const ROOT::RVec<int> &fatjet_hadflavor,
-                                const ROOT::RVec<int> &fatjetcollection) {
-                         int flavor = default_int;
-                         try {
-                             const int index = fatjetcollection.at(position);
-                             flavor = fatjet_hadflavor.at(index);
-                         } catch (const std::out_of_range &e) {
-                         }
-                         return flavor;
-                     },
-                     {fatjet_hadflavor, fatjetcollection});
+                    [position](const ROOT::RVec<int> &fatjet_hadflavor,
+                               const ROOT::RVec<int> &fatjetcollection) {
+                        int flavor = default_int;
+                        if (position >= 0) { 
+                            const int index = fatjetcollection.at(position);
+                            if (index >= 0) {
+                                flavor = fatjet_hadflavor.at(index);
+                            }
+                        }
+                        return flavor;
+                    },
+                    {fatjet_hadflavor, fatjetcollection});
 }
 /// Function to writeout  the number of hadrons for a fatjet.
 ///
@@ -278,15 +282,16 @@ ROOT::RDF::RNode nHadrons(ROOT::RDF::RNode df, const std::string &outputname,
     return df.Define(outputname,
                      [position](const ROOT::RVec<UChar_t> &fatjet_nHadrons,
                                 const ROOT::RVec<int> &fatjetcollection) {
-                         int nHad = default_int;
-                         try {
-                             const int index = fatjetcollection.at(position);
-                             nHad = static_cast<int>(fatjet_nHadrons.at(index));
-                         } catch (const std::out_of_range &e) {
-                         }
-                         return nHad;
-                     },
-                     {fatjet_nHadrons, fatjetcollection});
+                        int nHad = default_int;
+                        if (position >= 0) { 
+                            const int index = fatjetcollection.at(position);
+                            if (index >= 0) {
+                                nHad = static_cast<int>(fatjet_nHadrons.at(index));
+                            }
+                        }
+                        return nHad;
+                    },
+                    {fatjet_nHadrons, fatjetcollection});
 }
 } // end namespace fatjet
 } // end namespace quantities
