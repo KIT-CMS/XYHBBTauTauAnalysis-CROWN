@@ -395,40 +395,68 @@ def add_muon_config(
     )
 
 
-def build_config(
-    era: str,
-    sample: str,
-    scopes: List[str],
-    shifts: List[str],
-    available_sample_types: List[str],
-    available_eras: List[str],
-    available_scopes: List[str],
-):
+def add_hadronic_tau_config(configuration: Configuration):
+    """
+    Selection requirements and corrections for hadronic taus.
 
-    configuration = Configuration(
-        era,
-        sample,
-        scopes,
-        shifts,
-        available_sample_types,
-        available_eras,
-        available_scopes,
+    The corrections include scale factors for identification efficiencies and corrections of the
+    energy scale of the hadronic taus at the working points used for hadronic taus in this analysis.
+    Separate corrections to hadronic taus in $\mu \to \tau$-embedded events are defined as well.
+
+    This function adds configuration parameters for two types of muon collections:
+
+    - The loose collection contains muons selected with loose requirements. They are mainly used to
+      veto additional muons in events and to remove muon-jet overlaps.
+
+    - The tight collection contains muons that are candidates for muon+hadronic tau pairs.
+
+    The tight collection is a subset of the loose collection.
+
+    The following recommendations for medium-$p_{\mathrm{T}}$ muons and corrections are implemented:
+
+    - [Muon Recommendations For Analysis](https://muon-wiki.docs.cern.ch/guidelines/recommendations/)
+
+    - [Muon correction recommendations](https://muon-wiki.docs.cern.ch/guidelines/corrections/)
+
+    Correction factors are obtained from the
+    [nanoaod-tools/jsonpog-integration](gitlab.cern.ch/nanoaod-tools/jsonpog-integration) repository.
+
+    :todo add 2022 and 2023:
+
+    :param configuration: the main configuration object
+    :type configuration: Configuration
+
+    :param muon_id_loose: name of the muon ID for the loose muon collection; default: `"Muon_mediumId"`.
+    :type muon_id_loose: str
+
+    :param muon_id_loose_corrlib: name of the muon ID for the loose muon collection in the MUO correctionlib file; default: `""`.
+    :type muon_id_loose: str
+    """
+
+    # hadronic tau selection in semileptonic channels
+    configuration.add_config_parameters(
+        SL_SCOPES,
+        {
+            "min_tau_pt": 20.0,
+            "max_tau_eta": 2.3,
+            "max_tau_dz": 0.2,
+            "vsjet_tau_id_bit": 1,  # VVVLoose working point
+            "vsele_tau_id_bit": 2, # VVVLoose working point
+            "vsmu_tau_id_bit": 1,  # VLoose working point
+        },
     )
-
-    # noise filters
-    add_noise_filters_config(configuration)
-
-    # pileup reweighting
-    add_pileup_reweighting_config(configuration)
-
-    # variations of the renormalization and factorization scales
-    add_mur_muf_weights_config(configuration)
-
-    # electron selection and corrections for reconstruction and identification
-    add_electron_config(configuration, electron_id_loose="Electron_mvaNoIso_WP90", electron_id_loose_corrlib="wp90noiso")
-
-    # muon selection and corrections for reconstruction, identification, and isolation
-    add_muon_config(configuration, muon_id_loose="Muon_mediumId", muon_id_loose_corrlib="NUM_MediumID_DEN_TrackerMuons")
+    # hadronic tau selection in fullhadronic channels
+    configuration.add_config_parameters(
+        FH_SCOPES,
+        {
+            "min_tau_pt": 20.0,
+            "max_tau_eta": 2.1,
+            "max_tau_dz": 0.2,
+            "vsjet_tau_id_bit": 1,  # VVLoose working point
+            "vsele_tau_id_bit": 2, # VVLoose working point
+            "vsmu_tau_id_bit": 1,  # VLoose working point
+        },
+    )
 
     # identification and energy scale corrections for hadronic taus
     configuration.add_config_parameters(
@@ -455,9 +483,177 @@ def build_config(
         },
     )
 
-    # identification and energy scale corrections for boosted hadronic taus
+    # hadronic tau identification
+    # recommendations: https://twiki.cern.ch/twiki/bin/viewauth/CMS/TauIDRecommendationForRun2
     configuration.add_config_parameters(
         HAD_TAU_SCOPES,
+        {
+            "vsjet_tau_id": [
+                {
+                    "tau_id_discriminator": "DeepTau2017v2p1VSjet",
+                    "vsjet_tau_id_WP": "{wp}".format(wp=wp),
+                    "vsjet_tau_id_WPbit": bit,
+                    "tau_1_vsjet_id_outputname": "id_tau_vsJet_{wp}_1".format(wp=wp),
+                    "tau_2_vsjet_id_outputname": "id_tau_vsJet_{wp}_2".format(wp=wp),
+                }
+                for wp, bit in {
+                    "VVVLoose": 1,
+                    # "VVLoose": 2,
+                    # "VLoose": 3,
+                    # "Loose": 4,
+                    "Medium": 5,
+                    "Tight": 6,
+                    # "VTight": 7,
+                    # "VVTight": 8,
+                }.items()
+            ],
+            "vsele_tau_id": [
+                {
+                    "tau_id_discriminator": "DeepTau2017v2p1VSe",
+                    "vsele_tau_id_WPbit": bit,
+                    "tau_1_vsele_sf_outputname": "id_wgt_tau_vsEle_{wp}_1".format(
+                        wp=wp
+                    ),
+                    "tau_2_vsele_sf_outputname": "id_wgt_tau_vsEle_{wp}_2".format(
+                        wp=wp
+                    ),
+                    "vsele_tau_id_WP": "{wp}".format(wp=wp),
+                    "tau_1_vsele_id_outputname": "id_tau_vsEle_{wp}_1".format(wp=wp),
+                    "tau_2_vsele_id_outputname": "id_tau_vsEle_{wp}_2".format(wp=wp),
+                }
+                for wp, bit in {
+                    "VVLoose": 2,
+                    # "VLoose": 3,
+                    # "Loose": 4,
+                    # "Medium": 5,
+                    "Tight": 6,
+                    # "VTight": 7,
+                    # "VVTight": 8,
+                }.items()
+            ],
+            "vsmu_tau_id": [
+                {
+                    "tau_id_discriminator": "DeepTau2017v2p1VSmu",
+                    "vsmu_tau_id_WPbit": bit,
+                    "tau_1_vsmu_sf_outputname": "id_wgt_tau_vsMu_{wp}_1".format(wp=wp),
+                    "tau_2_vsmu_sf_outputname": "id_wgt_tau_vsMu_{wp}_2".format(wp=wp),
+                    "vsmu_tau_id_WP": "{wp}".format(wp=wp),
+                    "tau_1_vsmu_id_outputname": "id_tau_vsMu_{wp}_1".format(wp=wp),
+                    "tau_2_vsmu_id_outputname": "id_tau_vsMu_{wp}_2".format(wp=wp),
+                }
+                for wp, bit in {
+                    "VLoose": 1,
+                    # "Loose": 2,
+                    # "Medium": 3,
+                    "Tight": 4,
+                }.items()
+            ],
+        },
+    )
+
+    # hadronic tau identification corrections (tagging vs jets)
+    configuration.add_config_parameters(
+        HAD_TAU_SCOPES,
+        {
+            "vsjet_tau_id_sf": [
+                {
+                    "tau_id_discriminator": "DeepTau2017v2p1VSjet",
+                    "tau_1_vsjet_sf_outputname": "id_wgt_tau_vsJet_{wp}_1".format(
+                        wp=wp
+                    ),
+                    "tau_2_vsjet_sf_outputname": "id_wgt_tau_vsJet_{wp}_2".format(
+                        wp=wp
+                    ),
+                    "vsjet_tau_id_WP": "{wp}".format(wp=wp),
+                    "tau_vsjet_vseleWP": "Tight",
+                }
+                for wp, bit in {
+                    # "VVVLoose": 1,
+                    # "VVLoose": 2,
+                    # "VLoose": 3,
+                    # "Loose": 4,
+                    "Medium": 5,
+                    "Tight": 6,
+                    # "VTight": 7,
+                    # "VVTight": 8,
+                }.items()
+            ],
+        },
+    )
+
+    # hadronic tau identification variations in all channels
+    configuration.add_config_parameters(
+        HAD_TAU_SCOPES,
+        {
+            "tau_sf_vsele_barrel": "nom",  # or "up"/"down" for up/down variation
+            "tau_sf_vsele_endcap": "nom",  # or "up"/"down" for up/down variation
+            "tau_sf_vsmu_wheel1": "nom",
+            "tau_sf_vsmu_wheel2": "nom",
+            "tau_sf_vsmu_wheel3": "nom",
+            "tau_sf_vsmu_wheel4": "nom",
+            "tau_sf_vsmu_wheel5": "nom",
+        },
+    )
+
+    # hadronic tau identification variations in semileptonic channels
+    configuration.add_config_parameters(
+        SL_SCOPES,
+        {
+            "tau_sf_vsjet_tau30to35": "nom",
+            "tau_sf_vsjet_tau35to40": "nom",
+            "tau_sf_vsjet_tau40to500": "nom",
+            "tau_sf_vsjet_tau500to1000": "nom",
+            "tau_sf_vsjet_tau1000toinf": "nom",
+            "tau_vsjet_sf_dependence": "pt",  # or "dm", "eta"
+        },
+    )
+
+    # hadronic tau identification variations in fullhadronic channels
+    configuration.add_config_parameters(
+        FH_SCOPES,
+        {
+            "tau_sf_vsjet_tauDM0": "nom",
+            "tau_sf_vsjet_tauDM1": "nom",
+            "tau_sf_vsjet_tauDM10": "nom",
+            "tau_sf_vsjet_tauDM11": "nom",
+            "tau_vsjet_sf_dependence": "dm",  # or "dm", "eta"
+        },
+    )
+
+
+def add_boosted_hadronic_tau_config(configuration: Configuration):
+
+    # boosted hadronic tau selection in semileptonic channels
+    configuration.add_config_parameters(
+        SL_SCOPES,
+        {
+            "min_boostedtau_pt": 30.0,
+            "max_boostedtau_eta": 2.3,
+            # "iso_boostedtau_id_bit": 1,
+            # "antiele_boostedtau_id_bit": 1,
+            # "antimu_boostedtau_id_bit": 1,
+            "boosted_pairselection_min_dR": 0.1,
+            "boosted_pairselection_max_dR": 5.0,
+        },
+    )
+
+    # boosted hadronic tau selection in fullhadronic channels
+    configuration.add_config_parameters(
+        FH_SCOPES,
+        {
+            "min_boostedtau_pt": 30.0,
+            "max_boostedtau_eta": 2.3,
+            # "iso_boostedtau_id_bit": 2,
+            # "antiele_boostedtau_id_bit": 2,
+            # "antimu_boostedtau_id_bit": 1,
+            "boosted_pairselection_min_dR": 0.1,
+            "boosted_pairselection_max_dR": 5.0,
+        },
+    )
+
+    # identification and energy scale corrections for boosted hadronic taus
+    configuration.add_config_parameters(
+        GLOBAL_SCOPES + HAD_TAU_SCOPES,
         {
             # boosted taus
             "boostedtau_dms": "0,1,10",
@@ -476,6 +672,124 @@ def build_config(
             "boostedtau_ES_shift_DM11": "nom",
         },
     )
+
+    # boosted hadronic tau identification
+    configuration.add_config_parameters(
+        HAD_TAU_SCOPES,
+        {
+            "iso_boostedtau_id": [
+                {
+                    "boostedtau_id_discriminator": "MVAoldDM2017v2",
+                    "boostedtau_1_iso_id_outputname": "id_boostedtau_iso_{wp}_1".format(
+                        wp=wp
+                    ),
+                    "boostedtau_1_iso_sf_outputname": "id_wgt_boostedtau_iso_{wp}_1".format(
+                        wp=wp
+                    ),
+                    "boostedtau_2_iso_id_outputname": "id_boostedtau_iso_{wp}_2".format(
+                        wp=wp
+                    ),
+                    "boostedtau_2_iso_sf_outputname": "id_wgt_boostedtau_iso_{wp}_2".format(
+                        wp=wp
+                    ),
+                    "iso_boostedtau_id_WP": "{wp}".format(wp=wp),
+                    "iso_boostedtau_id_WPbit": bit,
+                }
+                for wp, bit in {
+                    # "VVLoose": 1,
+                    "VLoose": 2,
+                    "Loose": 3,
+                    "Medium": 4,
+                    # "Tight": 5,
+                    # "VTight": 6,
+                    # "VVTight": 7,
+                }.items()
+            ],
+            "antiele_boostedtau_id": [
+                {
+                    "boostedtau_id_discriminator": "antiEleMVA6",
+                    "boostedtau_1_antiele_id_outputname": "id_boostedtau_antiEle_{wp}_1".format(
+                        wp=wp
+                    ),
+                    "boostedtau_1_antiele_sf_outputname": "id_wgt_boostedtau_antiEle_{wp}_1".format(
+                        wp=wp
+                    ),
+                    "boostedtau_2_antiele_id_outputname": "id_boostedtau_antiEle_{wp}_2".format(
+                        wp=wp
+                    ),
+                    "boostedtau_2_antiele_sf_outputname": "id_wgt_boostedtau_antiEle_{wp}_2".format(
+                        wp=wp
+                    ),
+                    "antiele_boostedtau_id_WP": "{wp}".format(wp=wp),
+                    "antiele_boostedtau_id_WPbit": bit,
+                }
+                for wp, bit in {
+                    "VLoose": 1,
+                    "Loose": 2,
+                    # "Medium": 3,
+                    # "Tight": 4,
+                    # "VTight": 5,
+                }.items()
+            ],
+            "antimu_boostedtau_id": [
+                {
+                    "boostedtau_id_discriminator": "antiMu3",
+                    "boostedtau_1_antimu_id_outputname": "id_boostedtau_antiMu_{wp}_1".format(
+                        wp=wp
+                    ),
+                    "boostedtau_1_antimu_sf_outputname": "id_wgt_boostedtau_antiMu_{wp}_1".format(
+                        wp=wp
+                    ),
+                    "boostedtau_2_antimu_id_outputname": "id_boostedtau_antiMu_{wp}_2".format(
+                        wp=wp
+                    ),
+                    "boostedtau_2_antimu_sf_outputname": "id_wgt_boostedtau_antiMu_{wp}_2".format(
+                        wp=wp
+                    ),
+                    "antimu_boostedtau_id_WP": "{wp}".format(wp=wp),
+                    "antimu_boostedtau_id_WPbit": bit,
+                }
+                for wp, bit in {
+                    "Loose": 1,
+                    # "Tight": 2,
+                }.items()
+            ],
+            "boostedtau_sf_antiele_barrel": "nom",  # or "up"/"down" for up/down variation
+            "boostedtau_sf_antiele_endcap": "nom",  # or "up"/"down" for up/down variation
+            "boostedtau_sf_antimu_wheel1": "nom",
+            "boostedtau_sf_antimu_wheel2": "nom",
+            "boostedtau_sf_antimu_wheel3": "nom",
+            "boostedtau_sf_antimu_wheel4": "nom",
+            "boostedtau_sf_antimu_wheel5": "nom",
+        },
+    )
+
+    # boosted hadronic tau identification variations in semileptonic channels
+    configuration.add_config_parameters(
+        SL_SCOPES,
+        {
+            "boostedtau_sf_iso_tau30to35": "nom",
+            "boostedtau_sf_iso_tau35to40": "nom",
+            "boostedtau_sf_iso_tau40to500": "nom",
+            "boostedtau_sf_iso_tau500to1000": "nom",
+            "boostedtau_sf_iso_tau1000toinf": "nom",
+            "boostedtau_iso_sf_dependence": "pt",
+        },
+    )
+
+    # boosted hadronic tau identification variations in fullhadronic channels
+    configuration.add_config_parameters(
+        FH_SCOPES,
+        {
+            "boostedtau_sf_iso_tauDM0": "nom",
+            "boostedtau_sf_iso_tauDM1": "nom",
+            "boostedtau_sf_iso_tauDM10": "nom",
+            "boostedtau_sf_iso_tauDM11": "nom",
+            "boostedtau_iso_sf_dependence": "dm",  # or "dm", "eta"
+        },
+    )
+
+
 
     #
     # LOOSE OBJECT SELECTIONS
@@ -699,315 +1013,6 @@ def build_config(
     #
     # HADRONIC TAUS
     #
-
-    # hadronic tau selection in semileptonic channels
-    configuration.add_config_parameters(
-        SL_SCOPES,
-        {
-            "min_tau_pt": 20.0,
-            "max_tau_eta": 2.3,
-            "max_tau_dz": 0.2,
-            "vsjet_tau_id_bit": 1,  # VVVLoose working point
-            "vsele_tau_id_bit": 1, # VVVLoose working point
-            "vsmu_tau_id_bit": 1,  # VLoose working point
-        },
-    )
-
-    # boosted hadronic tau selection in semileptonic channels
-    configuration.add_config_parameters(
-        SL_SCOPES,
-        {
-            "min_boostedtau_pt": 30.0,
-            "max_boostedtau_eta": 2.3,
-            # "iso_boostedtau_id_bit": 1,
-            # "antiele_boostedtau_id_bit": 1,
-            # "antimu_boostedtau_id_bit": 1,
-            "boosted_pairselection_min_dR": 0.1,
-            "boosted_pairselection_max_dR": 5.0,
-        },
-    )
-
-    # hadronic tau selection in fullhadronic channels
-    configuration.add_config_parameters(
-        FH_SCOPES,
-        {
-            "min_tau_pt": 20.0,
-            "max_tau_eta": 2.1,
-            "max_tau_dz": 0.2,
-            "vsjet_tau_id_bit": 1,  # VVVLoose working point
-            "vsele_tau_id_bit": 1, # VVVLoose working point
-            "vsmu_tau_id_bit": 1,  # VLoose working point
-        },
-    )
-
-    # boosted hadronic tau selection in fullhadronic channels
-    configuration.add_config_parameters(
-        FH_SCOPES,
-        {
-            "min_boostedtau_pt": 30.0,
-            "max_boostedtau_eta": 2.3,
-            # "iso_boostedtau_id_bit": 2,
-            # "antiele_boostedtau_id_bit": 2,
-            # "antimu_boostedtau_id_bit": 1,
-            "boosted_pairselection_min_dR": 0.1,
-            "boosted_pairselection_max_dR": 5.0,
-        },
-    )
-
-    # hadronic tau identification
-    # recommendations: https://twiki.cern.ch/twiki/bin/viewauth/CMS/TauIDRecommendationForRun2
-    configuration.add_config_parameters(
-        HAD_TAU_SCOPES,
-        {
-            "vsjet_tau_id": [
-                {
-                    "tau_id_discriminator": "DeepTau2017v2p1VSjet",
-                    "vsjet_tau_id_WP": "{wp}".format(wp=wp),
-                    "tau_1_vsjet_id_outputname": "id_tau_vsJet_{wp}_1".format(wp=wp),
-                    "tau_2_vsjet_id_outputname": "id_tau_vsJet_{wp}_2".format(wp=wp),
-                    "vsjet_tau_id_WPbit": bit,
-                }
-                for wp, bit in {
-                    "VVVLoose": 1,
-                    "VVLoose": 2,
-                    # "VLoose": 3,
-                    # "Loose": 4,
-                    "Medium": 5,
-                    "Tight": 6,
-                    # "VTight": 7,
-                    # "VVTight": 8,
-                }.items()
-            ],
-            "vsele_tau_id": [
-                {
-                    "tau_id_discriminator": "DeepTau2017v2p1VSe",
-                    "tau_1_vsele_sf_outputname": "id_wgt_tau_vsEle_{wp}_1".format(
-                        wp=wp
-                    ),
-                    "tau_2_vsele_sf_outputname": "id_wgt_tau_vsEle_{wp}_2".format(
-                        wp=wp
-                    ),
-                    "vsele_tau_id_WP": "{wp}".format(wp=wp),
-                    "tau_1_vsele_id_outputname": "id_tau_vsEle_{wp}_1".format(wp=wp),
-                    "tau_2_vsele_id_outputname": "id_tau_vsEle_{wp}_2".format(wp=wp),
-                    "vsele_tau_id_WPbit": bit,
-                }
-                for wp, bit in {
-                    "VVVLoose": 1,
-                    "VVLoose": 2,
-                    # "VLoose": 3,
-                    # "Loose": 4,
-                    "Medium": 5,
-                    "Tight": 6,
-                    # "VTight": 7,
-                    # "VVTight": 8,
-                }.items()
-            ],
-            "vsmu_tau_id": [
-                {
-                    "tau_id_discriminator": "DeepTau2017v2p1VSmu",
-                    "tau_1_vsmu_sf_outputname": "id_wgt_tau_vsMu_{wp}_1".format(wp=wp),
-                    "tau_2_vsmu_sf_outputname": "id_wgt_tau_vsMu_{wp}_2".format(wp=wp),
-                    "vsmu_tau_id_WP": "{wp}".format(wp=wp),
-                    "tau_1_vsmu_id_outputname": "id_tau_vsMu_{wp}_1".format(wp=wp),
-                    "tau_2_vsmu_id_outputname": "id_tau_vsMu_{wp}_2".format(wp=wp),
-                    "vsmu_tau_id_WPbit": bit,
-                }
-                for wp, bit in {
-                    "VLoose": 1,
-                    # "Loose": 2,
-                    # "Medium": 3,
-                    "Tight": 4,
-                }.items()
-            ],
-        },
-    )
-    
-    # boosted hadronic tau identification
-    configuration.add_config_parameters(
-        HAD_TAU_SCOPES,
-        {
-            "iso_boostedtau_id": [
-                {
-                    "boostedtau_id_discriminator": "MVAoldDM2017v2",
-                    "boostedtau_1_iso_id_outputname": "id_boostedtau_iso_{wp}_1".format(
-                        wp=wp
-                    ),
-                    "boostedtau_1_iso_sf_outputname": "id_wgt_boostedtau_iso_{wp}_1".format(
-                        wp=wp
-                    ),
-                    "boostedtau_2_iso_id_outputname": "id_boostedtau_iso_{wp}_2".format(
-                        wp=wp
-                    ),
-                    "boostedtau_2_iso_sf_outputname": "id_wgt_boostedtau_iso_{wp}_2".format(
-                        wp=wp
-                    ),
-                    "iso_boostedtau_id_WP": "{wp}".format(wp=wp),
-                    "iso_boostedtau_id_WPbit": bit,
-                }
-                for wp, bit in {
-                    "VVLoose": 1,
-                    "VLoose": 2,
-                    "Loose": 3,
-                    "Medium": 4,
-                    # "Tight": 5,
-                    # "VTight": 6,
-                    # "VVTight": 7,
-                }.items()
-            ],
-            "antiele_boostedtau_id": [
-                {
-                    "boostedtau_id_discriminator": "antiEleMVA6",
-                    "boostedtau_1_antiele_id_outputname": "id_boostedtau_antiEle_{wp}_1".format(
-                        wp=wp
-                    ),
-                    "boostedtau_1_antiele_sf_outputname": "id_wgt_boostedtau_antiEle_{wp}_1".format(
-                        wp=wp
-                    ),
-                    "boostedtau_2_antiele_id_outputname": "id_boostedtau_antiEle_{wp}_2".format(
-                        wp=wp
-                    ),
-                    "boostedtau_2_antiele_sf_outputname": "id_wgt_boostedtau_antiEle_{wp}_2".format(
-                        wp=wp
-                    ),
-                    "antiele_boostedtau_id_WP": "{wp}".format(wp=wp),
-                    "antiele_boostedtau_id_WPbit": bit,
-                }
-                for wp, bit in {
-                    "VLoose": 1,
-                    "Loose": 2,
-                    # "Medium": 3,
-                    # "Tight": 4,
-                    # "VTight": 5,
-                }.items()
-            ],
-            "antimu_boostedtau_id": [
-                {
-                    "boostedtau_id_discriminator": "antiMu3",
-                    "boostedtau_1_antimu_id_outputname": "id_boostedtau_antiMu_{wp}_1".format(
-                        wp=wp
-                    ),
-                    "boostedtau_1_antimu_sf_outputname": "id_wgt_boostedtau_antiMu_{wp}_1".format(
-                        wp=wp
-                    ),
-                    "boostedtau_2_antimu_id_outputname": "id_boostedtau_antiMu_{wp}_2".format(
-                        wp=wp
-                    ),
-                    "boostedtau_2_antimu_sf_outputname": "id_wgt_boostedtau_antiMu_{wp}_2".format(
-                        wp=wp
-                    ),
-                    "antimu_boostedtau_id_WP": "{wp}".format(wp=wp),
-                    "antimu_boostedtau_id_WPbit": bit,
-                }
-                for wp, bit in {
-                    "Loose": 1,
-                    # "Tight": 2,
-                }.items()
-            ],
-            "boostedtau_sf_antiele_barrel": "nom",  # or "up"/"down" for up/down variation
-            "boostedtau_sf_antiele_endcap": "nom",  # or "up"/"down" for up/down variation
-            "boostedtau_sf_antimu_wheel1": "nom",
-            "boostedtau_sf_antimu_wheel2": "nom",
-            "boostedtau_sf_antimu_wheel3": "nom",
-            "boostedtau_sf_antimu_wheel4": "nom",
-            "boostedtau_sf_antimu_wheel5": "nom",
-        },
-    )
-
-    # hadronic tau identification corrections (tagging vs jets)
-    configuration.add_config_parameters(
-        HAD_TAU_SCOPES,
-        {
-            "vsjet_tau_id_sf": [
-                {
-                    "tau_id_discriminator": "DeepTau2017v2p1VSjet",
-                    "tau_1_vsjet_sf_outputname": "id_wgt_tau_vsJet_{wp}_1".format(
-                        wp=wp
-                    ),
-                    "tau_2_vsjet_sf_outputname": "id_wgt_tau_vsJet_{wp}_2".format(
-                        wp=wp
-                    ),
-                    "vsjet_tau_id_WP": "{wp}".format(wp=wp),
-                    "tau_vsjet_vseleWP": "Tight",
-                }
-                for wp, bit in {
-                    # "VVVLoose": 1,
-                    # "VVLoose": 2,
-                    # "VLoose": 3,
-                    # "Loose": 4,
-                    "Medium": 5,
-                    "Tight": 6,
-                    # "VTight": 7,
-                    # "VVTight": 8,
-                }.items()
-            ],
-        },
-    )
-
-    # hadronic tau identification variations in all channels
-    configuration.add_config_parameters(
-        HAD_TAU_SCOPES,
-        {
-            "tau_sf_vsele_barrel": "nom",  # or "up"/"down" for up/down variation
-            "tau_sf_vsele_endcap": "nom",  # or "up"/"down" for up/down variation
-            "tau_sf_vsmu_wheel1": "nom",
-            "tau_sf_vsmu_wheel2": "nom",
-            "tau_sf_vsmu_wheel3": "nom",
-            "tau_sf_vsmu_wheel4": "nom",
-            "tau_sf_vsmu_wheel5": "nom",
-        },
-    )
-
-    # hadronic tau identification variations in semileptonic channels
-    configuration.add_config_parameters(
-        SL_SCOPES,
-        {
-            "tau_sf_vsjet_tau30to35": "nom",
-            "tau_sf_vsjet_tau35to40": "nom",
-            "tau_sf_vsjet_tau40to500": "nom",
-            "tau_sf_vsjet_tau500to1000": "nom",
-            "tau_sf_vsjet_tau1000toinf": "nom",
-            "tau_vsjet_sf_dependence": "pt",  # or "dm", "eta"
-        },
-    )
-
-    # boosted hadronic tau identification variations in semileptonic channels
-    configuration.add_config_parameters(
-        SL_SCOPES,
-        {
-            "boostedtau_sf_iso_tau30to35": "nom",
-            "boostedtau_sf_iso_tau35to40": "nom",
-            "boostedtau_sf_iso_tau40to500": "nom",
-            "boostedtau_sf_iso_tau500to1000": "nom",
-            "boostedtau_sf_iso_tau1000toinf": "nom",
-            "boostedtau_iso_sf_dependence": "pt",
-        },
-    )
-
-    # hadronic tau identification variations in fullhadronic channels
-    configuration.add_config_parameters(
-        FH_SCOPES,
-        {
-            "tau_sf_vsjet_tauDM0": "nom",
-            "tau_sf_vsjet_tauDM1": "nom",
-            "tau_sf_vsjet_tauDM10": "nom",
-            "tau_sf_vsjet_tauDM11": "nom",
-            "tau_vsjet_sf_dependence": "dm",  # or "dm", "eta"
-        },
-    )
-    
-    # boosted hadronic tau identification variations in fullhadronic channels
-    configuration.add_config_parameters(
-        FH_SCOPES,
-        {
-            "boostedtau_sf_iso_tauDM0": "nom",
-            "boostedtau_sf_iso_tauDM1": "nom",
-            "boostedtau_sf_iso_tauDM10": "nom",
-            "boostedtau_sf_iso_tauDM11": "nom",
-            "boostedtau_iso_sf_dependence": "dm",  # or "dm", "eta"
-        },
-    )
-
     #
     # MUONS
     #
