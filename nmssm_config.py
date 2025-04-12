@@ -147,7 +147,7 @@ def add_mur_muf_weights_config(configuration: Configuration):
     doubled or the halved value of the corresponding scale are applied.
 
     :param configuration: the main configuration object
-    :type configuration: Configuration   
+    :type configuration: Configuration
     """
     configuration.add_config_parameters(
         GLOBAL_SCOPES,
@@ -217,9 +217,9 @@ def add_electron_config(
 
     :param electron_id_loose: name of the electron ID for the loose electron collection; default: `"Electron_mvaNoIso_WP90"`.
     :type electron_id_loose: str
- 
+
     :param electron_id_loose_corrlib: name of the electron ID for the loose electron collection in the EGM correctionlib file; default: `"wp90noiso"`.
-    :type electron_id_loose: str   
+    :type electron_id_loose: str
     """
 
     # loose electrons, mainly used for vetoes
@@ -381,9 +381,9 @@ def add_muon_config(
         {
             "mc_muon_sf_file": EraModifier(
                 {
-                    "2016preVFP": "DOES_NOT_EXIST",
-                    "2016postVFP": "DOES_NOT_EXIST",
-                    "2017": "DOES_NOT_EXIST",
+                    "2016preVFP": "DOES_NOT_EXIST",  # TODO add files as soon as available
+                    "2016postVFP": "DOES_NOT_EXIST",  # TODO add files as soon as available
+                    "2017": "DOES_NOT_EXIST",  # TODO add files as soon as available
                     "2018": "data/embedding/muon_2018UL.json.gz",
                 }
             ),
@@ -790,6 +790,49 @@ def add_boosted_hadronic_tau_config(configuration: Configuration):
     )
 
 
+def build_config(
+    era: str,
+    sample: str,
+    scopes: List[str],
+    shifts: List[str],
+    available_sample_types: List[str],
+    available_eras: List[str],
+    available_scopes: List[str],
+):
+
+    configuration = Configuration(
+        era,
+        sample,
+        scopes,
+        shifts,
+        available_sample_types,
+        available_eras,
+        available_scopes,
+    )
+
+    # noise filters
+    add_noise_filters_config(configuration)
+
+    # pileup reweighting
+    add_pileup_reweighting_config(configuration)
+
+    # golden JSON filter
+    add_golden_json_config(configuration)
+
+    # variations of the renormalization and factorization scales
+    add_mur_muf_weights_config(configuration)
+
+    # electron selection and corrections for reconstruction and identification
+    add_electron_config(configuration, electron_id_loose="Electron_mvaNoIso_WP90", electron_id_loose_corrlib="wp90noiso")
+
+    # muon selection and corrections for reconstruction, identification, and isolation
+    add_muon_config(configuration, muon_id_loose="Muon_mediumId", muon_id_loose_corrlib="NUM_MediumID_DEN_TrackerMuons")
+
+    # hadronic tau selection and corrections for identification and energy scale
+    add_hadronic_tau_config(configuration)
+
+    # boosted hadronic tau selection and corrections for identification and energy scale
+    add_boosted_hadronic_tau_config(configuration)
 
     #
     # LOOSE OBJECT SELECTIONS
