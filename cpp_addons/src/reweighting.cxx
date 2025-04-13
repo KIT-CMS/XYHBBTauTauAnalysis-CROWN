@@ -1,4 +1,5 @@
 #ifndef GUARDREWEIGHTINGEXT_H
+#define GUARDREWEIGHTINGEXT_H
 
 #include "../../../../include/utility/Logger.hxx"
 #include "ROOT/RDataFrame.hxx"
