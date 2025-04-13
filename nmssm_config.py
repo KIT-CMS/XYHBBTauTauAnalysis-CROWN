@@ -498,7 +498,7 @@ def add_hadronic_tau_config(configuration: Configuration):
                 }
                 for wp, bit in {
                     "VVVLoose": 1,
-                    # "VVLoose": 2,
+                    "VVLoose": 2,
                     # "VLoose": 3,
                     # "Loose": 4,
                     "Medium": 5,
@@ -522,6 +522,7 @@ def add_hadronic_tau_config(configuration: Configuration):
                     "tau_2_vsele_id_outputname": "id_tau_vsEle_{wp}_2".format(wp=wp),
                 }
                 for wp, bit in {
+                    #"VVVLoose": 1,
                     "VVLoose": 2,
                     # "VLoose": 3,
                     # "Loose": 4,
@@ -1270,7 +1271,8 @@ def build_config(
     configuration.add_producers(
         "global",
         [
-            converters.Convert,
+            converters.ConvertDataAndSimColumns,
+            converters.ConvertSimColumns,
             # event.RunLumiEventFilter,
             event.SampleFlags,
             event.Lumi,
@@ -1500,6 +1502,16 @@ def build_config(
             scalefactors.TTGenerateDoubleTauTriggerSF_MC,
             scalefactors.BoostedTTGenerateFatjetTriggerSF_MC,
         ],
+    )
+    configuration.add_modification_rule(
+        GLOBAL_SCOPES,
+        ReplaceProducer(
+            producers=[
+                converters.ConvertSimColumns,
+                converters.SimColumnsDummies,
+            ],
+            samples=["data"],
+        ),
     )
     configuration.add_modification_rule(
         ["et", "mt"],
