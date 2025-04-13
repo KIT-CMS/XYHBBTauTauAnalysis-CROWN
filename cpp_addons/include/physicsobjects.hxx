@@ -14,6 +14,13 @@ ROOT::RDF::RNode CutCBID(ROOT::RDF::RNode df, const std::string &maskname,
 
 }
 
+namespace tau {
+
+ROOT::RDF::RNode CutTauID(ROOT::RDF::RNode df, const std::string &maskname,
+                          const std::string &nameID, const int &idxID);
+
+}
+
 }
 
 }

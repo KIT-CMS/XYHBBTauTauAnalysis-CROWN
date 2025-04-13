@@ -349,7 +349,7 @@ taujet_pt_1 = Producer(
 )
 VsJetTauIDFlag_1 = ExtendedVectorProducer(
     name="VsJetTauIDFlag_1",
-    call="quantities::tau::TauIDFlag({df}, {output}, 0, {input}, {vsjet_tau_id_WPbit})",
+    call="v12::quantities::tau::TauIDFlag({df}, {output}, 0, {input}, {vsjet_tau_id_WPbit})",
     input=[q.dileptonpair, nanoAOD.Tau_ID_vsJet],
     output="tau_1_vsjet_id_outputname",
     scope=["tt"],
@@ -357,7 +357,7 @@ VsJetTauIDFlag_1 = ExtendedVectorProducer(
 )
 VsEleTauIDFlag_1 = ExtendedVectorProducer(
     name="VsEleTauIDFlag_1",
-    call="quantities::tau::TauIDFlag({df}, {output}, 0, {input}, {vsele_tau_id_WPbit})",
+    call="v12::quantities::tau::TauIDFlag({df}, {output}, 0, {input}, {vsele_tau_id_WPbit})",
     input=[q.dileptonpair, nanoAOD.Tau_ID_vsEle],
     output="tau_1_vsele_id_outputname",
     scope=["tt"],
@@ -365,7 +365,7 @@ VsEleTauIDFlag_1 = ExtendedVectorProducer(
 )
 VsMuTauIDFlag_1 = ExtendedVectorProducer(
     name="VsMuTauIDFlag_1",
-    call="quantities::tau::TauIDFlag({df}, {output}, 0, {input}, {vsmu_tau_id_WPbit})",
+    call="v12::quantities::tau::TauIDFlag({df}, {output}, 0, {input}, {vsmu_tau_id_WPbit})",
     input=[q.dileptonpair, nanoAOD.Tau_ID_vsMu],
     output="tau_1_vsmu_id_outputname",
     scope=["tt"],
@@ -402,7 +402,7 @@ taujet_pt_2 = Producer(
 )
 VsJetTauIDFlag_2 = ExtendedVectorProducer(
     name="VsJetTauIDFlag_2",
-    call="quantities::tau::TauIDFlag({df}, {output}, 1, {input}, {vsjet_tau_id_WPbit})",
+    call="v12::quantities::tau::TauIDFlag({df}, {output}, 1, {input}, {vsjet_tau_id_WPbit})",
     input=[q.dileptonpair, nanoAOD.Tau_ID_vsJet],
     output="tau_2_vsjet_id_outputname",
     scope=["et", "mt", "tt"],
@@ -410,7 +410,7 @@ VsJetTauIDFlag_2 = ExtendedVectorProducer(
 )
 VsEleTauIDFlag_2 = ExtendedVectorProducer(
     name="VsEleTauIDFlag_2",
-    call="quantities::tau::TauIDFlag({df}, {output}, 1, {input}, {vsele_tau_id_WPbit})",
+    call="v12::quantities::tau::TauIDFlag({df}, {output}, 1, {input}, {vsele_tau_id_WPbit})",
     input=[q.dileptonpair, nanoAOD.Tau_ID_vsEle],
     output="tau_2_vsele_id_outputname",
     scope=["et", "mt", "tt"],
@@ -418,7 +418,7 @@ VsEleTauIDFlag_2 = ExtendedVectorProducer(
 )
 VsMuTauIDFlag_2 = ExtendedVectorProducer(
     name="VsMuTauIDFlag_2",
-    call="quantities::tau::TauIDFlag({df}, {output}, 1, {input}, {vsmu_tau_id_WPbit})",
+    call="v12::quantities::tau::TauIDFlag({df}, {output}, 1, {input}, {vsmu_tau_id_WPbit})",
     input=[q.dileptonpair, nanoAOD.Tau_ID_vsMu],
     output="tau_2_vsmu_id_outputname",
     scope=["et", "mt", "tt"],

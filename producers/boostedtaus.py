@@ -90,21 +90,21 @@ boostedTauDMCut = Producer(
 )
 MVAisoBoostedTauIDCut = Producer(
     name="MVAisoBoostedTauIDCut",
-    call="physicsobject::tau::CutTauID({df}, {output}, {input}, {iso_boostedtau_id_bit})",
+    call="v12::physicsobject::tau::CutTauID({df}, {output}, {input}, {iso_boostedtau_id_bit})",
     input=[nanoAOD.boostedTau_iso_ID],
     output=[],
     scopes=["et", "mt", "tt"],
 )
 AntiEleBoostedTauIDCut = Producer(
     name="AntiEleBoostedTauIDCut",
-    call="physicsobject::tau::CutTauID({df}, {output}, {input}, {antiele_boostedtau_id_bit})",
+    call="v12::physicsobject::tau::CutTauID({df}, {output}, {input}, {antiele_boostedtau_id_bit})",
     input=[nanoAOD.boostedTau_antiEle_ID],
     output=[],
     scopes=["et", "mt", "tt"],
 )
 AntiMuBoostedTauIDCut = Producer(
     name="AntiMuBoostedTauIDCut",
-    call="physicsobject::tau::CutTauID({df}, {output}, {input}, {antimu_boostedtau_id_bit})",
+    call="v12::physicsobject::tau::CutTauID({df}, {output}, {input}, {antimu_boostedtau_id_bit})",
     input=[nanoAOD.boostedTau_antiMu_ID],
     output=[],
     scopes=["et", "mt", "tt"],
@@ -401,7 +401,7 @@ boosted_tau_gen_match_1 = Producer(
 )
 isoTauIDFlag_1 = ExtendedVectorProducer(
     name="isoTauIDFlag_1",
-    call="quantities::tau::TauIDFlag({df}, {output}, 0, {input}, {iso_boostedtau_id_WPbit})",
+    call="v12::quantities::tau::TauIDFlag({df}, {output}, 0, {input}, {iso_boostedtau_id_WPbit})",
     input=[q.boosteddileptonpair, nanoAOD.boostedTau_iso_ID],
     output="boostedtau_1_iso_id_outputname",
     scope=["tt"],
@@ -409,7 +409,7 @@ isoTauIDFlag_1 = ExtendedVectorProducer(
 )
 antiEleTauIDFlag_1 = ExtendedVectorProducer(
     name="antiEleTauIDFlag_1",
-    call="quantities::tau::TauIDFlag({df}, {output}, 0, {input}, {antiele_boostedtau_id_WPbit})",
+    call="v12::quantities::tau::TauIDFlag({df}, {output}, 0, {input}, {antiele_boostedtau_id_WPbit})",
     input=[q.boosteddileptonpair, nanoAOD.boostedTau_antiEle_ID],
     output="boostedtau_1_antiele_id_outputname",
     scope=["tt"],
@@ -417,7 +417,7 @@ antiEleTauIDFlag_1 = ExtendedVectorProducer(
 )
 antiMuTauIDFlag_1 = ExtendedVectorProducer(
     name="antiMuTauIDFlag_1",
-    call="quantities::tau::TauIDFlag({df}, {output}, 0, {input}, {antimu_boostedtau_id_WPbit})",
+    call="v12::quantities::tau::TauIDFlag({df}, {output}, 0, {input}, {antimu_boostedtau_id_WPbit})",
     input=[q.boosteddileptonpair, nanoAOD.boostedTau_antiMu_ID],
     output="boostedtau_1_antimu_id_outputname",
     scope=["tt"],
@@ -453,7 +453,7 @@ boosted_tau_gen_match_2 = Producer(
 )
 isoTauIDFlag_2 = ExtendedVectorProducer(
     name="isoTauIDFlag_2",
-    call="quantities::tau::TauIDFlag({df}, {output}, 1, {input}, {iso_boostedtau_id_WPbit})",
+    call="v12::quantities::tau::TauIDFlag({df}, {output}, 1, {input}, {iso_boostedtau_id_WPbit})",
     input=[q.boosteddileptonpair, nanoAOD.boostedTau_iso_ID],
     output="boostedtau_2_iso_id_outputname",
     scope=["et", "mt", "tt"],
@@ -461,7 +461,7 @@ isoTauIDFlag_2 = ExtendedVectorProducer(
 )
 antiEleTauIDFlag_2 = ExtendedVectorProducer(
     name="antiEleTauIDFlag_2",
-    call="quantities::tau::TauIDFlag({df}, {output}, 1, {input}, {antiele_boostedtau_id_WPbit})",
+    call="v12::quantities::tau::TauIDFlag({df}, {output}, 1, {input}, {antiele_boostedtau_id_WPbit})",
     input=[q.boosteddileptonpair, nanoAOD.boostedTau_antiEle_ID],
     output="boostedtau_2_antiele_id_outputname",
     scope=["et", "mt", "tt"],
@@ -469,7 +469,7 @@ antiEleTauIDFlag_2 = ExtendedVectorProducer(
 )
 antiMuTauIDFlag_2 = ExtendedVectorProducer(
     name="antiMuTauIDFlag_2",
-    call="quantities::tau::TauIDFlag({df}, {output}, 1, {input}, {antimu_boostedtau_id_WPbit})",
+    call="v12::quantities::tau::TauIDFlag({df}, {output}, 1, {input}, {antimu_boostedtau_id_WPbit})",
     input=[q.boosteddileptonpair, nanoAOD.boostedTau_antiMu_ID],
     output="boostedtau_2_antimu_id_outputname",
     scope=["et", "mt", "tt"],

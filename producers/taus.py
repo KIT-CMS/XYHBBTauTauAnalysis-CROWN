@@ -9,21 +9,21 @@ from code_generation.producer import Producer, ProducerGroup
 
 VsJetTauIDCut = Producer(
     name="VsJetTauIDCut",
-    call="physicsobject::tau::CutTauID({df}, {output}, {input}, {vsjet_tau_id_bit})",
+    call="v12::physicsobject::tau::CutTauID({df}, {output}, {input}, {vsjet_tau_id_bit})",
     input=[nanoAOD.Tau_ID_vsJet],
     output=[],
     scopes=["et", "mt", "tt"],
 )
 VsElectronTauIDCut = Producer(
     name="VsElectronTauIDCut",
-    call="physicsobject::tau::CutTauID({df}, {output}, {input}, {vsele_tau_id_bit})",
+    call="v12::physicsobject::tau::CutTauID({df}, {output}, {input}, {vsele_tau_id_bit})",
     input=[nanoAOD.Tau_ID_vsEle],
     output=[],
     scopes=["et", "mt", "tt"],
 )
 VsMuonTauIDCut = Producer(
     name="VsMuonTauIDCut",
-    call="physicsobject::tau::CutTauID({df}, {output}, {input}, {vsmu_tau_id_bit})",
+    call="v12::physicsobject::tau::CutTauID({df}, {output}, {input}, {vsmu_tau_id_bit})",
     input=[nanoAOD.Tau_ID_vsMu],
     output=[],
     scopes=["et", "mt", "tt"],
@@ -177,7 +177,7 @@ TauDMCut = Producer(
 )
 # TauIDCuts = VectorProducer(
 #     name="TauIDCuts",
-#     call='physicsobject::tau::CutTauID({df}, {output}, "{tau_id}", {tau_id_idx})',
+#     call='v12::physicsobject::tau::CutTauID({df}, {output}, "{tau_id}", {tau_id_idx})',
 #     input=[],
 #     output=[],
 #     scopes=["global"],
