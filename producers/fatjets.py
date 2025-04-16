@@ -2,90 +2,34 @@ from ..quantities import output as q
 from ..quantities import nanoAOD as nanoAOD
 from code_generation.producer import Producer, ProducerGroup
 
-####################
-# Set of producers used for selection possible good jets
-####################
-FatJetPtCorrection = Producer(
-    name="FatJetPtCorrection",
-    call="physicsobject::jet::JetPtCorrection({df}, correctionManager, {output}, {input}, {fatjet_reapplyJES}, {fatjet_jes_sources}, {fatjet_jes_shift}, {fatjet_jer_shift}, {fatjet_jec_file}, {fatjet_jer_tag}, {fatjet_jes_tag}, {fatjet_jec_algo})",
-    input=[
-        nanoAOD.FatJet_pt,
-        nanoAOD.FatJet_eta,
-        nanoAOD.FatJet_phi,
-        nanoAOD.FatJet_area,
-        nanoAOD.FatJet_rawFactor,
-        nanoAOD.FatJet_ID,
-        nanoAOD.GenJetAK8_pt,
-        nanoAOD.GenJetAK8_eta,
-        nanoAOD.GenJetAK8_phi,
-        nanoAOD.rho_v12,
-    ],
-    output=[q.FatJet_pt_corrected],
-    scopes=["global"],
+from ._helpers import jerc_producer_factory
+from ..constants import GLOBAL_SCOPES
+
+
+# create jet energy correction producers for AK8 jets
+FatJetEnergyCorrection_data, FatJetEnergyCorrection, RenameFatJetsData = jerc_producer_factory(
+    input={
+        "jet_pt": nanoAOD.FatJet_pt,
+        "jet_eta": nanoAOD.FatJet_eta,
+        "jet_phi": nanoAOD.FatJet_phi,
+        "jet_mass": nanoAOD.FatJet_mass,
+        "jet_area": nanoAOD.FatJet_area,
+        "jet_raw_factor": nanoAOD.FatJet_rawFactor,
+        "jet_id": nanoAOD.FatJet_ID,
+        "gen_jet_pt": nanoAOD.GenJetAK8_pt,
+        "gen_jet_eta": nanoAOD.GenJetAK8_eta,
+        "gen_jet_phi": nanoAOD.GenJetAK8_phi,
+        "rho": nanoAOD.rho_v12,
+    },
+    output={
+        "jet_pt_corrected": q.FatJet_pt_corrected,
+        "jet_mass_corrected": q.FatJet_mass_corrected,
+    },
+    scopes=GLOBAL_SCOPES,
+    producer_prefix="FatJet",
+    config_parameter_prefix="fatjet",
 )
-FatJetPtCorrection_data = Producer(
-    name="FatJetPtCorrection_data",
-    call="physicsobject::jet::JetPtCorrection_data({df}, {output}, {input}, {fatjet_jec_file}, {fatjet_jes_tag_data}, {fatjet_jec_algo})",
-    input=[
-        nanoAOD.FatJet_pt,
-        nanoAOD.FatJet_eta,
-        nanoAOD.FatJet_area,
-        nanoAOD.FatJet_rawFactor,
-        nanoAOD.rho_v12,
-    ],
-    output=[q.FatJet_pt_corrected],
-    scopes=["global"],
-)
-FatJetMassCorrection = Producer(
-    name="FatJetMassCorrection",
-    call="physicsobject::ObjectMassCorrectionWithPt({df}, {output}, {input})",
-    input=[
-        nanoAOD.FatJet_mass,
-        nanoAOD.FatJet_pt,
-        q.FatJet_pt_corrected,
-    ],
-    output=[q.FatJet_mass_corrected],
-    scopes=["global"],
-)
-# in embdedded sample, we simply rename the nanoAOD fatjets to the fatjet_pt_corrected column
-RenameFatJetPt = Producer(
-    name="RenameFatJetPt",
-    call="basefunctions::rename<ROOT::RVec<float>>({df}, {input}, {output})",
-    input=[nanoAOD.FatJet_pt],
-    output=[q.FatJet_pt_corrected],
-    scopes=["global"],
-)
-RenameFatJetMass = Producer(
-    name="RenameFatJetMass",
-    call="basefunctions::rename<ROOT::RVec<float>>({df}, {input}, {output})",
-    input=[nanoAOD.FatJet_mass],
-    output=[q.FatJet_mass_corrected],
-    scopes=["global"],
-)
-RenameFatJetsData = ProducerGroup(
-    name="RenameFatJetsData",
-    call=None,
-    input=None,
-    output=None,
-    scopes=["global"],
-    subproducers=[RenameFatJetPt, RenameFatJetMass],
-)
-FatJetEnergyCorrection = ProducerGroup(
-    name="FatJetEnergyCorrection",
-    call=None,
-    input=None,
-    output=None,
-    scopes=["global"],
-    subproducers=[FatJetPtCorrection, FatJetMassCorrection],
-)
-FatJetEnergyCorrection_data = ProducerGroup(
-    name="FatJetEnergyCorrection",
-    call=None,
-    input=None,
-    output=None,
-    scopes=["global"],
-    subproducers=[FatJetPtCorrection_data, FatJetMassCorrection],
-)
+
 
 FatJetPtCut = Producer(
     name="FatJetPtCut",
