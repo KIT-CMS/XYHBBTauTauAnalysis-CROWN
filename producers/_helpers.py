@@ -22,16 +22,16 @@ def jerc_producer_factory(
         
         The `input` dictionary must have the following keys with the values being the corresponding :py:class:`~code_generation.quantity.Quantity` objects:
         
-        -  `jet_pt`: The transverse momentum of the jet with the nominal JEC applied in the `NanoAOD` production.
-        -  `jet_eta`: The pseudorapidity of the jet.
-        -  `jet_phi`: The azimuthal angle of the jet. 
-        -  `jet_mass`: The mass of the jet with the nominal JEC applied in the `NanoAOD` production.
+        -  `jet_pt`: The transverse momentum of the jets with the nominal JEC applied in the `NanoAOD` production.
+        -  `jet_eta`: The pseudorapidity of the jets.
+        -  `jet_phi`: The azimuthal angle of the jets. 
+        -  `jet_mass`: The mass of the jets with the nominal JEC applied in the `NanoAOD` production.
         -  `jet_area`: The effective jet area.
         -  `jet_raw_factor`: The factor to get the uncorrected jet energy from the jet energy with the nominal JEC applied in the `NanoAOD` production.
-        -  `jet_id`: The identification working point that the jet has passed.
-        -  `gen_jet_pt`: The transverse momentum of the associated generator-level jet.
-        -  `gen_jet_eta`: The pseudorapidity of the associated generator-level jet.
-        -  `gen_jet_phi`: The azimuthal angle of the associated generator-level jet.
+        -  `jet_id`: The identification working point that the jets have passed.
+        -  `gen_jet_pt`: The transverse momentum of particle-level jets.
+        -  `gen_jet_eta`: The pseudorapidity of particle-level jets.
+        -  `gen_jet_phi`: The azimuthal angle of particle-level jet.
         -  `rho`: The average energy density in the event.
 
     output: Dict[str, Quantity]:
@@ -40,8 +40,8 @@ def jerc_producer_factory(
 
         The `output` dictionary must have the following keys with the values being corresponding :py:class:`~code_generation.quantity.Quantity` objects:
 
-        - `jet_pt_corrected`: The corrected transverse momentum of the jet.
-        - `jet_mass_corrected`: The corrected mass of the jet.
+        - `jet_pt_corrected`: The corrected transverse momentum of the jets.
+        - `jet_mass_corrected`: The corrected mass of the jets.
 
     scopes: List[str]:
     
