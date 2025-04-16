@@ -1,8 +1,8 @@
 from ..quantities import output as q
 from ..quantities import nanoAOD as nanoAOD
 from code_generation.producer import Producer, ProducerGroup
-from code_generation.quantity import Quantity
 
+from .helpers import jerc_producer_factory
 from ..constants import GLOBAL_SCOPES
 
 
@@ -29,6 +29,7 @@ JetEnergyCorrection_data, JetEnergyCorrection, RenameJetsData = jerc_producer_fa
         "jet_pt_corrected": q.Jet_pt_corrected,
         "jet_mass_corrected": q.Jet_mass_corrected,
     },
+    scopes=GLOBAL_SCOPES,
     producer_prefix="Jet",
     config_parameter_prefix="jet",
 )
