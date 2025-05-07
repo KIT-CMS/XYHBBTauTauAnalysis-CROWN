@@ -63,6 +63,13 @@ BaseMuons = ProducerGroup(
         MuonIsoCut,
     ],
 )
+BaseMuonsPtOrdered = ProducerGroup(
+    name="BaseMuonsPtOrdered",
+    call="jet::OrderJetsByPt({df}, {output}, {input})",
+    input=[q.Muon_pt, q.base_muon_mask],
+    output=[q.loose_muon_index],
+    scopes=["mt", "et", "tt", "em", "mm", "ee"],
+)
 
 ####################
 # Set of producers used for more specific selection of muons in channels

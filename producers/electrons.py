@@ -95,6 +95,13 @@ BaseElectrons = ProducerGroup(
         ElectronIsoCut,
     ],
 )
+BaseElectronsPtOrdered = ProducerGroup(
+    name="BaseElectronsPtOrdered",
+    call="jet::OrderJetsByPt({df}, {output}, {input})",
+    input=[q.Electron_pt, q.base_electrons_mask],
+    output=[q.loose_electron_index],
+    scopes=["mt", "et", "tt", "em", "mm", "ee"],
+)
 
 ####################
 # Set of producers used for more specific selection of electrons in channels
