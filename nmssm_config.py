@@ -460,7 +460,7 @@ def add_hadronic_tau_config(configuration: Configuration):
 
     # identification and energy scale corrections for hadronic taus
     configuration.add_config_parameters(
-        GLOBAL_SCOPES + HAD_TAU_SCOPES,
+        HAD_TAU_SCOPES,
         {
             "tau_dms": "0,1,10,11",
             "tau_sf_file": EraModifier(
