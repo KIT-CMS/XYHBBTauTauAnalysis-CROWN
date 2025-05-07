@@ -14,6 +14,94 @@
 #include <cmath>
 #include <typeinfo>
 
+
+namespace fatjet {
+
+
+namespace matching {
+
+
+ROOT::RDF::RNode match_object(
+    ROOT::RDF::RNode df,
+    const std::string &output,
+    const std::string &fatjet_eta,
+    const std::string &fatjet_phi,
+    const std::string &fatjet_index,
+    const std::string &other_eta,
+    const std::string &other_phi,
+    const std::string &other_index,
+    const float &max_delta_r
+) {
+    auto match = [max_delta_r] (
+        const ROOT::RVec<float> &fatjet_etas,
+        const ROOT::RVec<float> &fatjet_phis,
+        const ROOT::RVec<float> &fatjet_indices,
+        const ROOT::RVec<float> &other_etas,
+        const ROOT::RVec<float> &other_phis,
+        const ROOT::RVec<float> &other_indices,
+        const ROOT::RVec<float> &
+    ) {
+        ROOT::RVec<ROOT::RVec<int>> other_indices_matched(fatjet_indices.size());
+        for (const auto &fatjet_index : fatjet_indices) {
+            ROOT::RVec<int> other_indices_matched_single(0);
+            ROOT::RVec<int> delta_rs(0);
+            for (const auto &other_index : other_indices) {
+                auto delta_r = ROOT::VecOps::DeltaR(
+                    fatjet_etas.at(fatjet_index),
+                    fatjet_phis.at(fatjet_index),
+                    other_etas.at(other_index),
+                    other_phis.at(other_index)
+                );
+                if (delta_r < delta_r_max) {
+                    other_indices_matched_single.push_back(other_index);
+                    delta_rs.push_back(delta_r);
+                }
+                // sort with delta_r
+                auto index = ROOT::VecOps::Argsort(delta_rs);
+                auto other_indices_matched_single_sorted = ROOT::VecOps::Take(
+                    other_indices_matched_single, index
+                );
+                other_indices_matched.push_back(other_indices_matched_single_sorted);
+            }
+        }
+        return other_indices_matched;
+    };
+
+    return df.Define(
+        output,
+        match,
+        {fatjet_eta, fatjet_phi, fatjet_index, other_eta, other_phi, other_index}
+    )
+}
+
+
+ROOT::RDF::RNode count_matches(
+    ROOT::RDF::RNode df,
+    const std::string &output,
+    const std::string &other_matches_index
+) {
+    auto match = (
+        const ROOT::RVec<float> &other_matches_index,
+    ) {
+        ROOT::RVec<int> counts(0);
+        for (int fatjet_index = 0; fatjet_index < other_matches_index.size(); ++fatjet_index) {
+            counts.push_back(other_matches_index.at(fatjet_index).size());
+        }
+        return counts;
+    };
+
+    return df.Define(
+        output,
+        match,
+        {other_matches_index}
+    )
+}
+
+}
+
+}
+
+
 namespace fatjet {
 /// Function to find a fatjet which matches to the leading b-jet from a b-jet
 /// pair. The match is done with a deltaR criterium.
@@ -151,6 +239,52 @@ ROOT::RDF::RNode msoftdrop(ROOT::RDF::RNode df, const std::string &outputname,
                     },
                     {m_softdrop, fatjetcollection});
 }
+
+
+ROOT::RDF::RNode mass_particlenet(
+    ROOT::RDF::RNode df, const std::string &outputname,
+    const std::string &mass,
+    const std::string &masscorr_pnet,
+    const std::string &fatjetcollection
+) {
+    return df.Define(outputname,
+                    [] (const ROOT::RVec<float> &masses,
+                        const ROOT::RVec<float> &masscorr_pnet,
+                        const ROOT::RVec<int> &fatjetcollection) {
+                        auto masses_selected = ROOT::VecOps::Take(masses, fatjetcollection);
+                        auto masscorr_selected = ROOT::VecOps::Take(masscorr_pnet, fatjetcollection);
+                        return masses_selected * masscorr_selected;
+                    },
+                    {mass, masscorr_pnet, fatjetcollection});
+}
+
+
+ROOT::RDF::RNode mass_particlenet(
+    ROOT::RDF::RNode df, const std::string &outputname,
+    const std::string &mass,
+    const std::string &masscorr_pnet,
+    const std::string &fatjetcollection,
+    const int &position) {
+    return df.Define(outputname,
+                    [position](const ROOT::RVec<float> &masses,
+                               const ROOT::RVec<float> &masscorr_pnet,
+                               const ROOT::RVec<int> &fatjetcollection) {
+                        float mass = default_float;
+                        float corr = 1.0;
+                        if (position >= 0) {
+                           const int index = fatjetcollection.at(position);
+                           if (index >= 0) {
+                               mass = masses.at(index);
+                               corr = masscorr_pnet.at(index);
+                           }
+                        }
+                        return corr * mass;
+                    },
+                    {mass, masscorr_pnet, fatjetcollection});
+}
+
+
+
 /// Function to writeout the value of the particleNet Xbb vs QCD tagger for a
 /// fatjet.
 ///
@@ -261,6 +395,7 @@ ROOT::RDF::RNode hadflavor(ROOT::RDF::RNode df, const std::string &outputname,
                     },
                     {fatjet_hadflavor, fatjetcollection});
 }
+
 /// Function to writeout  the number of hadrons for a fatjet.
 ///
 /// \param[in] df the input dataframe
