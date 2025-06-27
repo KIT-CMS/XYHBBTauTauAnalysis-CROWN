@@ -62,7 +62,7 @@ GoodBoostedMTPairFlag = Producer(
 
 GoodMTPairFilter = Filter(
     name="GoodMTPairFilter",
-    call='basefunctions::FilterFlagsAny({df}, "GoodMuTauPairs", {input})',
+    call='event::filter::Flags({df}, "GoodMuTauPairs", {input}, "any_of")',
     input=[],
     scopes=["mt"],
     subproducers=[GoodMTPairFlag, GoodBoostedMTPairFlag],
@@ -132,7 +132,7 @@ GoodMuMuPairFlag = Producer(
 
 GoodMuMuPairFilter = Filter(
     name="GoodMuMuPairFilter",
-    call='basefunctions::FilterFlagsAny({df}, "GoodMuMuPairs", {input})',
+    call='event::filter::Flags({df}, "GoodMuMuPairs", {input}, "any_of")',
     input=[],
     scopes=["mm"],
     subproducers=[GoodMuMuPairFlag],
@@ -175,7 +175,7 @@ GoodElElPairFlag = Producer(
 
 GoodElElPairFilter = Filter(
     name="GoodElElPairFilter",
-    call='basefunctions::FilterFlagsAny({df}, "GoodElElPairs", {input})',
+    call='event::filter::Flags({df}, "GoodElElPairs", {input}, "any_of")',
     input=[],
     scopes=["ee"],
     subproducers=[GoodElElPairFlag],
@@ -237,7 +237,7 @@ GoodBoostedETPairFlag = Producer(
 
 GoodETPairFilter = Filter(
     name="GoodETPairFilter",
-    call='basefunctions::FilterFlagsAny({df}, "GoodElTauPairs", {input})',
+    call='event::filter::Flags({df}, "GoodElTauPairs", {input}, "any_of")',
     input=[],
     scopes=["et"],
     subproducers=[GoodETPairFlag, GoodBoostedETPairFlag],
@@ -291,7 +291,7 @@ GoodBoostedTTPairFlag = Producer(
 
 GoodTTPairFilter = Filter(
     name="GoodTTPairFilter",
-    call='basefunctions::FilterFlagsAny({df}, "GoodTauTauPairs", {input})',
+    call='event::filter::Flags({df}, "GoodTauTauPairs", {input}, "any_of")',
     input=[],
     scopes=["tt"],
     subproducers=[GoodTTPairFlag, GoodBoostedTTPairFlag],
@@ -331,7 +331,7 @@ GoodEMPairFlag = Producer(
 
 GoodEMPairFilter = Filter(
     name="GoodEMPairFilter",
-    call='basefunctions::FilterFlagsAny({df}, "GoodElMuPairs", {input})',
+    call='event::filter::Flags({df}, "GoodElMuPairs", {input}, "any_of")',
     input=[],
     scopes=["em"],
     subproducers=[GoodEMPairFlag],
@@ -387,7 +387,7 @@ GoodBBPairFlag_boosted = Producer(
 )
 GoodBBPairFilter = Filter(
     name="GoodBBPairFilter",
-    call='basefunctions::FilterFlagsAny({df}, "GoodBBPairs", {input})',
+    call='event::filter::Flags({df}, "GoodBBPairs", {input}, "any_of")',
     input=[],
     scopes=["et", "mt", "tt", "mm"],
     subproducers=[GoodBBPairFlag, GoodBBPairFlag_boosted],

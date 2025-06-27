@@ -9,7 +9,7 @@ from code_generation.producer import Producer, ProducerGroup, ExtendedVectorProd
 
 boostedTauPtCorrection = Producer(
     name="boostedTauPtCorrection",
-    call='physicsobject::tau::PtCorrection_genTau({df}, correctionManager, {output}, {input}, "{boostedtau_sf_file}", "{boostedtau_ES_json_name}", "{boostedtau_id_algorithm}", "{boostedtau_ES_shift_DM0}", "{boostedtau_ES_shift_DM1}", "{boostedtau_ES_shift_DM10}", "{boostedtau_ES_shift_DM11}")',
+    call='physicsobject::tau::PtCorrectionMC_genuineTau({df}, correctionManager, {output}, {input}, "{boostedtau_sf_file}", "{boostedtau_ES_json_name}", "{boostedtau_id_algorithm}", "{boostedtau_ES_shift_DM0}", "{boostedtau_ES_shift_DM1}", "{boostedtau_ES_shift_DM10}", "{boostedtau_ES_shift_DM11}")',
     input=[
         nanoAOD.boostedTau_pt,
         nanoAOD.boostedTau_eta,
@@ -21,7 +21,7 @@ boostedTauPtCorrection = Producer(
 )
 boostedTauMassCorrection = Producer(
     name="boostedTauMassCorrection",
-    call="physicsobject::ObjectMassCorrectionWithPt({df}, {output}, {input})",
+    call="physicsobject::MassCorrectionWithPt({df}, {output}, {input})",
     input=[
         nanoAOD.boostedTau_mass,
         nanoAOD.boostedTau_pt,
@@ -43,14 +43,14 @@ boostedTauEnergyCorrection = ProducerGroup(
 )
 boostedTauPtCorrection_data = Producer(
     name="boostedTauPtCorrection_data",
-    call="basefunctions::rename<ROOT::RVec<float>>({df}, {input}, {output})",
+    call="event::quantity::Rename<ROOT::RVec<float>>({df}, {input}, {output})",
     input=[nanoAOD.boostedTau_pt],
     output=[q.boostedTau_pt_corrected],
     scopes=["et", "mt", "tt"],
 )
 boostedTauMassCorrection_data = Producer(
     name="boostedTauMassCorrection_data",
-    call="basefunctions::rename<ROOT::RVec<float>>({df}, {input}, {output})",
+    call="event::quantity::Rename<ROOT::RVec<float>>({df}, {input}, {output})",
     input=[nanoAOD.boostedTau_mass],
     output=[q.boostedTau_mass_corrected],
     scopes=["et", "mt", "tt"],
@@ -69,21 +69,21 @@ boostedTauEnergyCorrection_data = ProducerGroup(
 
 boostedTauPtCut = Producer(
     name="boostedTauPtCut",
-    call="physicsobject::CutPt({df}, {input}, {output}, {min_boostedtau_pt})",
+    call="physicsobject::CutMin<float>({df}, {input}, {output}, {min_boostedtau_pt})",
     input=[q.boostedTau_pt_corrected],
     output=[],
     scopes=["et", "mt", "tt"],
 )
 boostedTauEtaCut = Producer(
     name="boostedTauEtaCut",
-    call="physicsobject::CutEta({df}, {input}, {output}, {max_boostedtau_eta})",
+    call="physicsobject::CutAbsMax<float>({df}, {input}, {output}, {max_boostedtau_eta})",
     input=[nanoAOD.boostedTau_eta],
     output=[],
     scopes=["et", "mt", "tt"],
 )
 boostedTauDMCut = Producer(
     name="boostedTauDMCut",
-    call="physicsobject::tau::CutDecayModes({df}, {output}, {input}, {vec_open}{tau_dms}{vec_close})",
+    call="physicsobject::CutQuantity<int>({df}, {output}, {input}, {vec_open}{tau_dms}{vec_close})",
     input=[nanoAOD.boostedTau_decayMode],
     output=[],
     scopes=["et", "mt", "tt"],
@@ -112,7 +112,7 @@ AntiMuBoostedTauIDCut = Producer(
 
 GoodBoostedTaus = ProducerGroup(
     name="GoodBoostedTaus",
-    call="physicsobject::CombineMasks({df}, {output}, {input})",
+    call='physicsobject::CombineMasks({df}, {output}, {input}, "all_of")',
     input=[],
     output=[q.good_boostedtaus_mask],
     scopes=["et", "mt", "tt"],
@@ -336,7 +336,7 @@ boosted_muon_is_global_1 = Producer(
 )
 boosted_tau_decaymode_1_notau = Producer(
     name="boosted_tau_decaymode_1_notau",
-    call="basefunctions::DefineQuantity({df}, {output}, -1)",
+    call="event::quantity::Define({df}, {output}, -1)",
     input=[],
     output=[q.boosted_tau_decaymode_1],
     scopes=["et", "mt", "em", "ee", "mm"],

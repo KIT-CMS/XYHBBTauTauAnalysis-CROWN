@@ -40,7 +40,7 @@ ConvertGenParticleStatusFlags = Producer(
 
 GenParticleStatusFlagsDummy = Producer(
     name="GenParticleStatusFlagsDummy",
-    call='basefunctions::DefineQuantity({df}, {output}, ROOT::VecOps::RVec<int>())',
+    call='event::quantity::Define({df}, {output}, ROOT::VecOps::RVec<int>())',
     input=[],
     output=[nanoAOD.GenParticle_statusFlags],
     scopes=["global"],
@@ -64,7 +64,7 @@ ConvertJetAssociatedGenJet = Producer(
 
 JetAssociatedGenJetDummy = Producer(
     name="JetAssociatedGenJetDummy",
-    call='basefunctions::DefineQuantity({df}, {output}, ROOT::VecOps::RVec<int>())',
+    call='event::quantity::Define({df}, {output}, ROOT::VecOps::RVec<int>())',
     input=[],
     output=[nanoAOD.Jet_associatedGenJet],
     scopes=["global"],
@@ -80,7 +80,7 @@ ConvertGenJethadFlavour = Producer(
 
 GenJethadFlavourDummy = Producer(
     name="GenJethadFlavourDummy",
-    call='basefunctions::DefineQuantity({df}, {output}, ROOT::VecOps::RVec<int>())',
+    call='event::quantity::Define({df}, {output}, ROOT::VecOps::RVec<int>())',
     input=[],
     output=[nanoAOD.GenJet_hadFlavour],
     scopes=["global"],
@@ -96,7 +96,7 @@ ConvertFatJetFlavour = Producer(
 
 FatJetFlavourDummy = Producer(
     name="FatJetFlavourDummy",
-    call='basefunctions::DefineQuantity({df}, {output}, ROOT::VecOps::RVec<int>())',
+    call='event::quantity::Define({df}, {output}, ROOT::VecOps::RVec<int>())',
     input=[],
     output=[nanoAOD.FatJet_flavour],
     scopes=["global"],
@@ -112,7 +112,7 @@ ConvertGenParticleMotherid = Producer(
 
 GenParticleMotheridDummy = Producer(
     name="GenParticleMotheridDummy",
-    call='basefunctions::DefineQuantity({df}, {output}, ROOT::VecOps::RVec<int>())',
+    call='event::quantity::Define{df}, {output}, ROOT::VecOps::RVec<int>())',
     input=[],
     output=[nanoAOD.GenParticle_motherid],
     scopes=["global"],
@@ -144,7 +144,7 @@ ConvertMuonIndexToGen = Producer(
 
 MuonIndexToGenDummy = Producer(
     name="MuonIndexToGenDummy",
-    call='basefunctions::DefineQuantity({df}, {output}, ROOT::VecOps::RVec<int>())',
+    call='event::quantity::Define({df}, {output}, ROOT::VecOps::RVec<int>())',
     input=[],
     output=[nanoAOD.Muon_indexToGen],
     scopes=["global"],
@@ -160,7 +160,7 @@ ConvertTauIndexToGen = Producer(
 
 TauIndexToGenDummy = Producer(
     name="TauIndexToGenDummy",
-    call='basefunctions::DefineQuantity({df}, {output}, ROOT::VecOps::RVec<int>())',
+    call='event::quantity::Define({df}, {output}, ROOT::VecOps::RVec<int>())',
     input=[],
     output=[nanoAOD.Tau_indexToGen],
     scopes=["global"],

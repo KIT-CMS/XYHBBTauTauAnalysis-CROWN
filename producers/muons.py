@@ -8,49 +8,49 @@ from code_generation.producer import Producer, ProducerGroup
 
 MuonPtCut = Producer(
     name="MuonPtCut",
-    call="physicsobject::CutPt({df}, {input}, {output}, {min_muon_pt})",
+    call="physicsobject::CutMin<float>({df}, {input}, {output}, {min_muon_pt})",
     input=[nanoAOD.Muon_pt],
     output=[],
     scopes=["global"],
 )
 MuonEtaCut = Producer(
     name="MuonEtaCut",
-    call="physicsobject::CutEta({df}, {input}, {output}, {max_muon_eta})",
+    call="physicsobject::CutAbsMax<float>({df}, {input}, {output}, {max_muon_eta})",
     input=[nanoAOD.Muon_eta],
     output=[],
     scopes=["global"],
 )
 MuonDxyCut = Producer(
     name="MuonDxyCut",
-    call="physicsobject::CutDxy({df}, {input}, {output}, {max_muon_dxy})",
+    call="physicsobject::CutAbsMax<float>({df}, {input}, {output}, {max_muon_dxy})",
     input=[nanoAOD.Muon_dxy],
     output=[],
     scopes=["global"],
 )
 MuonDzCut = Producer(
     name="MuonDzCut",
-    call="physicsobject::CutDz({df}, {input}, {output}, {max_muon_dz})",
+    call="physicsobject::CutAbsMax<float>({df}, {input}, {output}, {max_muon_dz})",
     input=[nanoAOD.Muon_dz],
     output=[],
     scopes=["global"],
 )
 MuonIDCut = Producer(
     name="MuonIDCut",
-    call='physicsobject::muon::CutID({df}, {output}, "{muon_id}")',
-    input=[],
+    call='physicsobject::CutEqual<bool>({df}, {output}, {input}, true)',
+    input=[nanoAOD.Muon_id_medium],
     output=[],
     scopes=["global"],
 )
 MuonIsoCut = Producer(
     name="MuonIsoCut",
-    call="physicsobject::muon::CutIsolation({df}, {output}, {input}, {muon_iso_cut})",
+    call="physicsobject::CutMax<float>({df}, {output}, {input}, {muon_iso_cut})",
     input=[nanoAOD.Muon_iso],
     output=[],
     scopes=["global"],
 )
 BaseMuons = ProducerGroup(
     name="BaseMuons",
-    call="physicsobject::CombineMasks({df}, {output}, {input})",
+    call='physicsobject::CombineMasks({df}, {output}, {input}, "all_of")',
     input=[],
     output=[q.base_muons_mask],
     scopes=["global"],
@@ -70,42 +70,42 @@ BaseMuons = ProducerGroup(
 
 GoodMuonPtCut = Producer(
     name="GoodMuonPtCut",
-    call="physicsobject::CutPt({df}, {input}, {output}, {min_muon_pt})",
+    call="physicsobject::CutMin<float>({df}, {input}, {output}, {min_muon_pt})",
     input=[nanoAOD.Muon_pt],
     output=[],
     scopes=["em", "mt", "mm"],
 )
 GoodMuonEtaCut = Producer(
     name="GoodMuonEtaCut",
-    call="physicsobject::CutEta({df}, {input}, {output}, {max_muon_eta})",
+    call="physicsobject::CutAbsMax<float>({df}, {input}, {output}, {max_muon_eta})",
     input=[nanoAOD.Muon_eta],
     output=[],
     scopes=["em", "mt", "mm"],
 )
 GoodMuonIsoCut = Producer(
     name="GoodMuonIsoCut",
-    call="physicsobject::muon::CutIsolation({df}, {output}, {input}, {muon_iso_cut})",
+    call="physicsobject::CutMax<float>({df}, {output}, {input}, {muon_iso_cut})",
     input=[nanoAOD.Muon_iso],
     output=[],
     scopes=["em", "mt", "mm"],
 )
 GoodMuonDzCut = Producer(
     name="GoodMuonDzCut",
-    call="physicsobject::CutDz({df}, {input}, {output}, {max_muon_dz})",
+    call="physicsobject::CutAbsMax<float>({df}, {input}, {output}, {max_muon_dz})",
     input=[nanoAOD.Muon_dz],
     output=[],
     scopes=["em", "mt", "mm"],
 )
 GoodMuonDxyCut = Producer(
     name="GoodMuonDxyCut",
-    call="physicsobject::CutDxy({df}, {input}, {output}, {max_muon_dxy})",
+    call="physicsobject::CutAbsMax<float>({df}, {input}, {output}, {max_muon_dxy})",
     input=[nanoAOD.Muon_dxy],
     output=[],
     scopes=["em", "mt", "mm"],
 )
 GoodMuons = ProducerGroup(
     name="GoodMuons",
-    call="physicsobject::CombineMasks({df}, {output}, {input})",
+    call='physicsobject::CombineMasks({df}, {output}, {input}, "all_of")',
     input=[q.base_muons_mask],
     output=[q.good_muons_mask],
     scopes=["em", "mt", "mm"],
@@ -117,7 +117,7 @@ GoodMuons = ProducerGroup(
 )
 GoodMuonsWithDzDxyCuts = ProducerGroup(
     name="GoodMuons",
-    call="physicsobject::CombineMasks({df}, {output}, {input})",
+    call='physicsobject::CombineMasks({df}, {output}, {input}, "all_of")',
     input=[q.base_muons_mask],
     output=[q.good_muons_mask],
     scopes=["em", "mt", "mm"],
@@ -160,7 +160,7 @@ VetoSecondMuon = Producer(
 
 ExtraMuonsVeto = Producer(
     name="ExtraMuonsVeto",
-    call="physicsobject::LeptonVetoFlag({df}, {output}, {input})",
+    call="physicsobject::Veto({df}, {output}, {input})",
     input={
         "mm": [q.veto_muons_mask_2],
         "em": [q.veto_muons_mask],
@@ -173,7 +173,7 @@ ExtraMuonsVeto = Producer(
 )
 BoostedExtraMuonsVeto = Producer(
     name="BoostedExtraMuonsVeto",
-    call="physicsobject::LeptonVetoFlag({df}, {output}, {input})",
+    call="physicsobject::Veto({df}, {output}, {input})",
     input={
         "mt": [q.veto_muons_boosted_mask],
     },
@@ -187,21 +187,21 @@ BoostedExtraMuonsVeto = Producer(
 
 DiMuonVetoPtCut = Producer(
     name="DiMuonVetoPtCut",
-    call="physicsobject::CutPt({df}, {input}, {output}, {min_dimuonveto_pt})",
+    call="physicsobject::CutMin<float>({df}, {input}, {output}, {min_dimuonveto_pt})",
     input=[nanoAOD.Muon_pt],
     output=[],
     scopes=["global"],
 )
 DiMuonVetoIDCut = Producer(
     name="DiMuonVetoIDCut",
-    call='physicsobject::muon::CutID({df}, {output}, "{dimuonveto_id}")',
-    input=[],
+    call='physicsobject::CutEqual<bool>({df}, {output}, {input}, true)',
+    input=[nanoAOD.Muon_id_loose],
     output=[],
     scopes=["global"],
 )
 DiMuonVetoMuons = ProducerGroup(
     name="DiMuonVetoMuons",
-    call="physicsobject::CombineMasks({df}, {output}, {input})",
+    call='physicsobject::CombineMasks({df}, {output}, {input}, "all_of")',
     input=MuonEtaCut.output + MuonDxyCut.output + MuonDzCut.output + MuonIsoCut.output,
     output=[],
     scopes=["global"],
@@ -212,7 +212,7 @@ DiMuonVetoMuons = ProducerGroup(
 )
 DiMuonVeto = ProducerGroup(
     name="DiMuonVeto",
-    call="physicsobject::CheckForDiLeptonPairs({df}, {output}, {input}, {dileptonveto_dR})",
+    call="physicsobject::LeptonPairVeto({df}, {output}, {input}, {dileptonveto_dR})",
     input=[
         nanoAOD.Muon_pt,
         nanoAOD.Muon_eta,

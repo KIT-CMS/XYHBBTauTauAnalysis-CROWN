@@ -33,28 +33,28 @@ FatJetEnergyCorrection_data, FatJetEnergyCorrection, RenameFatJetsData = jerc_pr
 
 FatJetPtCut = Producer(
     name="FatJetPtCut",
-    call="physicsobject::CutPt({df}, {input}, {output}, {min_fatjet_pt})",
+    call="physicsobject::CutMin<float>({df}, {input}, {output}, {min_fatjet_pt})",
     input=[q.FatJet_pt_corrected],
     output=[],
     scopes=["global"],
 )
 FatJetEtaCut = Producer(
     name="FatJetEtaCut",
-    call="physicsobject::CutEta({df}, {input}, {output}, {max_fatjet_eta})",
+    call="physicsobject::CutAbsMax<float>({df}, {input}, {output}, {max_fatjet_eta})",
     input=[nanoAOD.FatJet_eta],
     output=[],
     scopes=["global"],
 )
 FatJetIDCut = Producer(
     name="FatJetIDCut",
-    call="physicsobject::jet::CutID({df}, {output}, {input}, {fatjet_id})",
+    call="physicsobject::CutMin<int>({df}, {output}, {input}, {fatjet_id})",
     input=[nanoAOD.FatJet_ID],
     output=[q.fatjet_id_mask],
     scopes=["global"],
 )
 GoodFatJets = ProducerGroup(
     name="GoodFatJets",
-    call="physicsobject::CombineMasks({df}, {output}, {input})",
+    call='physicsobject::CombineMasks({df}, {output}, {input}, "all_of")',
     input=[],
     output=[q.good_fatjets_mask],
     scopes=["global"],
@@ -70,14 +70,14 @@ GoodFatJets = ProducerGroup(
 ####################
 VetoOverlappingFatJets = Producer(
     name="VetoOverlappingFatJets",
-    call="jet::VetoOverlappingJets({df}, {output}, {input}, {deltaR_fatjet_veto})",
+    call="physicsobject::jet::VetoOverlappingJets({df}, {output}, {input}, {deltaR_fatjet_veto})",
     input=[nanoAOD.FatJet_eta, nanoAOD.FatJet_phi, q.p4_1, q.p4_2],
     output=[q.fatjet_overlap_veto_mask],
     scopes=["mt", "et", "tt", "em", "mm", "ee"],
 )
 VetoOverlappingFatJets_boosted = Producer(
     name="VetoOverlappingFatJets_boosted",
-    call="jet::VetoOverlappingJets({df}, {output}, {input}, {deltaR_fatjet_veto})",
+    call="physicsobject::jet::VetoOverlappingJets({df}, {output}, {input}, {deltaR_fatjet_veto})",
     input=[nanoAOD.FatJet_eta, nanoAOD.FatJet_phi, q.boosted_p4_1, q.boosted_p4_2],
     output=[q.fatjet_overlap_veto_mask_boosted],
     scopes=["mt", "et", "tt", "em", "mm", "ee"],
@@ -85,7 +85,7 @@ VetoOverlappingFatJets_boosted = Producer(
 
 GoodFatJetsWithVeto = ProducerGroup(
     name="GoodJetsWithVeto",
-    call="physicsobject::CombineMasks({df}, {output}, {input})",
+    call='physicsobject::CombineMasks({df}, {output}, {input}, "all_of")',
     input=[q.good_fatjets_mask],
     output=[],
     scopes=["mt", "et", "tt", "em", "mm", "ee"],
@@ -93,7 +93,7 @@ GoodFatJetsWithVeto = ProducerGroup(
 )
 GoodFatJetsWithVeto_boosted = ProducerGroup(
     name="GoodJetsWithVeto_boosted",
-    call="physicsobject::CombineMasks({df}, {output}, {input})",
+    call='physicsobject::CombineMasks({df}, {output}, {input}, "all_of")',
     input=[q.good_fatjets_mask],
     output=[],
     scopes=["mt", "et", "tt", "em", "mm", "ee"],
@@ -102,7 +102,7 @@ GoodFatJetsWithVeto_boosted = ProducerGroup(
 
 FatJetCollection = ProducerGroup(
     name="FatJetCollection",
-    call="jet::OrderJetsByPt({df}, {output}, {input})",
+    call="physicsobject::OrderByPt({df}, {output}, {input})",
     input=[q.FatJet_pt_corrected],
     output=[q.good_fatjet_collection],
     scopes=["mt", "et", "tt", "em", "mm", "ee"],
@@ -110,7 +110,7 @@ FatJetCollection = ProducerGroup(
 )
 FatJetCollection_boosted = ProducerGroup(
     name="FatJetCollection_boosted",
-    call="jet::OrderJetsByPt({df}, {output}, {input})",
+    call="physicsobject::OrderByPt({df}, {output}, {input})",
     input=[q.FatJet_pt_corrected],
     output=[q.good_fatjet_collection_boosted],
     scopes=["mt", "et", "tt", "em", "mm", "ee"],
@@ -118,7 +118,7 @@ FatJetCollection_boosted = ProducerGroup(
 )
 FatJetCollectionWithoutVeto = Producer(
     name="FatJetCollectionWithoutVeto",
-    call="jet::OrderJetsByPt({df}, {output}, {input})",
+    call="physicsobject::OrderByPt({df}, {output}, {input})",
     input=[q.FatJet_pt_corrected, q.good_fatjets_mask],
     output=[q.good_fatjet_collection_without_veto],
     scopes=["mt", "et", "tt", "em", "mm", "ee"],
@@ -158,14 +158,14 @@ LVFatJet2 = Producer(
 
 NumberOfFatJets = Producer(
     name="NumberOfFatJets",
-    call="quantities::jet::NumberOfJets({df}, {output}, {input})",
+    call="physicsobject::Count({df}, {output}, {input})",
     input=[q.good_fatjet_collection],
     output=[q.nfatjets],
     scopes=["mt", "et", "tt", "em", "mm", "ee"],
 )
 NumberOfFatJets_boosted = Producer(
     name="NumberOfFatJets_boosted",
-    call="quantities::jet::NumberOfJets({df}, {output}, {input})",
+    call="physicsobject::Count({df}, {output}, {input})",
     input=[q.good_fatjet_collection_boosted],
     output=[q.nfatjets_boosted],
     scopes=["mt", "et", "tt", "em", "mm", "ee"],

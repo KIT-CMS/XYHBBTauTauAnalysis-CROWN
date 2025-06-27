@@ -64,14 +64,14 @@ bpair_mass_2 = Producer(
 )
 bpair_btag_value_1 = Producer(
     name="bpair_btag_value_1",
-    call="quantities::jet::btagValue({df}, {output}, {input}, 0)",
+    call="event::quantity::Get<float>({df}, {output}, {input}, 0)",
     input=[nanoAOD.BJet_discriminator, q.dibjetpair],
     output=[q.bpair_btag_value_1],
     scopes=["mt", "et", "tt", "em", "mm", "ee"],
 )
 bpair_btag_value_2 = Producer(
     name="bpair_btag_value_2",
-    call="quantities::jet::btagValue({df}, {output}, {input}, 1)",
+    call="event::quantity::Get<float>({df}, {output}, {input}, 1)",
     input=[nanoAOD.BJet_discriminator, q.dibjetpair],
     output=[q.bpair_btag_value_2],
     scopes=["mt", "et", "tt", "em", "mm", "ee"],
@@ -227,14 +227,14 @@ bpair_mass_2_boosted = Producer(
 )
 bpair_btag_value_1_boosted = Producer(
     name="bpair_btag_value_1_boosted",
-    call="quantities::jet::btagValue({df}, {output}, {input}, 0)",
+    call="event::quantity::Get<float>({df}, {output}, {input}, 0)",
     input=[nanoAOD.BJet_discriminator, q.dibjetpair_boosted],
     output=[q.bpair_btag_value_1_boosted],
     scopes=["mt", "et", "tt", "em", "mm", "ee"],
 )
 bpair_btag_value_2_boosted = Producer(
     name="bpair_btag_value_2_boosted",
-    call="quantities::jet::btagValue({df}, {output}, {input}, 1)",
+    call="event::quantity::Get<float>({df}, {output}, {input}, 1)",
     input=[nanoAOD.BJet_discriminator, q.dibjetpair_boosted],
     output=[q.bpair_btag_value_2_boosted],
     scopes=["mt", "et", "tt", "em", "mm", "ee"],

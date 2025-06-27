@@ -100,13 +100,14 @@ def jerc_producer_factory(
     jet_pt_correction_data = Producer(
         name=f"{producer_prefix}JetPtCorrectionData",
         call=(
-            "physicsobject::jet::JetPtCorrection_data("
+            "physicsobject::jet::PtCorrectionData("
                 "{df}, "
+                "correctionManager, "
                 "{output}, "
                 "{input}, "
                 f"{{{config_parameter_prefix}_jec_file}}, "
-                f"{{{config_parameter_prefix}_jes_tag_data}}, "
-                f"{{{config_parameter_prefix}_jec_algo}}"
+                f"{{{config_parameter_prefix}_jec_algo}}, "
+                f"{{{config_parameter_prefix}_jes_tag_data}}"
             ")"
         ),
         input=[
@@ -124,19 +125,19 @@ def jerc_producer_factory(
     jet_pt_correction_mc = Producer(
         name=f"{producer_prefix}PtCorrectionMC",
         call=(
-            "physicsobject::jet::JetPtCorrection("
+            "physicsobject::jet::PtCorrectionMC("
                 "{df}, "
                 "correctionManager, "
                 "{output}, "
                 "{input}, "
-                f"{{{config_parameter_prefix}_reapplyJES}}, "
-                f"{{{config_parameter_prefix}_jes_sources}}, "
-                f"{{{config_parameter_prefix}_jes_shift}}, "
-                f"{{{config_parameter_prefix}_jer_shift}}, "
                 f"{{{config_parameter_prefix}_jec_file}}, "
-                f"{{{config_parameter_prefix}_jer_tag}}, "
+                f"{{{config_parameter_prefix}_jec_algo}}, "
                 f"{{{config_parameter_prefix}_jes_tag}}, "
-                f"{{{config_parameter_prefix}_jec_algo}}"
+                f"{{{config_parameter_prefix}_jes_sources}}, "
+                f"{{{config_parameter_prefix}_jer_tag}}, "
+                f"{{{config_parameter_prefix}_reapplyJES}}, "
+                f"{{{config_parameter_prefix}_jes_shift}}, "
+                f"{{{config_parameter_prefix}_jer_shift}}" 
             ")"
         ),
         input=[
@@ -159,7 +160,7 @@ def jerc_producer_factory(
     jet_pt_correction_emb = Producer(
         name=f"{producer_prefix}JetPtCorrectionEmb",
         call=(
-            "basefunctions::rename<ROOT::RVec<float>>("
+            "event::quantity::Rename<ROOT::RVec<float>>("
                 "{df}, "
                 "{input}, "
                 "{output}"
@@ -174,7 +175,7 @@ def jerc_producer_factory(
     jet_mass_correction = Producer(
         name=f"{producer_prefix}MassCorrection",
         call=(
-            "physicsobject::ObjectMassCorrectionWithPt("
+            "physicsobject::MassCorrectionWithPt("
                 "{df}, "
                 "{output}, "
                 "{input}"
@@ -193,7 +194,7 @@ def jerc_producer_factory(
     jet_mass_correction_emb = Producer(
         name=f"{producer_prefix}JetMassCorrectionEmb",
         call=(
-            "basefunctions::rename<ROOT::RVec<float>>("
+            "event::quantity::Rename<ROOT::RVec<float>>("
                 "{df}, "
                 "{input}, "
                 "{output}"

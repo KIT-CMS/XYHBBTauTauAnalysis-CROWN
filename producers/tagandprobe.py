@@ -28,7 +28,7 @@ from code_generation.producer import (
 
 BaseMuons = ProducerGroup(
     name="BaseMuons",
-    call="physicsobject::CombineMasks({df}, {output}, {input})",
+    call='physicsobject::CombineMasks({df}, {output}, {input}, "all_of")',
     input=[],
     output=[q.base_muons_mask],
     scopes=["global"],
@@ -40,7 +40,7 @@ BaseMuons = ProducerGroup(
 
 GoodMuons = ProducerGroup(
     name="BaseMuons",
-    call="physicsobject::CombineMasks({df}, {output}, {input})",
+    call='physicsobject::CombineMasks({df}, {output}, {input}, "all_of")',
     input=[],
     output=[q.good_muons_mask],
     scopes=["mm"],
@@ -52,7 +52,7 @@ GoodMuons = ProducerGroup(
 
 GoodMuonsWithDzDxyCut = ProducerGroup(
     name="BaseMuons",
-    call="physicsobject::CombineMasks({df}, {output}, {input})",
+    call='physicsobject::CombineMasks({df}, {output}, {input}, "all_of")',
     input=[],
     output=[q.good_muons_mask],
     scopes=["mm"],
@@ -66,7 +66,7 @@ GoodMuonsWithDzDxyCut = ProducerGroup(
 
 BasePhotons = ProducerGroup(
     name="BasePhotons",
-    call="physicsobject::CombineMasks({df}, {output}, {input})",
+    call='physicsobject::CombineMasks({df}, {output}, {input}, "all_of")',
     input=[],
     output=[q.base_photons_mask],
     scopes=["global"],
@@ -98,7 +98,7 @@ BasePhotons = ProducerGroup(
 
 # GoodMuMuPairFilter = Filter(
 #     name="GoodMuMuPairFilter",
-#     call='basefunctions::FilterFlagsAny({df}, "GoodMuMuPairs", {input})',
+#     call='event::filter::Flags({df}, "GoodMuMuPairs", {input}, "any_of")',
 #     input=[],
 #     scopes=["mm"],
 #     subproducers=[GoodMuMuPairFlag],
@@ -275,7 +275,7 @@ MuonIDs = ProducerGroup(
 
 BaseElectrons = ProducerGroup(
     name="BaseElectrons",
-    call="physicsobject::CombineMasks({df}, {output}, {input})",
+    call='physicsobject::CombineMasks({df}, {output}, {input}, "all_of")',
     input=[],
     output=[q.base_electrons_mask],
     scopes=["global"],
@@ -287,7 +287,7 @@ BaseElectrons = ProducerGroup(
 
 GoodElectrons = ProducerGroup(
     name="BaseElectrons",
-    call="physicsobject::CombineMasks({df}, {output}, {input})",
+    call='physicsobject::CombineMasks({df}, {output}, {input}, "all_of")',
     input=[],
     output=[q.good_electrons_mask],
     scopes=["ee"],
@@ -334,28 +334,28 @@ ElElSingleElectronTriggerFlags_2 = ExtendedVectorProducer(
 ElectronID_WP90_1 = Producer(
     name="ElectronID_WP90_1",
     call="quantities::muon::id({df}, {output}, 0, {input})",
-    input=[q.dileptonpair, nanoAOD.Electron_IDWP90],
+    input=[q.dileptonpair, nanoAOD.Electron_IDWP90_v12],
     output=[tp_q.id_wp90_1],
     scopes=["ee"],
 )
 ElectronID_WP90_2 = Producer(
     name="ElectronID_WP90_2",
     call="quantities::muon::id({df}, {output}, 1, {input})",
-    input=[q.dileptonpair, nanoAOD.Electron_IDWP90],
+    input=[q.dileptonpair, nanoAOD.Electron_IDWP90_v12],
     output=[tp_q.id_wp90_2],
     scopes=["ee"],
 )
 ElectronID_WP80_1 = Producer(
     name="ElectronID_WP80_1",
     call="quantities::muon::id({df}, {output}, 0, {input})",
-    input=[q.dileptonpair, nanoAOD.Electron_IDWP80],
+    input=[q.dileptonpair, nanoAOD.Electron_IDWP80_v12],
     output=[tp_q.id_wp80_1],
     scopes=["ee"],
 )
 ElectronID_WP80_2 = Producer(
     name="ElectronID_WP80_2",
     call="quantities::muon::id({df}, {output}, 1, {input})",
-    input=[q.dileptonpair, nanoAOD.Electron_IDWP80],
+    input=[q.dileptonpair, nanoAOD.Electron_IDWP80_v12],
     output=[tp_q.id_wp80_2],
     scopes=["ee"],
 )
@@ -379,7 +379,7 @@ ElectronIDs = ProducerGroup(
 
 FSR_Photon_Veto_1 = Producer(
     name="FSR_Photon_Veto_1",
-    call="physicsobject::DeltaRParticleVeto({df}, {output}, {input}, {fsr_delta_r})",
+    call="physicsobject::OverlapVeto({df}, {output}, {input}, {fsr_delta_r})",
     input=[
         q.p4_1,
         q.base_photons_mask,
@@ -394,7 +394,7 @@ FSR_Photon_Veto_1 = Producer(
 
 FSR_Photon_Veto_2 = Producer(
     name="FSR_Photon_Veto_1",
-    call="physicsobject::DeltaRParticleVeto({df}, {output}, {input}, {fsr_delta_r})",
+    call="physicsobject::OverlapVeto({df}, {output}, {input}, {fsr_delta_r})",
     input=[
         q.p4_2,
         q.base_photons_mask,
