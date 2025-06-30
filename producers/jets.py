@@ -2,7 +2,7 @@ from ..quantities import output as q
 from ..quantities import nanoAOD as nanoAOD
 from code_generation.producer import Producer, ProducerGroup
 
-from .helpers import jerc_producer_factory
+from ._helpers import jerc_producer_factory
 from ..constants import GLOBAL_SCOPES
 
 
