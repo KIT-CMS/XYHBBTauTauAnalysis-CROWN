@@ -27,6 +27,20 @@ btagSF(ROOT::RDF::RNode df,
 
 namespace scalefactor {
 
+namespace electron {
+
+
+ROOT::RDF::RNode trigger(ROOT::RDF::RNode df,
+                         correctionManager::CorrectionManager &correctionManager, 
+                         const std::string &pt,
+                         const std::string &eta,
+                         const std::string &variation,
+                         const std::string &trigger_output,
+                         const std::string &sf_file,
+                         const std::string &sf_name);
+
+} // end electron
+
 namespace muon {
 
 ROOT::RDF::RNode
@@ -117,6 +131,18 @@ trigger(
 );
 
 } // namespace fatjet
+
+namespace embedding {
+
+ROOT::RDF::RNode
+ditau_trigger_sf(ROOT::RDF::RNode df, correctionManager::CorrectionManager &correctionManager,
+                 const std::string &pt,
+                 const std::string &decaymode, const std::string &output,
+                 const std::string &wp, const std::string &sf_file,
+                 const std::string &corr_name, const std::string &type,
+                 const std::string &corr_type, const std::string &syst);
+
+} // end embedding
 
 } // end scalefactor
 

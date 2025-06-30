@@ -36,7 +36,7 @@ ROOT::RDF::RNode take(
     const std::string &collection_index
 ) {
 
-    auto select = (
+    auto select = [] (
         const ROOT::RVec<T> &input,
         const ROOT::RVec<int> &collection_index
     ) {
