@@ -138,21 +138,21 @@ NumberOfGoodMuons = Producer(
 )
 VetoMuons = Producer(
     name="VetoMuons",
-    call="physicsobject::VetoCandInMask({df}, {output}, {input}, {muon_index_in_pair})",
+    call="physicsobject::VetoSingleObject({df}, {output}, {input}, {muon_index_in_pair})",
     input=[q.base_muons_mask, q.dileptonpair],
     output=[q.veto_muons_mask],
     scopes=["em", "mt", "mm"],
 )
 VetoMuons_boosted = Producer(
     name="VetoMuons_boosted",
-    call="physicsobject::VetoCandInMask({df}, {output}, {input}, {muon_index_in_pair})",
+    call="physicsobject::VetoSingleObject({df}, {output}, {input}, {muon_index_in_pair})",
     input=[q.base_muons_mask, q.boosteddileptonpair],
     output=[q.veto_muons_boosted_mask],
     scopes=["em", "mt", "mm"],
 )
 VetoSecondMuon = Producer(
     name="VetoSecondMuon",
-    call="physicsobject::VetoCandInMask({df}, {output}, {input}, {second_muon_index_in_pair})",
+    call="physicsobject::VetoSingleObject({df}, {output}, {input}, {second_muon_index_in_pair})",
     input=[q.veto_muons_mask, q.dileptonpair],
     output=[q.veto_muons_mask_2],
     scopes=["mm"],
