@@ -27,12 +27,12 @@ def build_config(
     )
 
     configuration.add_producers(
-        ["mt", "et", "tt", "em"],
+        ["mt", "et", "tt"],
         [pairquantities.FastMTTQuantities],
     )
 
     configuration.add_outputs(
-        ["mt", "et", "tt", "em"],
+        ["mt", "et", "tt"],
         [
             q.m_fastmtt,
             q.pt_fastmtt,

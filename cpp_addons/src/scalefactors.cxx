@@ -134,6 +134,54 @@ btagSF(ROOT::RDF::RNode df,
 
 namespace scalefactor {
 
+namespace electron {
+
+/**
+ * @brief Function used to evaluate trigger scale factors from electrons with
+ * correctionlib. Configurations:
+ * @param df The input dataframe
+ * @param correctionManager The CorrectionManager object
+ * @param pt electron pt
+ * @param eta electron eta
+ * @param variation id for the variation of the scale factor "nominal" for nominal
+ * and "up"/"down" the up/down variation
+ * @param trigger_output name of the trigger scale factor column
+ * @param sf_file path to the file with the electron scale factors
+ * @param sf_name name of the electron trigger scale factor
+ * @return a new dataframe containing the new column
+ */
+ROOT::RDF::RNode trigger(ROOT::RDF::RNode df,
+                         correctionManager::CorrectionManager &correctionManager, 
+                         const std::string &pt,
+                         const std::string &eta,
+                         const std::string &variation,
+                         const std::string &trigger_output,
+                         const std::string &sf_file,
+                         const std::string &sf_name) {
+
+    Logger::get("electronTriggerSF")
+        ->debug("Setting up functions for electron trigger sf");
+    Logger::get("electronTriggerSF")->debug("Trigger - Name {}", sf_name);
+    auto evaluator = correctionManager.loadCorrection(sf_file, sf_name);
+    auto df1 =
+        df.Define(trigger_output,
+                  [evaluator, variation,
+                   sf_name](const float &pt, const float &eta) {
+                      Logger::get("electronTriggerSF")
+                          ->debug("Trigger - pt {}, eta {}", pt, eta);
+                      double sf = 1.;
+                      if (pt > 0 && std::abs(eta)<=2.5) {
+                          sf = evaluator->evaluate(
+                              {std::abs(eta), pt, variation});
+                      }
+                      return sf;
+                  },
+                  {pt, eta});
+    return df1;
+}
+
+}
+
 namespace muon {
 
 /**
@@ -520,6 +568,71 @@ trigger(ROOT::RDF::RNode df, correctionManager::CorrectionManager &correctionMan
     return df1;
 }
 } // end fatjet
+
+
+namespace embedding {
+
+/**
+ * @brief Function to evaluate the di-tau trigger or etau/mutau cross trigger
+ * scale factor for embedded events from a xpog file
+ * WARNING: This function is deprecated, please use the new function with
+ * CorrectionManager
+ * @param df the input dataframe
+ * @param correctionManager The CorrectionManager object
+ * @param pt the name of the column containing the tau pt variable
+ * @param decaymode the name of the column containing the tau decay mode
+ * variable
+ * @param output name of the scale factor column
+ * @param wp the name of the the tau id working point VVVLoose-VVTight
+ * @param sf_file path to the file with the tau trigger scale factors
+ * @param corr_name name of the correction iht in the file
+ * @param type the type of the tau trigger, available are "ditau", "etau",
+ * "mutau", "ditauvbf"
+ * @param corr_type name of the tau trigger correction type, available are
+ * "eff_data", "eff_mc", "sf"
+ * @param syst name of the systematic variation, options are "nom", "up", "down"
+ * @return ROOT::RDF::RNode a new dataframe containing the new sf column
+ */
+
+ROOT::RDF::RNode
+ditau_trigger_sf(ROOT::RDF::RNode df, correctionManager::CorrectionManager &correctionManager,
+                 const std::string &pt,
+                 const std::string &decaymode, const std::string &output,
+                 const std::string &wp, const std::string &sf_file,
+                 const std::string &corr_name, const std::string &type,
+                 const std::string &corr_type, const std::string &syst) {
+
+    Logger::get("ditau_trigger")
+        ->debug("Setting up function for di-tau trigger sf");
+    Logger::get("ditau_trigger")
+        ->debug("correction type {}, name {}, file {}", corr_type, corr_name,
+                sf_file);
+    auto evaluator = correctionManager.loadCorrection(sf_file, corr_name);
+
+    Logger::get("ditau_trigger")->debug("WP {} - trigger type {}", wp, type);
+    auto trigger_sf_calculator = [evaluator, wp, type, corr_type,
+                                  syst](const float &pt, const int &decaymode) {
+        float sf = 1.;
+        Logger::get("ditau_trigger")
+            ->debug("decaymode {}, pt {}", decaymode, pt);
+        if (pt > 40.) {
+            if (decaymode == 0 || decaymode == 1 || decaymode == 10 ||
+                decaymode == 11) {
+                sf = evaluator->evaluate(
+                    {pt, decaymode, type, wp, corr_type, syst});
+            } else {
+                sf = evaluator->evaluate({pt, -1, type, wp, corr_type, syst});
+            }
+        }
+        Logger::get("ditau_trigger")->debug("Scale Factor {}", sf);
+        return sf;
+    };
+    auto df1 = df.Define(output, trigger_sf_calculator, {pt, decaymode});
+    return df1;
+}
+
+} // namespace embedding
+
 
 } // end scalefactor
 
