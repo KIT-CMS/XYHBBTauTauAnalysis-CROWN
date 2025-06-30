@@ -6,7 +6,7 @@ import inspect
 
 
 def run(args):
-    analysis_name = "tau"
+    analysis_name = "xyh_bbtautau"
 
     available_samples = [
         "ggh_htautau",
