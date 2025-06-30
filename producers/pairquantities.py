@@ -111,15 +111,15 @@ muon_dxy_2 = Producer(
 )
 muon_is_global_1 = Producer(
     name="muon_is_global_1",
-    call="quantities::muon::is_global({df}, {output}, {input}, 0)",
-    input=[nanoAOD.Muon_isGlobal, q.dileptonpair],
+    call="quantities::muon::is_global({df}, {output}, 0, {input})",
+    input=[q.dileptonpair, nanoAOD.Muon_isGlobal],
     output=[q.is_global_1],
     scopes=["mt", "mm"],
 )
 muon_is_global_2 = Producer(
     name="muon_is_global_2",
-    call="quantities::muon::is_global({df}, {output}, {input}, 1)",
-    input=[nanoAOD.Muon_isGlobal, q.dileptonpair],
+    call="quantities::muon::is_global({df}, {output}, 1, {input})",
+    input=[q.dileptonpair, nanoAOD.Muon_isGlobal],
     output=[q.is_global_2],
     scopes=["em", "mm"],
 )
