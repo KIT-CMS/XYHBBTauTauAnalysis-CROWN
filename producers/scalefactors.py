@@ -11,28 +11,60 @@ from code_generation.producer import ExtendedVectorProducer
 
 Muon_1_ID_SF = Producer(
     name="MuonID_SF",
-    call='scalefactor::muon::id({df}, correctionManager, {input}, "{muon_sf_varation}", {output}, "{muon_sf_file}", "{muon_id_sf_name}")',
+    call="""physicsobject::muon::scalefactor::Id(
+        {df}, 
+        correctionManager, 
+        {output}, 
+        {input}, 
+        "{muon_sf_file}", 
+        "{muon_id_sf_name}", 
+        "{muon_sf_varation}")
+        """,
     input=[q.pt_1, q.eta_1],
     output=[q.id_wgt_mu_1],
     scopes=["mt", "mm"],
 )
 Muon_1_Iso_SF = Producer(
     name="MuonIso_SF",
-    call='scalefactor::muon::iso({df}, correctionManager, {input}, "{muon_sf_varation}", {output}, "{muon_sf_file}", "{muon_iso_sf_name}")',
+    call="""physicsobject::muon::scalefactor::Iso(
+        {df}, 
+        correctionManager, 
+        {output}, 
+        {input}, 
+        "{muon_sf_file}", 
+        "{muon_iso_sf_name}", 
+        "{muon_sf_varation}")
+        """,
     input=[q.pt_1, q.eta_1],
     output=[q.iso_wgt_mu_1],
     scopes=["mt", "mm"],
 )
 Muon_2_ID_SF = Producer(
     name="MuonID_SF",
-    call='scalefactor::muon::id({df}, correctionManager, {input}, "{muon_sf_varation}", {output}, "{muon_sf_file}", "{muon_id_sf_name}")',
+    call="""physicsobject::muon::scalefactor::Id(
+        {df}, 
+        correctionManager, 
+        {output}, 
+        {input}, 
+        "{muon_sf_file}", 
+        "{muon_id_sf_name}", 
+        "{muon_sf_varation}")
+        """,
     input=[q.pt_2, q.eta_2],
     output=[q.id_wgt_mu_2],
     scopes=["em", "mm"],
 )
 Muon_2_Iso_SF = Producer(
     name="MuonIso_SF",
-    call='scalefactor::muon::iso({df}, correctionManager, {input}, "{muon_sf_varation}", {output}, "{muon_sf_file}", "{muon_iso_sf_name}")',
+    call="""physicsobject::muon::scalefactor::Iso(
+        {df}, 
+        correctionManager, 
+        {output}, 
+        {input}, 
+        "{muon_sf_file}", 
+        "{muon_iso_sf_name}", 
+        "{muon_sf_varation}")
+        """,
     input=[q.pt_2, q.eta_2],
     output=[q.iso_wgt_mu_2],
     scopes=["em", "mm"],
@@ -70,14 +102,30 @@ Muon_1_Reco_SF_boosted = Producer(
 )
 Muon_1_ID_SF_boosted = Producer(
     name="MuonID_SF_boosted",
-    call='scalefactor::muon::id({df}, correctionManager, {input}, "{muon_id_sf_variation}", {output}, "{muon_sf_file}", "{muon_id_sf_name}")',
+    call="""physicsobject::muon::scalefactor::Id(
+        {df}, 
+        correctionManager, 
+        {output}, 
+        {input}, 
+        "{muon_sf_file}", 
+        "{muon_id_sf_name}", 
+        "{muon_sf_varation}")
+        """,
     input=[q.boosted_pt_1, q.boosted_eta_1],
     output=[q.id_wgt_mu_boosted_1],
     scopes=["mt"],
 )
 Muon_1_Iso_SF_boosted = Producer(
     name="MuonIso_SF_boosted",
-    call='scalefactor::muon::iso({df}, correctionManager, {input}, "{muon_iso_sf_variation}", {output}, "{muon_sf_file}", "{muon_iso_sf_name}")',
+    call="""physicsobject::muon::scalefactor::Iso(
+        {df}, 
+        correctionManager, 
+        {output}, 
+        {input}, 
+        "{muon_sf_file}", 
+        "{muon_iso_sf_name}", 
+        "{muon_sf_varation}")
+        """,
     input=[q.boosted_pt_1, q.boosted_eta_1],
     output=[q.iso_wgt_mu_boosted_1],
     scopes=["mt"],
@@ -101,9 +149,24 @@ Muon_SF_boosted = ProducerGroup(
 # Tau ID/ISO SF
 # The readout is done via correctionlib
 ############################
+
 Tau_1_VsJetTauID_SF = ExtendedVectorProducer(
     name="Tau_1_VsJetTauID_SF",
-    call='scalefactor::tau::id_vsJet_tt({df}, correctionManager, {input}, {vec_open}{tau_dms}{vec_close}, "{vsjet_tau_id_WP}", "{tau_sf_vsjet_tauDM0}", "{tau_sf_vsjet_tauDM1}", "{tau_sf_vsjet_tauDM10}", "{tau_sf_vsjet_tauDM11}", "{tau_vsjet_sf_dependence}", "{tau_vsjet_vseleWP}", {output}, "{tau_sf_file}", "{tau_id_discriminator}")',
+    call="""physicsobject::tau::scalefactor::Id_vsJet_tt(
+        {df}, 
+        correctionManager, 
+        {output}, 
+        {input}, 
+        "{tau_sf_file}", 
+        "{tau_id_discriminator}", 
+        "{vsjet_tau_id_WP}", 
+        "{tau_vsjet_vseleWP}", 
+        "{tau_vsjet_sf_dependence}", 
+        "{tau_sf_vsjet_tauDM0}", 
+        "{tau_sf_vsjet_tauDM1}", 
+        "{tau_sf_vsjet_tauDM10}", 
+        "{tau_sf_vsjet_tauDM11}")
+        """,
     input=[q.pt_1, q.tau_decaymode_1, q.gen_match_1],
     output="tau_1_vsjet_sf_outputname",
     scope=["tt"],
@@ -111,7 +174,17 @@ Tau_1_VsJetTauID_SF = ExtendedVectorProducer(
 )
 Tau_1_VsEleTauID_SF = ExtendedVectorProducer(
     name="Tau_1_VsEleTauID_SF",
-    call='scalefactor::tau::id_vsEle({df}, correctionManager, {input}, {vec_open}{tau_dms}{vec_close}, "{vsele_tau_id_WP}", "{tau_sf_vsele_barrel}", "{tau_sf_vsele_endcap}", {output}, "{tau_sf_file}", "{tau_id_discriminator}")',
+    call="""physicsobject::tau::scalefactor::Id_vsEle(
+        {df}, 
+        correctionManager, 
+        {output}, 
+        {input}, 
+        "{tau_sf_file}", 
+        "{tau_id_discriminator}", 
+        "{vsele_tau_id_WP}", 
+        "{tau_sf_vsele_barrel}", 
+        "{tau_sf_vsele_endcap}")
+        """,
     input=[q.eta_1, q.tau_decaymode_1, q.gen_match_1],
     output="tau_1_vsele_sf_outputname",
     scope=["tt"],
@@ -119,7 +192,20 @@ Tau_1_VsEleTauID_SF = ExtendedVectorProducer(
 )
 Tau_1_VsMuTauID_SF = ExtendedVectorProducer(
     name="Tau_1_VsMuTauID_SF",
-    call='scalefactor::tau::id_vsMu({df}, correctionManager, {input}, {vec_open}{tau_dms}{vec_close}, "{vsmu_tau_id_WP}", "{tau_sf_vsmu_wheel1}", "{tau_sf_vsmu_wheel2}", "{tau_sf_vsmu_wheel3}", "{tau_sf_vsmu_wheel4}", "{tau_sf_vsmu_wheel5}", {output}, "{tau_sf_file}", "{tau_id_discriminator}")',
+    call="""physicsobject::tau::scalefactor::Id_vsMu(
+        {df}, 
+        correctionManager, 
+        {output}, 
+        {input}, 
+        "{tau_sf_file}", 
+        "{tau_id_discriminator}", 
+        "{vsmu_tau_id_WP}", 
+        "{tau_sf_vsmu_wheel1}", 
+        "{tau_sf_vsmu_wheel2}", 
+        "{tau_sf_vsmu_wheel3}", 
+        "{tau_sf_vsmu_wheel4}", 
+        "{tau_sf_vsmu_wheel5}")
+        """,
     input=[q.eta_1, q.tau_decaymode_1, q.gen_match_1],
     output="tau_1_vsmu_sf_outputname",
     scope=["tt"],
@@ -127,7 +213,23 @@ Tau_1_VsMuTauID_SF = ExtendedVectorProducer(
 )
 Tau_2_VsJetTauID_lt_SF = ExtendedVectorProducer(
     name="Tau_2_VsJetTauID_lt_SF",
-    call='scalefactor::tau::id_vsJet_lt({df}, correctionManager, {input}, {vec_open}{tau_dms}{vec_close}, "{vsjet_tau_id_WP}", "{tau_sf_vsjet_tau30to35}", "{tau_sf_vsjet_tau35to40}", "{tau_sf_vsjet_tau40to500}", "{tau_sf_vsjet_tau500to1000}", "{tau_sf_vsjet_tau1000toinf}", "{tau_vsjet_sf_dependence}","{tau_vsjet_vseleWP}", {output}, "{tau_sf_file}", "{tau_id_discriminator}")',
+    call="""physicsobject::tau::scalefactor::Id_vsJet_lt(
+        {df}, 
+        correctionManager, 
+        {output}, 
+        {input}, 
+        "{tau_sf_file}", 
+        "{tau_id_discriminator}", 
+        {vec_open}{tau_dms}{vec_close}, 
+        "{vsjet_tau_id_WP}", 
+        "{tau_vsjet_vseleWP}", 
+        "{tau_vsjet_sf_dependence}", 
+        "{tau_sf_vsjet_tau30to35}", 
+        "{tau_sf_vsjet_tau35to40}", 
+        "{tau_sf_vsjet_tau40to500}", 
+        "{tau_sf_vsjet_tau500to1000}", 
+        "{tau_sf_vsjet_tau1000toinf}")
+        """,
     input=[q.pt_2, q.tau_decaymode_2, q.gen_match_2],
     output="tau_2_vsjet_sf_outputname",
     scope=["et", "mt"],
@@ -135,7 +237,21 @@ Tau_2_VsJetTauID_lt_SF = ExtendedVectorProducer(
 )
 Tau_2_VsJetTauID_tt_SF = ExtendedVectorProducer(
     name="Tau_2_VsJetTauID_tt_SF",
-    call='scalefactor::tau::id_vsJet_tt({df}, correctionManager, {input}, {vec_open}{tau_dms}{vec_close}, "{vsjet_tau_id_WP}", "{tau_sf_vsjet_tauDM0}", "{tau_sf_vsjet_tauDM1}", "{tau_sf_vsjet_tauDM10}", "{tau_sf_vsjet_tauDM11}", "{tau_vsjet_sf_dependence}", "{tau_vsjet_vseleWP}", {output}, "{tau_sf_file}", "{tau_id_discriminator}")',
+    call="""physicsobject::tau::scalefactor::Id_vsJet_tt(
+        {df}, 
+        correctionManager, 
+        {output}, 
+        {input}, 
+        "{tau_sf_file}", 
+        "{tau_id_discriminator}", 
+        "{vsjet_tau_id_WP}", 
+        "{tau_vsjet_vseleWP}", 
+        "{tau_vsjet_sf_dependence}", 
+        "{tau_sf_vsjet_tauDM0}", 
+        "{tau_sf_vsjet_tauDM1}", 
+        "{tau_sf_vsjet_tauDM10}", 
+        "{tau_sf_vsjet_tauDM11}")
+        """,
     input=[q.pt_2, q.tau_decaymode_2, q.gen_match_2],
     output="tau_2_vsjet_sf_outputname",
     scope=["tt"],
@@ -143,7 +259,17 @@ Tau_2_VsJetTauID_tt_SF = ExtendedVectorProducer(
 )
 Tau_2_VsEleTauID_SF = ExtendedVectorProducer(
     name="Tau_2_VsEleTauID_SF",
-    call='scalefactor::tau::id_vsEle({df}, correctionManager, {input}, {vec_open}{tau_dms}{vec_close}, "{vsele_tau_id_WP}", "{tau_sf_vsele_barrel}", "{tau_sf_vsele_endcap}", {output}, "{tau_sf_file}", "{tau_id_discriminator}")',
+    call="""physicsobject::tau::scalefactor::Id_vsEle(
+        {df}, 
+        correctionManager, 
+        {output}, 
+        {input}, 
+        "{tau_sf_file}", 
+        "{tau_id_discriminator}", 
+        "{vsele_tau_id_WP}", 
+        "{tau_sf_vsele_barrel}", 
+        "{tau_sf_vsele_endcap}")
+        """,
     input=[q.eta_2, q.tau_decaymode_2, q.gen_match_2],
     output="tau_2_vsele_sf_outputname",
     scope=["et", "mt", "tt"],
@@ -151,7 +277,20 @@ Tau_2_VsEleTauID_SF = ExtendedVectorProducer(
 )
 Tau_2_VsMuTauID_SF = ExtendedVectorProducer(
     name="Tau_2_VsMuTauID_SF",
-    call='scalefactor::tau::id_vsMu({df}, correctionManager, {input}, {vec_open}{tau_dms}{vec_close}, "{vsmu_tau_id_WP}", "{tau_sf_vsmu_wheel1}", "{tau_sf_vsmu_wheel2}", "{tau_sf_vsmu_wheel3}", "{tau_sf_vsmu_wheel4}", "{tau_sf_vsmu_wheel5}", {output}, "{tau_sf_file}", "{tau_id_discriminator}")',
+    call="""physicsobject::tau::scalefactor::Id_vsMu(
+        {df}, 
+        correctionManager, 
+        {output}, 
+        {input}, 
+        "{tau_sf_file}", 
+        "{tau_id_discriminator}", 
+        "{vsmu_tau_id_WP}", 
+        "{tau_sf_vsmu_wheel1}", 
+        "{tau_sf_vsmu_wheel2}", 
+        "{tau_sf_vsmu_wheel3}", 
+        "{tau_sf_vsmu_wheel4}", 
+        "{tau_sf_vsmu_wheel5}")
+        """,
     input=[q.eta_2, q.tau_decaymode_2, q.gen_match_2],
     output="tau_2_vsmu_sf_outputname",
     scope=["et", "mt", "tt"],
@@ -195,7 +334,17 @@ Tau_1_oldIsoTauID_tt_SF = ExtendedVectorProducer(
 )
 Tau_1_antiEleTauID_SF = ExtendedVectorProducer(
     name="Tau_1_antiEleTauID_SF",
-    call='scalefactor::tau::id_vsEle({df}, correctionManager, {input}, {vec_open}{boostedtau_dms}{vec_close}, "{antiele_boostedtau_id_WP}", "{boostedtau_sf_antiele_barrel}", "{boostedtau_sf_antiele_endcap}", {output}, "{boostedtau_sf_file}", "{boostedtau_id_discriminator}")',
+    call="""physicsobject::tau::scalefactor::Id_vsEle(
+        {df}, 
+        correctionManager, 
+        {output}, 
+        {input}, 
+        "{boostedtau_sf_file}", 
+        "{boostedtau_id_discriminator}", 
+        "{antiele_boostedtau_id_WP}", 
+        "{boostedtau_sf_antiele_barrel}", 
+        "{boostedtau_sf_antiele_endcap}")
+        """,
     input=[q.boosted_eta_1, q.boosted_tau_decaymode_1, q.boosted_gen_match_1],
     output="boostedtau_1_antiele_sf_outputname",
     scope=["tt"],
@@ -203,7 +352,20 @@ Tau_1_antiEleTauID_SF = ExtendedVectorProducer(
 )
 Tau_1_antiMuTauID_SF = ExtendedVectorProducer(
     name="Tau_1_antiMuTauID_SF",
-    call='scalefactor::tau::id_vsMu({df}, correctionManager, {input}, {vec_open}{boostedtau_dms}{vec_close}, "{antimu_boostedtau_id_WP}", "{boostedtau_sf_antimu_wheel1}", "{boostedtau_sf_antimu_wheel2}", "{boostedtau_sf_antimu_wheel3}", "{boostedtau_sf_antimu_wheel4}", "{boostedtau_sf_antimu_wheel5}", {output}, "{boostedtau_sf_file}", "{boostedtau_id_discriminator}")',
+    call="""physicsobject::tau::scalefactor::Id_vsMu(
+        {df}, 
+        correctionManager, 
+        {output}, 
+        {input}, 
+        "{boostedtau_sf_file}", 
+        "{boostedtau_id_discriminator}", 
+        "{antimu_boostedtau_id_WP}", 
+        "{boostedtau_sf_antimu_wheel1}", 
+        "{boostedtau_sf_antimu_wheel2}", 
+        "{boostedtau_sf_antimu_wheel3}", 
+        "{boostedtau_sf_antimu_wheel4}", 
+        "{boostedtau_sf_antimu_wheel5}")
+        """,
     input=[q.boosted_eta_1, q.boosted_tau_decaymode_1, q.boosted_gen_match_1],
     output="boostedtau_1_antimu_sf_outputname",
     scope=["tt"],
@@ -227,7 +389,17 @@ Tau_2_oldIsoTauID_lt_SF = ExtendedVectorProducer(
 )
 Tau_2_antiEleTauID_SF = ExtendedVectorProducer(
     name="Tau_2_antiEleTauID_SF",
-    call='scalefactor::tau::id_vsEle({df}, correctionManager, {input}, {vec_open}{boostedtau_dms}{vec_close}, "{antiele_boostedtau_id_WP}", "{boostedtau_sf_antiele_barrel}", "{boostedtau_sf_antiele_endcap}", {output}, "{boostedtau_sf_file}", "{boostedtau_id_discriminator}")',
+    call="""physicsobject::tau::scalefactor::Id_vsEle(
+        {df}, 
+        correctionManager, 
+        {output}, 
+        {input}, 
+        "{boostedtau_sf_file}", 
+        "{boostedtau_id_discriminator}", 
+        "{antiele_boostedtau_id_WP}", 
+        "{boostedtau_sf_antiele_barrel}", 
+        "{boostedtau_sf_vsele_endcap}")
+        """,
     input=[q.boosted_eta_2, q.boosted_tau_decaymode_2, q.boosted_gen_match_2],
     output="boostedtau_2_antiele_sf_outputname",
     scope=["et", "mt", "tt"],
@@ -235,7 +407,20 @@ Tau_2_antiEleTauID_SF = ExtendedVectorProducer(
 )
 Tau_2_antiMuTauID_SF = ExtendedVectorProducer(
     name="Tau_2_antiMuTauID_SF",
-    call='scalefactor::tau::id_vsMu({df}, correctionManager, {input}, {vec_open}{boostedtau_dms}{vec_close}, "{antimu_boostedtau_id_WP}", "{boostedtau_sf_antimu_wheel1}", "{boostedtau_sf_antimu_wheel2}", "{boostedtau_sf_antimu_wheel3}", "{boostedtau_sf_antimu_wheel4}", "{boostedtau_sf_antimu_wheel5}", {output}, "{boostedtau_sf_file}", "{boostedtau_id_discriminator}")',
+    call="""physicsobject::tau::scalefactor::Id_vsMu(
+        {df}, 
+        correctionManager, 
+        {output}, 
+        {input}, 
+        "{boostedtau_sf_file}", 
+        "{boostedtau_id_discriminator}", 
+        "{antimu_boostedtau_id_WP}", 
+        "{boostedtau_sf_antimu_wheel1}", 
+        "{boostedtau_sf_antimu_wheel2}", 
+        "{boostedtau_sf_antimu_wheel3}", 
+        "{boostedtau_sf_antimu_wheel4}", 
+        "{boostedtau_sf_antimu_wheel5}")
+        """,
     input=[q.boosted_eta_2, q.boosted_tau_decaymode_2, q.boosted_gen_match_2],
     output="boostedtau_2_antimu_sf_outputname",
     scope=["et", "mt", "tt"],
@@ -370,7 +555,16 @@ EleID_SF_boosted = ProducerGroup(
 ###################################
 MTGenerateSingleMuonTriggerSF_MC = ExtendedVectorProducer(
     name="MTGenerateSingleMuonTriggerSF_MC",
-    call='scalefactor::embedding::muon_sf({df}, correctionManager, {input}, {output}, "{mc_muon_sf_file}", "mc", "{mc_trigger_sf}", {mc_muon_trg_extrapolation})',
+    call="""embedding::muon::Scalefactor(
+        {df}, 
+        correctionManager, 
+        {output}, 
+        {input}, 
+        "{mc_muon_sf_file}", 
+        "{mc_trigger_sf}", 
+        "mc", 
+        {mc_muon_trg_extrapolation})
+        """,
     input=[q.pt_1, q.eta_1],
     output="flagname",
     scope=["mt", "mm"],
@@ -387,7 +581,16 @@ BoostedMTGenerateSingleMuonTriggerSF_MC = ExtendedVectorProducer(
 
 ETGenerateSingleElectronTriggerSF_MC = ExtendedVectorProducer(
     name="ETGenerateSingleElectronTriggerSF_MC",
-    call='scalefactor::embedding::electron_sf({df}, correctionManager, {input}, {output}, "{mc_electron_sf_file}", "mc", "{mc_trigger_sf}" , {mc_electron_trg_extrapolation})',
+    call="""embedding::electron::Scalefactor(
+        {df}, 
+        correctionManager, 
+        {output}, 
+        {input}, 
+        "{mc_electron_sf_file}", 
+        "{mc_trigger_sf}", 
+        "mc", 
+        {mc_electron_trg_extrapolation})
+        """,
     input=[q.pt_1, q.eta_1],
     output="flagname",
     scope=["et", "ee"],
@@ -404,14 +607,36 @@ BoostedETGenerateSingleElectronTriggerSF_MC = ExtendedVectorProducer(
 
 TTGenerateDoubleTauTriggerSF_MC_1 = Producer(
     name="TTGenerateDoubleTauTriggerSF_MC_1",
-    call='scalefactor::embedding::ditau_trigger_sf({df}, correctionManager, {input}, {output}, "{ditau_trigger_wp}", "{tau_sf_file}", "tau_trigger", "{ditau_trigger_type}", "{ditau_trigger_corrtype}", "{ditau_trigger_syst}")',
+    call="""physicsobject::tau::scalefactor::Trigger(
+        {df}, 
+        correctionManager, 
+        {output}, 
+        {input}, 
+        "{tau_sf_file}", 
+        "tau_trigger", 
+        "{ditau_trigger_type}", 
+        "{ditau_trigger_wp}", 
+        "{ditau_trigger_corrtype}", 
+        "{ditau_trigger_syst}")
+        """,
     input=[q.pt_1, q.tau_decaymode_1],
     output=[q.trg_wgt_double_tau_1],
     scopes=["tt"],
 )
 TTGenerateDoubleTauTriggerSF_MC_2 = Producer(
     name="TTGenerateDoubleTauTriggerSF_MC_2",
-    call='scalefactor::embedding::ditau_trigger_sf({df}, correctionManager, {input}, {output}, "{ditau_trigger_wp}", "{tau_sf_file}", "tau_trigger", "{ditau_trigger_type}", "{ditau_trigger_corrtype}", "{ditau_trigger_syst}")',
+    call="""physicsobject::tau::scalefactor::Trigger(
+        {df}, 
+        correctionManager, 
+        {output}, 
+        {input}, 
+        "{tau_sf_file}", 
+        "tau_trigger", 
+        "{ditau_trigger_type}", 
+        "{ditau_trigger_wp}", 
+        "{ditau_trigger_corrtype}", 
+        "{ditau_trigger_syst}")
+        """,
     input=[q.pt_2, q.tau_decaymode_2],
     output=[q.trg_wgt_double_tau_2],
     scopes=["tt"],
@@ -440,7 +665,16 @@ BoostedTTGenerateFatjetTriggerSF_MC = Producer(
 ####################################
 TauEmbeddingMuonIDSF_1_MC = Producer(
     name="TauEmbeddingMuonIDSF_1_MC",
-    call='scalefactor::embedding::muon_sf({df}, correctionManager, {input}, {output}, "{mc_muon_sf_file}", "mc", "{mc_muon_id_sf}", {mc_muon_id_extrapolation})',
+    call="""embedding::muon::Scalefactor(
+        {df}, 
+        correctionManager, 
+        {output}, 
+        {input}, 
+        "{mc_muon_sf_file}", 
+        "{mc_muon_id_sf}", 
+        "mc", 
+        {mc_muon_id_extrapolation})
+        """,
     input=[q.pt_1, q.eta_1],
     output=[q.id_wgt_mu_1],
     scopes=["mt", "mm"],
@@ -448,7 +682,16 @@ TauEmbeddingMuonIDSF_1_MC = Producer(
 
 TauEmbeddingMuonIDSF_2_MC = Producer(
     name="TauEmbeddingMuonIDSF_2_MC",
-    call='scalefactor::embedding::muon_sf({df}, correctionManager, {input}, {output}, "{mc_muon_sf_file}", "mc", "{mc_muon_id_sf}", {mc_muon_id_extrapolation})',
+    call="""embedding::muon::Scalefactor(
+        {df}, 
+        correctionManager, 
+        {output}, 
+        {input}, 
+        "{mc_muon_sf_file}", 
+        "{mc_muon_id_sf}", 
+        "mc", 
+        {mc_muon_id_extrapolation})
+        """,
     input=[q.pt_2, q.eta_2],
     output=[q.id_wgt_mu_2],
     scopes=["mm", "em"],
@@ -456,7 +699,16 @@ TauEmbeddingMuonIDSF_2_MC = Producer(
 
 TauEmbeddingMuonIsoSF_1_MC = Producer(
     name="TauEmbeddingMuonIsoSF_1_MC",
-    call='scalefactor::embedding::muon_sf({df}, correctionManager, {input}, {output}, "{mc_muon_sf_file}", "mc", "{mc_muon_iso_sf}", {mc_muon_iso_extrapolation})',
+    call="""embedding::muon::Scalefactor(
+        {df}, 
+        correctionManager, 
+        {output}, 
+        {input}, 
+        "{mc_muon_sf_file}", 
+        "{mc_muon_iso_sf}", 
+        "mc", 
+        {mc_muon_iso_extrapolation})
+        """,
     input=[q.pt_1, q.eta_1],
     output=[q.iso_wgt_mu_1],
     scopes=["mt", "mm"],
@@ -464,7 +716,16 @@ TauEmbeddingMuonIsoSF_1_MC = Producer(
 
 TauEmbeddingMuonIsoSF_2_MC = Producer(
     name="TauEmbeddingMuonIsoSF_2_MC",
-    call='scalefactor::embedding::muon_sf({df}, correctionManager, {input}, {output}, "{mc_muon_sf_file}", "mc", "{mc_muon_iso_sf}", {mc_muon_iso_extrapolation})',
+    call="""embedding::muon::Scalefactor(
+        {df}, 
+        correctionManager, 
+        {output}, 
+        {input}, 
+        "{mc_muon_sf_file}", 
+        "{mc_muon_iso_sf}", 
+        "mc", 
+        {mc_muon_iso_extrapolation})
+        """,
     input=[q.pt_2, q.eta_2],
     output=[q.iso_wgt_mu_2],
     scopes=["mm", "em"],
@@ -472,14 +733,30 @@ TauEmbeddingMuonIsoSF_2_MC = Producer(
 
 TauEmbeddingBoostedMuonIDSF_1_MC = Producer(
     name="TauEmbeddingBoostedMuonIDSF_1_MC",
-    call='scalefactor::embedding::muon_sf({df}, correctionManager, {input}, {output}, "{mc_muon_sf_file}", "mc", "{mc_muon_id_sf}")',
+    call="""embedding::muon::Scalefactor(
+        {df}, 
+        correctionManager, 
+        {output}, 
+        {input}, 
+        "{mc_muon_sf_file}", 
+        "{mc_muon_id_sf}", 
+        "mc")
+        """,
     input=[q.boosted_pt_1, q.boosted_eta_1],
     output=[q.emb_id_wgt_mu_boosted_1],
     scopes=["mt", "mm"],
 )
 TauEmbeddingBoostedMuonIsoSF_1_MC = Producer(
     name="TauEmbeddingBoostedMuonIsoSF_1_MC",
-    call='scalefactor::embedding::muon_sf({df}, correctionManager, {input}, {output}, "{mc_muon_sf_file}", "mc", "{mc_muon_iso_sf}")',
+    call="""embedding::muon::Scalefactor(
+        {df}, 
+        correctionManager, 
+        {output}, 
+        {input}, 
+        "{mc_muon_sf_file}", 
+        "{mc_muon_iso_sf}", 
+        "mc")
+        """,
     input=[q.boosted_pt_1, q.boosted_eta_1],
     output=[q.emb_iso_wgt_mu_boosted_1],
     scopes=["mt", "mm"],
@@ -489,7 +766,16 @@ TauEmbeddingBoostedMuonIsoSF_1_MC = Producer(
 
 TauEmbeddingElectronIDSF_1_MC = Producer(
     name="TauEmbeddingElectronIDSF_1_MC",
-    call='scalefactor::embedding::electron_sf({df}, correctionManager, {input}, {output}, "{mc_electron_sf_file}", "mc", "{mc_electron_id_sf}", {mc_electron_id_extrapolation})',
+    call="""embedding::electron::Scalefactor(
+        {df}, 
+        correctionManager, 
+        {output}, 
+        {input}, 
+        "{mc_electron_sf_file}", 
+        "{mc_electron_id_sf}", 
+        "mc", 
+        {mc_electron_id_extrapolation})
+        """,
     input=[q.pt_1, q.eta_1],
     output=[q.id_wgt_ele_1],
     scopes=["et", "ee", "em"],
@@ -497,7 +783,16 @@ TauEmbeddingElectronIDSF_1_MC = Producer(
 
 TauEmbeddingElectronIDSF_2_MC = Producer(
     name="TauEmbeddingElectronIDSF_2_MC",
-    call='scalefactor::embedding::electron_sf({df}, correctionManager, {input}, {output}, "{mc_electron_sf_file}", "mc", "{mc_electron_id_sf}", {mc_electron_id_extrapolation})',
+    call="""embedding::electron::Scalefactor(
+        {df}, 
+        correctionManager, 
+        {output}, 
+        {input}, 
+        "{mc_electron_sf_file}", 
+        "{mc_electron_id_sf}", 
+        "mc", 
+        {mc_electron_id_extrapolation})
+        """,
     input=[q.pt_2, q.eta_2],
     output=[q.id_wgt_ele_2],
     scopes=["ee"],
@@ -505,7 +800,16 @@ TauEmbeddingElectronIDSF_2_MC = Producer(
 
 TauEmbeddingElectronIsoSF_1_MC = Producer(
     name="TauEmbeddingElectronIsoSF_1_MC",
-    call='scalefactor::embedding::electron_sf({df}, correctionManager, {input}, {output}, "{mc_electron_sf_file}", "mc", "{mc_electron_iso_sf}", {mc_electron_iso_extrapolation})',
+    call="""embedding::electron::Scalefactor(
+        {df}, 
+        correctionManager, 
+        {output}, 
+        {input}, 
+        "{mc_electron_sf_file}", 
+        "{mc_electron_iso_sf}", 
+        "mc", 
+        {mc_electron_iso_extrapolation})
+        """,
     input=[q.pt_1, q.eta_1],
     output=[q.iso_wgt_ele_1],
     scopes=["et", "ee", "em"],
@@ -513,7 +817,16 @@ TauEmbeddingElectronIsoSF_1_MC = Producer(
 
 TauEmbeddingElectronIsoSF_2_MC = Producer(
     name="TauEmbeddingElectronIsoSF_2_MC",
-    call='scalefactor::embedding::electron_sf({df}, correctionManager, {input}, {output}, "{mc_electron_sf_file}", "mc", "{mc_electron_iso_sf}", {mc_electron_iso_extrapolation})',
+    call="""embedding::electron::Scalefactor(
+        {df}, 
+        correctionManager, 
+        {output}, 
+        {input}, 
+        "{mc_electron_sf_file}", 
+        "{mc_electron_iso_sf}", 
+        "mc", 
+        {mc_electron_iso_extrapolation})
+        """,
     input=[q.pt_2, q.eta_2],
     output=[q.iso_wgt_ele_2],
     scopes=["ee"],
@@ -521,14 +834,30 @@ TauEmbeddingElectronIsoSF_2_MC = Producer(
 
 TauEmbeddingBoostedElectronIDSF_1_MC = Producer(
     name="TauEmbeddingBoostedElectronIDSF_1_MC",
-    call='scalefactor::embedding::electron_sf({df}, correctionManager, {input}, {output}, "{mc_electron_sf_file}", "mc", "{mc_electron_id_sf}")',
+    call="""embedding::electron::Scalefactor(
+        {df}, 
+        correctionManager, 
+        {output}, 
+        {input}, 
+        "{mc_electron_sf_file}", 
+        "{mc_electron_id_sf}", 
+        "mc")
+        """,
     input=[q.boosted_pt_1, q.boosted_eta_1],
     output=[q.id_wgt_ele_boosted_1],
     scopes=["et", "ee", "em"],
 )
 TauEmbeddingBoostedElectronIsoSF_1_MC = Producer(
     name="TauEmbeddingBoostedElectronIsoSF_1_MC",
-    call='scalefactor::embedding::electron_sf({df}, correctionManager, {input}, {output}, "{mc_electron_sf_file}", "mc", "{mc_electron_iso_sf}")',
+    call="""embedding::electron::Scalefactor(
+        {df}, 
+        correctionManager, 
+        {output}, 
+        {input}, 
+        "{mc_electron_sf_file}", 
+        "{mc_electron_iso_sf}", 
+        "mc")
+        """,
     input=[q.boosted_pt_1, q.boosted_eta_1],
     output=[q.iso_wgt_ele_boosted_1],
     scopes=["et", "ee", "em"],
@@ -539,7 +868,15 @@ TauEmbeddingBoostedElectronIsoSF_1_MC = Producer(
 #########################
 btagging_SF = Producer(
     name="btagging_SF",
-    call='v12::scalefactor::jet::btagSF({df}, correctionManager, {input}, "{btag_sf_variation}", {output}, "{btag_sf_file}", "{btag_corr_algo}")',
+    call="""physicsobject::jet::scalefactor::Btagging(
+        {df}, 
+        correctionManager, 
+        {output}, 
+        {input}, 
+        "{btag_sf_file}", 
+        "{btag_corr_algo}", 
+        "{btag_sf_variation}")
+        """,
     input=[
         q.Jet_pt_corrected_bReg,
         nanoAOD.Jet_eta,
@@ -554,7 +891,15 @@ btagging_SF = Producer(
 )
 btagging_SF_boosted = Producer(
     name="btagging_SF_boosted",
-    call='v12::scalefactor::jet::btagSF({df}, correctionManager, {input}, "{btag_sf_variation}", {output}, "{btag_sf_file}", "{btag_corr_algo}")',
+    call="""physicsobject::jet::scalefactor::Btagging(
+        {df}, 
+        correctionManager, 
+        {output}, 
+        {input}, 
+        "{btag_sf_file}", 
+        "{btag_corr_algo}", 
+        "{btag_sf_variation}")
+        """,
     input=[
         q.Jet_pt_corrected_bReg,
         nanoAOD.Jet_eta,

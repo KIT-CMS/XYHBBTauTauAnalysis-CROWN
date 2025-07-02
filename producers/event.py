@@ -195,15 +195,15 @@ npartons = Producer(
 
 PUweights = Producer(
     name="PUweights",
-    call='reweighting::puweights({df}, correctionManager, {output}, {input}, "{PU_reweighting_file}", "{PU_reweighting_era}", "{PU_reweighting_variation}")',
-    input=[nanoAOD.Pileup_nTrueInt],
-    output=[q.puweight],
-    scopes=["global"],
-)
-
-PUweightsFromHistogram = Producer(
-    name="PUweightsFromHistogram",
-    call='reweighting::puweights({df}, {output}, {input}, "{PU_reweighting_file}", "{PU_reweighting_hist}")',
+    call="""event::reweighting::Pileup(
+        {df}, 
+        correctionManager, 
+        {output}, 
+        {input}, 
+        "{PU_reweighting_file}", 
+        "{PU_reweighting_era}", 
+        "{PU_reweighting_variation}")
+        """,
     input=[nanoAOD.Pileup_nTrueInt],
     output=[q.puweight],
     scopes=["global"],
@@ -211,7 +211,7 @@ PUweightsFromHistogram = Producer(
 
 ZPtMassReweighting = Producer(
     name="ZPtMassReweighting",
-    call='reweighting::zPtMassReweighting({df}, {output}, {input}, "{zptmass_file}", "{zptmass_functor}", "{zptmass_arguments}")',
+    call='event::reweighting::ZPtMass({df}, {output}, {input}, "{zptmass_file}", "{zptmass_functor}", "{zptmass_arguments}")',
     input=[
         q.recoil_genboson_p4_vec,
     ],
@@ -221,7 +221,7 @@ ZPtMassReweighting = Producer(
 
 TopPtReweighting = Producer(
     name="TopPtReweighting",
-    call="v12::reweighting::topptreweighting({df}, {output}, {input})",
+    call="event::reweighting::TopPt({df}, {output}, {input})",
     input=[
         nanoAOD.GenParticle_pdgId,
         nanoAOD.GenParticle_statusFlags,
@@ -292,7 +292,7 @@ QQH_WG1_Uncertainties = Producer(
 )
 LHE_Scale_weight = Producer(
     name="LHE_Scale_weight",
-    call="reweighting::lhe_scale_weights({df}, {output}, {input}, {muR}, {muF})",
+    call="event::reweighting::LHEscale({df}, {output}, {input}, {muR}, {muF})",
     input=[nanoAOD.LHEScaleWeight],
     output=[q.lhe_scale_weight],
     scopes=["global", "em", "et", "mt", "tt", "mm", "ee"],
