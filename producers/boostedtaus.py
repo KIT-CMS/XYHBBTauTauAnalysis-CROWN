@@ -127,7 +127,7 @@ GoodBoostedTaus = ProducerGroup(
 )
 NumberOfGoodBoostedTaus = Producer(
     name="NumberOfGoodBoostedTaus",
-    call="quantities::NumberOfGoodLeptons({df}, {output}, {input})",
+    call="physicsobject::Count({df}, {output}, {input})",
     input=[q.good_boostedtaus_mask],
     output=[q.nboostedtaus],
     scopes=["mt", "et", "tt"],
@@ -139,104 +139,104 @@ NumberOfGoodBoostedTaus = Producer(
 
 boostedLVMu1 = Producer(
     name="boostedLVMu1",
-    call="lorentzvectors::build({df}, {input_vec}, 0, {output})",
+    call="lorentzvector::Build({df}, {output}, {input}, 0)",
     input=[
-        q.boosteddileptonpair,
         nanoAOD.Muon_pt,
         nanoAOD.Muon_eta,
         nanoAOD.Muon_phi,
         nanoAOD.Muon_mass,
+        q.boosteddileptonpair,
     ],
     output=[q.boosted_p4_1],
     scopes=["mt", "mm"],
 )
 boostedLVMu1_uncorrected = Producer(
     name="boostedLVMu1_uncorrected",
-    call="lorentzvectors::build({df}, {input_vec}, 0, {output})",
+    call="lorentzvector::Build({df}, {output}, {input}, 0)",
     input=[
-        q.boosteddileptonpair,
         nanoAOD.Muon_pt,
         nanoAOD.Muon_eta,
         nanoAOD.Muon_phi,
         nanoAOD.Muon_mass,
+        q.boosteddileptonpair,
     ],
     output=[q.boosted_p4_1_uncorrected],
     scopes=["mt", "mm"],
 )
 boostedLVEl1 = Producer(
     name="boostedLVEl1",
-    call="lorentzvectors::build({df}, {input_vec}, 0, {output})",
+    call="lorentzvector::Build({df}, {output}, {input}, 0)",
     input=[
-        q.boosteddileptonpair,
         q.Electron_pt_corrected,
         nanoAOD.Electron_eta,
         nanoAOD.Electron_phi,
         nanoAOD.Electron_mass,
+        q.boosteddileptonpair,
     ],
     output=[q.boosted_p4_1],
     scopes=["et", "ee"],
 )
 boostedLVEl1_uncorrected = Producer(
     name="boostedLVEl1_uncorrected",
-    call="lorentzvectors::build({df}, {input_vec}, 0, {output})",
+    call="lorentzvector::Build({df}, {output}, {input}, 0)",
     input=[
-        q.boosteddileptonpair,
         nanoAOD.Electron_pt,
         nanoAOD.Electron_eta,
         nanoAOD.Electron_phi,
         nanoAOD.Electron_mass,
+        q.boosteddileptonpair,
     ],
     output=[q.boosted_p4_1_uncorrected],
     scopes=["et", "ee"],
 )
 boostedLVTau1 = Producer(
     name="boostedLVTau1",
-    call="lorentzvectors::build({df}, {input_vec}, 0, {output})",
+    call="lorentzvector::Build({df}, {output}, {input}, 0)",
     input=[
-        q.boosteddileptonpair,
         q.boostedTau_pt_corrected,
         nanoAOD.boostedTau_eta,
         nanoAOD.boostedTau_phi,
         q.boostedTau_mass_corrected,
+        q.boosteddileptonpair,
     ],
     output=[q.boosted_p4_1],
     scopes=["tt"],
 )
 boostedLVTau1_uncorrected = Producer(
     name="boostedLVTau1_uncorrected",
-    call="lorentzvectors::build({df}, {input_vec}, 0, {output})",
+    call="lorentzvector::Build({df}, {output}, {input}, 0)",
     input=[
-        q.boosteddileptonpair,
         nanoAOD.boostedTau_pt,
         nanoAOD.boostedTau_eta,
         nanoAOD.boostedTau_phi,
         nanoAOD.boostedTau_mass,
+        q.boosteddileptonpair,
     ],
     output=[q.boosted_p4_1_uncorrected],
     scopes=["tt"],
 )
 boostedLVTau2 = Producer(
     name="boostedLVTau2",
-    call="lorentzvectors::build({df}, {input_vec}, 1, {output})",
+    call="lorentzvector::Build({df}, {output}, {input}, 1)",
     input=[
-        q.boosteddileptonpair,
         q.boostedTau_pt_corrected,
         nanoAOD.boostedTau_eta,
         nanoAOD.boostedTau_phi,
         q.boostedTau_mass_corrected,
+        q.boosteddileptonpair,
     ],
     output=[q.boosted_p4_2],
     scopes=["mt", "et", "tt"],
 )
 boostedLVTau2_uncorrected = Producer(
     name="boostedLVTau2_uncorrected",
-    call="lorentzvectors::build({df}, {input_vec}, 1, {output})",
+    call="lorentzvector::Build({df}, {output}, {input}, 1)",
     input=[
-        q.boosteddileptonpair,
         nanoAOD.boostedTau_pt,
         nanoAOD.boostedTau_eta,
         nanoAOD.boostedTau_phi,
         nanoAOD.boostedTau_mass,
+        q.boosteddileptonpair,
     ],
     output=[q.boosted_p4_2_uncorrected],
     scopes=["mt", "et", "tt"],
@@ -244,56 +244,56 @@ boostedLVTau2_uncorrected = Producer(
 
 boosted_pt_1 = Producer(
     name="boosted_pt_1",
-    call="quantities::pt({df}, {output}, {input})",
+    call="lorentzvector::GetPt({df}, {output}, {input})",
     input=[q.boosted_p4_1],
     output=[q.boosted_pt_1],
     scopes=["mt", "et", "tt", "em", "ee", "mm"],
 )
 boosted_pt_2 = Producer(
     name="boosted_pt_2",
-    call="quantities::pt({df}, {output}, {input})",
+    call="lorentzvector::GetPt({df}, {output}, {input})",
     input=[q.boosted_p4_2],
     output=[q.boosted_pt_2],
     scopes=["mt", "et", "tt", "em", "ee", "mm"],
 )
 boosted_eta_1 = Producer(
     name="boosted_eta_1",
-    call="quantities::eta({df}, {output}, {input})",
+    call="lorentzvector::GetEta({df}, {output}, {input})",
     input=[q.boosted_p4_1],
     output=[q.boosted_eta_1],
     scopes=["mt", "et", "tt", "em", "ee", "mm"],
 )
 boosted_eta_2 = Producer(
     name="boosted_eta_2",
-    call="quantities::eta({df}, {output}, {input})",
+    call="lorentzvector::GetEta({df}, {output}, {input})",
     input=[q.boosted_p4_2],
     output=[q.boosted_eta_2],
     scopes=["mt", "et", "tt", "em", "ee", "mm"],
 )
 boosted_phi_1 = Producer(
     name="boosted_phi_1",
-    call="quantities::phi({df}, {output}, {input})",
+    call="lorentzvector::GetPhi({df}, {output}, {input})",
     input=[q.boosted_p4_1],
     output=[q.boosted_phi_1],
     scopes=["mt", "et", "tt", "em", "ee", "mm"],
 )
 boosted_phi_2 = Producer(
     name="boosted_phi_2",
-    call="quantities::phi({df}, {output}, {input})",
+    call="lorentzvector::GetPhi({df}, {output}, {input})",
     input=[q.boosted_p4_2],
     output=[q.boosted_phi_2],
     scopes=["mt", "et", "tt", "em", "ee", "mm"],
 )
 boosted_mass_1 = Producer(
     name="boosted_mass_1",
-    call="quantities::mass({df}, {output}, {input})",
+    call="lorentzvector::GetMass({df}, {output}, {input})",
     input=[q.boosted_p4_1],
     output=[q.boosted_mass_1],
     scopes=["mt", "et", "tt", "em", "ee", "mm"],
 )
 boosted_mass_2 = Producer(
     name="boosted_mass_2",
-    call="quantities::mass({df}, {output}, {input})",
+    call="lorentzvector::GetMass({df}, {output}, {input})",
     input=[q.boosted_p4_2],
     output=[q.boosted_mass_2],
     scopes=["mt", "et", "tt", "em", "ee", "mm"],
@@ -301,36 +301,36 @@ boosted_mass_2 = Producer(
 
 boosted_muon_dxy_1 = Producer(
     name="boosted_muon_dxy_1",
-    call="quantities::dxy({df}, {output}, 0, {input})",
-    input=[q.boosteddileptonpair, nanoAOD.Muon_dxy],
+    call="event::quantity::Get<float>({df}, {output}, {input}, 0)",
+    input=[nanoAOD.Muon_dxy, q.boosteddileptonpair],
     output=[q.boosted_dxy_1],
     scopes=["mt", "mm"],
 )
 boosted_muon_dz_1 = Producer(
     name="boosted_muon_dz_1",
-    call="quantities::dz({df}, {output}, 0, {input})",
-    input=[q.boosteddileptonpair, nanoAOD.Muon_dz],
+    call="event::quantity::Get<float>({df}, {output}, {input}, 0)",
+    input=[nanoAOD.Muon_dz, q.boosteddileptonpair],
     output=[q.boosted_dz_1],
     scopes=["mt", "mm"],
 )
 boosted_muon_q_1 = Producer(
     name="boosted_muon_q_1",
-    call="quantities::charge({df}, {output}, 0, {input})",
-    input=[q.boosteddileptonpair, nanoAOD.Muon_charge],
+    call="event::quantity::Get<int>({df}, {output}, {input}, 0)",
+    input=[nanoAOD.Muon_charge, q.boosteddileptonpair],
     output=[q.boosted_q_1],
     scopes=["mt", "mm"],
 )
 boosted_muon_iso_1 = Producer(
     name="boosted_muon_iso_1",
-    call="quantities::isolation({df}, {output}, 0, {input})",
-    input=[q.boosteddileptonpair, nanoAOD.Muon_iso],
+    call="event::quantity::Get<float>({df}, {output}, {input}, 0)",
+    input=[nanoAOD.Muon_iso, q.boosteddileptonpair],
     output=[q.boosted_iso_1],
     scopes=["mt", "mm"],
 )
 boosted_muon_is_global_1 = Producer(
     name="boosted_muon_is_global_1",
-    call="quantities::muon::is_global({df}, {output}, 0, {input})",
-    input=[q.boosteddileptonpair, nanoAOD.Muon_isGlobal],
+    call="event::quantity::Get<bool>({df}, {output}, {input}, 0)",
+    input=[nanoAOD.Muon_isGlobal, q.boosteddileptonpair],
     output=[q.boosted_is_global_1],
     scopes=["mt", "mm"],
 )
@@ -344,59 +344,52 @@ boosted_tau_decaymode_1_notau = Producer(
 
 boosted_electron_dxy_1 = Producer(
     name="boosted_electron_dxy_1",
-    call="quantities::dxy({df}, {output}, 0, {input})",
-    input=[q.boosteddileptonpair, nanoAOD.Electron_dxy],
+    call="event::quantity::Get<float>({df}, {output}, {input}, 0)",
+    input=[nanoAOD.Electron_dxy, q.boosteddileptonpair],
     output=[q.boosted_dxy_1],
     scopes=["et", "ee"],
 )
 boosted_electron_dz_1 = Producer(
     name="boosted_electron_dz_1",
-    call="quantities::dz({df}, {output}, 0, {input})",
-    input=[q.boosteddileptonpair, nanoAOD.Electron_dz],
+    call="event::quantity::Get<float>({df}, {output}, {input}, 0)",
+    input=[nanoAOD.Electron_dz, q.boosteddileptonpair],
     output=[q.boosted_dz_1],
     scopes=["et", "ee"],
 )
 boosted_electron_q_1 = Producer(
     name="boosted_electron_q_1",
-    call="quantities::charge({df}, {output}, 0, {input})",
-    input=[q.boosteddileptonpair, nanoAOD.Electron_charge],
+    call="event::quantity::Get<int>({df}, {output}, {input}, 0)",
+    input=[nanoAOD.Electron_charge, q.boosteddileptonpair],
     output=[q.boosted_q_1],
     scopes=["et", "ee"],
 )
 boosted_electron_iso_1 = Producer(
     name="boosted_electron_iso_1",
-    call="quantities::isolation({df}, {output}, 0, {input})",
-    input=[q.boosteddileptonpair, nanoAOD.Electron_iso],
+    call="event::quantity::Get<float>({df}, {output}, {input}, 0)",
+    input=[nanoAOD.Electron_iso, q.boosteddileptonpair],
     output=[q.boosted_iso_1],
     scopes=["et", "ee"],
 )
 
 boosted_tau_q_1 = Producer(
     name="boosted_tau_q_1",
-    call="quantities::charge({df}, {output}, 0, {input})",
-    input=[q.boosteddileptonpair, nanoAOD.boostedTau_charge],
+    call="event::quantity::Get<int>({df}, {output}, {input}, 0)",
+    input=[nanoAOD.boostedTau_charge, q.boosteddileptonpair],
     output=[q.boosted_q_1],
     scopes=["tt"],
 )
 boosted_tau_iso_1 = Producer(
     name="boosted_tau_iso_1",
-    call="quantities::isolation({df}, {output}, 0, {input})",
-    input=[q.boosteddileptonpair, nanoAOD.boostedTau_iso_IDraw],
+    call="event::quantity::Get<float>({df}, {output}, {input}, 0)",
+    input=[nanoAOD.boostedTau_iso_IDraw, q.boosteddileptonpair],
     output=[q.boosted_iso_1],
     scopes=["tt"],
 )
 boosted_tau_decaymode_1 = Producer(
     name="boosted_taudecaymode_1",
-    call="quantities::tau::decaymode({df}, {output}, 0, {input})",
-    input=[q.boosteddileptonpair, nanoAOD.boostedTau_decayMode],
+    call="event::quantity::Get<UChar_t>({df}, {output}, {input}, 0)",
+    input=[nanoAOD.boostedTau_decayMode, q.boosteddileptonpair],
     output=[q.boosted_tau_decaymode_1],
-    scopes=["tt"],
-)
-boosted_tau_gen_match_1 = Producer(
-    name="boosted_tau_gen_match_1",
-    call="quantities::tau::genmatch({df}, {output}, 0, {input})",
-    input=[q.boosteddileptonpair, nanoAOD.boostedTau_genMatch],
-    output=[q.boosted_tau_gen_match_1],
     scopes=["tt"],
 )
 isoTauIDFlag_1 = ExtendedVectorProducer(
@@ -425,30 +418,23 @@ antiMuTauIDFlag_1 = ExtendedVectorProducer(
 )
 boosted_tau_q_2 = Producer(
     name="boosted_tau_q_2",
-    call="quantities::charge({df}, {output}, 1, {input})",
-    input=[q.boosteddileptonpair, nanoAOD.boostedTau_charge],
+    call="event::quantity::Get<int>({df}, {output}, {input}, 1)",
+    input=[nanoAOD.boostedTau_charge, q.boosteddileptonpair],
     output=[q.boosted_q_2],
     scopes=["mt", "et", "tt"],
 )
 boosted_tau_iso_2 = Producer(
     name="boosted_tau_iso_2",
-    call="quantities::isolation({df}, {output}, 1, {input})",
-    input=[q.boosteddileptonpair, nanoAOD.boostedTau_iso_IDraw],
+    call="event::quantity::Get<float>({df}, {output}, {input}, 1)",
+    input=[nanoAOD.boostedTau_iso_IDraw, q.boosteddileptonpair],
     output=[q.boosted_iso_2],
     scopes=["mt", "et", "tt"],
 )
 boosted_tau_decaymode_2 = Producer(
     name="boosted_taudecaymode_2",
-    call="quantities::tau::decaymode({df}, {output}, 1, {input})",
-    input=[q.boosteddileptonpair, nanoAOD.boostedTau_decayMode],
+    call="event::quantity::Get<UChar_t>({df}, {output}, {input}, 1)",
+    input=[nanoAOD.boostedTau_decayMode, q.boosteddileptonpair],
     output=[q.boosted_tau_decaymode_2],
-    scopes=["mt", "et", "tt"],
-)
-boosted_tau_gen_match_2 = Producer(
-    name="boosted_tau_gen_match_2",
-    call="quantities::tau::genmatch({df}, {output}, 1, {input})",
-    input=[q.boosteddileptonpair, nanoAOD.boostedTau_genMatch],
-    output=[q.boosted_tau_gen_match_2],
     scopes=["mt", "et", "tt"],
 )
 isoTauIDFlag_2 = ExtendedVectorProducer(
@@ -478,42 +464,42 @@ antiMuTauIDFlag_2 = ExtendedVectorProducer(
 
 boosted_p4_vis = Producer(
     name="boosted_p4_vis",
-    call="lorentzvectors::CombineP4s({df}, {output}, {input})",
+    call="lorentzvector::Sum({df}, {output}, {input})",
     input=[q.boosted_p4_1, q.boosted_p4_2],
     output=[q.boosted_p4_vis],
     scopes=["mt", "et", "tt", "em", "ee", "mm"],
 )
 boosted_m_vis = Producer(
     name="boosted_m_vis",
-    call="quantities::mass({df}, {output}, {input})",
+    call="lorentzvector::GetMass({df}, {output}, {input})",
     input=[q.boosted_p4_vis],
     output=[q.boosted_m_vis],
     scopes=["mt", "et", "tt", "em", "ee", "mm"],
 )
 boosted_pt_vis = Producer(
     name="boosted_pt_vis",
-    call="quantities::pt({df}, {output}, {input})",
+    call="lorentzvector::GetPt({df}, {output}, {input})",
     input=[q.boosted_p4_vis],
     output=[q.boosted_pt_vis],
     scopes=["mt", "et", "tt", "em", "ee", "mm"],
 )
 boosted_deltaR_ditaupair = Producer(
     name="boosted_deltaR_ditaupair",
-    call="quantities::deltaR({df}, {output}, {input})",
+    call="quantities::DeltaR({df}, {output}, {input})",
     input=[q.boosted_p4_1, q.boosted_p4_2],
     output=[q.boosted_deltaR_ditaupair],
     scopes=["mt", "et", "tt", "em", "ee", "mm"],
 )
 boosted_mt_1 = Producer(
     name="boosted_mt_1",
-    call="quantities::mT({df}, {output}, {input})",
+    call="lorentzvector::TransverseMass({df}, {output}, {input})",
     input=[q.boosted_p4_1, q.met_p4_recoilcorrected],
     output=[q.boosted_mt_1],
     scopes=["mt", "et", "tt", "em", "ee", "mm"],
 )
 boosted_mt_2 = Producer(
     name="boosted_mt_2",
-    call="quantities::mT({df}, {output}, {input})",
+    call="lorentzvector::TransverseMass({df}, {output}, {input})",
     input=[q.boosted_p4_2, q.met_p4_recoilcorrected],
     output=[q.boosted_mt_2],
     scopes=["mt", "et", "tt", "em", "ee", "mm"],
@@ -521,21 +507,21 @@ boosted_mt_2 = Producer(
 
 boosted_p4_tautaubb = Producer(
     name="boosted_p4_tautaubb",
-    call="lorentzvectors::CombineP4s({df}, {output}, {input})",
+    call="lorentzvector::Sum({df}, {output}, {input})",
     input=[q.boosted_p4_1, q.boosted_p4_2, q.bpair_p4_1_boosted, q.bpair_p4_2_boosted, q.met_p4_boosted_recoilcorrected],
     output=[q.boosted_p4_tautaubb],
     scopes=["mt", "et", "tt", "em", "ee", "mm"],
 )
 boosted_pt_tautaubb = Producer(
     name="boosted_pt_tautaubb",
-    call="quantities::pt({df}, {output}, {input})",
+    call="lorentzvector::GetPt({df}, {output}, {input})",
     input=[q.boosted_p4_tautaubb],
     output=[q.boosted_pt_tautaubb],
     scopes=["mt", "et", "tt", "em", "ee", "mm"],
 )
 boosted_mass_tautaubb = Producer(
     name="boosted_mass_tautaubb",
-    call="quantities::mass({df}, {output}, {input})",
+    call="lorentzvector::GetMass({df}, {output}, {input})",
     input=[q.boosted_p4_tautaubb],
     output=[q.boosted_mass_tautaubb],
     scopes=["mt", "et", "tt", "em", "ee", "mm"],
@@ -543,28 +529,28 @@ boosted_mass_tautaubb = Producer(
 
 boosted_pt_add = Producer(
     name="boosted_pt_add",
-    call="quantities::pt({df}, {output}, {input})",
+    call="lorentzvector::GetPt({df}, {output}, {input})",
     input=[q.boosted_p4_add],
     output=[q.boosted_pt_add],
     scopes=["mt", "et", "tt", "em", "ee", "mm"],
 )
 boosted_eta_add = Producer(
     name="boosted_eta_add",
-    call="quantities::eta({df}, {output}, {input})",
+    call="lorentzvector::GetEta({df}, {output}, {input})",
     input=[q.boosted_p4_add],
     output=[q.boosted_eta_add],
     scopes=["mt", "et", "tt", "em", "ee", "mm"],
 )
 boosted_phi_add = Producer(
     name="boosted_phi_add",
-    call="quantities::phi({df}, {output}, {input})",
+    call="lorentzvector::GetPhi({df}, {output}, {input})",
     input=[q.boosted_p4_add],
     output=[q.boosted_phi_add],
     scopes=["mt", "et", "tt", "em", "ee", "mm"],
 )
 boosted_mass_add = Producer(
     name="boosted_mass_add",
-    call="quantities::mass({df}, {output}, {input})",
+    call="lorentzvector::GetMass({df}, {output}, {input})",
     input=[q.boosted_p4_add],
     output=[q.boosted_mass_add],
     scopes=["mt", "et", "tt", "em", "ee", "mm"],
@@ -619,7 +605,6 @@ UnrollboostedTauLV1 = ProducerGroup(
         boosted_tau_q_1,
         boosted_tau_iso_1,
         boosted_tau_decaymode_1,
-        # boosted_tau_gen_match_1,
         isoTauIDFlag_1,
         antiEleTauIDFlag_1,
         antiMuTauIDFlag_1,
@@ -639,7 +624,6 @@ UnrollboostedTauLV2 = ProducerGroup(
         boosted_tau_q_2,
         boosted_tau_iso_2,
         boosted_tau_decaymode_2,
-        # boosted_tau_gen_match_2,
         isoTauIDFlag_2,
         antiEleTauIDFlag_2,
         antiMuTauIDFlag_2,

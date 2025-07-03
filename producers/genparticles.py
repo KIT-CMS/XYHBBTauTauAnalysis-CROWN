@@ -112,130 +112,130 @@ EmbeddingGenPair = Producer(
 
 LVGenParticle1 = Producer(
     name="LVGenParticle1",
-    call="lorentzvectors::build({df}, {input_vec}, 0, {output})",
+    call="lorentzvector::Build({df}, {output}, {input}, 0)",
     input=[
-        q.gen_dileptonpair,
         nanoAOD.GenParticle_pt,
         nanoAOD.GenParticle_eta,
         nanoAOD.GenParticle_phi,
         nanoAOD.GenParticle_mass,
+        q.gen_dileptonpair,
     ],
     output=[q.gen_p4_1],
     scopes=["mt", "et", "tt", "em", "mm", "ee"],
 )
 LVGenParticle2 = Producer(
     name="LVGenParticle2",
-    call="lorentzvectors::build({df}, {input_vec}, 1, {output})",
+    call="lorentzvector::Build({df}, {output}, {input}, 1)",
     input=[
-        q.gen_dileptonpair,
         nanoAOD.GenParticle_pt,
         nanoAOD.GenParticle_eta,
         nanoAOD.GenParticle_phi,
         nanoAOD.GenParticle_mass,
+        q.gen_dileptonpair,
     ],
     output=[q.gen_p4_2],
     scopes=["mt", "et", "tt", "em", "mm", "ee"],
 )
 LVTrueGenParticle1 = Producer(
     name="LVTrueGenParticle1",
-    call="lorentzvectors::build({df}, {input_vec}, 0, {output})",
+    call="lorentzvector::Build({df}, {output}, {input}, 0)",
     input=[
-        q.truegenpair,
         nanoAOD.GenParticle_pt,
         nanoAOD.GenParticle_eta,
         nanoAOD.GenParticle_phi,
         nanoAOD.GenParticle_mass,
+        q.truegenpair,
     ],
     output=[q.gen_p4_1],
     scopes=["mt", "et", "tt", "em", "mm", "ee"],
 )
 LVTrueGenParticle2 = Producer(
     name="LVTrueGenParticle2",
-    call="lorentzvectors::build({df}, {input_vec}, 1, {output})",
+    call="lorentzvector::Build({df}, {output}, {input}, 1)",
     input=[
-        q.truegenpair,
         nanoAOD.GenParticle_pt,
         nanoAOD.GenParticle_eta,
         nanoAOD.GenParticle_phi,
         nanoAOD.GenParticle_mass,
+        q.truegenpair,
     ],
     output=[q.gen_p4_2],
     scopes=["mt", "et", "tt", "em", "mm", "ee"],
 )
 LVGenJet1 = Producer(
     name="LVGenJet1",
-    call="lorentzvectors::build({df}, {input_vec}, 0, {output})",
+    call="lorentzvector::Build({df}, {output}, {input}, 0)",
     input=[
-        q.gen_dibjetpair,
         nanoAOD.GenJet_pt,
         nanoAOD.GenJet_eta,
         nanoAOD.GenJet_phi,
         nanoAOD.GenJet_mass,
+        q.gen_dibjetpair,
     ],
     output=[q.genjet_p4_1],
     scopes=["mt", "et", "tt", "mm"],
 )
 LVGenJet2 = Producer(
     name="LVGenJet2",
-    call="lorentzvectors::build({df}, {input_vec}, 1, {output})",
+    call="lorentzvector::Build({df}, {output}, {input}, 1)",
     input=[
-        q.gen_dibjetpair,
         nanoAOD.GenJet_pt,
         nanoAOD.GenJet_eta,
         nanoAOD.GenJet_phi,
         nanoAOD.GenJet_mass,
+        q.gen_dibjetpair,
     ],
     output=[q.genjet_p4_2],
     scopes=["mt", "et", "tt", "mm"],
 )
 LVTrueGenB1 = Producer(
     name="LVTrueGenB1",
-    call="lorentzvectors::build({df}, {input_vec}, 0, {output})",
+    call="lorentzvector::Build({df}, {output}, {input}, 0)",
     input=[
-        q.gen_truebpair,
         nanoAOD.GenParticle_pt,
         nanoAOD.GenParticle_eta,
         nanoAOD.GenParticle_phi,
         nanoAOD.GenParticle_mass,
+        q.gen_truebpair,
     ],
     output=[q.gen_b_p4_1],
     scopes=["mt", "et", "tt", "em", "mm", "ee"],
 )
 LVTrueGenB2 = Producer(
     name="LVTrueGenB2",
-    call="lorentzvectors::build({df}, {input_vec}, 1, {output})",
+    call="lorentzvector::Build({df}, {output}, {input}, 1)",
     input=[
-        q.gen_truebpair,
         nanoAOD.GenParticle_pt,
         nanoAOD.GenParticle_eta,
         nanoAOD.GenParticle_phi,
         nanoAOD.GenParticle_mass,
+        q.gen_truebpair,
     ],
     output=[q.gen_b_p4_2],
     scopes=["mt", "et", "tt", "em", "mm", "ee"],
 )
 LVTrueGenTau1 = Producer(
     name="LVTrueGenTau1",
-    call="lorentzvectors::build({df}, {input_vec}, 0, {output})",
+    call="lorentzvector::Build({df}, {output}, {input}, 0)",
     input=[
-        q.gen_truetaupair,
         nanoAOD.GenParticle_pt,
         nanoAOD.GenParticle_eta,
         nanoAOD.GenParticle_phi,
         nanoAOD.GenParticle_mass,
+        q.gen_truetaupair,
     ],
     output=[q.gen_tau_p4_1],
     scopes=["mt", "et", "tt", "em", "mm", "ee"],
 )
 LVTrueGenTau2 = Producer(
     name="LVTrueGenTau2",
-    call="lorentzvectors::build({df}, {input_vec}, 1, {output})",
+    call="lorentzvector::Build({df}, {output}, {input}, 1)",
     input=[
-        q.gen_truetaupair,
         nanoAOD.GenParticle_pt,
         nanoAOD.GenParticle_eta,
         nanoAOD.GenParticle_phi,
         nanoAOD.GenParticle_mass,
+        q.gen_truetaupair,
     ],
     output=[q.gen_tau_p4_2],
     scopes=["mt", "et", "tt", "em", "mm", "ee"],
@@ -243,108 +243,101 @@ LVTrueGenTau2 = Producer(
 
 gen_pt_1 = Producer(
     name="gen_pt_1",
-    call="quantities::pt({df}, {output}, {input})",
+    call="lorentzvector::GetPt({df}, {output}, {input})",
     input=[q.gen_p4_1],
     output=[q.gen_pt_1],
     scopes=["mt", "et", "tt", "em", "mm", "ee"],
 )
 gen_pt_2 = Producer(
     name="gen_pt_2",
-    call="quantities::pt({df}, {output}, {input})",
+    call="lorentzvector::GetPt({df}, {output}, {input})",
     input=[q.gen_p4_2],
     output=[q.gen_pt_2],
     scopes=["mt", "et", "tt", "em", "mm", "ee"],
 )
 gen_eta_1 = Producer(
     name="gen_eta_1",
-    call="quantities::eta({df}, {output}, {input})",
+    call="lorentzvector::GetEta({df}, {output}, {input})",
     input=[q.gen_p4_1],
     output=[q.gen_eta_1],
     scopes=["mt", "et", "tt", "em", "mm", "ee"],
 )
 gen_eta_2 = Producer(
     name="gen_eta_2",
-    call="quantities::eta({df}, {output}, {input})",
+    call="lorentzvector::GetEta({df}, {output}, {input})",
     input=[q.gen_p4_2],
     output=[q.gen_eta_2],
     scopes=["mt", "et", "tt", "em", "mm", "ee"],
 )
 gen_phi_1 = Producer(
     name="gen_phi_1",
-    call="quantities::phi({df}, {output}, {input})",
+    call="lorentzvector::GetPhi({df}, {output}, {input})",
     input=[q.gen_p4_1],
     output=[q.gen_phi_1],
     scopes=["mt", "et", "tt", "em", "mm", "ee"],
 )
 gen_phi_2 = Producer(
     name="gen_phi_2",
-    call="quantities::phi({df}, {output}, {input})",
+    call="lorentzvector::GetPhi({df}, {output}, {input})",
     input=[q.gen_p4_2],
     output=[q.gen_phi_2],
     scopes=["mt", "et", "tt", "em", "mm", "ee"],
 )
 gen_mass_1 = Producer(
     name="gen_mass_1",
-    call="quantities::mass({df}, {output}, {input})",
+    call="lorentzvector::GetMass({df}, {output}, {input})",
     input=[q.gen_p4_1],
     output=[q.gen_mass_1],
     scopes=["mt", "et", "tt", "em", "mm", "ee"],
 )
 gen_mass_2 = Producer(
     name="gen_mass_2",
-    call="quantities::mass({df}, {output}, {input})",
+    call="lorentzvector::GetMass({df}, {output}, {input})",
     input=[q.gen_p4_2],
     output=[q.gen_mass_2],
     scopes=["mt", "et", "tt", "em", "mm", "ee"],
 )
 gen_pdgid_1 = Producer(
     name="gen_pdgid_1",
-    call="quantities::pdgid({df}, {output}, 0, {input})",
-    input=[q.gen_dileptonpair, nanoAOD.GenParticle_pdgId],
+    call="event::quantity::Get<int>({df}, {output}, {input}, 0)",
+    input=[nanoAOD.GenParticle_pdgId, q.gen_dileptonpair],
     output=[q.gen_pdgid_1],
     scopes=["mt", "et", "tt", "em", "mm", "ee"],
 )
 gen_pdgid_2 = Producer(
     name="gen_pdgid_2",
-    call="quantities::pdgid({df}, {output}, 1, {input})",
-    input=[q.gen_dileptonpair, nanoAOD.GenParticle_pdgId],
+    call="event::quantity::Get<int>({df}, {output}, {input}, 1)",
+    input=[nanoAOD.GenParticle_pdgId, q.gen_dileptonpair],
     output=[q.gen_pdgid_2],
     scopes=["mt", "et", "tt", "em", "mm", "ee"],
 )
 gen_m_vis = Producer(
     name="gen_m_vis",
-    call="quantities::m_vis({df}, {output}, {input_vec})",
+    call="lorentzvector::GetMass({df}, {output}, {input})",
     input=[q.gen_p4_1, q.gen_p4_2],
     output=[q.gen_m_vis],
     scopes=["mt", "et", "tt", "em", "mm", "ee"],
 )
-# gen_match_2 = Producer(
-#     name="gen_match_2",
-#     call="quantities::tau::genmatch({df}, {output}, 1, {input})",
-#     input=[q.dileptonpair, nanoAOD.Tau_genMatch],
-#     output=[q.gen_match_2],
-#     scopes=["mt", "et", "tt"],
-# )
 gen_taujet_pt_1 = Producer(
     name="gen_taujet_pt_1",
-    call="quantities::tau::matching_genjet_pt({df}, {output}, 0, {input})",
+    call="quantities::GenJetMatching({df}, {output}, {input}, 0)",
     input=[
-        q.dileptonpair,
-        nanoAOD.Tau_associatedJet,
-        nanoAOD.Jet_associatedGenJet,
         nanoAOD.GenJet_pt,
+        nanoAOD.Jet_associatedGenJet,
+        nanoAOD.Tau_associatedJet,
+        q.dileptonpair,
     ],
     output=[q.gen_taujet_pt_1],
     scopes=["tt"],
 )
 gen_taujet_pt_2 = Producer(
     name="gen_taujet_pt_2",
-    call="quantities::tau::matching_genjet_pt({df}, {output}, 1, {input})",
+    call="quantities::GenJetMatching({df}, {output}, {input}, 1)",
     input=[
-        q.dileptonpair,
-        nanoAOD.Tau_associatedJet,
-        nanoAOD.Jet_associatedGenJet,
         nanoAOD.GenJet_pt,
+        nanoAOD.Jet_associatedGenJet,
+        nanoAOD.Tau_associatedJet,
+        q.dileptonpair,
     ],
     output=[q.gen_taujet_pt_2],
     scopes=["mt", "et", "tt"],
@@ -352,56 +345,56 @@ gen_taujet_pt_2 = Producer(
 
 genjet_pt_1 = Producer(
     name="genjet_pt_1",
-    call="quantities::pt({df}, {output}, {input})",
+    call="lorentzvector::GetPt({df}, {output}, {input})",
     input=[q.genjet_p4_1],
     output=[q.genjet_pt_1],
     scopes=["mt", "et", "tt", "mm"],
 )
 genjet_pt_2 = Producer(
     name="genjet_pt_2",
-    call="quantities::pt({df}, {output}, {input})",
+    call="lorentzvector::GetPt({df}, {output}, {input})",
     input=[q.genjet_p4_2],
     output=[q.genjet_pt_2],
     scopes=["mt", "et", "tt", "mm"],
 )
 genjet_eta_1 = Producer(
     name="genjet_eta_1",
-    call="quantities::eta({df}, {output}, {input})",
+    call="lorentzvector::GetEta({df}, {output}, {input})",
     input=[q.genjet_p4_1],
     output=[q.genjet_eta_1],
     scopes=["mt", "et", "tt", "mm"],
 )
 genjet_eta_2 = Producer(
     name="genjet_eta_2",
-    call="quantities::eta({df}, {output}, {input})",
+    call="lorentzvector::GetEta({df}, {output}, {input})",
     input=[q.genjet_p4_2],
     output=[q.genjet_eta_2],
     scopes=["mt", "et", "tt", "mm"],
 )
 genjet_phi_1 = Producer(
     name="genjet_phi_1",
-    call="quantities::phi({df}, {output}, {input})",
+    call="lorentzvector::GetPhi({df}, {output}, {input})",
     input=[q.genjet_p4_1],
     output=[q.genjet_phi_1],
     scopes=["mt", "et", "tt", "mm"],
 )
 genjet_phi_2 = Producer(
     name="genjet_phi_2",
-    call="quantities::phi({df}, {output}, {input})",
+    call="lorentzvector::GetPhi({df}, {output}, {input})",
     input=[q.genjet_p4_2],
     output=[q.genjet_phi_2],
     scopes=["mt", "et", "tt", "mm"],
 )
 genjet_mass_1 = Producer(
     name="genjet_mass_1",
-    call="quantities::mass({df}, {output}, {input})",
+    call="lorentzvector::GetMass({df}, {output}, {input})",
     input=[q.genjet_p4_1],
     output=[q.genjet_mass_1],
     scopes=["mt", "et", "tt", "mm"],
 )
 genjet_mass_2 = Producer(
     name="genjet_mass_2",
-    call="quantities::mass({df}, {output}, {input})",
+    call="lorentzvector::GetMass({df}, {output}, {input})",
     input=[q.genjet_p4_2],
     output=[q.genjet_mass_2],
     scopes=["mt", "et", "tt", "mm"],
@@ -422,77 +415,77 @@ genjet_hadFlavour_2 = Producer(
 )
 genjet_m_inv = Producer(
     name="genjet_m_inv",
-    call="quantities::m_vis({df}, {output}, {input_vec})",
+    call="lorentzvector::GetMass({df}, {output}, {input})",
     input=[q.genjet_p4_1, q.genjet_p4_2],
     output=[q.genjet_m_inv],
     scopes=["mt", "et", "tt", "mm"],
 )
 gen_b_pt_1 = Producer(
     name="gen_b_pt_1",
-    call="quantities::pt({df}, {output}, {input})",
+    call="lorentzvector::GetPt({df}, {output}, {input})",
     input=[q.gen_b_p4_1],
     output=[q.gen_b_pt_1],
     scopes=["mt", "et", "tt", "mm"],
 )
 gen_b_pt_2 = Producer(
     name="gen_b_pt_2",
-    call="quantities::pt({df}, {output}, {input})",
+    call="lorentzvector::GetPt({df}, {output}, {input})",
     input=[q.gen_b_p4_2],
     output=[q.gen_b_pt_2],
     scopes=["mt", "et", "tt", "mm"],
 )
 gen_b_eta_1 = Producer(
     name="gen_b_eta_1",
-    call="quantities::eta({df}, {output}, {input})",
+    call="lorentzvector::GetEta({df}, {output}, {input})",
     input=[q.gen_b_p4_1],
     output=[q.gen_b_eta_1],
     scopes=["mt", "et", "tt", "mm"],
 )
 gen_b_eta_2 = Producer(
     name="gen_b_eta_2",
-    call="quantities::eta({df}, {output}, {input})",
+    call="lorentzvector::GetEta({df}, {output}, {input})",
     input=[q.gen_b_p4_2],
     output=[q.gen_b_eta_2],
     scopes=["mt", "et", "tt", "mm"],
 )
 gen_b_phi_1 = Producer(
     name="gen_b_phi_1",
-    call="quantities::phi({df}, {output}, {input})",
+    call="lorentzvector::GetPhi({df}, {output}, {input})",
     input=[q.gen_b_p4_1],
     output=[q.gen_b_phi_1],
     scopes=["mt", "et", "tt", "mm"],
 )
 gen_b_phi_2 = Producer(
     name="gen_b_phi_2",
-    call="quantities::phi({df}, {output}, {input})",
+    call="lorentzvector::GetPhi({df}, {output}, {input})",
     input=[q.gen_b_p4_2],
     output=[q.gen_b_phi_2],
     scopes=["mt", "et", "tt", "mm"],
 )
 gen_b_mass_1 = Producer(
     name="gen_b_mass_1",
-    call="quantities::mass({df}, {output}, {input})",
+    call="lorentzvector::GetMass({df}, {output}, {input})",
     input=[q.gen_b_p4_1],
     output=[q.gen_b_mass_1],
     scopes=["mt", "et", "tt", "mm"],
 )
 gen_b_mass_2 = Producer(
     name="gen_b_mass_2",
-    call="quantities::mass({df}, {output}, {input})",
+    call="lorentzvector::GetMass({df}, {output}, {input})",
     input=[q.gen_b_p4_2],
     output=[q.gen_b_mass_2],
     scopes=["mt", "et", "tt", "mm"],
 )
 gen_b_m_inv = Producer(
     name="gen_b_m_inv",
-    call="quantities::m_vis({df}, {output}, {input_vec})",
+    call="lorentzvector::GetMass({df}, {output}, {input})",
     input=[q.gen_b_p4_1, q.gen_b_p4_2],
     output=[q.gen_b_m_inv],
     scopes=["mt", "et", "tt", "mm"],
 )
 gen_b_deltaR = Producer(
     name="gen_b_deltaR",
-    call="quantities::deltaR({df}, {output}, {input})",
+    call="quantities::DeltaR({df}, {output}, {input})",
     input=[q.gen_b_p4_1, q.gen_b_p4_2],
     output=[q.gen_b_deltaR],
     scopes=["mt", "et", "tt", "mm"],
@@ -500,70 +493,70 @@ gen_b_deltaR = Producer(
 
 gen_tau_pt_1 = Producer(
     name="gen_tau_pt_1",
-    call="quantities::pt({df}, {output}, {input})",
+    call="lorentzvector::GetPt({df}, {output}, {input})",
     input=[q.gen_tau_p4_1],
     output=[q.gen_tau_pt_1],
     scopes=["mt", "et", "tt"],
 )
 gen_tau_pt_2 = Producer(
     name="gen_tau_pt_2",
-    call="quantities::pt({df}, {output}, {input})",
+    call="lorentzvector::GetPt({df}, {output}, {input})",
     input=[q.gen_tau_p4_2],
     output=[q.gen_tau_pt_2],
     scopes=["mt", "et", "tt"],
 )
 gen_tau_eta_1 = Producer(
     name="gen_tau_eta_1",
-    call="quantities::eta({df}, {output}, {input})",
+    call="lorentzvector::GetEta({df}, {output}, {input})",
     input=[q.gen_tau_p4_1],
     output=[q.gen_tau_eta_1],
     scopes=["mt", "et", "tt"],
 )
 gen_tau_eta_2 = Producer(
     name="gen_tau_eta_2",
-    call="quantities::eta({df}, {output}, {input})",
+    call="lorentzvector::GetEta({df}, {output}, {input})",
     input=[q.gen_tau_p4_2],
     output=[q.gen_tau_eta_2],
     scopes=["mt", "et", "tt"],
 )
 gen_tau_phi_1 = Producer(
     name="gen_tau_phi_1",
-    call="quantities::phi({df}, {output}, {input})",
+    call="lorentzvector::GetPhi({df}, {output}, {input})",
     input=[q.gen_tau_p4_1],
     output=[q.gen_tau_phi_1],
     scopes=["mt", "et", "tt"],
 )
 gen_tau_phi_2 = Producer(
     name="gen_tau_phi_2",
-    call="quantities::phi({df}, {output}, {input})",
+    call="lorentzvector::GetPhi({df}, {output}, {input})",
     input=[q.gen_tau_p4_2],
     output=[q.gen_tau_phi_2],
     scopes=["mt", "et", "tt"],
 )
 gen_tau_mass_1 = Producer(
     name="gen_tau_mass_1",
-    call="quantities::mass({df}, {output}, {input})",
+    call="lorentzvector::GetMass({df}, {output}, {input})",
     input=[q.gen_tau_p4_1],
     output=[q.gen_tau_mass_1],
     scopes=["mt", "et", "tt"],
 )
 gen_tau_mass_2 = Producer(
     name="gen_tau_mass_2",
-    call="quantities::mass({df}, {output}, {input})",
+    call="lorentzvector::GetMass({df}, {output}, {input})",
     input=[q.gen_tau_p4_2],
     output=[q.gen_tau_mass_2],
     scopes=["mt", "et", "tt"],
 )
 gen_tau_m_inv = Producer(
     name="gen_tau_m_inv",
-    call="quantities::m_vis({df}, {output}, {input_vec})",
+    call="lorentzvector::GetMass({df}, {output}, {input})",
     input=[q.gen_tau_p4_1, q.gen_tau_p4_2],
     output=[q.gen_tau_m_inv],
     scopes=["mt", "et", "tt"],
 )
 gen_tau_deltaR = Producer(
     name="gen_tau_deltaR",
-    call="quantities::deltaR({df}, {output}, {input})",
+    call="quantities::DeltaR({df}, {output}, {input})",
     input=[q.gen_tau_p4_1, q.gen_tau_p4_2],
     output=[q.gen_tau_deltaR],
     scopes=["mt", "et", "tt"],
@@ -853,7 +846,7 @@ MuMuTrueGenDiTauPairQuantities = ProducerGroup(
 
 GenPairForGenMatching = Producer(
     name="GenPairForGenMatching",
-    call="genmatching::tau::hadronicGenTaus({df}, {output}, {input})",
+    call="genparticles::tau::HadronicGenTaus({df}, {output}, {input})",
     input=[
         nanoAOD.GenParticle_pdgId,
         nanoAOD.GenParticle_statusFlags,
@@ -865,10 +858,11 @@ GenPairForGenMatching = Producer(
 
 GenMatchP1 = Producer(
     name="GenMatchP1",
-    call="genmatching::tau::genmatching({df}, {output}, {input})",
+    call="genparticles::tau::GenMatching({df}, {output}, {input})",
     input=[
         q.hadronic_gen_taus,
         nanoAOD.GenParticle_pdgId,
+        nanoAOD.GenParticle_motherid,
         nanoAOD.GenParticle_statusFlags,
         nanoAOD.GenParticle_pt,
         nanoAOD.GenParticle_eta,
@@ -882,10 +876,11 @@ GenMatchP1 = Producer(
 
 GenMatchP2 = Producer(
     name="GenMatchP2",
-    call="genmatching::tau::genmatching({df}, {output}, {input})",
+    call="genparticles::tau::GenMatching({df}, {output}, {input})",
     input=[
         q.hadronic_gen_taus,
         nanoAOD.GenParticle_pdgId,
+        nanoAOD.GenParticle_motherid,
         nanoAOD.GenParticle_statusFlags,
         nanoAOD.GenParticle_pt,
         nanoAOD.GenParticle_eta,
@@ -912,10 +907,11 @@ GenMatching = ProducerGroup(
 
 GenMatchBoostedP1 = Producer(
     name="GenMatchBoostedP1",
-    call="genmatching::tau::genmatching({df}, {output}, {input})",
+    call="genparticles::tau::GenMatching({df}, {output}, {input})",
     input=[
         q.hadronic_gen_taus,
         nanoAOD.GenParticle_pdgId,
+        nanoAOD.GenParticle_motherid,
         nanoAOD.GenParticle_statusFlags,
         nanoAOD.GenParticle_pt,
         nanoAOD.GenParticle_eta,
@@ -929,10 +925,11 @@ GenMatchBoostedP1 = Producer(
 
 GenMatchBoostedP2 = Producer(
     name="GenMatchBoostedP2",
-    call="genmatching::tau::genmatching({df}, {output}, {input})",
+    call="genparticles::tau::GenMatching({df}, {output}, {input})",
     input=[
         q.hadronic_gen_taus,
         nanoAOD.GenParticle_pdgId,
+        nanoAOD.GenParticle_motherid,
         nanoAOD.GenParticle_statusFlags,
         nanoAOD.GenParticle_pt,
         nanoAOD.GenParticle_eta,

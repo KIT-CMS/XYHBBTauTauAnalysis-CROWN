@@ -180,7 +180,7 @@ BoostedExtraElectronsVeto = Producer(
 )
 NumberOfGoodElectrons = Producer(
     name="NumberOfGoodElectrons",
-    call="quantities::NumberOfGoodLeptons({df}, {output}, {input})",
+    call="physicsobject::Count({df}, {output}, {input})",
     input=[q.good_electrons_mask],
     output=[q.nelectrons],
     scopes=["et", "em", "ee"],

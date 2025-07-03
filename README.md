@@ -12,7 +12,7 @@ The repository holding the CROWN configuration of the NMSSM X &rightarrow; YH &r
 
 ## Available Friend Configurations
 
-* `fastmtt.py` - Produce FastMTT friends
+* `nmssm_fastmtt.py` - Produce FastMTT friends
 
 * `nmssm_fake_factors.py` - Produce fake factor friends for the NMSSM analysis
 

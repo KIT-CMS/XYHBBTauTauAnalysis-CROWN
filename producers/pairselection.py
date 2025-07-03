@@ -399,78 +399,78 @@ GoodBBPairFilter = Filter(
 
 LVMu1 = Producer(
     name="LVMu1",
-    call="lorentzvectors::build({df}, {input_vec}, 0, {output})",
+    call="lorentzvector::Build({df}, {output}, {input}, 0)",
     input=[
-        q.dileptonpair,
         nanoAOD.Muon_pt,
         nanoAOD.Muon_eta,
         nanoAOD.Muon_phi,
         nanoAOD.Muon_mass,
+        q.dileptonpair,
     ],
     output=[q.p4_1],
     scopes=["mt", "mm"],
 )
 LVMu2 = Producer(
     name="LVMu2",
-    call="lorentzvectors::build({df}, {input_vec}, 1, {output})",
+    call="lorentzvector::Build({df}, {output}, {input}, 1)",
     input=[
-        q.dileptonpair,
         nanoAOD.Muon_pt,
         nanoAOD.Muon_eta,
         nanoAOD.Muon_phi,
         nanoAOD.Muon_mass,
+        q.dileptonpair,
     ],
     output=[q.p4_2],
     scopes=["mm", "em"],
 )
 LVEl1 = Producer(
     name="LVEl1",
-    call="lorentzvectors::build({df}, {input_vec}, 0, {output})",
+    call="lorentzvector::Build({df}, {output}, {input}, 0)",
     input=[
-        q.dileptonpair,
         q.Electron_pt_corrected,
         nanoAOD.Electron_eta,
         nanoAOD.Electron_phi,
         nanoAOD.Electron_mass,
+        q.dileptonpair,
     ],
     output=[q.p4_1],
     scopes=["et", "ee", "em"],
 )
 LVEl2 = Producer(
     name="LVEl2",
-    call="lorentzvectors::build({df}, {input_vec}, 1, {output})",
+    call="lorentzvector::Build({df}, {output}, {input}, 1)",
     input=[
-        q.dileptonpair,
         q.Electron_pt_corrected,
         nanoAOD.Electron_eta,
         nanoAOD.Electron_phi,
         nanoAOD.Electron_mass,
+        q.dileptonpair,
     ],
     output=[q.p4_2],
     scopes=["ee"],
 )
 LVTau1 = Producer(
     name="LVTau1",
-    call="lorentzvectors::build({df}, {input_vec}, 0, {output})",
+    call="lorentzvector::Build({df}, {output}, {input}, 0)",
     input=[
-        q.dileptonpair,
         q.Tau_pt_corrected,
         nanoAOD.Tau_eta,
         nanoAOD.Tau_phi,
         q.Tau_mass_corrected,
+        q.dileptonpair,
     ],
     output=[q.p4_1],
     scopes=["tt"],
 )
 LVTau2 = Producer(
     name="LVTau2",
-    call="lorentzvectors::build({df}, {input_vec}, 1, {output})",
+    call="lorentzvector::Build({df}, {output}, {input}, 1)",
     input=[
-        q.dileptonpair,
         q.Tau_pt_corrected,
         nanoAOD.Tau_eta,
         nanoAOD.Tau_phi,
         q.Tau_mass_corrected,
+        q.dileptonpair,
     ],
     output=[q.p4_2],
     scopes=["mt", "et", "tt"],
@@ -478,78 +478,78 @@ LVTau2 = Producer(
 ## uncorrected versions of all particles, used for MET propagation
 LVMu1Uncorrected = Producer(
     name="LVMu1Uncorrected",
-    call="lorentzvectors::build({df}, {input_vec}, 0, {output})",
+    call="lorentzvector::Build({df}, {output}, {input}, 0)",
     input=[
-        q.dileptonpair,
         nanoAOD.Muon_pt,
         nanoAOD.Muon_eta,
         nanoAOD.Muon_phi,
         nanoAOD.Muon_mass,
+        q.dileptonpair,
     ],
     output=[q.p4_1_uncorrected],
     scopes=["mt", "mm"],
 )
 LVMu2Uncorrected = Producer(
     name="LVMu2Uncorrected",
-    call="lorentzvectors::build({df}, {input_vec}, 1, {output})",
+    call="lorentzvector::Build({df}, {output}, {input}, 1)",
     input=[
-        q.dileptonpair,
         nanoAOD.Muon_pt,
         nanoAOD.Muon_eta,
         nanoAOD.Muon_phi,
         nanoAOD.Muon_mass,
+        q.dileptonpair,
     ],
     output=[q.p4_2_uncorrected],
     scopes=["mm", "em"],
 )
 LVEl1Uncorrected = Producer(
     name="LVEl1Uncorrected",
-    call="lorentzvectors::build({df}, {input_vec}, 0, {output})",
+    call="lorentzvector::Build({df}, {output}, {input}, 0)",
     input=[
-        q.dileptonpair,
         q.Electron_pt_corrected,
         nanoAOD.Electron_eta,
         nanoAOD.Electron_phi,
         nanoAOD.Electron_mass,
+        q.dileptonpair,
     ],
     output=[q.p4_1_uncorrected],
     scopes=["em", "et", "ee"],
 )
 LVEl2Uncorrected = Producer(
     name="LVEl2Uncorrected",
-    call="lorentzvectors::build({df}, {input_vec}, 1, {output})",
+    call="lorentzvector::Build({df}, {output}, {input}, 1)",
     input=[
-        q.dileptonpair,
         q.Electron_pt_corrected,
         nanoAOD.Electron_eta,
         nanoAOD.Electron_phi,
         nanoAOD.Electron_mass,
+        q.dileptonpair,
     ],
     output=[q.p4_2_uncorrected],
     scopes=["ee"],
 )
 LVTau1Uncorrected = Producer(
     name="LVTau1Uncorrected",
-    call="lorentzvectors::build({df}, {input_vec}, 0, {output})",
+    call="lorentzvector::Build({df}, {output}, {input}, 0)",
     input=[
-        q.dileptonpair,
         nanoAOD.Tau_pt,
         nanoAOD.Tau_eta,
         nanoAOD.Tau_phi,
         nanoAOD.Tau_mass,
+        q.dileptonpair,
     ],
     output=[q.p4_1_uncorrected],
     scopes=["tt"],
 )
 LVTau2Uncorrected = Producer(
     name="LVTau2Uncorrected",
-    call="lorentzvectors::build({df}, {input_vec}, 1, {output})",
+    call="lorentzvector::Build({df}, {output}, {input}, 1)",
     input=[
-        q.dileptonpair,
         nanoAOD.Tau_pt,
         nanoAOD.Tau_eta,
         nanoAOD.Tau_phi,
         nanoAOD.Tau_mass,
+        q.dileptonpair,
     ],
     output=[q.p4_2_uncorrected],
     scopes=["mt", "et", "tt"],
@@ -571,13 +571,13 @@ additionalBoostedTau = Producer(
 )
 LVaddBoostedTau = Producer(
     name="LVaddBoostedTau",
-    call="lorentzvectors::build({df}, {input_vec}, 0, {output})",
+    call="lorentzvector::Build({df}, {output}, {input}, 0)",
     input=[
-        q.additional_boostedtau,
         q.boostedTau_pt_corrected,
         nanoAOD.boostedTau_eta,
         nanoAOD.boostedTau_phi,
         q.boostedTau_mass_corrected,
+        q.additional_boostedtau,
     ],
     output=[q.boosted_p4_add],
     scopes=["mt", "et", "tt"],
@@ -589,52 +589,52 @@ LVaddBoostedTau = Producer(
 
 LVbjet1 = Producer(
     name="LVbjet1",
-    call="lorentzvectors::build({df}, {input_vec}, 0, {output})",
+    call="lorentzvector::Build({df}, {output}, {input}, 0)",
     input=[
-        q.dibjetpair,
         q.Jet_pt_corrected_bReg,
         nanoAOD.Jet_eta,
         nanoAOD.Jet_phi,
         q.Jet_mass_corrected_bReg,
+        q.dibjetpair,
     ],
     output=[q.bpair_p4_1],
     scopes=["mt", "et", "tt", "mm"],
 )
 LVbjet2 = Producer(
     name="LVbjet2",
-    call="lorentzvectors::build({df}, {input_vec}, 1, {output})",
+    call="lorentzvector::Build({df}, {output}, {input}, 1)",
     input=[
-        q.dibjetpair,
         q.Jet_pt_corrected_bReg,
         nanoAOD.Jet_eta,
         nanoAOD.Jet_phi,
         q.Jet_mass_corrected_bReg,
+        q.dibjetpair,
     ],
     output=[q.bpair_p4_2],
     scopes=["mt", "et", "tt", "mm"],
 )
 LVbjet1_boosted = Producer(
     name="LVbjet1_boosted",
-    call="lorentzvectors::build({df}, {input_vec}, 0, {output})",
+    call="lorentzvector::Build({df}, {output}, {input}, 0)",
     input=[
-        q.dibjetpair_boosted,
         q.Jet_pt_corrected_bReg,
         nanoAOD.Jet_eta,
         nanoAOD.Jet_phi,
         q.Jet_mass_corrected_bReg,
+        q.dibjetpair_boosted,
     ],
     output=[q.bpair_p4_1_boosted],
     scopes=["mt", "et", "tt", "mm"],
 )
 LVbjet2_boosted = Producer(
     name="LVbjet2_boosted",
-    call="lorentzvectors::build({df}, {input_vec}, 1, {output})",
+    call="lorentzvector::Build({df}, {output}, {input}, 1)",
     input=[
-        q.dibjetpair_boosted,
         q.Jet_pt_corrected_bReg,
         nanoAOD.Jet_eta,
         nanoAOD.Jet_phi,
         q.Jet_mass_corrected_bReg,
+        q.dibjetpair_boosted,
     ],
     output=[q.bpair_p4_2_boosted],
     scopes=["mt", "et", "tt", "mm"],
