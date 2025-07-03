@@ -492,14 +492,14 @@ boosted_deltaR_ditaupair = Producer(
 )
 boosted_mt_1 = Producer(
     name="boosted_mt_1",
-    call="lorentzvector::TransverseMass({df}, {output}, {input})",
+    call="quantities::TransverseMass({df}, {output}, {input})",
     input=[q.boosted_p4_1, q.met_p4_recoilcorrected],
     output=[q.boosted_mt_1],
     scopes=["mt", "et", "tt", "em", "ee", "mm"],
 )
 boosted_mt_2 = Producer(
     name="boosted_mt_2",
-    call="lorentzvector::TransverseMass({df}, {output}, {input})",
+    call="quantities::TransverseMass({df}, {output}, {input})",
     input=[q.boosted_p4_2, q.met_p4_recoilcorrected],
     output=[q.boosted_mt_2],
     scopes=["mt", "et", "tt", "em", "ee", "mm"],

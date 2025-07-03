@@ -637,21 +637,21 @@ Pzetamissvis = Producer(
 )
 mTdileptonMET = Producer(
     name="mTdileptonMET",
-    call="lorentzvector::TransverseMass({df}, {output}, {input})",
+    call="quantities::TransverseMass({df}, {output}, {input})",
     input=[q.p4_vis, q.met_p4_recoilcorrected],
     output=[q.mTdileptonMET],
     scopes=["mt", "et", "tt", "em", "ee", "mm"],
 )
 mt_1 = Producer(
     name="mt_1",
-    call="lorentzvector::TransverseMass({df}, {output}, {input})",
+    call="quantities::TransverseMass({df}, {output}, {input})",
     input=[q.p4_1, q.met_p4_recoilcorrected],
     output=[q.mt_1],
     scopes=["mt", "et", "tt", "em", "ee", "mm"],
 )
 mt_2 = Producer(
     name="mt_2",
-    call="lorentzvector::TransverseMass({df}, {output}, {input})",
+    call="quantities::TransverseMass({df}, {output}, {input})",
     input=[q.p4_2, q.met_p4_recoilcorrected],
     output=[q.mt_2],
     scopes=["mt", "et", "tt", "em", "ee", "mm"],
@@ -707,7 +707,7 @@ mass_tautaubb = Producer(
 )
 mt_tot = Producer(
     name="mt_tot",
-    call="lorentzvector::TransverseMass({df}, {output}, {input})",
+    call="quantities::TransverseMass({df}, {output}, {input})",
     input=[q.p4_1, q.p4_2, q.met_p4_recoilcorrected],
     output=[q.mt_tot],
     scopes=["mt", "et", "tt", "em", "ee", "mm"],
@@ -722,21 +722,21 @@ Pzetamissvis_pf = Producer(
 )
 mTdileptonMET_pf = Producer(
     name="mTdileptonMET_pf",
-    call="lorentzvector::TransverseMass({df}, {output}, {input})",
+    call="quantities::TransverseMass({df}, {output}, {input})",
     input=[q.p4_vis, q.pfmet_p4_recoilcorrected],
     output=[q.mTdileptonMET_pf],
     scopes=["mt", "et", "tt", "em", "ee", "mm"],
 )
 mt_1_pf = Producer(
     name="mt_1_pf",
-    call="lorentzvector::TransverseMass({df}, {output}, {input})",
+    call="quantities::TransverseMass({df}, {output}, {input})",
     input=[q.p4_1, q.pfmet_p4_recoilcorrected],
     output=[q.mt_1_pf],
     scopes=["mt", "et", "tt", "em", "ee", "mm"],
 )
 mt_2_pf = Producer(
     name="mt_2_pf",
-    call="lorentzvector::TransverseMass({df}, {output}, {input})",
+    call="quantities::TransverseMass({df}, {output}, {input})",
     input=[q.p4_2, q.pfmet_p4_recoilcorrected],
     output=[q.mt_2_pf],
     scopes=["mt", "et", "tt", "em", "ee", "mm"],
@@ -764,7 +764,7 @@ pt_ttbb_pf = Producer(
 )
 mt_tot_pf = Producer(
     name="mt_tot_pf",
-    call="lorentzvector::TransverseMass({df}, {output}, {input})",
+    call="quantities::TransverseMass({df}, {output}, {input})",
     input=[q.p4_1, q.p4_2, q.pfmet_p4_recoilcorrected],
     output=[q.mt_tot_pf],
     scopes=["mt", "et", "tt", "em", "ee", "mm"],

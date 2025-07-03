@@ -18,7 +18,7 @@ Muon_1_ID_SF = Producer(
         {input}, 
         "{muon_sf_file}", 
         "{muon_id_sf_name}", 
-        "{muon_sf_varation}")
+        "{muon_id_sf_variation}")
         """,
     input=[q.pt_1, q.eta_1],
     output=[q.id_wgt_mu_1],
@@ -33,7 +33,7 @@ Muon_1_Iso_SF = Producer(
         {input}, 
         "{muon_sf_file}", 
         "{muon_iso_sf_name}", 
-        "{muon_sf_varation}")
+        "{muon_iso_sf_variation}")
         """,
     input=[q.pt_1, q.eta_1],
     output=[q.iso_wgt_mu_1],
@@ -48,7 +48,7 @@ Muon_2_ID_SF = Producer(
         {input}, 
         "{muon_sf_file}", 
         "{muon_id_sf_name}", 
-        "{muon_sf_varation}")
+        "{muon_id_sf_variation}")
         """,
     input=[q.pt_2, q.eta_2],
     output=[q.id_wgt_mu_2],
@@ -63,7 +63,7 @@ Muon_2_Iso_SF = Producer(
         {input}, 
         "{muon_sf_file}", 
         "{muon_iso_sf_name}", 
-        "{muon_sf_varation}")
+        "{muon_iso_sf_variation}")
         """,
     input=[q.pt_2, q.eta_2],
     output=[q.iso_wgt_mu_2],
@@ -109,7 +109,7 @@ Muon_1_ID_SF_boosted = Producer(
         {input}, 
         "{muon_sf_file}", 
         "{muon_id_sf_name}", 
-        "{muon_sf_varation}")
+        "{muon_id_sf_variation}")
         """,
     input=[q.boosted_pt_1, q.boosted_eta_1],
     output=[q.id_wgt_mu_boosted_1],
@@ -124,7 +124,7 @@ Muon_1_Iso_SF_boosted = Producer(
         {input}, 
         "{muon_sf_file}", 
         "{muon_iso_sf_name}", 
-        "{muon_sf_varation}")
+        "{muon_iso_sf_variation}")
         """,
     input=[q.boosted_pt_1, q.boosted_eta_1],
     output=[q.iso_wgt_mu_boosted_1],
@@ -185,7 +185,7 @@ Tau_1_VsEleTauID_SF = ExtendedVectorProducer(
         "{tau_sf_vsele_barrel}", 
         "{tau_sf_vsele_endcap}")
         """,
-    input=[q.eta_1, q.tau_decaymode_1, q.gen_match_1],
+    input=[q.eta_1, q.gen_match_1],
     output="tau_1_vsele_sf_outputname",
     scope=["tt"],
     vec_config="vsele_tau_id",
@@ -206,7 +206,7 @@ Tau_1_VsMuTauID_SF = ExtendedVectorProducer(
         "{tau_sf_vsmu_wheel4}", 
         "{tau_sf_vsmu_wheel5}")
         """,
-    input=[q.eta_1, q.tau_decaymode_1, q.gen_match_1],
+    input=[q.eta_1, q.gen_match_1],
     output="tau_1_vsmu_sf_outputname",
     scope=["tt"],
     vec_config="vsmu_tau_id",
@@ -270,7 +270,7 @@ Tau_2_VsEleTauID_SF = ExtendedVectorProducer(
         "{tau_sf_vsele_barrel}", 
         "{tau_sf_vsele_endcap}")
         """,
-    input=[q.eta_2, q.tau_decaymode_2, q.gen_match_2],
+    input=[q.eta_2, q.gen_match_2],
     output="tau_2_vsele_sf_outputname",
     scope=["et", "mt", "tt"],
     vec_config="vsele_tau_id",
@@ -291,7 +291,7 @@ Tau_2_VsMuTauID_SF = ExtendedVectorProducer(
         "{tau_sf_vsmu_wheel4}", 
         "{tau_sf_vsmu_wheel5}")
         """,
-    input=[q.eta_2, q.tau_decaymode_2, q.gen_match_2],
+    input=[q.eta_2, q.gen_match_2],
     output="tau_2_vsmu_sf_outputname",
     scope=["et", "mt", "tt"],
     vec_config="vsmu_tau_id",
@@ -345,7 +345,7 @@ Tau_1_antiEleTauID_SF = ExtendedVectorProducer(
         "{boostedtau_sf_antiele_barrel}", 
         "{boostedtau_sf_antiele_endcap}")
         """,
-    input=[q.boosted_eta_1, q.boosted_tau_decaymode_1, q.boosted_gen_match_1],
+    input=[q.boosted_eta_1, q.boosted_gen_match_1],
     output="boostedtau_1_antiele_sf_outputname",
     scope=["tt"],
     vec_config="antiele_boostedtau_id",
@@ -366,7 +366,7 @@ Tau_1_antiMuTauID_SF = ExtendedVectorProducer(
         "{boostedtau_sf_antimu_wheel4}", 
         "{boostedtau_sf_antimu_wheel5}")
         """,
-    input=[q.boosted_eta_1, q.boosted_tau_decaymode_1, q.boosted_gen_match_1],
+    input=[q.boosted_eta_1, q.boosted_gen_match_1],
     output="boostedtau_1_antimu_sf_outputname",
     scope=["tt"],
     vec_config="antimu_boostedtau_id",
@@ -398,9 +398,9 @@ Tau_2_antiEleTauID_SF = ExtendedVectorProducer(
         "{boostedtau_id_discriminator}", 
         "{antiele_boostedtau_id_WP}", 
         "{boostedtau_sf_antiele_barrel}", 
-        "{boostedtau_sf_vsele_endcap}")
+        "{boostedtau_sf_antiele_endcap}")
         """,
-    input=[q.boosted_eta_2, q.boosted_tau_decaymode_2, q.boosted_gen_match_2],
+    input=[q.boosted_eta_2, q.boosted_gen_match_2],
     output="boostedtau_2_antiele_sf_outputname",
     scope=["et", "mt", "tt"],
     vec_config="antiele_boostedtau_id",
@@ -421,7 +421,7 @@ Tau_2_antiMuTauID_SF = ExtendedVectorProducer(
         "{boostedtau_sf_antimu_wheel4}", 
         "{boostedtau_sf_antimu_wheel5}")
         """,
-    input=[q.boosted_eta_2, q.boosted_tau_decaymode_2, q.boosted_gen_match_2],
+    input=[q.boosted_eta_2, q.boosted_gen_match_2],
     output="boostedtau_2_antimu_sf_outputname",
     scope=["et", "mt", "tt"],
     vec_config="antimu_boostedtau_id",
@@ -468,7 +468,7 @@ Ele_1_Reco_SF = Producer(
         "{ele_reco_sf_name}", 
         "{ele_sf_file}", 
         "{ele_sf_cset_name}", 
-        "{ele_reco_sf_varation}")
+        "{ele_reco_sf_variation}")
         """,
     input=[q.pt_1, q.eta_1],
     output=[q.reco_wgt_ele_1],
@@ -485,7 +485,7 @@ Ele_2_Reco_SF = Producer(
         "{ele_reco_sf_name}", 
         "{ele_sf_file}", 
         "{ele_sf_cset_name}", 
-        "{ele_reco_sf_varation}")
+        "{ele_reco_sf_variation}")
         """,
     input=[q.pt_2, q.eta_2],
     output=[q.reco_wgt_ele_2],
@@ -502,7 +502,7 @@ Ele_1_IDWP90_SF = Producer(
         "{ele_id_sf_name}", 
         "{ele_sf_file}", 
         "{ele_sf_cset_name}", 
-        "{ele_id_sf_varation}")
+        "{ele_id_sf_variation}")
         """,
     input=[q.pt_1, q.eta_1],
     output=[q.id_wgt_ele_wp90nonIso_1],
@@ -519,7 +519,7 @@ Ele_2_IDWP90_SF = Producer(
         "{ele_id_sf_name}", 
         "{ele_sf_file}", 
         "{ele_sf_cset_name}", 
-        "{ele_id_sf_varation}")
+        "{ele_id_sf_variation}")
         """,
     input=[q.pt_2, q.eta_2],
     output=[q.id_wgt_ele_wp90nonIso_2],
@@ -553,7 +553,7 @@ Ele_1_Reco_SF_boosted = Producer(
         "{ele_reco_sf_name}", 
         "{ele_sf_file}", 
         "{ele_sf_cset_name}", 
-        "{ele_reco_sf_varation}")
+        "{ele_reco_sf_variation}")
         """,
     input=[q.boosted_pt_1, q.boosted_eta_1],
     output=[q.reco_wgt_ele_boosted_1],
@@ -570,7 +570,7 @@ Ele_1_IDWP90_SF_boosted = Producer(
         "{ele_id_sf_name}", 
         "{ele_sf_file}", 
         "{ele_sf_cset_name}", 
-        "{ele_id_sf_varation}")
+        "{ele_id_sf_variation}")
         """,
     input=[q.boosted_pt_1, q.boosted_eta_1],
     output=[q.id_wgt_ele_boosted_wp90nonIso_1],
