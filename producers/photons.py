@@ -9,14 +9,14 @@ from code_generation.producer import Producer, ProducerGroup
 
 PhotonPtCut = Producer(
     name="PhotonPtCut",
-    call="physicsobject::CutMin<float>({df}, {input}, {output}, {min_photon_pt})",
+    call="physicsobject::CutMin<float>({df}, {output}, {input}, {min_photon_pt})",
     input=[nanoAOD.Photon_pt],
     output=[],
     scopes=["global"],
 )
 PhotonEtaCut = Producer(
     name="PhotonEtaCut",
-    call="physicsobject::CutAbsMax<float>({df}, {input}, {output}, {max_photon_eta})",
+    call="physicsobject::CutAbsMax<float>({df}, {output}, {input}, {max_photon_eta})",
     input=[nanoAOD.Photon_eta],
     output=[],
     scopes=["global"],

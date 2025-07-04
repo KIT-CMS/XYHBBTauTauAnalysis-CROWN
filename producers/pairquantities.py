@@ -342,56 +342,28 @@ taujet_pt_1 = Producer(
 )
 VsJetTauIDFlag_1 = ExtendedVectorProducer(
     name="VsJetTauIDFlag_1",
-    call="physicsobject::CutMin<Float_t>({df}, {output}, {input}, {vsjet_tau_id_WPbit}, 0)",
-    input=[q.dileptonpair, nanoAOD.Tau_ID_vsJet_DeepTau2p5],
+    call="v12::quantities::tau::TauIDFlag({df}, {output}, 0, {input}, {vsjet_tau_id_WPbit})",
+    input=[q.dileptonpair, nanoAOD.Tau_ID_vsJet],
     output="tau_1_vsjet_id_outputname",
-    scope=["tt"],
+    scope=["et", "mt", "tt"],
     vec_config="vsjet_tau_id",
 )
 VsEleTauIDFlag_1 = ExtendedVectorProducer(
     name="VsEleTauIDFlag_1",
-    call="physicsobject::CutMin<Float_t>({df}, {output}, {input}, {vsele_tau_id_WPbit}, 0)",
-    input=[q.dileptonpair, nanoAOD.Tau_ID_vsEle_DeepTau2p5],
+    call="v12::quantities::tau::TauIDFlag({df}, {output}, 0, {input}, {vsele_tau_id_WPbit})",
+    input=[q.dileptonpair, nanoAOD.Tau_ID_vsEle],
     output="tau_1_vsele_id_outputname",
-    scope=["tt"],
+    scope=["et", "mt", "tt"],
     vec_config="vsele_tau_id",
 )
 VsMuTauIDFlag_1 = ExtendedVectorProducer(
     name="VsMuTauIDFlag_1",
-    call="physicsobject::CutMin<Float_t>({df}, {output}, {input}, {vsmu_tau_id_WPbit}, 0)",
-    input=[q.dileptonpair, nanoAOD.Tau_ID_vsMu_DeepTau2p5],
+    call="v12::quantities::tau::TauIDFlag({df}, {output}, 0, {input}, {vsmu_tau_id_WPbit})",
+    input=[q.dileptonpair, nanoAOD.Tau_ID_vsMu],
     output="tau_1_vsmu_id_outputname",
-    scope=["tt"],
+    scope=["et", "mt", "tt"],
     vec_config="vsmu_tau_id",
 )
-# backup producer if DeepTau2p1 should be used for tau ID
-VsJetTauIDFlag_1_DeepTau2p1 = ExtendedVectorProducer(
-    name="VsJetTauIDFlag_1_DeepTau2p1",
-    call="physicsobject::CutMin<Float_t>({df}, {output}, {input}, {vsjet_tau_id_WPbit}, 0)",
-    input=[q.dileptonpair, nanoAOD.Tau_ID_vsJet_DeepTau2p1],
-    output="tau_1_vsjet_id_outputname",
-    scope=["tt"],
-    vec_config="vsjet_tau_id",
-)
-# backup producer if DeepTau2p1 should be used for tau ID
-VsEleTauIDFlag_1_DeepTau2p1 = ExtendedVectorProducer(
-    name="VsEleTauIDFlag_1_DeepTau2p1",
-    call="physicsobject::CutMin<Float_t>({df}, {output}, {input}, {vsele_tau_id_WPbit}, 0)",
-    input=[q.dileptonpair, nanoAOD.Tau_ID_vsEle_DeepTau2p1],
-    output="tau_1_vsele_id_outputname",
-    scope=["tt"],
-    vec_config="vsele_tau_id",
-)
-# backup producer if DeepTau2p1 should be used for tau ID
-VsMuTauIDFlag_1_DeepTau2p1 = ExtendedVectorProducer(
-    name="VsMuTauIDFlag_1_DeepTau2p1",
-    call="physicsobject::CutMin<Float_t>({df}, {output}, {input}, {vsmu_tau_id_WPbit}, 0)",
-    input=[q.dileptonpair, nanoAOD.Tau_ID_vsMu_DeepTau2p1],
-    output="tau_1_vsmu_id_outputname",
-    scope=["tt"],
-    vec_config="vsmu_tau_id",
-)
-
 tau_decaymode_2 = Producer(
     name="taudecaymode_2",
     call="event::quantity::Get<UChar_t>({df}, {output}, {input}, 1)",
@@ -413,59 +385,6 @@ taujet_pt_2 = Producer(
     output=[q.taujet_pt_2],
     scopes=["mt", "et", "tt"],
 )
-VsJetTauIDFlag_2 = ExtendedVectorProducer(
-    name="VsJetTauIDFlag_2",
-    call="physicsobject::CutMin<Float_t>({df}, {output}, {input}, {vsjet_tau_id_WPbit}, 1)",
-    input=[q.dileptonpair, nanoAOD.Tau_ID_vsJet_DeepTau2p5],
-    output="tau_2_vsjet_id_outputname",
-    scope=["tt"],
-    vec_config="vsjet_tau_id",
-)
-VsEleTauIDFlag_2 = ExtendedVectorProducer(
-    name="VsEleTauIDFlag_2",
-    call="physicsobject::CutMin<Float_t>({df}, {output}, {input}, {vsele_tau_id_WPbit}, 1)",
-    input=[q.dileptonpair, nanoAOD.Tau_ID_vsEle_DeepTau2p5],
-    output="tau_2_vsele_id_outputname",
-    scope=["tt"],
-    vec_config="vsele_tau_id",
-)
-VsMuTauIDFlag_2 = ExtendedVectorProducer(
-    name="VsMuTauIDFlag_2",
-    call="physicsobject::CutMin<Float_t>({df}, {output}, {input}, {vsmu_tau_id_WPbit}, 1)",
-    input=[q.dileptonpair, nanoAOD.Tau_ID_vsMu_DeepTau2p5],
-    output="tau_2_vsmu_id_outputname",
-    scope=["tt"],
-    vec_config="vsmu_tau_id",
-)
-# backup producer if DeepTau2p1 should be used for tau ID
-VsJetTauIDFlag_1_DeepTau2p1 = ExtendedVectorProducer(
-    name="VsJetTauIDFlag_2_DeepTau2p1",
-    call="physicsobject::CutMin<Float_t>({df}, {output}, {input}, {vsjet_tau_id_WPbit}, 1)",
-    input=[q.dileptonpair, nanoAOD.Tau_ID_vsJet_DeepTau2p1],
-    output="tau_1_vsjet_id_outputname",
-    scope=["tt"],
-    vec_config="vsjet_tau_id",
-)
-# backup producer if DeepTau2p1 should be used for tau ID
-VsEleTauIDFlag_2_DeepTau2p1 = ExtendedVectorProducer(
-    name="VsEleTauIDFlag_2_DeepTau2p1",
-    call="physicsobject::CutMin<Float_t>({df}, {output}, {input}, {vsele_tau_id_WPbit}, 1)",
-    input=[q.dileptonpair, nanoAOD.Tau_ID_vsEle_DeepTau2p1],
-    output="tau_2_vsele_id_outputname",
-    scope=["tt"],
-    vec_config="vsele_tau_id",
-)
-# backup producer if DeepTau2p1 should be used for tau ID
-VsMuTauIDFlag_2_DeepTau2p1 = ExtendedVectorProducer(
-    name="VsMuTauIDFlag_1_DeepTau2p1",
-    call="physicsobject::CutMin<Float_t>({df}, {output}, {input}, {vsmu_tau_id_WPbit}, 1)",
-    input=[q.dileptonpair, nanoAOD.Tau_ID_vsMu_DeepTau2p1],
-    output="tau_1_vsmu_id_outputname",
-    scope=["tt"],
-    vec_config="vsmu_tau_id",
-)
-
-
 VsJetTauIDFlag_2 = ExtendedVectorProducer(
     name="VsJetTauIDFlag_2",
     call="v12::quantities::tau::TauIDFlag({df}, {output}, 1, {input}, {vsjet_tau_id_WPbit})",
@@ -490,7 +409,6 @@ VsMuTauIDFlag_2 = ExtendedVectorProducer(
     scope=["et", "mt", "tt"],
     vec_config="vsmu_tau_id",
 )
-
 UnrollMuLV1 = ProducerGroup(
     name="UnrollMuLV1",
     call=None,

@@ -40,28 +40,28 @@ JetEnergyCorrection_data, JetEnergyCorrection, RenameJetsData = jerc_producer_fa
 ####################
 JetPtCut = Producer(
     name="JetPtCut",
-    call="physicsobject::CutMin<float>({df}, {input}, {output}, {min_jet_pt})",
+    call="physicsobject::CutMin<float>({df}, {output}, {input}, {min_jet_pt})",
     input=[q.Jet_pt_corrected],
     output=[],
     scopes=GLOBAL_SCOPES,
 )
 BJetPtCut = Producer(
     name="BJetPtCut",
-    call="physicsobject::CutMin<float>({df}, {input}, {output}, {min_bjet_pt})",
+    call="physicsobject::CutMin<float>({df}, {output}, {input}, {min_bjet_pt})",
     input=[q.Jet_pt_corrected],
     output=[],
     scopes=GLOBAL_SCOPES,
 )
 JetEtaCut = Producer(
     name="JetEtaCut",
-    call="physicsobject::CutAbsMax<float>({df}, {input}, {output}, {max_jet_eta})",
+    call="physicsobject::CutAbsMax<float>({df}, {output}, {input}, {max_jet_eta})",
     input=[nanoAOD.Jet_eta],
     output=[],
     scopes=GLOBAL_SCOPES,
 )
 BJetEtaCut = Producer(
     name="BJetEtaCut",
-    call="physicsobject::CutAbsMax<float>({df}, {input}, {output}, {max_bjet_eta})",
+    call="physicsobject::CutAbsMax<float>({df}, {output}, {input}, {max_bjet_eta})",
     input=[nanoAOD.Jet_eta],
     output=[],
     scopes=GLOBAL_SCOPES,
@@ -82,7 +82,7 @@ JetPUIDCut = Producer(
 )
 BTagCut = Producer(
     name="BTagCut",
-    call="physicsobject::CutMin<float>({df}, {input}, {output}, {btag_cut})",
+    call="physicsobject::CutMin<float>({df}, {output}, {input}, {btag_cut})",
     input=[nanoAOD.BJet_discriminator],
     output=[],
     scopes=GLOBAL_SCOPES,

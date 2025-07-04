@@ -40,28 +40,28 @@ RenameElectronPt = Producer(
 
 ElectronPtCut = Producer(
     name="ElectronPtCut",
-    call="physicsobject::CutMin<float>({df}, {input}, {output}, {min_ele_pt})",
+    call="physicsobject::CutMin<float>({df}, {output}, {input}, {min_ele_pt})",
     input=[q.Electron_pt_corrected],
     output=[],
     scopes=["global"],
 )
 ElectronEtaCut = Producer(
     name="ElectronEtaCut",
-    call="physicsobject::CutAbsMax<float>({df}, {input}, {output}, {max_ele_eta})",
+    call="physicsobject::CutAbsMax<float>({df}, {output}, {input}, {max_ele_eta})",
     input=[nanoAOD.Electron_eta],
     output=[],
     scopes=["global"],
 )
 ElectronDxyCut = Producer(
     name="ElectronDxyCut",
-    call="physicsobject::CutAbsMax<float>({df}, {input}, {output}, {max_ele_dxy})",
+    call="physicsobject::CutAbsMax<float>({df}, {output}, {input}, {max_ele_dxy})",
     input=[nanoAOD.Electron_dxy],
     output=[],
     scopes=["global"],
 )
 ElectronDzCut = Producer(
     name="ElectronDzCut",
-    call="physicsobject::CutAbsMax<float>({df}, {input}, {output}, {max_ele_dz})",
+    call="physicsobject::CutAbsMax<float>({df}, {output}, {input}, {max_ele_dz})",
     input=[nanoAOD.Electron_dz],
     output=[],
     scopes=["global"],
@@ -102,14 +102,14 @@ BaseElectrons = ProducerGroup(
 
 GoodElectronPtCut = Producer(
     name="GoodElectronPtCut",
-    call="physicsobject::CutMin<float>({df}, {input}, {output}, {min_electron_pt})",
+    call="physicsobject::CutMin<float>({df}, {output}, {input}, {min_electron_pt})",
     input=[q.Electron_pt_corrected],
     output=[],
     scopes=["em", "et", "ee"],
 )
 GoodElectronEtaCut = Producer(
     name="GoodElectronEtaCut",
-    call="physicsobject::CutAbsMax<float>({df}, {input}, {output}, {max_electron_eta})",
+    call="physicsobject::CutAbsMax<float>({df}, {output}, {input}, {max_electron_eta})",
     input=[nanoAOD.Electron_eta],
     output=[],
     scopes=["em", "et", "ee"],
@@ -192,7 +192,7 @@ NumberOfGoodElectrons = Producer(
 
 DiElectronVetoPtCut = Producer(
     name="DiElectronVetoPtCut",
-    call="physicsobject::CutMin<float>({df}, {input}, {output}, {min_dielectronveto_pt})",
+    call="physicsobject::CutMin<float>({df}, {output}, {input}, {min_dielectronveto_pt})",
     input=[q.Electron_pt_corrected],
     output=[],
     scopes=["global"],

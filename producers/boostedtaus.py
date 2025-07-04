@@ -43,14 +43,14 @@ boostedTauEnergyCorrection = ProducerGroup(
 )
 boostedTauPtCorrection_data = Producer(
     name="boostedTauPtCorrection_data",
-    call="event::quantity::Rename<ROOT::RVec<float>>({df}, {input}, {output})",
+    call="event::quantity::Rename<ROOT::RVec<float>>({df}, {output}, {input})",
     input=[nanoAOD.boostedTau_pt],
     output=[q.boostedTau_pt_corrected],
     scopes=["et", "mt", "tt"],
 )
 boostedTauMassCorrection_data = Producer(
     name="boostedTauMassCorrection_data",
-    call="event::quantity::Rename<ROOT::RVec<float>>({df}, {input}, {output})",
+    call="event::quantity::Rename<ROOT::RVec<float>>({df}, {output}, {input})",
     input=[nanoAOD.boostedTau_mass],
     output=[q.boostedTau_mass_corrected],
     scopes=["et", "mt", "tt"],
@@ -76,7 +76,7 @@ boostedTauPtCut = Producer(
 )
 boostedTauEtaCut = Producer(
     name="boostedTauEtaCut",
-    call="physicsobject::CutAbsMax<float>({df}, {input}, {output}, {max_boostedtau_eta})",
+    call="physicsobject::CutAbsMax<float>({df}, {output}, {input}, {max_boostedtau_eta})",
     input=[nanoAOD.boostedTau_eta],
     output=[],
     scopes=["et", "mt", "tt"],

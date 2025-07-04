@@ -162,8 +162,8 @@ def jerc_producer_factory(
         call=(
             "event::quantity::Rename<ROOT::RVec<float>>("
                 "{df}, "
-                "{input}, "
-                "{output}"
+                "{output}, "
+                "{input}"
             ")"
         ),
         input=[jet_pt],
@@ -196,8 +196,8 @@ def jerc_producer_factory(
         call=(
             "event::quantity::Rename<ROOT::RVec<float>>("
                 "{df}, "
-                "{input}, "
-                "{output}"
+                "{output}, "
+                "{input}"
             ")"
         ),
         input=[jet_mass],

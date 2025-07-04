@@ -33,14 +33,14 @@ FatJetEnergyCorrection_data, FatJetEnergyCorrection, RenameFatJetsData = jerc_pr
 
 FatJetPtCut = Producer(
     name="FatJetPtCut",
-    call="physicsobject::CutMin<float>({df}, {input}, {output}, {min_fatjet_pt})",
+    call="physicsobject::CutMin<float>({df}, {output}, {input}, {min_fatjet_pt})",
     input=[q.FatJet_pt_corrected],
     output=[],
     scopes=["global"],
 )
 FatJetEtaCut = Producer(
     name="FatJetEtaCut",
-    call="physicsobject::CutAbsMax<float>({df}, {input}, {output}, {max_fatjet_eta})",
+    call="physicsobject::CutAbsMax<float>({df}, {output}, {input}, {max_fatjet_eta})",
     input=[nanoAOD.FatJet_eta],
     output=[],
     scopes=["global"],

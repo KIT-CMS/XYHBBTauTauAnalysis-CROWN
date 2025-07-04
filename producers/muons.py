@@ -8,28 +8,28 @@ from code_generation.producer import Producer, ProducerGroup
 
 MuonPtCut = Producer(
     name="MuonPtCut",
-    call="physicsobject::CutMin<float>({df}, {input}, {output}, {min_muon_pt})",
+    call="physicsobject::CutMin<float>({df}, {output}, {input}, {min_muon_pt})",
     input=[nanoAOD.Muon_pt],
     output=[],
     scopes=["global"],
 )
 MuonEtaCut = Producer(
     name="MuonEtaCut",
-    call="physicsobject::CutAbsMax<float>({df}, {input}, {output}, {max_muon_eta})",
+    call="physicsobject::CutAbsMax<float>({df}, {output}, {input}, {max_muon_eta})",
     input=[nanoAOD.Muon_eta],
     output=[],
     scopes=["global"],
 )
 MuonDxyCut = Producer(
     name="MuonDxyCut",
-    call="physicsobject::CutAbsMax<float>({df}, {input}, {output}, {max_muon_dxy})",
+    call="physicsobject::CutAbsMax<float>({df}, {output}, {input}, {max_muon_dxy})",
     input=[nanoAOD.Muon_dxy],
     output=[],
     scopes=["global"],
 )
 MuonDzCut = Producer(
     name="MuonDzCut",
-    call="physicsobject::CutAbsMax<float>({df}, {input}, {output}, {max_muon_dz})",
+    call="physicsobject::CutAbsMax<float>({df}, {output}, {input}, {max_muon_dz})",
     input=[nanoAOD.Muon_dz],
     output=[],
     scopes=["global"],
@@ -70,14 +70,14 @@ BaseMuons = ProducerGroup(
 
 GoodMuonPtCut = Producer(
     name="GoodMuonPtCut",
-    call="physicsobject::CutMin<float>({df}, {input}, {output}, {min_muon_pt})",
+    call="physicsobject::CutMin<float>({df}, {output}, {input}, {min_muon_pt})",
     input=[nanoAOD.Muon_pt],
     output=[],
     scopes=["em", "mt", "mm"],
 )
 GoodMuonEtaCut = Producer(
     name="GoodMuonEtaCut",
-    call="physicsobject::CutAbsMax<float>({df}, {input}, {output}, {max_muon_eta})",
+    call="physicsobject::CutAbsMax<float>({df}, {output}, {input}, {max_muon_eta})",
     input=[nanoAOD.Muon_eta],
     output=[],
     scopes=["em", "mt", "mm"],
@@ -91,14 +91,14 @@ GoodMuonIsoCut = Producer(
 )
 GoodMuonDzCut = Producer(
     name="GoodMuonDzCut",
-    call="physicsobject::CutAbsMax<float>({df}, {input}, {output}, {max_muon_dz})",
+    call="physicsobject::CutAbsMax<float>({df}, {output}, {input}, {max_muon_dz})",
     input=[nanoAOD.Muon_dz],
     output=[],
     scopes=["em", "mt", "mm"],
 )
 GoodMuonDxyCut = Producer(
     name="GoodMuonDxyCut",
-    call="physicsobject::CutAbsMax<float>({df}, {input}, {output}, {max_muon_dxy})",
+    call="physicsobject::CutAbsMax<float>({df}, {output}, {input}, {max_muon_dxy})",
     input=[nanoAOD.Muon_dxy],
     output=[],
     scopes=["em", "mt", "mm"],
@@ -187,7 +187,7 @@ BoostedExtraMuonsVeto = Producer(
 
 DiMuonVetoPtCut = Producer(
     name="DiMuonVetoPtCut",
-    call="physicsobject::CutMin<float>({df}, {input}, {output}, {min_dimuonveto_pt})",
+    call="physicsobject::CutMin<float>({df}, {output}, {input}, {min_dimuonveto_pt})",
     input=[nanoAOD.Muon_pt],
     output=[],
     scopes=["global"],

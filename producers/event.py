@@ -30,7 +30,7 @@ JSONFilter = BaseFilter(
 
 PrefireWeight = Producer(
     name="PrefireWeight",
-    call="event::quantity::Rename<Float_t>({df}, {input}, {output})",
+    call="event::quantity::Rename<Float_t>({df}, {output}, {input})",
     input=[nanoAOD.prefireWeight],
     output=[q.prefireweight],
     scopes=["global"],
@@ -179,7 +179,7 @@ MetFilter = VectorProducer(
 
 Lumi = Producer(
     name="Lumi",
-    call="event::quantity::Rename<UInt_t>({df}, {input}, {output})",
+    call="event::quantity::Rename<UInt_t>({df}, {output}, {input})",
     input=[nanoAOD.luminosityBlock],
     output=[q.lumi],
     scopes=["global"],
@@ -187,7 +187,7 @@ Lumi = Producer(
 
 npartons = Producer(
     name="npartons",
-    call="event::quantity::Rename<UChar_t>({df}, {input}, {output})",
+    call="event::quantity::Rename<UChar_t>({df}, {output}, {input})",
     input=[nanoAOD.LHE_Njets],
     output=[q.npartons],
     scopes=["global"],
