@@ -1678,26 +1678,7 @@ def build_config(
             samples=["nmssm_Ybb", "nmssm_Ytautau"],
         ),
     )
-    # configuration.add_modification_rule(
-    #     ["et", "mt"],
-    #     RemoveProducer(
-    #         producers=[
-    #             pairquantities.tau_gen_match_2,
-    #             # boostedtaus.boosted_tau_gen_match_2,
-    #         ],
-    #         samples="data",
-    #     ),
-    # )
-    # configuration.add_modification_rule(
-    #     ["tt"],
-    #     RemoveProducer(
-    #         producers=[
-    #             pairquantities.tau_gen_match_1,
-    #             pairquantities.tau_gen_match_2,
-    #         ],
-    #         samples="data",
-    #     ),
-    # )
+ 
     configuration.add_modification_rule(
         HAD_TAU_SCOPES,
         RemoveProducer(
@@ -2099,7 +2080,6 @@ def build_config(
             # q.gen_taujet_pt_2,
             q.tau_decaymode_1,
             q.tau_decaymode_2,
-            # q.tau_gen_match_2,
             q.muon_veto_flag,
             q.boosted_muon_veto_flag,
             q.electron_veto_flag,
@@ -2111,7 +2091,6 @@ def build_config(
             q.boosted_dz_1,
             q.boosted_tau_decaymode_1,
             q.boosted_tau_decaymode_2,
-            # q.boosted_tau_gen_match_2,
             q.boosted_pt_1,
             q.boosted_pt_2,
             q.boosted_eta_1,
@@ -2163,7 +2142,6 @@ def build_config(
             # q.gen_taujet_pt_2,
             q.tau_decaymode_1,
             q.tau_decaymode_2,
-            # q.tau_gen_match_2,
             q.muon_veto_flag,
             q.boosted_electron_veto_flag,
             q.electron_veto_flag,
@@ -2175,7 +2153,6 @@ def build_config(
             q.boosted_dz_1,
             q.boosted_tau_decaymode_1,
             q.boosted_tau_decaymode_2,
-            # q.boosted_tau_gen_match_2,
             q.boosted_pt_1,
             q.boosted_pt_2,
             q.boosted_eta_1,
@@ -2238,16 +2215,12 @@ def build_config(
             # q.gen_taujet_pt_2,
             q.tau_decaymode_1,
             q.tau_decaymode_2,
-            # q.tau_gen_match_1,
-            # q.tau_gen_match_2,
             q.muon_veto_flag,
             q.electron_veto_flag,
             q.dimuon_veto,
             q.dilepton_veto,
             q.boosted_tau_decaymode_1,
             q.boosted_tau_decaymode_2,
-            # q.boosted_tau_gen_match_1,
-            # q.boosted_tau_gen_match_2,
             q.boosted_pt_1,
             q.boosted_pt_2,
             q.boosted_eta_1,

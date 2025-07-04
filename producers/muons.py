@@ -131,7 +131,7 @@ GoodMuonsWithDzDxyCuts = ProducerGroup(
 )
 NumberOfGoodMuons = Producer(
     name="NumberOfGoodMuons",
-    call="quantities::NumberOfGoodLeptons({df}, {output}, {input})",
+    call="physicsobject::Count({df}, {output}, {input})",
     input=[q.good_muons_mask],
     output=[q.nmuons],
     scopes=["mt", "em", "mm"],

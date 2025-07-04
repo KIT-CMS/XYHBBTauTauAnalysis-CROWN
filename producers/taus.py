@@ -240,7 +240,7 @@ GoodTaus = ProducerGroup(
 )
 NumberOfGoodTaus = Producer(
     name="NumberOfGoodTaus",
-    call="quantities::NumberOfGoodLeptons({df}, {output}, {input})",
+    call="physicsobject::Count({df}, {output}, {input})",
     input=[q.good_taus_mask],
     output=[q.ntaus],
     scopes=["mt", "et", "tt"],
