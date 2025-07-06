@@ -81,14 +81,14 @@ TauPtCorrection_genTau = Producer(
 )
 TauPtCorrection_data = Producer(
     name="TauPtCorrection_data",
-    call="event::quantity::Rename<ROOT::RVec<float>>({df}, {input}, {output})",
+    call="event::quantity::Rename<ROOT::RVec<float>>({df}, {output}, {input})",
     input=[nanoAOD.Tau_pt],
     output=[q.Tau_pt_corrected],
     scopes=["et", "mt", "tt"],
 )
 TauMassCorrection_data = Producer(
     name="TauMassCorrection_data",
-    call="event::quantity::Rename<ROOT::RVec<float>>({df}, {input}, {output})",
+    call="event::quantity::Rename<ROOT::RVec<float>>({df}, {output}, {input})",
     input=[nanoAOD.Tau_mass],
     output=[q.Tau_mass_corrected],
     scopes=["et", "mt", "tt"],
@@ -171,7 +171,7 @@ TauDzCut = Producer(
 TauDMCut = Producer(
     name="TauDMCut",
     call="physicsobject::CutQuantity<UChar_t>({df}, {output}, {input}, {vec_open}{tau_dms}{vec_close})",
-    input=[nanoAOD.Tau_decayMode],
+    input=[nanoAOD.Tau_decayMode_orig],
     output=[],
     scopes=["global"],
 )
@@ -218,7 +218,7 @@ GoodTauDzCut = Producer(
 GoodTauDMCut = Producer(
     name="GoodTauDMCut",
     call="physicsobject::CutQuantity<UChar_t>({df}, {output}, {input}, {vec_open}{tau_dms}{vec_close})",
-    input=[nanoAOD.Tau_decayMode],
+    input=[nanoAOD.Tau_decayMode_orig],
     output=[],
     scopes=["et", "mt", "tt"],
 )

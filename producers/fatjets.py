@@ -30,7 +30,6 @@ FatJetEnergyCorrection_data, FatJetEnergyCorrection, RenameFatJetsData = jerc_pr
     config_parameter_prefix="fatjet",
 )
 
-
 FatJetPtCut = Producer(
     name="FatJetPtCut",
     call="physicsobject::CutMin<float>({df}, {output}, {input}, {min_fatjet_pt})",
@@ -498,7 +497,7 @@ fj_Xbb_nsubjettiness_3over2 = Producer(
 )
 fj_Xbb_hadflavor = Producer(
     name="fj_Xbb_hadflavor",
-    call="event::quantity::Get<UChar_t>({df}, {output}, {input}, 0)",
+    call="event::quantity::Get<Int_t>({df}, {output}, {input}, 0)",
     input=[nanoAOD.FatJet_hadronFlavor, q.Xbb_fatjet],
     output=[q.fj_Xbb_hadflavor],
     scopes=["mt", "et", "tt", "em", "mm", "ee"],
@@ -621,7 +620,7 @@ fj_Xbb_nsubjettiness_3over2_boosted = Producer(
 )
 fj_Xbb_hadflavor_boosted = Producer(
     name="fj_Xbb_hadflavor_boosted",
-    call="event::quantity::Get<UChar_t>({df}, {output}, {input}, 0)",
+    call="event::quantity::Get<Int_t>({df}, {output}, {input}, 0)",
     input=[nanoAOD.FatJet_hadronFlavor, q.Xbb_fatjet_boosted],
     output=[q.fj_Xbb_hadflavor_boosted],
     scopes=["mt", "et", "tt", "em", "mm", "ee"],

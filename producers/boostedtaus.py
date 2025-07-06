@@ -69,7 +69,7 @@ boostedTauEnergyCorrection_data = ProducerGroup(
 
 boostedTauPtCut = Producer(
     name="boostedTauPtCut",
-    call="physicsobject::CutMin<float>({df}, {input}, {output}, {min_boostedtau_pt})",
+    call="physicsobject::CutMin<float>({df}, {output}, {input}, {min_boostedtau_pt})",
     input=[q.boostedTau_pt_corrected],
     output=[],
     scopes=["et", "mt", "tt"],
@@ -387,7 +387,7 @@ boosted_tau_iso_1 = Producer(
 )
 boosted_tau_decaymode_1 = Producer(
     name="boosted_taudecaymode_1",
-    call="event::quantity::Get<UChar_t>({df}, {output}, {input}, 0)",
+    call="event::quantity::Get<int>({df}, {output}, {input}, 0)",
     input=[nanoAOD.boostedTau_decayMode, q.boosteddileptonpair],
     output=[q.boosted_tau_decaymode_1],
     scopes=["tt"],
@@ -432,7 +432,7 @@ boosted_tau_iso_2 = Producer(
 )
 boosted_tau_decaymode_2 = Producer(
     name="boosted_taudecaymode_2",
-    call="event::quantity::Get<UChar_t>({df}, {output}, {input}, 1)",
+    call="event::quantity::Get<int>({df}, {output}, {input}, 1)",
     input=[nanoAOD.boostedTau_decayMode, q.boosteddileptonpair],
     output=[q.boosted_tau_decaymode_2],
     scopes=["mt", "et", "tt"],

@@ -321,7 +321,7 @@ tau_iso_2 = Producer(
 )
 tau_decaymode_1 = Producer(
     name="decaymode_1",
-    call="event::quantity::Get<UChar_t>({df}, {output}, {input}, 0)",
+    call="event::quantity::Get<Int_t>({df}, {output}, {input}, 0)",
     input=[nanoAOD.Tau_decayMode, q.dileptonpair],
     output=[q.tau_decaymode_1],
     scopes=["tt"],
@@ -366,7 +366,7 @@ VsMuTauIDFlag_1 = ExtendedVectorProducer(
 )
 tau_decaymode_2 = Producer(
     name="taudecaymode_2",
-    call="event::quantity::Get<UChar_t>({df}, {output}, {input}, 1)",
+    call="event::quantity::Get<Int_t>({df}, {output}, {input}, 1)",
     input=[nanoAOD.Tau_decayMode, q.dileptonpair],
     output=[q.tau_decaymode_2],
     scopes=["mt", "et", "tt"],

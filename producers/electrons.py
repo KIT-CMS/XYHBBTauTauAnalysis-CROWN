@@ -32,7 +32,7 @@ ElectronPtCorrectionMC = Producer(
 
 RenameElectronPt = Producer(
     name="RenameElectronPt",
-    call="event::quantity::Rename<ROOT::RVec<float>>({df}, {input}, {output})",
+    call="event::quantity::Rename<ROOT::RVec<float>>({df}, {output}, {input})",
     input=[nanoAOD.Electron_pt],
     output=[q.Electron_pt_corrected],
     scopes=["global"],

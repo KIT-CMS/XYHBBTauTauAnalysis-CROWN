@@ -54,6 +54,30 @@ ConvertTauDecayMode = Producer(
     scopes=["global"],
 )
 
+ConvertBoostedTauDecayMode = Producer(
+    name="ConvertBoostedTauDecayMode",
+    call='converters::cast<ROOT::VecOps::RVec<UChar_t>, ROOT::VecOps::RVec<int>>({df}, {input}, {output})',
+    input=[nanoAOD.boostedTau_decayMode_orig],
+    output=[nanoAOD.boostedTau_decayMode],
+    scopes=["global"],
+)
+
+ConvertJetFlavour = Producer(
+    name="ConvertJetFlavour",
+    call='converters::cast<ROOT::VecOps::RVec<UChar_t>, ROOT::VecOps::RVec<Int_t>>({df}, {input}, {output})',
+    input=[nanoAOD.Jet_flavour_orig],
+    output=[nanoAOD.Jet_flavour],
+    scopes=["global"],
+)
+
+JetFlavourDummy = Producer(
+    name="JetFlavourDummy",
+    call='event::quantity::Define({df}, {output}, ROOT::VecOps::RVec<int>())',
+    input=[],
+    output=[nanoAOD.Jet_flavour],
+    scopes=["global"],
+)
+
 ConvertJetAssociatedGenJet = Producer(
     name="ConvertJetAssociatedGenJet",
     call='converters::cast<ROOT::VecOps::RVec<Short_t>, ROOT::VecOps::RVec<int>>({df}, {input}, {output})',
@@ -185,6 +209,7 @@ ConvertDataAndSimColumns = ProducerGroup(
         ConvertJetID,
         ConvertJetPUID,
         ConvertTauDecayMode,
+        ConvertBoostedTauDecayMode,
         ConvertTauCharge,
         ConvertTauAssociatedJet,
         ConvertTriggerObjectID,
@@ -200,6 +225,7 @@ ConvertSimColumns = ProducerGroup(
     subproducers=[
         ConvertGenParticleStatusFlags,
         ConvertJetAssociatedGenJet,
+        ConvertJetFlavour,
         ConvertGenJethadFlavour,
         ConvertFatJetFlavour,
         ConvertGenParticleMotherid,
@@ -217,6 +243,7 @@ SimColumnsDummies = ProducerGroup(
     subproducers=[
         GenParticleStatusFlagsDummy,
         JetAssociatedGenJetDummy,
+        JetFlavourDummy,
         GenJethadFlavourDummy,
         FatJetFlavourDummy,
         GenParticleMotheridDummy,

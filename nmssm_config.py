@@ -437,7 +437,7 @@ def add_hadronic_tau_config(configuration: Configuration):
     configuration.add_config_parameters(
         SL_SCOPES,
         {
-            "min_tau_pt": 20.0,
+            "min_tau_pt": 30.0,
             "max_tau_eta": 2.3,
             "max_tau_dz": 0.2,
             "vsjet_tau_id_bit": 1,  # VVVLoose working point
@@ -449,7 +449,7 @@ def add_hadronic_tau_config(configuration: Configuration):
     configuration.add_config_parameters(
         FH_SCOPES,
         {
-            "min_tau_pt": 20.0,
+            "min_tau_pt": 40.0,
             "max_tau_eta": 2.1,
             "max_tau_dz": 0.2,
             "vsjet_tau_id_bit": 1,  # VVLoose working point
@@ -628,7 +628,7 @@ def add_boosted_hadronic_tau_config(configuration: Configuration):
     configuration.add_config_parameters(
         SL_SCOPES,
         {
-            "min_boostedtau_pt": 30.0,
+            "min_boostedtau_pt": 40.0,
             "max_boostedtau_eta": 2.3,
             # "iso_boostedtau_id_bit": 1,
             # "antiele_boostedtau_id_bit": 1,
@@ -642,7 +642,7 @@ def add_boosted_hadronic_tau_config(configuration: Configuration):
     configuration.add_config_parameters(
         FH_SCOPES,
         {
-            "min_boostedtau_pt": 30.0,
+            "min_boostedtau_pt": 40.0,
             "max_boostedtau_eta": 2.3,
             # "iso_boostedtau_id_bit": 2,
             # "antiele_boostedtau_id_bit": 2,
