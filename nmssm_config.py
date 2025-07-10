@@ -156,7 +156,20 @@ def add_pileup_reweighting_config(configuration: Configuration):
     - 2016-2018 and 2022-2023: https://twiki.cern.ch/twiki/bin/view/CMS/PileupJSONFileforData#Centrally_produced_correctionlib
 
     - 2022-2023: https://twiki.cern.ch/twiki/bin/view/CMS/LumiRecommendationsRun3
-    
+
+    The documentation of the `correctionlib` files can be found here:
+
+    | Era          | Documentation                                                                                          |
+    |--------------|--------------------------------------------------------------------------------------------------------|
+    | 2016preVFP   | https://cms-nanoaod-integration.web.cern.ch/commonJSONSFs/summaries/LUM_2016preVFP_UL_puWeights.html   |
+    | 2016postVFP  | https://cms-nanoaod-integration.web.cern.ch/commonJSONSFs/summaries/LUM_2016postVFP_UL_puWeights.html  |
+    | 2017         | https://cms-nanoaod-integration.web.cern.ch/commonJSONSFs/summaries/LUM_2017_UL_puWeights.html         |
+    | 2018         | https://cms-nanoaod-integration.web.cern.ch/commonJSONSFs/summaries/LUM_2018_UL_puWeights.html         |
+    | 2022preEE    | https://cms-nanoaod-integration.web.cern.ch/commonJSONSFs/summaries/LUM_2022_Summer22_puWeights.html   |
+    | 2022postEE   | https://cms-nanoaod-integration.web.cern.ch/commonJSONSFs/summaries/LUM_2022_Summer22EE_puWeights.html |
+    | 2023preBPix  | https://cms-nanoaod-integration.web.cern.ch/commonJSONSFs/summaries/LUM_2023_Summer23_puWeights.html   |
+    | 2023postBPix | https://cms-nanoaod-integration.web.cern.ch/commonJSONSFs/summaries/LUM_2023_Summer23_puWeights.html   |
+
     :param configuration: the main configuration object
     :type configuration: Configuration
     """
