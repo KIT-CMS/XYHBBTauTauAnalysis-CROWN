@@ -42,6 +42,10 @@ def add_noise_filters_config(configuration: Configuration):
 
     - Run 2 UltraLegacy: https://twiki.cern.ch/twiki/bin/viewauth/CMS/MissingETOptionalFiltersRun2#UL_data
 
+    - 2022: https://twiki.cern.ch/twiki/bin/viewauth/CMS/MissingETOptionalFiltersRun2#Run_3_2022_and_2023_data_and_MC
+    
+    - 2023: https://twiki.cern.ch/twiki/bin/viewauth/CMS/MissingETOptionalFiltersRun2#Run_3_2022_and_2023_data_and_MC
+
     :todo add 2022 and 2023:
 
     :param configuration: the main configuration object
@@ -95,6 +99,46 @@ def add_noise_filters_config(configuration: Configuration):
                         "Flag_eeBadScFilter",
                         "Flag_ecalBadCalibFilter",
                     ],
+                    "2022preEE": [
+                        "Flag_goodVertices",
+                        "Flag_globalSuperTightHalo2016Filter",
+                        "Flag_EcalDeadCellTriggerPrimitiveFilter",
+                        "Flag_BadPFMuonFilter",
+                        "Flag_BadPFMuonDzFilter",
+                        "Flag_hfNoisyHitsFilter",
+                        "Flag_eeBadScFilter",
+                        "Flag_ecalBadCalibFilter",  # marked as "yellow" in TWiki
+                    ],
+                    "2022postEE": [
+                        "Flag_goodVertices",
+                        "Flag_globalSuperTightHalo2016Filter",
+                        "Flag_EcalDeadCellTriggerPrimitiveFilter",
+                        "Flag_BadPFMuonFilter",
+                        "Flag_BadPFMuonDzFilter",
+                        "Flag_hfNoisyHitsFilter",
+                        "Flag_eeBadScFilter",
+                        "Flag_ecalBadCalibFilter",  # marked as "yellow" in TWiki
+                    ],
+                     "2023preBPix": [
+                        "Flag_goodVertices",
+                        "Flag_globalSuperTightHalo2016Filter",
+                        "Flag_EcalDeadCellTriggerPrimitiveFilter",
+                        "Flag_BadPFMuonFilter",
+                        "Flag_BadPFMuonDzFilter",
+                        "Flag_hfNoisyHitsFilter",
+                        "Flag_eeBadScFilter",
+                        "Flag_ecalBadCalibFilter",  # marked as "yellow" in TWiki
+                    ],
+                    "2023postBPix": [
+                        "Flag_goodVertices",
+                        "Flag_globalSuperTightHalo2016Filter",
+                        "Flag_EcalDeadCellTriggerPrimitiveFilter",
+                        "Flag_BadPFMuonFilter",
+                        "Flag_BadPFMuonDzFilter",
+                        "Flag_hfNoisyHitsFilter",
+                        "Flag_eeBadScFilter",
+                        "Flag_ecalBadCalibFilter",  # marked as "yellow" in TWiki
+                    ],                   
                 },
             ),
         },
@@ -109,8 +153,10 @@ def add_pileup_reweighting_config(configuration: Configuration):
     (nanoaod-tools/jsonpog-integration)[gitlab.cern.ch/nanoaod-tools/jsonpog-integration]
     repository.
 
-    :todo add 2022 and 2023:
+    - 2016-2018 and 2022-2023: https://twiki.cern.ch/twiki/bin/view/CMS/PileupJSONFileforData#Centrally_produced_correctionlib
 
+    - 2022-2023: https://twiki.cern.ch/twiki/bin/view/CMS/LumiRecommendationsRun3
+    
     :param configuration: the main configuration object
     :type configuration: Configuration
     """
@@ -131,6 +177,10 @@ def add_pileup_reweighting_config(configuration: Configuration):
                     "2016postVFP": "Collisions16_UltraLegacy_goldenJSON",
                     "2017": "Collisions17_UltraLegacy_goldenJSON",
                     "2018": "Collisions18_UltraLegacy_goldenJSON",
+                    "2022preEE": "Collisions2022_355100_357900_eraBCD_GoldenJson",
+                    "2022postEE": "Collisions2022_359022_362760_eraEFG_GoldenJson",
+                    "2023preBPix": "Collisions2023_366403_369802_eraBC_GoldenJson",
+                    "2023postBPix": "Collisions2023_369803_370790_eraD_GoldenJson",
                 }
             ),
             "PU_reweighting_variation": "nominal",
@@ -162,6 +212,10 @@ def add_golden_json_config(configuration: Configuration):
     """
     Filepaths to the `GoldenJSON` files to select certified data events.
 
+    - 2022: https://twiki.cern.ch/twiki/bin/view/CMS/PdmVRun3Analysis#Year_2022
+
+    - 2023: https://twiki.cern.ch/twiki/bin/view/CMS/PdmVRun3Analysis#Year_2023
+
     :param configuration: the main configuration object
     :type configuration: Configuration
     """
@@ -174,6 +228,10 @@ def add_golden_json_config(configuration: Configuration):
                     "2016postVFP": "data/golden_json/Cert_271036-284044_13TeV_Legacy2016_Collisions16_JSON.txt",
                     "2017": "data/golden_json/Cert_294927-306462_13TeV_UL2017_Collisions17_GoldenJSON.txt",
                     "2018": "data/golden_json/Cert_314472-325175_13TeV_Legacy2018_Collisions18_JSON.txt",
+                    "2022preEE": "data/golden_json/Cert_Collisions2022_355100_362760_Golden.json",
+                    "2022postEE": "data/golden_json/Cert_Collisions2022_355100_362760_Golden.json",
+                    "2023preBPix": "data/golden_json/Cert_Collisions2023_366442_370790_Golden.json",
+                    "2023postBPix": "data/golden_json/Cert_Collisions2023_366442_370790_Golden.json",
                 }
             ),
         },
