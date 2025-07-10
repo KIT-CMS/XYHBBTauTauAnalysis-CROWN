@@ -31,7 +31,7 @@ from code_generation.modifiers import EraModifier, SampleModifier
 from code_generation.rules import AppendProducer, RemoveProducer, ReplaceProducer
 from code_generation.systematics import SystematicShift, SystematicShiftByQuantity
 
-from .constants import ERAS, ET_SCOPES, MT_SCOPES, TT_SCOPES, SL_SCOPES, FH_SCOPES, HAD_TAU_SCOPES, GLOBAL_SCOPES
+from .constants import ERAS, ERAS_RUN2, ERAS_RUN3, CORRECTIONLIB_CAMPAIGNS, ET_SCOPES, MT_SCOPES, TT_SCOPES, SL_SCOPES, FH_SCOPES, HAD_TAU_SCOPES, GLOBAL_SCOPES
 
 
 def add_noise_filters_config(configuration: Configuration):
@@ -106,7 +106,7 @@ def add_pileup_reweighting_config(configuration: Configuration):
     Filepaths for pileup reweighting corrections, and additional settings for the producers.
 
     The files with the correction are obtained from the
-    (nanoaod-tools/jsonpog-integration)[gitlab.cern.ch/nanoaod-tools/jsonpog-integration]
+    [nanoaod-tools/jsonpog-integration](https://gitlab.cern.ch/nanoaod-tools/jsonpog-integration)
     repository.
 
     :todo add 2022 and 2023:
@@ -121,8 +121,14 @@ def add_pileup_reweighting_config(configuration: Configuration):
 
             "PU_reweighting_file": EraModifier(
                 {
-                    _era: f"data/jsonpog-integration/POG/LUM/{_era}_UL/puWeights.json.gz"
-                    for _era in ERAS
+                    **{
+                        _era: f"data/jsonpog-integration/POG/LUM/{_era}_UL/puWeights.json.gz"
+                        for _era in ERAS_RUN2
+                    },
+                    "2022preEE": "Summer22",
+                    "2022postEE": "Summer22EE",
+                    "2023preBPix": "Summer23",
+                    "2023postBPix": "Summer23",
                 }
             ),
             "PU_reweighting_era": EraModifier(
@@ -161,6 +167,12 @@ def add_mur_muf_weights_config(configuration: Configuration):
 def add_golden_json_config(configuration: Configuration):
     """
     Filepaths to the `GoldenJSON` files to select certified data events.
+
+    - 2022: https://twiki.cern.ch/twiki/bin/view/CMS/PdmVRun3Analysis#Year_2022
+
+    - 2023: https://twiki.cern.ch/twiki/bin/view/CMS/PdmVRun3Analysis#Year_2023
+
+    :todo: add documentation
 
     :param configuration: the main configuration object
     :type configuration: Configuration
@@ -207,10 +219,29 @@ def add_electron_config(
 
     - [EGamma Run 2 recommendations](https://twiki.cern.ch/twiki/bin/view/CMS/EgammaRunIIRecommendations)
 
+    - [EGamma Run 3 recommendations](https://twiki.cern.ch/twiki/bin/view/CMS/EgammaRunIIIRecommendations)
+
     Correction factors are obtained from the
     [nanoaod-tools/jsonpog-integration](gitlab.cern.ch/nanoaod-tools/jsonpog-integration) repository.
 
+    The `correctionlib` documentation can be found here:
+
+    - https://cms-nanoaod-integration.web.cern.ch/commonJSONSFs/summaries/EGM_2023_Summer23_electron.html
+
     :todo add 2022 and 2023:
+
+    The documentation of the electron reconstruction and identification corrections can be found here:
+
+    | Era          | Documentation                                                                                           |
+    |--------------|---------------------------------------------------------------------------------------------------------|
+    | 2016preVFP   | https://cms-nanoaod-integration.web.cern.ch/commonJSONSFs/summaries/EGM_2016preVFP_UL_electron.html     |
+    | 2016postVFP  | https://cms-nanoaod-integration.web.cern.ch/commonJSONSFs/summaries/EGM_2016postVFP_UL_electron.html    |
+    | 2017         | https://cms-nanoaod-integration.web.cern.ch/commonJSONSFs/summaries/EGM_2017_UL_electron.html           |
+    | 2016preVFP   | https://cms-nanoaod-integration.web.cern.ch/commonJSONSFs/summaries/EGM_2018_UL_electron.html           |
+    | 2022preEE    | https://cms-nanoaod-integration.web.cern.ch/commonJSONSFs/summaries/EGM_2022_Summer22_electron.html     |
+    | 2022postEE   | https://cms-nanoaod-integration.web.cern.ch/commonJSONSFs/summaries/EGM_2022_Summer22EE_electron.html   |
+    | 2022preBPix  | https://cms-nanoaod-integration.web.cern.ch/commonJSONSFs/summaries/EGM_2023_Summer23_electron.html     |
+    | 2022postBPix | https://cms-nanoaod-integration.web.cern.ch/commonJSONSFs/summaries/EGM_2023_Summer23BPix_electron.html |
 
     :param configuration: the main configuration object
     :type configuration: Configuration
@@ -252,15 +283,32 @@ def add_electron_config(
         {
             "ele_sf_file": EraModifier(
                 {
-                    _era: f"data/jsonpog-integration/POG/EGM/{_era}_UL/electron.json.gz"
-                    for _era in ERAS
+                    _era: f"data/jsonpog-integration/POG/EGM/{_campaign}/electron.json.gz"
+                    for _era, _campaign in CORRECTIONLIB_CAMPAIGNS.items() 
                 }
             ),
-            "ele_sf_cset_name": "UL-Electron-ID-SF",
+            "ele_sf_cset_name": EraModifier(
+                {
+                    **{
+                        _era: "UL-Electron-ID-SF"
+                        for _era in ERAS_RUN2
+                    },
+                    **{
+                        _era: "Electron-ID-SF"
+                        for _era in ERAS_RUN3
+                    }
+                }
+            ),
             "ele_sf_year_id": EraModifier(
                 {
-                    _era: _era
-                    for _era in ERAS
+                    **{
+                        _era: _era
+                        for _era in ERAS_RUN2
+                    },
+                    "2022preEE": "2022Re-recoBCD",
+                    "2022postEE": "2022Re-recoE+PromptFG",
+                    "2023preBPix": "2023PromptC",
+                    "2023postBPix": "2023PromptD",
                 }
             ),
             "ele_reco_sf_name": "RecoAbove20",
@@ -276,11 +324,15 @@ def add_electron_config(
         {
             "mc_electron_sf_file": EraModifier(
                 {
-                    "2016preVFP": "",
-                    "2016postVFP": "",
-                    "2017": "",
+                    "2016preVFP": "",  # to be added when available
+                    "2016postVFP": "",  # to be added when available
+                    "2017": "",  # to be added when available
                     "2018": "data/embedding/electron_2018UL.json.gz",
-                }
+                    "2022preEE": "",  # to be added when available
+                    "2022postEE": "",  # to be added when available
+                    "2023preBPix": "",  # to be added when available
+                    "2023postBPix": "",  # to be added when available
+                },
             ),
             "mc_electron_id_sf": "ID90_pt_eta_bins",
             "mc_electron_iso_sf": "Iso_pt_eta_bins",
@@ -363,7 +415,7 @@ def add_muon_config(
             "muon_sf_file": EraModifier(
                 {
                     _era: f"data/jsonpog-integration/POG/MUO/{_era}_UL/muon_Z.json.gz"
-                    for _era in ERAS
+                    for _era in ERAS_RUN2
                 }
             ),
             "muon_reco_sf_name": "NUM_TrackerMuons_DEN_genTracks",
@@ -466,7 +518,7 @@ def add_hadronic_tau_config(configuration: Configuration):
             "tau_sf_file": EraModifier(
                 {
                     _era: f"data/jsonpog-integration/POG/TAU/{_era}_UL/tau.json.gz"
-                    for _era in ERAS
+                    for _era in ERAS_RUN2
                 }
             ),
             "tau_ES_json_name": "tau_energy_scale",
@@ -871,7 +923,7 @@ def build_config(
             "jet_jec_file": EraModifier(
                 {
                     _era: f'"data/jsonpog-integration/POG/JME/{_era}_UL/jet_jerc.json.gz"'
-                    for _era in ERAS
+                    for _era in ERAS_RUN2
                 }
             ),
             "jet_jer_tag": EraModifier(
@@ -910,7 +962,7 @@ def build_config(
             "fatjet_jec_file": EraModifier(  # TODO use AK4 file for fatjets because it either was is just copied and the fatjet file has no merged uncertainty scheme?
                 {
                     _era: f'"data/jsonpog-integration/POG/JME/{_era}_UL/fatJet_jerc.json.gz"'
-                    for _era in ERAS
+                    for _era in ERAS_RUN2
                 }
             ),
             "fatjet_jer_tag": EraModifier(
@@ -994,7 +1046,7 @@ def build_config(
             "btag_sf_file": EraModifier(
                 {
                     _era: f"data/jsonpog-integration/POG/BTV/{_era}_UL/btagging.json.gz"
-                    for _era in ERAS
+                    for _era in ERAS_RUN2
                 }
             ),
             "btag_sf_variation": "central",
