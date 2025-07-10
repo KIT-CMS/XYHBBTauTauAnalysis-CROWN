@@ -533,7 +533,7 @@ def add_hadronic_tau_config(configuration: Configuration):
         SL_SCOPES,
         {
             "min_tau_pt": 20.0,
-            "max_tau_eta": 2.3,
+            "max_tau_eta": 2.5,
             "max_tau_dz": 0.2,
             "vsjet_tau_id_bit": 1,  # VVVLoose working point
             "vsele_tau_id_bit": 2, # VVVLoose working point
@@ -545,7 +545,7 @@ def add_hadronic_tau_config(configuration: Configuration):
         FH_SCOPES,
         {
             "min_tau_pt": 20.0,
-            "max_tau_eta": 2.1,
+            "max_tau_eta": 2.5,
             "max_tau_dz": 0.2,
             "vsjet_tau_id_bit": 1,  # VVLoose working point
             "vsele_tau_id_bit": 2, # VVLoose working point
@@ -560,8 +560,8 @@ def add_hadronic_tau_config(configuration: Configuration):
             "tau_dms": "0,1,10,11",
             "tau_sf_file": EraModifier(
                 {
-                    _era: f"data/jsonpog-integration/POG/TAU/{_era}_UL/tau.json.gz"
-                    for _era in ERAS_RUN2
+                    _era: f"data/jsonpog-integration/POG/TAU/{_campaign}/tau.json.gz"
+                    for _era, _campaign in CORRECTIONLIB_CAMPAIGNS.items()
                 }
             ),
             "tau_ES_json_name": "tau_energy_scale",
@@ -935,6 +935,133 @@ def add_boosted_hadronic_tau_config(configuration: Configuration):
     )
 
 
+def add_ak4jet_config(
+        configuration: Configuration,
+):
+    """
+    Selection requirements and corrections for AK4 jets.
+
+    - The `tightLepVeto` working point (corresponds to `jet_id == 6`) is used.
+
+    Recommendations are taken from:
+
+    - [Jet ID Run2 recommendations](https://twiki.cern.ch/twiki/bin/view/CMS/JetID13TeVUL#Preliminary_Recommendations_for)
+
+    - [Jet ID Run3 recommendations](https://twiki.cern.ch/twiki/bin/view/CMS/JetID13p6TeV)
+
+    - [Jet JERC Run3 recommendations](https://cms-jerc.web.cern.ch/Recommendations/)
+
+    Corrections are obtained from the
+    [nanoaod-tools/jsonpog-integration](gitlab.cern.ch/nanoaod-tools/jsonpog-integration) repository.
+
+    The documentation of the `correctionlib` files for the jet energy corrections and resolution smearings can be found here:
+
+    | Era          | Documentation                                                                                           |
+    |--------------|---------------------------------------------------------------------------------------------------------|
+    | 2016preVFP   | https://cms-nanoaod-integration.web.cern.ch/commonJSONSFs/summaries/JME_2016preVFP_UL_jet_jerc.html     |
+    | 2016postVFP  | https://cms-nanoaod-integration.web.cern.ch/commonJSONSFs/summaries/JME_2016postVFP_UL_jet_jerc.html    |
+    | 2017         | https://cms-nanoaod-integration.web.cern.ch/commonJSONSFs/summaries/JME_2017_UL_jet_jerc.html           |
+    | 2016preVFP   | https://cms-nanoaod-integration.web.cern.ch/commonJSONSFs/summaries/JME_2018_UL_jet_jerc.html           |
+    | 2022preEE    | https://cms-nanoaod-integration.web.cern.ch/commonJSONSFs/summaries/JME_2022_Summer22_jet_jerc.html     |
+    | 2022postEE   | https://cms-nanoaod-integration.web.cern.ch/commonJSONSFs/summaries/JME_2022_Summer22EE_jet_jerc.html   |
+    | 2023preBPix  | https://cms-nanoaod-integration.web.cern.ch/commonJSONSFs/summaries/JME_2023_Summer23_jet_jerc.html     |
+    | 2023postBPix | https://cms-nanoaod-integration.web.cern.ch/commonJSONSFs/summaries/JME_2023_Summer23BPix_jet_jerc.html |
+
+    :param configuration: the main configuration object
+    :type configuration: Configuration
+    """
+
+    # JetID recommendations: https://twiki.cern.ch/twiki/bin/view/CMS/JetID13TeVUL#Preliminary_Recommendations_for
+    configuration.add_config_parameters(
+        "global",
+        {
+            "min_jet_pt": 30.0,
+            "max_jet_eta": 4.7,
+            "jet_id": 6,  # 0 == fail, 2 == pass(tight) & fail(tightLepVeto), 6 == pass(tight) & pass(tightLepVeto)
+            "jet_puid": EraModifier(
+                {
+                    "2016preVFP": 1,  # 0 == fail, 1 == pass(loose), 3 == pass(loose,medium), 7 == pass(loose,medium,tight)
+                    "2016postVFP": 1,  # 0 == fail, 1 == pass(loose), 3 == pass(loose,medium), 7 == pass(loose,medium,tight)
+                    "2017": 4,  # 0 == fail, 4 == pass(loose), 6 == pass(loose,medium), 7 == pass(loose,medium,tight)
+                    "2018": 4,  # 0 == fail, 4 == pass(loose), 6 == pass(loose,medium), 7 == pass(loose,medium,tight)
+                    **{
+                        _era: ""  # placeholder value as it does not exist for Run3 samples
+                        for _era in ERAS_RUN3
+                    },
+                }
+            ),
+            "jet_puid_max_pt": EraModifier(
+                {
+                    **{
+                        _era: 50.0  # recommended to apply puID only for jets below 50 GeV
+                        for _era in ERAS_RUN2
+                    },
+                    **{
+                        _era: 0.0  # placeholder value as it does not exist for Run3 samples
+                        for _era in ERAS_RUN3
+                    },
+                },
+            )
+        },
+    )
+
+    # AK4 jet energy calibration and resolution corrections
+    # JEC recommendations: https://twiki.cern.ch/twiki/bin/view/CMS/JECDataMC
+    configuration.add_config_parameters(
+        "global",
+        {
+            "jet_reapplyJES": False,
+            "jet_jes_sources": '{""}',
+            "jet_jes_shift": 0,
+            "jet_jer_shift": '"nom"',  # or '"up"', '"down"'
+            "jet_jec_file": EraModifier(
+                {
+                    _era: f'"data/jsonpog-integration/POG/JME/{_campaign}/jet_jerc.json.gz"'
+                    for _era, _campaign in CORRECTIONLIB_CAMPAIGNS.items()
+                }
+            ),
+            "jet_jer_tag": EraModifier(
+                {
+                    "2016preVFP": '"Summer20UL16APV_JRV3_MC"',
+                    "2016postVFP": '"Summer20UL16_JRV3_MC"',
+                    "2017": '"Summer19UL17_JRV2_MC"',
+                    "2018": '"Summer19UL18_JRV2_MC"',
+                    "2022preEE": '"Summer22_22Sep2023_JRV1_MC"',
+                    "2022postEE": '"Summer22EE_22Sep2023_JRV1_MC"',
+                    "2023preBPix": '"Summer23Prompt23_RunCv1234_JRV1_MC"',
+                    "2023postBPix": '"Summer23BPixPrompt23_RunD_JRV1_MC"',
+                }
+            ),
+            "jet_jes_tag_data": '""',
+            "jet_jes_tag": EraModifier(
+                {
+                    "2016preVFP": '"Summer19UL16APV_V7_MC"',
+                    "2016postVFP": '"Summer19UL16_V7_MC"',
+                    "2017": '"Summer19UL17_V5_MC"',
+                    "2018": '"Summer19UL18_V5_MC"',
+                    "2022preEE": '"Summer22_22Sep2023_V2_MC"',
+                    "2022postEE": '"Summer22EE_22Sep2023_V2_MC"',
+                    "2023preBPix": '"Summer23Prompt23_V2_MC"',
+                    "2023postBPix": '"Summer23BPixPrompt23_V2_MC"',
+                }
+            ),
+            "jet_jec_algo": EraModifier(
+                {
+                    **{
+                        _era: '"AK4PFchs"'
+                        for _era in ERAS_RUN2
+                    },
+                    **{
+                        _era: '"AK4PFPuppi"'
+                        for _era in ERAS_RUN3
+                    }
+                }
+            )
+        },
+    )
+
+
+
 def build_config(
     era: str,
     sample: str,
@@ -983,61 +1110,6 @@ def build_config(
     # LOOSE OBJECT SELECTIONS
     #
 
-    # AK4 jets
-    # JetID recommendations: https://twiki.cern.ch/twiki/bin/view/CMS/JetID13TeVUL#Preliminary_Recommendations_for
-    configuration.add_config_parameters(
-        "global",
-        {
-            "min_jet_pt": 30.0,
-            "max_jet_eta": 2.5,
-            "jet_id": 6,  # 0 == fail, 2 == pass(tight) & fail(tightLepVeto), 6 == pass(tight) & pass(tightLepVeto)
-            "jet_puid": EraModifier(
-                {
-                    "2016preVFP": 1,  # 0 == fail, 1 == pass(loose), 3 == pass(loose,medium), 7 == pass(loose,medium,tight)
-                    "2016postVFP": 1,  # 0 == fail, 1 == pass(loose), 3 == pass(loose,medium), 7 == pass(loose,medium,tight)
-                    "2017": 4,  # 0 == fail, 4 == pass(loose), 6 == pass(loose,medium), 7 == pass(loose,medium,tight)
-                    "2018": 4,  # 0 == fail, 4 == pass(loose), 6 == pass(loose,medium), 7 == pass(loose,medium,tight)
-                }
-            ),
-            "jet_puid_max_pt": 50.0,  # recommended to apply puID only for jets below 50 GeV
-        },
-    )
-
-    # AK4 jet energy calibration and resolution corrections
-    # JEC recommendations: https://twiki.cern.ch/twiki/bin/view/CMS/JECDataMC
-    configuration.add_config_parameters(
-        "global",
-        {
-            "jet_reapplyJES": False,
-            "jet_jes_sources": '{""}',
-            "jet_jes_shift": 0,
-            "jet_jer_shift": '"nom"',  # or '"up"', '"down"'
-            "jet_jec_file": EraModifier(
-                {
-                    _era: f'"data/jsonpog-integration/POG/JME/{_era}_UL/jet_jerc.json.gz"'
-                    for _era in ERAS_RUN2
-                }
-            ),
-            "jet_jer_tag": EraModifier(
-                {
-                    "2016preVFP": '"Summer20UL16APV_JRV3_MC"',
-                    "2016postVFP": '"Summer20UL16_JRV3_MC"',
-                    "2017": '"Summer19UL17_JRV2_MC"',
-                    "2018": '"Summer19UL18_JRV2_MC"',
-                }
-            ),
-            "jet_jes_tag_data": '""',
-            "jet_jes_tag": EraModifier(
-                {
-                    "2016preVFP": '"Summer19UL16APV_V7_MC"',
-                    "2016postVFP": '"Summer19UL16_V7_MC"',
-                    "2017": '"Summer19UL17_V5_MC"',
-                    "2018": '"Summer19UL18_V5_MC"',
-                }
-            ),
-            "jet_jec_algo": '"AK4PFchs"',
-        },
-    )
 
     # AK8 jet selection
     # JEC recommendations: https://twiki.cern.ch/twiki/bin/view/CMS/JECDataMC
@@ -1432,7 +1504,7 @@ def build_config(
             fatjets.GoodFatJets,
             jets.JetEnergyCorrection,
             jets.BJetEnergyCorrection,
-            jets.GoodJets,
+            jets.GoodJetsRun2,
             jets.GoodBJets,
             event.DiLeptonVeto,
             met.MetBasics,
@@ -1647,6 +1719,20 @@ def build_config(
             scalefactors.BoostedTTGenerateFatjetTriggerSF_MC,
         ],
     )
+
+    # some jet selections are different for Run2 and Run3, hence the producer is replaced
+    # we need to fix a bug in the tau ID manually for 2022 and 2023 samples, this is why we need to replace the corresponding producers
+    if era in ERAS_RUN3:
+        configuration.add_modification_rule(
+            GLOBAL_SCOPES,
+            ReplaceProducer(
+                producers=[
+                    jets.GoodJetsRun2,
+                    jets.GoodJetsRun3,
+                ],
+            )
+        )
+
     configuration.add_modification_rule(
         GLOBAL_SCOPES,
         ReplaceProducer(
