@@ -2,7 +2,7 @@ from __future__ import annotations  # needed for type annotations in > python 3.
 
 from typing import List
 
-from .producers import converters as converters
+# from .producers import converters as converters
 from .producers import electrons as electrons
 from .producers import event as event
 from .producers import genparticles as genparticles
@@ -1342,8 +1342,8 @@ def build_config(
     configuration.add_producers(
         "global",
         [
-            converters.ConvertDataAndSimColumns,
-            converters.ConvertSimColumns,
+            # converters.ConvertDataAndSimColumns,
+            # converters.ConvertSimColumns,
             # event.RunLumiEventFilter,
             event.SampleFlags,
             event.Lumi,
@@ -1574,16 +1574,16 @@ def build_config(
             scalefactors.BoostedTTGenerateFatjetTriggerSF_MC,
         ],
     )
-    configuration.add_modification_rule(
-        GLOBAL_SCOPES,
-        ReplaceProducer(
-            producers=[
-                converters.ConvertSimColumns,
-                converters.SimColumnsDummies,
-            ],
-            samples=["data"],
-        ),
-    )
+    # configuration.add_modification_rule(
+    #     GLOBAL_SCOPES,
+    #     ReplaceProducer(
+    #         producers=[
+    #             converters.ConvertSimColumns,
+    #             converters.SimColumnsDummies,
+    #         ],
+    #         samples=["data"],
+    #     ),
+    # )
     configuration.add_modification_rule(
         ["et", "mt"],
         RemoveProducer(

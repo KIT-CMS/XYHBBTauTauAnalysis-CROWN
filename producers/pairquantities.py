@@ -265,14 +265,14 @@ electron_q_2 = Producer(
 )
 tau_q_1 = Producer(
     name="tau_q_1",
-    call="event::quantity::Get<int>({df}, {output}, {input}, 0)",
+    call="event::quantity::Get<Short_t>({df}, {output}, {input}, 0)",
     input=[nanoAOD.Tau_charge, q.dileptonpair],
     output=[q.q_1],
     scopes=["tt"],
 )
 tau_q_2 = Producer(
     name="tau_q_2",
-    call="event::quantity::Get<int>({df}, {output}, {input}, 1)",
+    call="event::quantity::Get<Short_t>({df}, {output}, {input}, 1)",
     input=[nanoAOD.Tau_charge, q.dileptonpair],
     output=[q.q_2],
     scopes=["mt", "et", "tt"],

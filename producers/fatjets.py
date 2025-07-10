@@ -46,7 +46,7 @@ FatJetEtaCut = Producer(
 )
 FatJetIDCut = Producer(
     name="FatJetIDCut",
-    call="physicsobject::CutMin<int>({df}, {output}, {input}, {fatjet_id})",
+    call="physicsobject::CutMin<UChar_t>({df}, {output}, {input}, {fatjet_id})",
     input=[nanoAOD.FatJet_ID],
     output=[q.fatjet_id_mask],
     scopes=["global"],
