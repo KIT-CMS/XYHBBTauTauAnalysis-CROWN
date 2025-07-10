@@ -311,7 +311,7 @@ def add_electron_config(
                     "2023postBPix": "2023PromptD",
                 }
             ),
-            "ele_reco_sf_name": "RecoAbove20",
+            "ele_reco_sf_name": "RecoAbove20",  # TODO needs to be modified for 2022 and 2023
             "ele_id_sf_name": electron_id_loose_corrlib,
             "ele_reco_sf_variation": "sf",  # "sf" is nominal, "sfup"/"sfdown" are up/down variations
             "ele_id_sf_variation": "sf",  # "sf" is nominal, "sfup"/"sfdown" are up/down variations
@@ -324,14 +324,14 @@ def add_electron_config(
         {
             "mc_electron_sf_file": EraModifier(
                 {
-                    "2016preVFP": "",  # to be added when available
-                    "2016postVFP": "",  # to be added when available
-                    "2017": "",  # to be added when available
+                    "2016preVFP": "",  # TODO to be added when available
+                    "2016postVFP": "",  # TODO to be added when available
+                    "2017": "",  # TODO to be added when available
                     "2018": "data/embedding/electron_2018UL.json.gz",
-                    "2022preEE": "",  # to be added when available
-                    "2022postEE": "",  # to be added when available
-                    "2023preBPix": "",  # to be added when available
-                    "2023postBPix": "",  # to be added when available
+                    "2022preEE": "",  # TODO to be added when available
+                    "2022postEE": "",  # TODO to be added when available
+                    "2023preBPix": "",  # TODO to be added when available
+                    "2023postBPix": "",  # TODO to be added when available
                 },
             ),
             "mc_electron_id_sf": "ID90_pt_eta_bins",
@@ -344,8 +344,6 @@ def add_electron_config(
 
 def add_muon_config(
         configuration: Configuration,
-        muon_id_loose: str = "Muon_mediumId",
-        muon_id_loose_corrlib: str = "NUM_MediumID_DEN_TrackerMuons",
 ):
     """
     Selection requirements and corrections for muons.
@@ -372,16 +370,21 @@ def add_muon_config(
     Correction factors are obtained from the
     [nanoaod-tools/jsonpog-integration](gitlab.cern.ch/nanoaod-tools/jsonpog-integration) repository.
 
-    :todo add 2022 and 2023:
+     The documentation of the muon identification corrections can be found here:
+
+    | Era          | Documentation                                                                                         |
+    |--------------|-------------------------------------------------------------------------------------------------------|
+    | 2016preVFP   | https://cms-nanoaod-integration.web.cern.ch/commonJSONSFs/summaries/MUO_2016preVFP_UL_muon_Z.html     |
+    | 2016postVFP  | https://cms-nanoaod-integration.web.cern.ch/commonJSONSFs/summaries/MUO_2016postVFP_UL_muon_Z.html    |
+    | 2017         | https://cms-nanoaod-integration.web.cern.ch/commonJSONSFs/summaries/MUO_2017_UL_muon_Z.html           |
+    | 2016preVFP   | https://cms-nanoaod-integration.web.cern.ch/commonJSONSFs/summaries/MUO_2018_UL_muon_Z.html           |
+    | 2022preEE    | https://cms-nanoaod-integration.web.cern.ch/commonJSONSFs/summaries/MUO_2022_Summer22_muon_Z.html     |
+    | 2022postEE   | https://cms-nanoaod-integration.web.cern.ch/commonJSONSFs/summaries/MUO_2022_Summer22EE_muon_Z.html   |
+    | 2022preBPix  | https://cms-nanoaod-integration.web.cern.ch/commonJSONSFs/summaries/MUO_2023_Summer23_muon_Z.html     |
+    | 2022postBPix | https://cms-nanoaod-integration.web.cern.ch/commonJSONSFs/summaries/MUO_2023_Summer23BPix_muon_Z.html |
 
     :param configuration: the main configuration object
     :type configuration: Configuration
-
-    :param muon_id_loose: name of the muon ID for the loose muon collection; default: `"Muon_mediumId"`.
-    :type muon_id_loose: str
-
-    :param muon_id_loose_corrlib: name of the muon ID for the loose muon collection in the MUO correctionlib file; default: `""`.
-    :type muon_id_loose: str
     """
 
     # loose muons, mainly used for vetoes
@@ -392,7 +395,7 @@ def add_muon_config(
             "max_muon_eta": 2.4,
             "max_muon_dxy": 0.045,
             "max_muon_dz": 0.2,
-            "muon_id": muon_id_loose,
+            "muon_id": "Muon_mediumId",
             "muon_iso_cut": 4.0,
         },
     )
@@ -414,29 +417,44 @@ def add_muon_config(
         {
             "muon_sf_file": EraModifier(
                 {
-                    _era: f"data/jsonpog-integration/POG/MUO/{_era}_UL/muon_Z.json.gz"
-                    for _era in ERAS_RUN2
+                    _era: f"data/jsonpog-integration/POG/MUO/{_campaign}/muon_Z.json.gz"
+                    for _era, _campaign in CORRECTIONLIB_CAMPAIGNS.items() 
                 }
             ),
-            "muon_reco_sf_name": "NUM_TrackerMuons_DEN_genTracks",
-            "muon_id_sf_name": muon_id_loose_corrlib,  # correction for mediumId WP
-            "muon_iso_sf_name": "NUM_LooseRelIso_DEN_MediumID",  # correction for TightPFIso WP (PF isolation < 0.15)
+            "muon_reco_sf_name": EraModifier(
+                {
+                    **{
+                       _era: "NUM_TrackerMuons_DEN_genTracks"
+                       for _era in ERAS_RUN2
+                    },
+                    **{
+                        _era: ""  # reconstruction corrections not recommended for 2022+2023
+                        for _era in ERAS_RUN3
+                    }
+                }
+            ),
+            "muon_id_sf_name": "NUM_MediumID_DEN_TrackerMuons",  # correction for mediumId WP
+            "muon_iso_sf_name": "NUM_TightPFIso_DEN_MediumID",  # correction for TightPFIso WP (PF isolation < 0.15)
             "muon_reco_sf_variation": "nominal",  # "nominal" is nominal, "systup"/"systdown" are up/down variations
             "muon_id_sf_variation": "nominal",  # "nominal" is nominal, "systup"/"systdown" are up/down variations
             "muon_iso_sf_variation": "nominal",  # "nominal" is nominal, "systup"/"systdown" are up/down variations
         },
     )
 
-    # muon  identification and isolation corrections for mu->tau-embedded events
+    # muon identification and isolation corrections for mu->tau-embedded events
     configuration.add_config_parameters(
         MT_SCOPES,
         {
             "mc_muon_sf_file": EraModifier(
                 {
-                    "2016preVFP": "DOES_NOT_EXIST",  # TODO add files as soon as available
-                    "2016postVFP": "DOES_NOT_EXIST",  # TODO add files as soon as available
-                    "2017": "DOES_NOT_EXIST",  # TODO add files as soon as available
+                    "2016preVFP": "",  # TODO to be added when available
+                    "2016postVFP": "",  # TODO to be added when available
+                    "2017": "",  # TODO to be added when available
                     "2018": "data/embedding/muon_2018UL.json.gz",
+                    "2022preEE": "",  # TODO to be added when available
+                    "2022postEE": "",  # TODO to be added when available
+                    "2023preBPix": "",  # TODO to be added when available
+                    "2023postBPix": "",  # TODO to be added when available
                 }
             ),
             "mc_muon_id_sf": "ID_pt_eta_bins",
