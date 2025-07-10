@@ -30,31 +30,30 @@ FatJetEnergyCorrection_data, FatJetEnergyCorrection, RenameFatJetsData = jerc_pr
     config_parameter_prefix="fatjet",
 )
 
-
 FatJetPtCut = Producer(
     name="FatJetPtCut",
-    call="physicsobject::CutPt({df}, {input}, {output}, {min_fatjet_pt})",
+    call="physicsobject::CutMin<float>({df}, {output}, {input}, {min_fatjet_pt})",
     input=[q.FatJet_pt_corrected],
     output=[],
     scopes=["global"],
 )
 FatJetEtaCut = Producer(
     name="FatJetEtaCut",
-    call="physicsobject::CutEta({df}, {input}, {output}, {max_fatjet_eta})",
+    call="physicsobject::CutAbsMax<float>({df}, {output}, {input}, {max_fatjet_eta})",
     input=[nanoAOD.FatJet_eta],
     output=[],
     scopes=["global"],
 )
 FatJetIDCut = Producer(
     name="FatJetIDCut",
-    call="physicsobject::jet::CutID({df}, {output}, {input}, {fatjet_id})",
+    call="physicsobject::CutMin<int>({df}, {output}, {input}, {fatjet_id})",
     input=[nanoAOD.FatJet_ID],
     output=[q.fatjet_id_mask],
     scopes=["global"],
 )
 GoodFatJets = ProducerGroup(
     name="GoodFatJets",
-    call="physicsobject::CombineMasks({df}, {output}, {input})",
+    call='physicsobject::CombineMasks({df}, {output}, {input}, "all_of")',
     input=[],
     output=[q.good_fatjets_mask],
     scopes=["global"],
@@ -70,14 +69,14 @@ GoodFatJets = ProducerGroup(
 ####################
 VetoOverlappingFatJets = Producer(
     name="VetoOverlappingFatJets",
-    call="jet::VetoOverlappingJets({df}, {output}, {input}, {deltaR_fatjet_veto})",
+    call="physicsobject::jet::VetoOverlappingJets({df}, {output}, {input}, {deltaR_fatjet_veto})",
     input=[nanoAOD.FatJet_eta, nanoAOD.FatJet_phi, q.p4_1, q.p4_2],
     output=[q.fatjet_overlap_veto_mask],
     scopes=["mt", "et", "tt", "em", "mm", "ee"],
 )
 VetoOverlappingFatJets_boosted = Producer(
     name="VetoOverlappingFatJets_boosted",
-    call="jet::VetoOverlappingJets({df}, {output}, {input}, {deltaR_fatjet_veto})",
+    call="physicsobject::jet::VetoOverlappingJets({df}, {output}, {input}, {deltaR_fatjet_veto})",
     input=[nanoAOD.FatJet_eta, nanoAOD.FatJet_phi, q.boosted_p4_1, q.boosted_p4_2],
     output=[q.fatjet_overlap_veto_mask_boosted],
     scopes=["mt", "et", "tt", "em", "mm", "ee"],
@@ -85,7 +84,7 @@ VetoOverlappingFatJets_boosted = Producer(
 
 GoodFatJetsWithVeto = ProducerGroup(
     name="GoodJetsWithVeto",
-    call="physicsobject::CombineMasks({df}, {output}, {input})",
+    call='physicsobject::CombineMasks({df}, {output}, {input}, "all_of")',
     input=[q.good_fatjets_mask],
     output=[],
     scopes=["mt", "et", "tt", "em", "mm", "ee"],
@@ -93,7 +92,7 @@ GoodFatJetsWithVeto = ProducerGroup(
 )
 GoodFatJetsWithVeto_boosted = ProducerGroup(
     name="GoodJetsWithVeto_boosted",
-    call="physicsobject::CombineMasks({df}, {output}, {input})",
+    call='physicsobject::CombineMasks({df}, {output}, {input}, "all_of")',
     input=[q.good_fatjets_mask],
     output=[],
     scopes=["mt", "et", "tt", "em", "mm", "ee"],
@@ -102,7 +101,7 @@ GoodFatJetsWithVeto_boosted = ProducerGroup(
 
 FatJetCollection = ProducerGroup(
     name="FatJetCollection",
-    call="jet::OrderJetsByPt({df}, {output}, {input})",
+    call="physicsobject::OrderByPt({df}, {output}, {input})",
     input=[q.FatJet_pt_corrected],
     output=[q.good_fatjet_collection],
     scopes=["mt", "et", "tt", "em", "mm", "ee"],
@@ -110,7 +109,7 @@ FatJetCollection = ProducerGroup(
 )
 FatJetCollection_boosted = ProducerGroup(
     name="FatJetCollection_boosted",
-    call="jet::OrderJetsByPt({df}, {output}, {input})",
+    call="physicsobject::OrderByPt({df}, {output}, {input})",
     input=[q.FatJet_pt_corrected],
     output=[q.good_fatjet_collection_boosted],
     scopes=["mt", "et", "tt", "em", "mm", "ee"],
@@ -118,7 +117,7 @@ FatJetCollection_boosted = ProducerGroup(
 )
 FatJetCollectionWithoutVeto = Producer(
     name="FatJetCollectionWithoutVeto",
-    call="jet::OrderJetsByPt({df}, {output}, {input})",
+    call="physicsobject::OrderByPt({df}, {output}, {input})",
     input=[q.FatJet_pt_corrected, q.good_fatjets_mask],
     output=[q.good_fatjet_collection_without_veto],
     scopes=["mt", "et", "tt", "em", "mm", "ee"],
@@ -131,26 +130,26 @@ FatJetCollectionWithoutVeto = Producer(
 
 LVFatJet1 = Producer(
     name="LVFatJet1",
-    call="lorentzvectors::build({df}, {input_vec}, 0, {output})",
+    call="lorentzvector::Build({df}, {output}, {input}, 0)",
     input=[
-        q.good_fatjet_collection,
         q.FatJet_pt_corrected,
         nanoAOD.FatJet_eta,
         nanoAOD.FatJet_phi,
         q.FatJet_mass_corrected,
+        q.good_fatjet_collection,
     ],
     output=[q.fatjet_p4_1],
     scopes=["mt", "et", "tt", "em", "mm", "ee"],
 )
 LVFatJet2 = Producer(
     name="LVFatJet2",
-    call="lorentzvectors::build({df}, {input_vec}, 1, {output})",
+    call="lorentzvector::Build({df}, {output}, {input}, 1)",
     input=[
-        q.good_fatjet_collection,
         q.FatJet_pt_corrected,
         nanoAOD.FatJet_eta,
         nanoAOD.FatJet_phi,
         q.FatJet_mass_corrected,
+        q.good_fatjet_collection,
     ],
     output=[q.fatjet_p4_2],
     scopes=["mt", "et", "tt", "em", "mm", "ee"],
@@ -158,49 +157,49 @@ LVFatJet2 = Producer(
 
 NumberOfFatJets = Producer(
     name="NumberOfFatJets",
-    call="quantities::jet::NumberOfJets({df}, {output}, {input})",
+    call="physicsobject::Count({df}, {output}, {input})",
     input=[q.good_fatjet_collection],
     output=[q.nfatjets],
     scopes=["mt", "et", "tt", "em", "mm", "ee"],
 )
 NumberOfFatJets_boosted = Producer(
     name="NumberOfFatJets_boosted",
-    call="quantities::jet::NumberOfJets({df}, {output}, {input})",
+    call="physicsobject::Count({df}, {output}, {input})",
     input=[q.good_fatjet_collection_boosted],
     output=[q.nfatjets_boosted],
     scopes=["mt", "et", "tt", "em", "mm", "ee"],
 )
 fj_pt_1 = Producer(
     name="fj_pt_1",
-    call="quantities::pt({df}, {output}, {input})",
+    call="lorentzvector::GetPt({df}, {output}, {input})",
     input=[q.fatjet_p4_1],
     output=[q.fj_pt_1],
     scopes=["mt", "et", "tt", "em", "mm", "ee"],
 )
 fj_eta_1 = Producer(
     name="fj_eta_1",
-    call="quantities::eta({df}, {output}, {input})",
+    call="lorentzvector::GetEta({df}, {output}, {input})",
     input=[q.fatjet_p4_1],
     output=[q.fj_eta_1],
     scopes=["mt", "et", "tt", "em", "mm", "ee"],
 )
 fj_phi_1 = Producer(
     name="fj_phi_1",
-    call="quantities::phi({df}, {output}, {input})",
+    call="lorentzvector::GetPhi({df}, {output}, {input})",
     input=[q.fatjet_p4_1],
     output=[q.fj_phi_1],
     scopes=["mt", "et", "tt", "em", "mm", "ee"],
 )
 fj_mass_1 = Producer(
     name="fj_mass_1",
-    call="quantities::mass({df}, {output}, {input})",
+    call="lorentzvector::GetMass({df}, {output}, {input})",
     input=[q.fatjet_p4_1],
     output=[q.fj_mass_1],
     scopes=["mt", "et", "tt", "em", "mm", "ee"],
 )
 fj_msoftdrop_1 = Producer(
     name="msoftdrop_1",
-    call="quantities::fatjet::msoftdrop({df}, {output}, {input}, 0)",
+    call="event::quantity::Get<float>({df}, {output}, {input}, 0)",
     input=[nanoAOD.FatJet_msoftdrop, q.good_fatjet_collection],
     output=[q.fj_msoftdrop_1],
     scopes=["mt", "et", "tt", "em", "mm", "ee"],
@@ -228,35 +227,35 @@ fj_nsubjettiness_3over2_1 = Producer(
 )
 fj_pt_2 = Producer(
     name="fj_pt_2",
-    call="quantities::pt({df}, {output}, {input})",
+    call="lorentzvector::GetPt({df}, {output}, {input})",
     input=[q.fatjet_p4_2],
     output=[q.fj_pt_2],
     scopes=["mt", "et", "tt", "em", "mm", "ee"],
 )
 fj_eta_2 = Producer(
     name="fj_eta_2",
-    call="quantities::eta({df}, {output}, {input})",
+    call="lorentzvector::GetEta({df}, {output}, {input})",
     input=[q.fatjet_p4_2],
     output=[q.fj_eta_2],
     scopes=["mt", "et", "tt", "em", "mm", "ee"],
 )
 fj_phi_2 = Producer(
     name="fj_phi_2",
-    call="quantities::phi({df}, {output}, {input})",
+    call="lorentzvector::GetPhi({df}, {output}, {input})",
     input=[q.fatjet_p4_2],
     output=[q.fj_phi_2],
     scopes=["mt", "et", "tt", "em", "mm", "ee"],
 )
 fj_mass_2 = Producer(
     name="fj_mass_2",
-    call="quantities::mass({df}, {output}, {input})",
+    call="lorentzvector::GetMass({df}, {output}, {input})",
     input=[q.fatjet_p4_2],
     output=[q.fj_mass_2],
     scopes=["mt", "et", "tt", "em", "mm", "ee"],
 )
 fj_msoftdrop_2 = Producer(
     name="msoftdrop_2",
-    call="quantities::fatjet::msoftdrop({df}, {output}, {input}, 1)",
+    call="event::quantity::Get<float>({df}, {output}, {input}, 1)",
     input=[nanoAOD.FatJet_msoftdrop, q.good_fatjet_collection],
     output=[q.fj_msoftdrop_2],
     scopes=["mt", "et", "tt", "em", "mm", "ee"],
@@ -329,48 +328,48 @@ FindFatjetMatchingBjet = Producer(
 )
 LVmatchedFatJet = Producer(
     name="LVmatchedFatJet",
-    call="lorentzvectors::build({df}, {input_vec}, 0, {output})",
+    call="lorentzvector::Build({df}, {output}, {input}, 0)",
     input=[
-        q.bpair_fatjet,
         q.FatJet_pt_corrected,
         nanoAOD.FatJet_eta,
         nanoAOD.FatJet_phi,
         q.FatJet_mass_corrected,
+        q.bpair_fatjet,
     ],
     output=[q.matched_fatjet_p4],
     scopes=["mt", "et", "tt", "em", "mm", "ee"],
 )
 fj_matched_pt = Producer(
     name="fj_matched_pt",
-    call="quantities::pt({df}, {output}, {input})",
+    call="lorentzvector::GetPt({df}, {output}, {input})",
     input=[q.matched_fatjet_p4],
     output=[q.fj_matched_pt],
     scopes=["mt", "et", "tt", "em", "mm", "ee"],
 )
 fj_matched_eta = Producer(
     name="fj_matched_eta",
-    call="quantities::eta({df}, {output}, {input})",
+    call="lorentzvector::GetEta({df}, {output}, {input})",
     input=[q.matched_fatjet_p4],
     output=[q.fj_matched_eta],
     scopes=["mt", "et", "tt", "em", "mm", "ee"],
 )
 fj_matched_phi = Producer(
     name="fj_matched_phi",
-    call="quantities::phi({df}, {output}, {input})",
+    call="lorentzvector::GetPhi({df}, {output}, {input})",
     input=[q.matched_fatjet_p4],
     output=[q.fj_matched_phi],
     scopes=["mt", "et", "tt", "em", "mm", "ee"],
 )
 fj_matched_mass = Producer(
     name="fj_matched_mass",
-    call="quantities::mass({df}, {output}, {input})",
+    call="lorentzvector::GetMass({df}, {output}, {input})",
     input=[q.matched_fatjet_p4],
     output=[q.fj_matched_mass],
     scopes=["mt", "et", "tt", "em", "mm", "ee"],
 )
 fj_matched_msoftdrop = Producer(
     name="fj_matched_msoftdrop",
-    call="quantities::fatjet::msoftdrop({df}, {output}, {input}, 0)",
+    call="event::quantity::Get<float>({df}, {output}, {input}, 0)",
     input=[nanoAOD.FatJet_msoftdrop, q.bpair_fatjet],
     output=[q.fj_matched_msoftdrop],
     scopes=["mt", "et", "tt", "em", "mm", "ee"],
@@ -429,48 +428,48 @@ FindXbbFatjet = Producer(
 )
 LVXbbFatJet = Producer(
     name="LVXbbFatJet",
-    call="lorentzvectors::build({df}, {input_vec}, 0, {output})",
+    call="lorentzvector::Build({df}, {output}, {input}, 0)",
     input=[
-        q.Xbb_fatjet,
         q.FatJet_pt_corrected,
         nanoAOD.FatJet_eta,
         nanoAOD.FatJet_phi,
         q.FatJet_mass_corrected,
+        q.Xbb_fatjet,
     ],
     output=[q.Xbb_fatjet_p4],
     scopes=["mt", "et", "tt", "em", "mm", "ee"],
 )
 fj_Xbb_pt = Producer(
     name="fj_Xbb_pt",
-    call="quantities::pt({df}, {output}, {input})",
+    call="lorentzvector::GetPt({df}, {output}, {input})",
     input=[q.Xbb_fatjet_p4],
     output=[q.fj_Xbb_pt],
     scopes=["mt", "et", "tt", "em", "mm", "ee"],
 )
 fj_Xbb_eta = Producer(
     name="fj_Xbb_eta",
-    call="quantities::eta({df}, {output}, {input})",
+    call="lorentzvector::GetEta({df}, {output}, {input})",
     input=[q.Xbb_fatjet_p4],
     output=[q.fj_Xbb_eta],
     scopes=["mt", "et", "tt", "em", "mm", "ee"],
 )
 fj_Xbb_phi = Producer(
     name="fj_Xbb_phi",
-    call="quantities::phi({df}, {output}, {input})",
+    call="lorentzvector::GetPhi({df}, {output}, {input})",
     input=[q.Xbb_fatjet_p4],
     output=[q.fj_Xbb_phi],
     scopes=["mt", "et", "tt", "em", "mm", "ee"],
 )
 fj_Xbb_mass = Producer(
     name="fj_Xbb_mass",
-    call="quantities::mass({df}, {output}, {input})",
+    call="lorentzvector::GetMass({df}, {output}, {input})",
     input=[q.Xbb_fatjet_p4],
     output=[q.fj_Xbb_mass],
     scopes=["mt", "et", "tt", "em", "mm", "ee"],
 )
 fj_Xbb_msoftdrop = Producer(
     name="fj_Xbb_msoftdrop",
-    call="quantities::fatjet::msoftdrop({df}, {output}, {input}, 0)",
+    call="event::quantity::Get<float>({df}, {output}, {input}, 0)",
     input=[nanoAOD.FatJet_msoftdrop, q.Xbb_fatjet],
     output=[q.fj_Xbb_msoftdrop],
     scopes=["mt", "et", "tt", "em", "mm", "ee"],
@@ -498,21 +497,21 @@ fj_Xbb_nsubjettiness_3over2 = Producer(
 )
 fj_Xbb_hadflavor = Producer(
     name="fj_Xbb_hadflavor",
-    call="quantities::fatjet::hadflavor({df}, {output}, {input}, 0)",
+    call="event::quantity::Get<Int_t>({df}, {output}, {input}, 0)",
     input=[nanoAOD.FatJet_hadronFlavor, q.Xbb_fatjet],
     output=[q.fj_Xbb_hadflavor],
     scopes=["mt", "et", "tt", "em", "mm", "ee"],
 )
 fj_Xbb_nBhad = Producer(
     name="fj_Xbb_nBhad",
-    call="quantities::fatjet::nHadrons({df}, {output}, {input}, 0)",
+    call="event::quantity::Get<UChar_t>({df}, {output}, {input}, 0)",
     input=[nanoAOD.FatJet_nBHadrons, q.Xbb_fatjet],
     output=[q.fj_Xbb_nBhad],
     scopes=["mt", "et", "tt", "em", "mm", "ee"],
 )
 fj_Xbb_nChad = Producer(
     name="fj_Xbb_nChad",
-    call="quantities::fatjet::nHadrons({df}, {output}, {input}, 0)",
+    call="event::quantity::Get<UChar_t>({df}, {output}, {input}, 0)",
     input=[nanoAOD.FatJet_nCHadrons, q.Xbb_fatjet],
     output=[q.fj_Xbb_nChad],
     scopes=["mt", "et", "tt", "em", "mm", "ee"],
@@ -552,48 +551,48 @@ FindXbbFatjet_boosted = Producer(
 )
 LVXbbFatJet_boosted = Producer(
     name="LVXbbFatJet_boosted",
-    call="lorentzvectors::build({df}, {input_vec}, 0, {output})",
+    call="lorentzvector::Build({df}, {output}, {input}, 0)",
     input=[
-        q.Xbb_fatjet_boosted,
         q.FatJet_pt_corrected,
         nanoAOD.FatJet_eta,
         nanoAOD.FatJet_phi,
         q.FatJet_mass_corrected,
+        q.Xbb_fatjet_boosted,
     ],
     output=[q.Xbb_fatjet_p4_boosted],
     scopes=["mt", "et", "tt", "em", "mm", "ee"],
 )
 fj_Xbb_pt_boosted = Producer(
     name="fj_Xbb_pt_boosted",
-    call="quantities::pt({df}, {output}, {input})",
+    call="lorentzvector::GetPt({df}, {output}, {input})",
     input=[q.Xbb_fatjet_p4_boosted],
     output=[q.fj_Xbb_pt_boosted],
     scopes=["mt", "et", "tt", "em", "mm", "ee"],
 )
 fj_Xbb_eta_boosted = Producer(
     name="fj_Xbb_eta_boosted",
-    call="quantities::eta({df}, {output}, {input})",
+    call="lorentzvector::GetEta({df}, {output}, {input})",
     input=[q.Xbb_fatjet_p4_boosted],
     output=[q.fj_Xbb_eta_boosted],
     scopes=["mt", "et", "tt", "em", "mm", "ee"],
 )
 fj_Xbb_phi_boosted = Producer(
     name="fj_Xbb_phi_boosted",
-    call="quantities::phi({df}, {output}, {input})",
+    call="lorentzvector::GetPhi({df}, {output}, {input})",
     input=[q.Xbb_fatjet_p4_boosted],
     output=[q.fj_Xbb_phi_boosted],
     scopes=["mt", "et", "tt", "em", "mm", "ee"],
 )
 fj_Xbb_mass_boosted = Producer(
     name="fj_Xbb_mass_boosted",
-    call="quantities::mass({df}, {output}, {input})",
+    call="lorentzvector::GetMass({df}, {output}, {input})",
     input=[q.Xbb_fatjet_p4_boosted],
     output=[q.fj_Xbb_mass_boosted],
     scopes=["mt", "et", "tt", "em", "mm", "ee"],
 )
 fj_Xbb_msoftdrop_boosted = Producer(
     name="fj_Xbb_msoftdrop_boosted",
-    call="quantities::fatjet::msoftdrop({df}, {output}, {input}, 0)",
+    call="event::quantity::Get<float>({df}, {output}, {input}, 0)",
     input=[nanoAOD.FatJet_msoftdrop, q.Xbb_fatjet_boosted],
     output=[q.fj_Xbb_msoftdrop_boosted],
     scopes=["mt", "et", "tt", "em", "mm", "ee"],
@@ -621,21 +620,21 @@ fj_Xbb_nsubjettiness_3over2_boosted = Producer(
 )
 fj_Xbb_hadflavor_boosted = Producer(
     name="fj_Xbb_hadflavor_boosted",
-    call="quantities::fatjet::hadflavor({df}, {output}, {input}, 0)",
+    call="event::quantity::Get<Int_t>({df}, {output}, {input}, 0)",
     input=[nanoAOD.FatJet_hadronFlavor, q.Xbb_fatjet_boosted],
     output=[q.fj_Xbb_hadflavor_boosted],
     scopes=["mt", "et", "tt", "em", "mm", "ee"],
 )
 fj_Xbb_nBhad_boosted = Producer(
     name="fj_Xbb_nBhad_boosted",
-    call="quantities::fatjet::nHadrons({df}, {output}, {input}, 0)",
+    call="event::quantity::Get<UChar_t>({df}, {output}, {input}, 0)",
     input=[nanoAOD.FatJet_nBHadrons, q.Xbb_fatjet_boosted],
     output=[q.fj_Xbb_nBhad_boosted],
     scopes=["mt", "et", "tt", "em", "mm", "ee"],
 )
 fj_Xbb_nChad_boosted = Producer(
     name="fj_Xbb_nChad_boosted",
-    call="quantities::fatjet::nHadrons({df}, {output}, {input}, 0)",
+    call="event::quantity::Get<UChar_t>({df}, {output}, {input}, 0)",
     input=[nanoAOD.FatJet_nCHadrons, q.Xbb_fatjet_boosted],
     output=[q.fj_Xbb_nChad_boosted],
     scopes=["mt", "et", "tt", "em", "mm", "ee"],
@@ -663,27 +662,27 @@ BasicXbbFatJetQuantities_boosted = ProducerGroup(
 )
 LVLeadingFatJet = Producer(
     name="LVLeadingFatJet",
-    call="lorentzvectors::build({df}, {input_vec}, 0, {output})",
+    call="lorentzvector::Build({df}, {output}, {input}, 0)",
     input=[
-        q.good_fatjet_collection_without_veto,
         q.FatJet_pt_corrected,
         nanoAOD.FatJet_eta,
         nanoAOD.FatJet_phi,
         q.FatJet_mass_corrected,
+        q.good_fatjet_collection_without_veto,
     ],
     output=[q.leading_fatjet_p4],
     scopes=["mt", "et", "tt", "em", "mm", "ee"],
 )
 fj_leading_pt = Producer(
     name="fj_leading_pt",
-    call="quantities::pt({df}, {output}, {input})",
+    call="lorentzvector::GetPt({df}, {output}, {input})",
     input=[q.leading_fatjet_p4],
     output=[q.fj_leading_pt],
     scopes=["mt", "et", "tt", "em", "mm", "ee"],
 )
 fj_leading_msoftdrop = Producer(
     name="fj_leading_msoftdrop",
-    call="quantities::fatjet::msoftdrop({df}, {output}, {input}, 0)",
+    call="event::quantity::Get<float>({df}, {output}, {input}, 0)",
     input=[nanoAOD.FatJet_msoftdrop, q.good_fatjet_collection_without_veto],
     output=[q.fj_leading_msoftdrop],
     scopes=["mt", "et", "tt", "em", "mm", "ee"],

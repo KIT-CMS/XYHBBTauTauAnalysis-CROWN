@@ -8,7 +8,7 @@ from code_generation.producer import Producer, ProducerGroup
 
 BuildMetVector = Producer(
     name="BuildMetVector",
-    call="lorentzvectors::buildMet({df}, {input}, {output})",
+    call="lorentzvector::BuildMET({df}, {output}, {input})",
     input=[
         nanoAOD.MET_pt,
         nanoAOD.MET_phi,
@@ -18,7 +18,7 @@ BuildMetVector = Producer(
 )
 BuildPFMetVector = Producer(
     name="BuildPFMetVector",
-    call="lorentzvectors::buildMet({df}, {input}, {output})",
+    call="lorentzvector::BuildMET({df}, {output}, {input})",
     input=[
         nanoAOD.PFMET_pt,
         nanoAOD.PFMET_phi,
@@ -28,7 +28,7 @@ BuildPFMetVector = Producer(
 )
 MetCov00 = Producer(
     name="MetCov00",
-    call="basefunctions::rename<float>({df}, {input}, {output})",
+    call="event::quantity::Rename<float>({df}, {output}, {input})",
     input=[
         nanoAOD.MET_covXX,
     ],
@@ -37,7 +37,7 @@ MetCov00 = Producer(
 )
 MetCov01 = Producer(
     name="MetCov01",
-    call="basefunctions::rename<float>({df}, {input}, {output})",
+    call="event::quantity::Rename<float>({df}, {output}, {input})",
     input=[
         nanoAOD.MET_covXY,
     ],
@@ -46,7 +46,7 @@ MetCov01 = Producer(
 )
 MetCov10 = Producer(
     name="MetCov10",
-    call="basefunctions::rename<float>({df}, {input}, {output})",
+    call="event::quantity::Rename<float>({df}, {output}, {input})",
     input=[
         nanoAOD.MET_covXY,
     ],
@@ -55,7 +55,7 @@ MetCov10 = Producer(
 )
 MetCov11 = Producer(
     name="MetCov11",
-    call="basefunctions::rename<float>({df}, {input}, {output})",
+    call="event::quantity::Rename<float>({df}, {output}, {input})",
     input=[
         nanoAOD.MET_covYY,
     ],
@@ -64,7 +64,7 @@ MetCov11 = Producer(
 )
 MetSumEt = Producer(
     name="MetSumEt",
-    call="basefunctions::rename<float>({df}, {input}, {output})",
+    call="event::quantity::Rename<float>({df}, {output}, {input})",
     input=[
         nanoAOD.MET_sumEt,
     ],
@@ -73,28 +73,28 @@ MetSumEt = Producer(
 )
 MetPt_uncorrected = Producer(
     name="MetPt_uncorrected",
-    call="quantities::pt({df}, {output}, {input})",
+    call="lorentzvector::GetPt({df}, {output}, {input})",
     input=[q.met_p4],
     output=[q.met_uncorrected],
     scopes=["global"],
 )
 MetPhi_uncorrected = Producer(
     name="MetPhi_uncorrected",
-    call="quantities::phi({df}, {output}, {input})",
+    call="lorentzvector::GetPhi({df}, {output}, {input})",
     input=[q.met_p4],
     output=[q.metphi_uncorrected],
     scopes=["global"],
 )
 PFMetPt_uncorrected = Producer(
     name="PFMetPt_uncorrected",
-    call="quantities::pt({df}, {output}, {input})",
+    call="lorentzvector::GetPt({df}, {output}, {input})",
     input=[q.pfmet_p4],
     output=[q.pfmet_uncorrected],
     scopes=["global"],
 )
 PFMetPhi_uncorrected = Producer(
     name="PFMetPhi_uncorrected",
-    call="quantities::phi({df}, {output}, {input})",
+    call="lorentzvector::GetPhi({df}, {output}, {input})",
     input=[q.pfmet_p4],
     output=[q.pfmetphi_uncorrected],
     scopes=["global"],
@@ -292,28 +292,28 @@ ApplyRecoilCorrectionsPFMet_boosted = Producer(
 
 MetPt = Producer(
     name="MetPt",
-    call="quantities::pt({df}, {output}, {input})",
+    call="lorentzvector::GetPt({df}, {output}, {input})",
     input=[q.met_p4_recoilcorrected],
     output=[q.met],
     scopes=["et", "mt", "tt", "em", "mm", "ee"],
 )
 PFMetPt = Producer(
     name="PFMetPt",
-    call="quantities::pt({df}, {output}, {input})",
+    call="lorentzvector::GetPt({df}, {output}, {input})",
     input=[q.pfmet_p4_recoilcorrected],
     output=[q.pfmet],
     scopes=["et", "mt", "tt", "em", "mm", "ee"],
 )
 MetPhi = Producer(
     name="MetPhi",
-    call="quantities::phi({df}, {output}, {input})",
+    call="lorentzvector::GetPhi({df}, {output}, {input})",
     input=[q.met_p4_recoilcorrected],
     output=[q.metphi],
     scopes=["et", "mt", "tt", "em", "mm", "ee"],
 )
 PFMetPhi = Producer(
     name="PFMetPhi",
-    call="quantities::phi({df}, {output}, {input})",
+    call="lorentzvector::GetPhi({df}, {output}, {input})",
     input=[q.pfmet_p4_recoilcorrected],
     output=[q.pfmetphi],
     scopes=["et", "mt", "tt", "em", "mm", "ee"],
@@ -349,28 +349,28 @@ PFMetCorrections = ProducerGroup(
 
 MetPt_boosted = Producer(
     name="MetPt_boosted",
-    call="quantities::pt({df}, {output}, {input})",
+    call="lorentzvector::GetPt({df}, {output}, {input})",
     input=[q.met_p4_boosted_recoilcorrected],
     output=[q.met_boosted],
     scopes=["et", "mt", "tt", "em", "mm", "ee"],
 )
 PFMetPt_boosted = Producer(
     name="PFMetPt_boosted",
-    call="quantities::pt({df}, {output}, {input})",
+    call="lorentzvector::GetPt({df}, {output}, {input})",
     input=[q.pfmet_p4_boosted_recoilcorrected],
     output=[q.pfmet_boosted],
     scopes=["et", "mt", "tt", "em", "mm", "ee"],
 )
 MetPhi_boosted = Producer(
     name="MetPhi_boosted",
-    call="quantities::phi({df}, {output}, {input})",
+    call="lorentzvector::GetPhi({df}, {output}, {input})",
     input=[q.met_p4_boosted_recoilcorrected],
     output=[q.metphi_boosted],
     scopes=["et", "mt", "tt", "em", "mm", "ee"],
 )
 PFMetPhi_boosted = Producer(
     name="PFMetPhi_boosted",
-    call="quantities::phi({df}, {output}, {input})",
+    call="lorentzvector::GetPhi({df}, {output}, {input})",
     input=[q.pfmet_p4_boosted_recoilcorrected],
     output=[q.pfmetphi_boosted],
     scopes=["et", "mt", "tt", "em", "mm", "ee"],

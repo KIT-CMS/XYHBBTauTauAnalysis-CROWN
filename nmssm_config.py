@@ -42,6 +42,10 @@ def add_noise_filters_config(configuration: Configuration):
 
     - Run 2 UltraLegacy: https://twiki.cern.ch/twiki/bin/viewauth/CMS/MissingETOptionalFiltersRun2#UL_data
 
+    - 2022: https://twiki.cern.ch/twiki/bin/viewauth/CMS/MissingETOptionalFiltersRun2#Run_3_2022_and_2023_data_and_MC
+    
+    - 2023: https://twiki.cern.ch/twiki/bin/viewauth/CMS/MissingETOptionalFiltersRun2#Run_3_2022_and_2023_data_and_MC
+
     :todo add 2022 and 2023:
 
     :param configuration: the main configuration object
@@ -95,6 +99,46 @@ def add_noise_filters_config(configuration: Configuration):
                         "Flag_eeBadScFilter",
                         "Flag_ecalBadCalibFilter",
                     ],
+                    "2022preEE": [
+                        "Flag_goodVertices",
+                        "Flag_globalSuperTightHalo2016Filter",
+                        "Flag_EcalDeadCellTriggerPrimitiveFilter",
+                        "Flag_BadPFMuonFilter",
+                        "Flag_BadPFMuonDzFilter",
+                        "Flag_hfNoisyHitsFilter",
+                        "Flag_eeBadScFilter",
+                        "Flag_ecalBadCalibFilter",  # marked as "yellow" in TWiki
+                    ],
+                    "2022postEE": [
+                        "Flag_goodVertices",
+                        "Flag_globalSuperTightHalo2016Filter",
+                        "Flag_EcalDeadCellTriggerPrimitiveFilter",
+                        "Flag_BadPFMuonFilter",
+                        "Flag_BadPFMuonDzFilter",
+                        "Flag_hfNoisyHitsFilter",
+                        "Flag_eeBadScFilter",
+                        "Flag_ecalBadCalibFilter",  # marked as "yellow" in TWiki
+                    ],
+                     "2023preBPix": [
+                        "Flag_goodVertices",
+                        "Flag_globalSuperTightHalo2016Filter",
+                        "Flag_EcalDeadCellTriggerPrimitiveFilter",
+                        "Flag_BadPFMuonFilter",
+                        "Flag_BadPFMuonDzFilter",
+                        "Flag_hfNoisyHitsFilter",
+                        "Flag_eeBadScFilter",
+                        "Flag_ecalBadCalibFilter",  # marked as "yellow" in TWiki
+                    ],
+                    "2023postBPix": [
+                        "Flag_goodVertices",
+                        "Flag_globalSuperTightHalo2016Filter",
+                        "Flag_EcalDeadCellTriggerPrimitiveFilter",
+                        "Flag_BadPFMuonFilter",
+                        "Flag_BadPFMuonDzFilter",
+                        "Flag_hfNoisyHitsFilter",
+                        "Flag_eeBadScFilter",
+                        "Flag_ecalBadCalibFilter",  # marked as "yellow" in TWiki
+                    ],                   
                 },
             ),
         },
@@ -109,7 +153,22 @@ def add_pileup_reweighting_config(configuration: Configuration):
     (nanoaod-tools/jsonpog-integration)[gitlab.cern.ch/nanoaod-tools/jsonpog-integration]
     repository.
 
-    :todo add 2022 and 2023:
+    - 2016-2018 and 2022-2023: https://twiki.cern.ch/twiki/bin/view/CMS/PileupJSONFileforData#Centrally_produced_correctionlib
+
+    - 2022-2023: https://twiki.cern.ch/twiki/bin/view/CMS/LumiRecommendationsRun3
+
+    The documentation of the `correctionlib` files can be found here:
+
+    | Era          | Documentation                                                                                          |
+    |--------------|--------------------------------------------------------------------------------------------------------|
+    | 2016preVFP   | https://cms-nanoaod-integration.web.cern.ch/commonJSONSFs/summaries/LUM_2016preVFP_UL_puWeights.html   |
+    | 2016postVFP  | https://cms-nanoaod-integration.web.cern.ch/commonJSONSFs/summaries/LUM_2016postVFP_UL_puWeights.html  |
+    | 2017         | https://cms-nanoaod-integration.web.cern.ch/commonJSONSFs/summaries/LUM_2017_UL_puWeights.html         |
+    | 2018         | https://cms-nanoaod-integration.web.cern.ch/commonJSONSFs/summaries/LUM_2018_UL_puWeights.html         |
+    | 2022preEE    | https://cms-nanoaod-integration.web.cern.ch/commonJSONSFs/summaries/LUM_2022_Summer22_puWeights.html   |
+    | 2022postEE   | https://cms-nanoaod-integration.web.cern.ch/commonJSONSFs/summaries/LUM_2022_Summer22EE_puWeights.html |
+    | 2023preBPix  | https://cms-nanoaod-integration.web.cern.ch/commonJSONSFs/summaries/LUM_2023_Summer23_puWeights.html   |
+    | 2023postBPix | https://cms-nanoaod-integration.web.cern.ch/commonJSONSFs/summaries/LUM_2023_Summer23_puWeights.html   |
 
     :param configuration: the main configuration object
     :type configuration: Configuration
@@ -131,6 +190,10 @@ def add_pileup_reweighting_config(configuration: Configuration):
                     "2016postVFP": "Collisions16_UltraLegacy_goldenJSON",
                     "2017": "Collisions17_UltraLegacy_goldenJSON",
                     "2018": "Collisions18_UltraLegacy_goldenJSON",
+                    "2022preEE": "Collisions2022_355100_357900_eraBCD_GoldenJson",
+                    "2022postEE": "Collisions2022_359022_362760_eraEFG_GoldenJson",
+                    "2023preBPix": "Collisions2023_366403_369802_eraBC_GoldenJson",
+                    "2023postBPix": "Collisions2023_369803_370790_eraD_GoldenJson",
                 }
             ),
             "PU_reweighting_variation": "nominal",
@@ -162,6 +225,10 @@ def add_golden_json_config(configuration: Configuration):
     """
     Filepaths to the `GoldenJSON` files to select certified data events.
 
+    - 2022: https://twiki.cern.ch/twiki/bin/view/CMS/PdmVRun3Analysis#Year_2022
+
+    - 2023: https://twiki.cern.ch/twiki/bin/view/CMS/PdmVRun3Analysis#Year_2023
+
     :param configuration: the main configuration object
     :type configuration: Configuration
     """
@@ -174,6 +241,10 @@ def add_golden_json_config(configuration: Configuration):
                     "2016postVFP": "data/golden_json/Cert_271036-284044_13TeV_Legacy2016_Collisions16_JSON.txt",
                     "2017": "data/golden_json/Cert_294927-306462_13TeV_UL2017_Collisions17_GoldenJSON.txt",
                     "2018": "data/golden_json/Cert_314472-325175_13TeV_Legacy2018_Collisions18_JSON.txt",
+                    "2022preEE": "data/golden_json/Cert_Collisions2022_355100_362760_Golden.json",
+                    "2022postEE": "data/golden_json/Cert_Collisions2022_355100_362760_Golden.json",
+                    "2023preBPix": "data/golden_json/Cert_Collisions2023_366442_370790_Golden.json",
+                    "2023postBPix": "data/golden_json/Cert_Collisions2023_366442_370790_Golden.json",
                 }
             ),
         },
@@ -437,7 +508,7 @@ def add_hadronic_tau_config(configuration: Configuration):
     configuration.add_config_parameters(
         SL_SCOPES,
         {
-            "min_tau_pt": 20.0,
+            "min_tau_pt": 30.0,
             "max_tau_eta": 2.3,
             "max_tau_dz": 0.2,
             "vsjet_tau_id_bit": 1,  # VVVLoose working point
@@ -449,7 +520,7 @@ def add_hadronic_tau_config(configuration: Configuration):
     configuration.add_config_parameters(
         FH_SCOPES,
         {
-            "min_tau_pt": 20.0,
+            "min_tau_pt": 40.0,
             "max_tau_eta": 2.1,
             "max_tau_dz": 0.2,
             "vsjet_tau_id_bit": 1,  # VVLoose working point
@@ -628,7 +699,7 @@ def add_boosted_hadronic_tau_config(configuration: Configuration):
     configuration.add_config_parameters(
         SL_SCOPES,
         {
-            "min_boostedtau_pt": 30.0,
+            "min_boostedtau_pt": 40.0,
             "max_boostedtau_eta": 2.3,
             # "iso_boostedtau_id_bit": 1,
             # "antiele_boostedtau_id_bit": 1,
@@ -642,7 +713,7 @@ def add_boosted_hadronic_tau_config(configuration: Configuration):
     configuration.add_config_parameters(
         FH_SCOPES,
         {
-            "min_boostedtau_pt": 30.0,
+            "min_boostedtau_pt": 40.0,
             "max_boostedtau_eta": 2.3,
             # "iso_boostedtau_id_bit": 2,
             # "antiele_boostedtau_id_bit": 2,
@@ -1678,26 +1749,7 @@ def build_config(
             samples=["nmssm_Ybb", "nmssm_Ytautau"],
         ),
     )
-    # configuration.add_modification_rule(
-    #     ["et", "mt"],
-    #     RemoveProducer(
-    #         producers=[
-    #             pairquantities.tau_gen_match_2,
-    #             # boostedtaus.boosted_tau_gen_match_2,
-    #         ],
-    #         samples="data",
-    #     ),
-    # )
-    # configuration.add_modification_rule(
-    #     ["tt"],
-    #     RemoveProducer(
-    #         producers=[
-    #             pairquantities.tau_gen_match_1,
-    #             pairquantities.tau_gen_match_2,
-    #         ],
-    #         samples="data",
-    #     ),
-    # )
+ 
     configuration.add_modification_rule(
         HAD_TAU_SCOPES,
         RemoveProducer(
@@ -2099,7 +2151,6 @@ def build_config(
             # q.gen_taujet_pt_2,
             q.tau_decaymode_1,
             q.tau_decaymode_2,
-            # q.tau_gen_match_2,
             q.muon_veto_flag,
             q.boosted_muon_veto_flag,
             q.electron_veto_flag,
@@ -2111,7 +2162,6 @@ def build_config(
             q.boosted_dz_1,
             q.boosted_tau_decaymode_1,
             q.boosted_tau_decaymode_2,
-            # q.boosted_tau_gen_match_2,
             q.boosted_pt_1,
             q.boosted_pt_2,
             q.boosted_eta_1,
@@ -2163,7 +2213,6 @@ def build_config(
             # q.gen_taujet_pt_2,
             q.tau_decaymode_1,
             q.tau_decaymode_2,
-            # q.tau_gen_match_2,
             q.muon_veto_flag,
             q.boosted_electron_veto_flag,
             q.electron_veto_flag,
@@ -2175,7 +2224,6 @@ def build_config(
             q.boosted_dz_1,
             q.boosted_tau_decaymode_1,
             q.boosted_tau_decaymode_2,
-            # q.boosted_tau_gen_match_2,
             q.boosted_pt_1,
             q.boosted_pt_2,
             q.boosted_eta_1,
@@ -2238,16 +2286,12 @@ def build_config(
             # q.gen_taujet_pt_2,
             q.tau_decaymode_1,
             q.tau_decaymode_2,
-            # q.tau_gen_match_1,
-            # q.tau_gen_match_2,
             q.muon_veto_flag,
             q.electron_veto_flag,
             q.dimuon_veto,
             q.dilepton_veto,
             q.boosted_tau_decaymode_1,
             q.boosted_tau_decaymode_2,
-            # q.boosted_tau_gen_match_1,
-            # q.boosted_tau_gen_match_2,
             q.boosted_pt_1,
             q.boosted_pt_2,
             q.boosted_eta_1,
