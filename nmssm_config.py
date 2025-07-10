@@ -370,7 +370,7 @@ def add_muon_config(
     Correction factors are obtained from the
     [nanoaod-tools/jsonpog-integration](gitlab.cern.ch/nanoaod-tools/jsonpog-integration) repository.
 
-     The documentation of the muon identification corrections can be found here:
+    The documentation of the muon reconstruction, identification, and isolation corrections can be found here:
 
     | Era          | Documentation                                                                                         |
     |--------------|-------------------------------------------------------------------------------------------------------|
@@ -380,8 +380,8 @@ def add_muon_config(
     | 2016preVFP   | https://cms-nanoaod-integration.web.cern.ch/commonJSONSFs/summaries/MUO_2018_UL_muon_Z.html           |
     | 2022preEE    | https://cms-nanoaod-integration.web.cern.ch/commonJSONSFs/summaries/MUO_2022_Summer22_muon_Z.html     |
     | 2022postEE   | https://cms-nanoaod-integration.web.cern.ch/commonJSONSFs/summaries/MUO_2022_Summer22EE_muon_Z.html   |
-    | 2022preBPix  | https://cms-nanoaod-integration.web.cern.ch/commonJSONSFs/summaries/MUO_2023_Summer23_muon_Z.html     |
-    | 2022postBPix | https://cms-nanoaod-integration.web.cern.ch/commonJSONSFs/summaries/MUO_2023_Summer23BPix_muon_Z.html |
+    | 2023preBPix  | https://cms-nanoaod-integration.web.cern.ch/commonJSONSFs/summaries/MUO_2023_Summer23_muon_Z.html     |
+    | 2023postBPix | https://cms-nanoaod-integration.web.cern.ch/commonJSONSFs/summaries/MUO_2023_Summer23BPix_muon_Z.html |
 
     :param configuration: the main configuration object
     :type configuration: Configuration
@@ -491,7 +491,18 @@ def add_hadronic_tau_config(configuration: Configuration):
     Correction factors are obtained from the
     [nanoaod-tools/jsonpog-integration](gitlab.cern.ch/nanoaod-tools/jsonpog-integration) repository.
 
-    :todo add 2022 and 2023:
+    The documentation of the tau identification corrections can be found here:
+
+    | Era          | Documentation                                                                                      |
+    |--------------|----------------------------------------------------------------------------------------------------|
+    | 2016preVFP   | https://cms-nanoaod-integration.web.cern.ch/commonJSONSFs/summaries/TAU_2016preVFP_UL_tau.html     |
+    | 2016postVFP  | https://cms-nanoaod-integration.web.cern.ch/commonJSONSFs/summaries/TAU_2016postVFP_UL_tau.html    |
+    | 2017         | https://cms-nanoaod-integration.web.cern.ch/commonJSONSFs/summaries/TAU_2017_UL_tau.html           |
+    | 2016preVFP   | https://cms-nanoaod-integration.web.cern.ch/commonJSONSFs/summaries/TAU_2018_UL_tau.html           |
+    | 2022preEE    | https://cms-nanoaod-integration.web.cern.ch/commonJSONSFs/summaries/TAU_2022_Summer22_tau.html     |
+    | 2022postEE   | https://cms-nanoaod-integration.web.cern.ch/commonJSONSFs/summaries/TAU_2022_Summer22EE_tau.html   |
+    | 2023preBPix  | https://cms-nanoaod-integration.web.cern.ch/commonJSONSFs/summaries/TAU_2023_Summer23_tau.html     |
+    | 2023postBPix | https://cms-nanoaod-integration.web.cern.ch/commonJSONSFs/summaries/TAU_2023_Summer23BPix_tau.html |
 
     :param configuration: the main configuration object
     :type configuration: Configuration
@@ -502,6 +513,20 @@ def add_hadronic_tau_config(configuration: Configuration):
     :param muon_id_loose_corrlib: name of the muon ID for the loose muon collection in the MUO correctionlib file; default: `""`.
     :type muon_id_loose: str
     """
+    
+    # define the tau identification algorithm to use
+    tau_id = EraModifier(
+        {
+            **{
+                _era: "DeepTau2017v2p1"
+                for _era in ERAS_RUN2
+            },
+            **{
+                _era: "DeepTau2018v2p5"
+                for _era in ERAS_RUN3
+            },
+        }
+    )
 
     # hadronic tau selection in semileptonic channels
     configuration.add_config_parameters(
@@ -540,7 +565,36 @@ def add_hadronic_tau_config(configuration: Configuration):
                 }
             ),
             "tau_ES_json_name": "tau_energy_scale",
-            "tau_id_algorithm": "DeepTau2017v2p1",
+            "tau_id_algorithm": tau_id,
+            "tau_ES_shift_DM0": "nom",
+            "tau_ES_shift_DM1": "nom",
+            "tau_ES_shift_DM10": "nom",
+            "tau_ES_shift_DM11": "nom",
+            "tau_elefake_es_DM0_barrel": "nom",
+            "tau_elefake_es_DM0_endcap": "nom",
+            "tau_elefake_es_DM1_barrel": "nom",
+            "tau_elefake_es_DM1_endcap": "nom",
+            "tau_mufake_es": "nom",
+        },
+    )
+
+    # for 2022 and 2023, we produce invalid DeepTau vs jets scale factors
+    # TODO fix when new samples are available
+    # TODO temporary recipe for Tau ID SF: https://twiki.cern.ch/twiki/bin/view/CMS/TauIDRecommendationForRun3#IMPORTANT_Temporary_recommendati
+    configuration.add_config_parameters(
+        HAD_TAU_SCOPES,
+        {
+            "tau_dms": "0,1,10,11",
+            "tau_es_norm_shift": 1.0,  # temorary fix
+            "tau_id_vs_jet_norm_shift": 1.0,  # temporary fix
+            "tau_sf_file": EraModifier(
+                {
+                    _era: f"data/jsonpog-integration/POG/TAU/{_campaign}/tau.json.gz"
+                    for _era, _campaign in CORRECTIONLIB_CAMPAIGNS.items()
+                }
+            ),
+            "tau_ES_json_name": "tau_energy_scale",
+            "tau_id_algorithm": tau_id,
             "tau_ES_shift_DM0": "nom",
             "tau_ES_shift_DM1": "nom",
             "tau_ES_shift_DM10": "nom",
@@ -560,7 +614,12 @@ def add_hadronic_tau_config(configuration: Configuration):
         {
             "vsjet_tau_id": [
                 {
-                    "tau_id_discriminator": "DeepTau2017v2p1VSjet",
+                    "tau_id_discriminator": EraModifier(
+                        {
+                            _era: f"{_tau_id}VSjet"
+                            for _era, _tau_id in tau_id.modifier_dict.items()
+                        }
+                    ),
                     "vsjet_tau_id_WP": "{wp}".format(wp=wp),
                     "vsjet_tau_id_WPbit": bit,
                     "tau_1_vsjet_id_outputname": "id_tau_vsJet_{wp}_1".format(wp=wp),
@@ -579,7 +638,12 @@ def add_hadronic_tau_config(configuration: Configuration):
             ],
             "vsele_tau_id": [
                 {
-                    "tau_id_discriminator": "DeepTau2017v2p1VSe",
+                    "tau_id_discriminator": EraModifier(
+                        {
+                            _era: f"{_tau_id}VSe"
+                            for _era, _tau_id in tau_id.modifier_dict.items()
+                        }
+                    ),
                     "vsele_tau_id_WPbit": bit,
                     "tau_1_vsele_sf_outputname": "id_wgt_tau_vsEle_{wp}_1".format(
                         wp=wp
@@ -604,7 +668,12 @@ def add_hadronic_tau_config(configuration: Configuration):
             ],
             "vsmu_tau_id": [
                 {
-                    "tau_id_discriminator": "DeepTau2017v2p1VSmu",
+                    "tau_id_discriminator": EraModifier(
+                        {
+                            _era: f"{_tau_id}VSmu"
+                            for _era, _tau_id in tau_id.modifier_dict.items()
+                        }
+                    ),
                     "vsmu_tau_id_WPbit": bit,
                     "tau_1_vsmu_sf_outputname": "id_wgt_tau_vsMu_{wp}_1".format(wp=wp),
                     "tau_2_vsmu_sf_outputname": "id_wgt_tau_vsMu_{wp}_2".format(wp=wp),
@@ -628,7 +697,12 @@ def add_hadronic_tau_config(configuration: Configuration):
         {
             "vsjet_tau_id_sf": [
                 {
-                    "tau_id_discriminator": "DeepTau2017v2p1VSjet",
+                    "tau_id_discriminator": EraModifier(
+                        {
+                            _era: f"{_tau_id}VSjet"
+                            for _era, _tau_id in tau_id.modifier_dict.items()
+                        }
+                    ),
                     "tau_1_vsjet_sf_outputname": "id_wgt_tau_vsJet_{wp}_1".format(
                         wp=wp
                     ),
