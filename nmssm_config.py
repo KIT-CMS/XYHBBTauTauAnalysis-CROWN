@@ -192,11 +192,7 @@ def add_golden_json_config(configuration: Configuration):
     )
 
 
-def add_electron_config(
-    configuration: Configuration,
-    electron_id_loose: str = "Electron_mvaNoIso_WP90",
-    electron_id_loose_corrlib: str = "wp90noiso",
-):
+def add_electron_config(configuration: Configuration):
     """
     Selection requirements and corrections for electrons.
 
@@ -262,7 +258,7 @@ def add_electron_config(
             "max_ele_dxy": 0.045,
             "max_ele_dz": 0.2,
             "max_ele_iso": 4.0,
-            "ele_id": electron_id_loose,  # NanoAOD v9: Electron_mvaFall17V2noIso_WP90,
+            "ele_id": "Electron_mvaNoIso_WP90",
         },
     )
 
@@ -312,7 +308,7 @@ def add_electron_config(
                 }
             ),
             "ele_reco_sf_name": "RecoAbove20",  # TODO needs to be modified for 2022 and 2023
-            "ele_id_sf_name": electron_id_loose_corrlib,
+            "ele_id_sf_name": "wp90noiso",
             "ele_reco_sf_variation": "sf",  # "sf" is nominal, "sfup"/"sfdown" are up/down variations
             "ele_id_sf_variation": "sf",  # "sf" is nominal, "sfup"/"sfdown" are up/down variations
         },
@@ -342,9 +338,7 @@ def add_electron_config(
     )
 
 
-def add_muon_config(
-        configuration: Configuration,
-):
+def add_muon_config(configuration: Configuration):
     """
     Selection requirements and corrections for muons.
 
@@ -1060,6 +1054,229 @@ def add_ak4jet_config(
         },
     )
 
+    # lepton/tau-jet overlap removal
+    configuration.add_config_parameters(
+        "global",
+        {
+            "deltaR_jet_veto": 0.4,
+        },
+    )
+
+
+def add_ak8jet_config(
+    configuration: Configuration,
+):
+    """
+    The documentation of the `correctionlib` files for the jet energy corrections and resolution smearings can be found here:
+
+    | Era          | Documentation                                                                                           |
+    |--------------|---------------------------------------------------------------------------------------------------------|
+    | 2016preVFP   | https://cms-nanoaod-integration.web.cern.ch/commonJSONSFs/summaries/JME_2016preVFP_UL_jet_jerc.html     |
+    | 2016postVFP  | https://cms-nanoaod-integration.web.cern.ch/commonJSONSFs/summaries/JME_2016postVFP_UL_jet_jerc.html    |
+    | 2017         | https://cms-nanoaod-integration.web.cern.ch/commonJSONSFs/summaries/JME_2017_UL_jet_jerc.html           |
+    | 2016preVFP   | https://cms-nanoaod-integration.web.cern.ch/commonJSONSFs/summaries/JME_2018_UL_jet_jerc.html           |
+    | 2022preEE    | https://cms-nanoaod-integration.web.cern.ch/commonJSONSFs/summaries/JME_2022_Summer22_jet_jerc.html     |
+    | 2022postEE   | https://cms-nanoaod-integration.web.cern.ch/commonJSONSFs/summaries/JME_2022_Summer22EE_jet_jerc.html   |
+    | 2023preBPix  | https://cms-nanoaod-integration.web.cern.ch/commonJSONSFs/summaries/JME_2023_Summer23_jet_jerc.html     |
+    | 2023postBPix | https://cms-nanoaod-integration.web.cern.ch/commonJSONSFs/summaries/JME_2023_Summer23BPix_jet_jerc.html |
+    """
+
+    # AK8 jet selection
+    # JEC recommendations: https://twiki.cern.ch/twiki/bin/view/CMS/JECDataMC
+    configuration.add_config_parameters(
+        "global",
+        {
+            "min_fatjet_pt": 200.,
+            "max_fatjet_eta": 2.5,
+            "fatjet_id": 6,  # tight & tightLepVeto
+            "fatjet_reapplyJES": False,
+            "fatjet_jes_sources": '{""}',
+            "fatjet_jes_shift": 0,
+            "fatjet_jer_shift": '"nom"',  # or '"up"', '"down"'
+            "fatjet_jec_file": EraModifier(  # TODO use AK4 file for fatjets because it either was is just copied and the fatjet file has no merged uncertainty scheme?
+                {
+                    _era: f'"data/jsonpog-integration/POG/JME/{_campaign}/fatJet_jerc.json.gz"'
+                    for _era, _campaign in CORRECTIONLIB_CAMPAIGNS.items()
+                }
+            ),
+            "fatjet_jer_tag": EraModifier(
+                {
+                    "2016preVFP": '"Summer20UL16APV_JRV3_MC"',
+                    "2016postVFP": '"Summer20UL16_JRV3_MC"',
+                    "2017": '"Summer19UL17_JRV2_MC"',
+                    "2018": '"Summer19UL18_JRV2_MC"',
+                    "2022preEE": '"Summer22_22Sep2023_JRV1_MC"',
+                    "2022postEE": '"Summer22EE_22Sep2023_JRV1"',
+                    "2023preBPix": '"Summer23Prompt23_RunCv1234_JRV1_MC"',
+                    "2023postBPix": '"Summer23BPixPrompt23_RunD_JRV1_MC"',
+                }
+            ),
+            "fatjet_jes_tag_data": '""',
+            "fatjet_jes_tag": EraModifier(
+                {
+                    "2016preVFP": '"Summer19UL16APV_V7_MC"',
+                    "2016postVFP": '"Summer19UL16_V7_MC"',
+                    "2017": '"Summer19UL17_V5_MC"',
+                    "2018": '"Summer19UL18_V5_MC"',
+                }
+            ),
+            "fatjet_jec_algo": '"AK4PFPuppi"',  # TODO normally "AK8PFPuppi" would be used -> change to AK4 naming to get merged uncertainty scheme?
+        },
+    )
+
+    # lepton/tau-jet overlap removal
+    configuration.add_config_parameters(
+        "global",
+        {
+            "deltaR_jet_veto": 0.8,
+        },
+    )
+
+
+def add_bjet_config(configuration: Configuration):
+    """
+    B jet identification and corrections.
+ 
+    The documentation of the `correctionlib` files for the b jet identification corrections can be found here:
+
+    | Era          | Documentation                                                                                           |
+    |--------------|---------------------------------------------------------------------------------------------------------|
+    | 2016preVFP   | https://cms-nanoaod-integration.web.cern.ch/commonJSONSFs/summaries/BTV_2016preVFP_UL_btagging.html     |
+    | 2016postVFP  | https://cms-nanoaod-integration.web.cern.ch/commonJSONSFs/summaries/BTV_2016postVFP_UL_btagging.html    |
+    | 2017         | https://cms-nanoaod-integration.web.cern.ch/commonJSONSFs/summaries/BTV_2017_UL_btagging.html           |
+    | 2016preVFP   | https://cms-nanoaod-integration.web.cern.ch/commonJSONSFs/summaries/BTV_2018_UL_btagging.html           |
+    | 2022preEE    | https://cms-nanoaod-integration.web.cern.ch/commonJSONSFs/summaries/BTV_2022_Summer22_btagging.html     |
+    | 2022postEE   | https://cms-nanoaod-integration.web.cern.ch/commonJSONSFs/summaries/BTV_2022_Summer22EE_btagging.html   |
+    | 2023preBPix  | https://cms-nanoaod-integration.web.cern.ch/commonJSONSFs/summaries/BTV_2023_Summer23_btagging.html     |
+    | 2023postBPix | https://cms-nanoaod-integration.web.cern.ch/commonJSONSFs/summaries/BTV_2023_Summer23BPix_btagging.html |
+    """
+
+    # b jet selection
+    configuration.add_config_parameters(
+        "global",
+        {
+            "min_bjet_pt": 20.,
+            "max_bjet_eta": EraModifier(
+                {
+                    "2016preVFP": 2.4,
+                    "2016postVFP": 2.4,
+                    "2017": 2.5,
+                    "2018": 2.5,
+                }
+            ),
+        },
+    )
+
+    # b jet identification
+    # recommendations: https://btv-wiki.docs.cern.ch/ScaleFactors
+    configuration.add_config_parameters(
+        GLOBAL_SCOPES + HAD_TAU_SCOPES,
+        {
+            "btag_cut": EraModifier(  # medium
+                {
+                    "2016preVFP": 0.2598,
+                    "2016postVFPP": 0.2489,
+                    "2017": 0.3040,
+                    "2018": 0.2783,
+                    "2022preEE": 0.3086,
+                    "2022postEE": 0.3196,
+                    "2023preBPix": 0.2431,
+                    "2023postBPix": 0.2435,
+                },
+            ),
+        },
+    )
+
+    # corrections for b jet identification
+    configuration.add_config_parameters(
+        HAD_TAU_SCOPES,
+        {
+            "btag_sf_file": EraModifier(
+                {
+                    _era: f"data/jsonpog-integration/POG/BTV/{_campaign}/btagging.json.gz"
+                    for _era, _campaign in CORRECTIONLIB_CAMPAIGNS.items()
+                }
+            ),
+            "btag_sf_variation": "central",
+            "btag_corr_algo": "deepJet_shape",
+        },
+    )
+
+
+def add_recoil_corrections_config(configuration: Configuration):
+    ## all scopes MET selection
+    configuration.add_config_parameters(
+        HAD_TAU_SCOPES,
+        {
+            "propagateLeptons": SampleModifier(
+                {"data": False},
+                default=True,
+            ),
+            "propagateJets": SampleModifier(
+                {"data": False},
+                default=True,
+            ),
+            "recoil_corrections_file": EraModifier(
+                {
+                    "2016preVFP": "data/recoil_corrections/Type1_PuppiMET_2016.root",
+                    "2016postVFP": "data/recoil_corrections/Type1_PuppiMET_2016.root",
+                    "2017": "data/recoil_corrections/Type1_PuppiMET_2017.root",
+                    "2018": "data/recoil_corrections/Type1_PuppiMET_2018.root",
+                }
+            ),
+            "recoil_systematics_file": EraModifier(
+                {
+                    "2016preVFP": "data/recoil_corrections/PuppiMETSys_2016.root",
+                    "2016postVFP": "data/recoil_corrections/PuppiMETSys_2016.root",
+                    "2017": "data/recoil_corrections/PuppiMETSys_2017.root",
+                    "2018": "data/recoil_corrections/PuppiMETSys_2018.root",
+                }
+            ),
+            "applyRecoilCorrections": SampleModifier(
+                {
+                    "ttbar": False,
+                    "singletop": False,
+                    "diboson": False,
+                    "data": False,
+                    "embedding": False,
+                    "embedding_mc": False,
+                },
+                default=True,
+            ),
+            "apply_recoil_resolution_systematic": False,
+            "apply_recoil_response_systematic": False,
+            "recoil_systematic_shift_up": False,
+            "recoil_systematic_shift_down": False,
+            "min_jetpt_met_propagation": 15,
+        },
+    )
+
+
+def add_z_pt_reweighting_config(configuration: Configuration):
+    """
+    Configuration for the Z boson pt reweighting.
+
+    The Run 3 Z boson pt and recoil corrections are documented here: https://indico.cern.ch/event/1495537/contributions/6359516/attachments/3014424/5315938/HLepRare_25.02.14.pdf.
+
+    The corrections are available here: https://gitlab.cern.ch/cms-higgs-leprare/hleprare
+    """
+
+    # Z pt reweighting
+    configuration.add_config_parameters(
+        HAD_TAU_SCOPES,
+        {
+            "zptmass_file": EraModifier(
+                {
+                    "2016preVFP": "data/zpt/htt_scalefactors_legacy_2016.root",
+                    "2016postVFP": "data/zpt/htt_scalefactors_legacy_2016.root",
+                    "2017": "data/zpt/htt_scalefactors_legacy_2017.root",
+                    "2018": "data/zpt/htt_scalefactors_legacy_2018.root",
+                }
+            ),
+            "zptmass_functor": "zptmass_weight_nom",
+            "zptmass_arguments": "z_gen_mass,z_gen_pt",
+        },
+    )
 
 
 def build_config(
@@ -1094,11 +1311,17 @@ def build_config(
     # variations of the renormalization and factorization scales
     add_mur_muf_weights_config(configuration)
 
+    # AK4 jet selection and energy/resolution corrections
+    add_ak4jet_config(configuration)
+
+    # AK8 jet selection and energy/resolution corrections
+    add_ak8jet_config(configuration)
+
     # electron selection and corrections for reconstruction and identification
-    add_electron_config(configuration, electron_id_loose="Electron_mvaNoIso_WP90", electron_id_loose_corrlib="wp90noiso")
+    add_electron_config(configuration)
 
     # muon selection and corrections for reconstruction, identification, and isolation
-    add_muon_config(configuration, muon_id_loose="Muon_mediumId", muon_id_loose_corrlib="NUM_MediumID_DEN_TrackerMuons")
+    add_muon_config(configuration)
 
     # hadronic tau selection and corrections for identification and energy scale
     add_hadronic_tau_config(configuration)
@@ -1106,65 +1329,12 @@ def build_config(
     # boosted hadronic tau selection and corrections for identification and energy scale
     add_boosted_hadronic_tau_config(configuration)
 
+    # b jet selection, identification, and corrections
+    add_bjet_config(configuration)
+
     #
     # LOOSE OBJECT SELECTIONS
     #
-
-
-    # AK8 jet selection
-    # JEC recommendations: https://twiki.cern.ch/twiki/bin/view/CMS/JECDataMC
-    configuration.add_config_parameters(
-        "global",
-        {
-            "min_fatjet_pt": 200.,
-            "max_fatjet_eta": 2.5,
-            "fatjet_id": 6,  # tight & tightLepVeto
-            "fatjet_reapplyJES": False,
-            "fatjet_jes_sources": '{""}',
-            "fatjet_jes_shift": 0,
-            "fatjet_jer_shift": '"nom"',  # or '"up"', '"down"'
-            "fatjet_jec_file": EraModifier(  # TODO use AK4 file for fatjets because it either was is just copied and the fatjet file has no merged uncertainty scheme?
-                {
-                    _era: f'"data/jsonpog-integration/POG/JME/{_era}_UL/fatJet_jerc.json.gz"'
-                    for _era in ERAS_RUN2
-                }
-            ),
-            "fatjet_jer_tag": EraModifier(
-                {
-                    "2016preVFP": '"Summer20UL16APV_JRV3_MC"',
-                    "2016postVFP": '"Summer20UL16_JRV3_MC"',
-                    "2017": '"Summer19UL17_JRV2_MC"',
-                    "2018": '"Summer19UL18_JRV2_MC"',
-                }
-            ),
-            "fatjet_jes_tag_data": '""',
-            "fatjet_jes_tag": EraModifier(
-                {
-                    "2016preVFP": '"Summer19UL16APV_V7_MC"',
-                    "2016postVFP": '"Summer19UL16_V7_MC"',
-                    "2017": '"Summer19UL17_V5_MC"',
-                    "2018": '"Summer19UL18_V5_MC"',
-                }
-            ),
-            "fatjet_jec_algo": '"AK8PFPuppi"',  # TODO normally "AK8PFPuppi" would be used -> change to AK4 naming to get merged uncertainty scheme?
-        },
-    )
-
-    # b jet selection
-    configuration.add_config_parameters(
-        "global",
-        {
-            "min_bjet_pt": 20.,
-            "max_bjet_eta": EraModifier(
-                {
-                    "2016preVFP": 2.4,
-                    "2016postVFP": 2.4,
-                    "2017": 2.5,
-                    "2018": 2.5,
-                }
-            ),
-        },
-    )
 
     # electron energy scale corrections
     configuration.add_config_parameters(
@@ -1185,36 +1355,6 @@ def build_config(
                     for _era in ["2016preVFP", "2016postVFP", "2017", "2018"]
                 }
             ),
-        },
-    )
-
-    # b jet identification
-    # recommendations: https://btv-wiki.docs.cern.ch/ScaleFactors
-    configuration.add_config_parameters(
-        GLOBAL_SCOPES + HAD_TAU_SCOPES,
-        {
-            "btag_cut": EraModifier(  # medium
-                {
-                    "2016preVFP": 0.2598,
-                    "2016postVFPP": 0.2489,
-                    "2017": 0.3040,
-                    "2018": 0.2783,
-                }
-            ),
-        },
-    )
-
-    configuration.add_config_parameters(
-        HAD_TAU_SCOPES,
-        {
-            "btag_sf_file": EraModifier(
-                {
-                    _era: f"data/jsonpog-integration/POG/BTV/{_era}_UL/btagging.json.gz"
-                    for _era in ERAS_RUN2
-                }
-            ),
-            "btag_sf_variation": "central",
-            "btag_corr_algo": "deepJet_shape",
         },
     )
 
@@ -1266,103 +1406,19 @@ def build_config(
         },
     )
 
-    #
-    # SCOPE-SPECIFIC SELECTIONS
-    #
-
-    #
-    # HADRONIC TAUS
-    #
-    #
-    # MUONS
-    #
-    #
-    # ELECTRONS
-    #
-
-
-    #
-    # OBJECT CLEANING
-    #
-
-    # DeltaR thresholds for object cleaning and resolved tau definition
+    # deltaR condition for resolved tau definition
     configuration.add_config_parameters(
         HAD_TAU_SCOPES,
         {
-            "deltaR_jet_veto": 0.4,
-            "deltaR_fatjet_veto": 0.8,
             "pairselection_min_dR": 0.5,
-            "bb_pairselection_min_dR": 0.0,
+            "bb_pairselection_min_dR": 0.4,
         },
     )
+
 
     #
     # RECOIL CALIBRATION
     #
-
-    ## all scopes MET selection
-    configuration.add_config_parameters(
-        HAD_TAU_SCOPES,
-        {
-            "propagateLeptons": SampleModifier(
-                {"data": False},
-                default=True,
-            ),
-            "propagateJets": SampleModifier(
-                {"data": False},
-                default=True,
-            ),
-            "recoil_corrections_file": EraModifier(
-                {
-                    "2016preVFP": "data/recoil_corrections/Type1_PuppiMET_2016.root",
-                    "2016postVFP": "data/recoil_corrections/Type1_PuppiMET_2016.root",
-                    "2017": "data/recoil_corrections/Type1_PuppiMET_2017.root",
-                    "2018": "data/recoil_corrections/Type1_PuppiMET_2018.root",
-                }
-            ),
-            "recoil_systematics_file": EraModifier(
-                {
-                    "2016preVFP": "data/recoil_corrections/PuppiMETSys_2016.root",
-                    "2016postVFP": "data/recoil_corrections/PuppiMETSys_2016.root",
-                    "2017": "data/recoil_corrections/PuppiMETSys_2017.root",
-                    "2018": "data/recoil_corrections/PuppiMETSys_2018.root",
-                }
-            ),
-            "applyRecoilCorrections": SampleModifier(
-                {
-                    "ttbar": False,
-                    "singletop": False,
-                    "diboson": False,
-                    "data": False,
-                    "embedding": False,
-                    "embedding_mc": False,
-                },
-                default=True,
-            ),
-            "apply_recoil_resolution_systematic": False,
-            "apply_recoil_response_systematic": False,
-            "recoil_systematic_shift_up": False,
-            "recoil_systematic_shift_down": False,
-            "min_jetpt_met_propagation": 15,
-        },
-    )
-
-    # Z pt reweighting
-    configuration.add_config_parameters(
-        HAD_TAU_SCOPES,
-        {
-            "zptmass_file": EraModifier(
-                {
-                    "2016preVFP": "data/zpt/htt_scalefactors_legacy_2016.root",
-                    "2016postVFP": "data/zpt/htt_scalefactors_legacy_2016.root",
-                    "2017": "data/zpt/htt_scalefactors_legacy_2017.root",
-                    "2018": "data/zpt/htt_scalefactors_legacy_2018.root",
-                }
-            ),
-            "zptmass_functor": "zptmass_weight_nom",
-            "zptmass_arguments": "z_gen_mass,z_gen_pt",
-        },
-    )
 
     #
     # TRIGGERS
