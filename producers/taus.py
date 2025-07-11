@@ -171,7 +171,7 @@ TauDzCut = Producer(
 TauDMCut = Producer(
     name="TauDMCut",
     call="physicsobject::CutQuantity<UChar_t>({df}, {output}, {input}, {vec_open}{tau_dms}{vec_close})",
-    input=[nanoAOD.Tau_decayMode_orig],
+    input=[nanoAOD.Tau_decayMode],
     output=[],
     scopes=["global"],
 )
@@ -218,7 +218,7 @@ GoodTauDzCut = Producer(
 GoodTauDMCut = Producer(
     name="GoodTauDMCut",
     call="physicsobject::CutQuantity<UChar_t>({df}, {output}, {input}, {vec_open}{tau_dms}{vec_close})",
-    input=[nanoAOD.Tau_decayMode_orig],
+    input=[nanoAOD.Tau_decayMode],
     output=[],
     scopes=["et", "mt", "tt"],
 )
