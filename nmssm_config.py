@@ -31,7 +31,7 @@ from code_generation.modifiers import EraModifier, SampleModifier
 from code_generation.rules import AppendProducer, RemoveProducer, ReplaceProducer
 from code_generation.systematics import SystematicShift, SystematicShiftByQuantity
 
-from .constants import ERAS, ERAS_RUN2, ERAS_RUN3, CORRECTIONLIB_CAMPAIGNS, ET_SCOPES, MT_SCOPES, TT_SCOPES, SL_SCOPES, FH_SCOPES, HAD_TAU_SCOPES, GLOBAL_SCOPES
+from .constants import ERAS_RUN2, ERAS_RUN3, CORRECTIONLIB_CAMPAIGNS, ET_SCOPES, MT_SCOPES, SL_SCOPES, FH_SCOPES, HAD_TAU_SCOPES, GLOBAL_SCOPES
 
 
 def add_noise_filters_config(configuration: Configuration):
@@ -95,6 +95,19 @@ def add_noise_filters_config(configuration: Configuration):
                         "Flag_eeBadScFilter",
                         "Flag_ecalBadCalibFilter",
                     ],
+                    **{
+                        _era: [
+                            "Flag_goodVertices",
+                            "Flag_globalSuperTightHalo2016Filter",
+                            "Flag_EcalDeadCellTriggerPrimitiveFilter",
+                            "Flag_BadPFMuonFilter",
+                            "Flag_BadPFMuonDzFilter",
+                            "Flag_hfNoisyHitsFilter",
+                            "Flag_eeBadScFilter",
+                            # "Flag_ecalBadCalibFilter", should not be used in some sections of 2022 and 2023
+                        ]
+                        for _era in ERAS_RUN3
+                    },
                 },
             ),
         },
@@ -137,6 +150,10 @@ def add_pileup_reweighting_config(configuration: Configuration):
                     "2016postVFP": "Collisions16_UltraLegacy_goldenJSON",
                     "2017": "Collisions17_UltraLegacy_goldenJSON",
                     "2018": "Collisions18_UltraLegacy_goldenJSON",
+                    "2022preEE": "Collisions2022_355100_357900_eraBCD_GoldenJson",
+                    "2022postEE": "Collisions2022_359022_362760_eraEFG_GoldenJson",
+                    "2023preBPix": "Collisions2023_366403_369802_eraBC_GoldenJson",
+                    "2023postBPix": "Collisions2023_369803_370790_eraD_GoldenJson",
                 }
             ),
             "PU_reweighting_variation": "nominal",
@@ -186,6 +203,10 @@ def add_golden_json_config(configuration: Configuration):
                     "2016postVFP": "data/golden_json/Cert_271036-284044_13TeV_Legacy2016_Collisions16_JSON.txt",
                     "2017": "data/golden_json/Cert_294927-306462_13TeV_UL2017_Collisions17_GoldenJSON.txt",
                     "2018": "data/golden_json/Cert_314472-325175_13TeV_Legacy2018_Collisions18_JSON.txt",
+                    "2022preEE": "data/golden_json/Cert_Collisions2022_355100_362760_Golden.json",
+                    "2022postEE": "data/golden_json/Cert_Collisions2022_355100_362760_Golden.json",
+                    "2023preBPix": "data/golden_json/Cert_Collisions2023_366442_370790_Golden.json",
+                    "2023postBPix": "data/golden_json/Cert_Collisions2023_366442_370790_Golden.json",
                 }
             ),
         },
@@ -801,6 +822,10 @@ def add_boosted_hadronic_tau_config(configuration: Configuration):
                     "2016": "data/jsonpog-integration/POG/TAU/2016_Legacy/tau.json.gz",
                     "2017": "data/jsonpog-integration/POG/TAU/2017_ReReco/tau.json.gz",
                     "2018": "data/jsonpog-integration/POG/TAU/2018_ReReco/tau.json.gz",
+                    **{
+                        _era: ""  # placeholder, as these corrections are not available for Run3
+                        for _era in ERAS_RUN3
+                    },
                 }
             ),
             "boostedtau_ES_json_name": "tau_energy_scale",
@@ -929,9 +954,7 @@ def add_boosted_hadronic_tau_config(configuration: Configuration):
     )
 
 
-def add_ak4jet_config(
-        configuration: Configuration,
-):
+def add_ak4jet_config(configuration: Configuration):
     """
     Selection requirements and corrections for AK4 jets.
 
@@ -1063,9 +1086,7 @@ def add_ak4jet_config(
     )
 
 
-def add_ak8jet_config(
-    configuration: Configuration,
-):
+def add_ak8jet_config(configuration: Configuration):
     """
     The documentation of the `correctionlib` files for the jet energy corrections and resolution smearings can be found here:
 
@@ -1118,9 +1139,13 @@ def add_ak8jet_config(
                     "2016postVFP": '"Summer19UL16_V7_MC"',
                     "2017": '"Summer19UL17_V5_MC"',
                     "2018": '"Summer19UL18_V5_MC"',
+                    "2022preEE": "Summer22_22Sep2023_V2_MC",
+                    "2022postEE": "Summer22EE_22Sep2023_V2_MC",
+                    "2023preBPix": "Summer23Prompt23_V2_MC",
+                    "2023postBPix": "Summer23BPixPrompt23_V3_MC",
                 }
             ),
-            "fatjet_jec_algo": '"AK4PFPuppi"',  # TODO normally "AK8PFPuppi" would be used -> change to AK4 naming to get merged uncertainty scheme?
+            "fatjet_jec_algo": '"AK8PFPuppi"',  # TODO normally "AK8PFPuppi" would be used -> change to AK4 naming to get merged uncertainty scheme?
         },
     )
 
@@ -1162,6 +1187,10 @@ def add_bjet_config(configuration: Configuration):
                     "2016postVFP": 2.4,
                     "2017": 2.5,
                     "2018": 2.5,
+                    **{
+                        _era: 2.5
+                        for _era in ERAS_RUN3
+                    },
                 }
             ),
         },
@@ -1346,13 +1375,23 @@ def build_config(
                     "2016postVFP": '"2016postVFP"',
                     "2017": '2017"',
                     "2018": '"2018"',
+                    **{
+                        _era: ""  # TODO does not exist yet for Run3 samples, include as soon as available
+                        for _era in ERAS_RUN3
+                    },
                 }
             ),
             "ele_es_variation": "nom",
             "ele_es_file": EraModifier(
                 {
-                    _era: f'"data/electron_energy_scale/{_era}_UL/EGM_ScaleUnc.json.gz"'
-                    for _era in ["2016preVFP", "2016postVFP", "2017", "2018"]
+                    **{
+                        _era: f'"data/electron_energy_scale/{_era}_UL/EGM_ScaleUnc.json.gz"'
+                        for _era in ERAS_RUN2
+                    },
+                    **{
+                        _era: ""  # TODO does not exist yet for Run3 samples, include as soon as available
+                        for _era in ERAS_RUN3
+                    },
                 }
             ),
         },
@@ -1368,6 +1407,10 @@ def build_config(
                     "2016postVFP": "",
                     "2017": "",
                     "2018": "payloads/particleNet/pNet_Xbb_SF_2018.json.gz",
+                    **{
+                        _era: ""  # TODO does not exist yet for Run3 samples, include as soon as available
+                        for _era in ERAS_RUN3
+                    },
                 }
             ),
             "pNetXbb_sf_variation": "nominal",

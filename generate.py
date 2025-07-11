@@ -25,7 +25,7 @@ def run(args):
         "nmssm_Ybb",
         "nmssm_Ytautau",
     ]
-    available_eras = ["2016preVFP", "2016postVFP", "2017", "2018"]
+    available_eras = ["2016preVFP", "2016postVFP", "2017", "2018", "2022preEE", "2022postEE", "2023preBPix", "2023postBPix"]
     available_scopes = ["et", "mt", "tt", "mm"]
 
     ## setup variables
