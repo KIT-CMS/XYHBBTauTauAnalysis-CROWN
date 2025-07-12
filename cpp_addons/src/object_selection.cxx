@@ -34,7 +34,6 @@ namespace xyh {
          * @param max_iso Maximum isolation value for selected electrons.
          * @param max_dxy Maximum impact parameter value (xy plane) for selected electrons.
          * @param max_dz Maximum impact parameter value (z direction) for selected electrons.
-         * @param id_wp The working point for the electron identification.
          * @return A new data frame with the selection mask column.
          */
         ROOT::RDF::RNode electron(
@@ -60,7 +59,7 @@ namespace xyh {
                 const ROOT::RVec<float> &iso,
                 const ROOT::RVec<float> &dxy,
                 const ROOT::RVec<float> &dz,
-                const ROOT::RVec<int> &id
+                const ROOT::RVec<bool> &id
             ) {
                 // debug output for selection criteria and electron observables
                 Logger::get("xyh::object_selection::electron")->debug("Create selection masks for electrons");

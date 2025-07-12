@@ -127,28 +127,28 @@ DiMuonVetoIDCut = Producer(
 )
 MuonEtaCut = Producer(
     name="MuonEtaCut",
-    call="physicsobject::CutAbsMax<float>({df}, {output}, {input}, {max_muon_eta})",
+    call="physicsobject::CutAbsMax<float>({df}, {output}, {input}, {loose_muon_max_abs_eta})",
     input=[nanoAOD.Muon_eta],
     output=[],
     scopes=GLOBAL_SCOPES,
 )
 MuonDxyCut = Producer(
     name="MuonDxyCut",
-    call="physicsobject::CutAbsMax<float>({df}, {output}, {input}, {max_muon_dxy})",
+    call="physicsobject::CutAbsMax<float>({df}, {output}, {input}, {loose_muon_max_abs_dxy})",
     input=[nanoAOD.Muon_dxy],
     output=[],
     scopes=GLOBAL_SCOPES,
 )
 MuonDzCut = Producer(
     name="MuonDzCut",
-    call="physicsobject::CutAbsMax<float>({df}, {output}, {input}, {max_muon_dz})",
+    call="physicsobject::CutAbsMax<float>({df}, {output}, {input}, {loose_muon_max_abs_dz})",
     input=[nanoAOD.Muon_dz],
     output=[],
     scopes=GLOBAL_SCOPES,
 )
 MuonIsoCut = Producer(
     name="MuonIsoCut",
-    call="physicsobject::CutMax<float>({df}, {output}, {input}, {muon_iso_cut})",
+    call="physicsobject::CutMax<float>({df}, {output}, {input}, {loose_muon_max_iso})",
     input=[nanoAOD.Muon_iso],
     output=[],
     scopes=GLOBAL_SCOPES,

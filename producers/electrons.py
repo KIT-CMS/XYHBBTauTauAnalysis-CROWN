@@ -9,13 +9,12 @@ from code_generation.producer import Producer, ProducerGroup
 from ..constants import ET_SCOPES, ELECTRON_SCOPES, SCOPES, GLOBAL_SCOPES
 
 
-
 #
 # ENERGY SCALE CORRECTIONS
 #
 
 
-# producer for corrections in embedding samples
+# corrections in embedding samples
 ElectronPtCorrectionEmbedding = Producer(
     name="ElectronPtCorrectionEmbedding",
     call='embedding::electron::PtCorrection({df}, correctionManager, {output}, {input}, "{embedding_electron_es_sf_file}", "{ele_ES_json_name}", "{ele_energyscale_barrel}", "{ele_energyscale_endcap}")',
@@ -27,7 +26,7 @@ ElectronPtCorrectionEmbedding = Producer(
     scopes=GLOBAL_SCOPES,
 )
 
-# producer for corrections in MC samples
+# corrections in MC samples
 ElectronPtCorrectionMC = Producer(
     name="ElectronPtCorrectionMC",
     call='physicsobject::electron::PtCorrectionMC({df}, correctionManager, {output}, {input}, {ele_es_file}, {ele_es_era}, "{ele_es_variation}")',
@@ -42,7 +41,7 @@ ElectronPtCorrectionMC = Producer(
     scopes=GLOBAL_SCOPES,
 )
 
-# producer for dummy corrections in data and for cases, in which corrections are already applied on NANOAOD level (just rename column)
+# dummy corrections in data and for cases in which corrections are already applied on NANOAOD level (just rename column)
 RenameElectronPt = Producer(
     name="RenameElectronPt",
     call="event::quantity::Rename<ROOT::RVec<float>>({df}, {output}, {input})",
@@ -53,11 +52,11 @@ RenameElectronPt = Producer(
 
 
 #
-# SELECTION
+# OBJECT SELECTION
 #
 
 
-# producer for loose electrons (mainly used to evaluate veto masks)
+# selection mask for loose electrons (mainly used to evaluate veto masks)
 BaseElectrons = Producer(
     name="BaseElectrons",
     call="xyh::object_selection::electron({df}, {output}, {input}, \"{loose_electron_id}\", {loose_electron_min_pt}, {loose_electron_max_abs_eta}, {loose_electron_max_abs_dxy}, {loose_electron_max_abs_dz}, {loose_electron_max_iso})",
@@ -72,7 +71,7 @@ BaseElectrons = Producer(
     scopes=GLOBAL_SCOPES,
 )
 
-# producer for tight electrons (final state tau candidates)
+# selection mask for tight electrons (final state tau candidates)
 GoodElectrons = Producer(
     name="GoodElectrons",
     call="xyh::object_selection::electron({df}, {output}, {input}, \"{tight_electron_id}\", {tight_electron_min_pt}, {tight_electron_max_abs_eta}, {tight_electron_max_abs_dxy}, {tight_electron_max_abs_dz}, {tight_electron_max_iso})",
@@ -149,6 +148,7 @@ NumberOfGoodElectrons = Producer(
 
 #
 # DI-ELECTRON VETO
+# TODO could be reworked
 #
 
 
@@ -196,7 +196,7 @@ ElectronIDCut = Producer(
 )
 ElectronIsoCut = Producer(
     name="ElectronIsoCut",
-    call="physicsobject::CutMax<float>({df}, {output}, {input}, {loose_electron_iso})",
+    call="physicsobject::CutMax<float>({df}, {output}, {input}, {loose_electron_max_iso})",
     input=[nanoAOD.Electron_iso],
     output=[],
     scopes=GLOBAL_SCOPES,
