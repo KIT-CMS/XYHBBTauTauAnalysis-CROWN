@@ -138,8 +138,7 @@ namespace xyh {
             const float &abs_max_eta,
             const float &max_iso,
             const float &max_dxy,
-            const float &max_dz,
-            const int &id_wp
+            const float &max_dz
         ) {
             auto select = [
                 min_pt, abs_max_eta, max_iso, max_dxy, max_dz, muon_id

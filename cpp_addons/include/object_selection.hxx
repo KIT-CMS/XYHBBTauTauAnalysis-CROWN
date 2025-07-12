@@ -43,8 +43,7 @@ ROOT::RDF::RNode muon(
     const float &abs_max_eta,
     const float &max_iso,
     const float &max_dxy,
-    const float &max_dz,
-    const int &id_wp
+    const float &max_dz
 );
 
 // function xyh::object_selection::tau

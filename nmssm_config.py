@@ -410,12 +410,12 @@ def add_muon_config(
     configuration.add_config_parameters(
         GLOBAL_SCOPES,
         {
-            "min_muon_pt": 10.0,
-            "max_muon_eta": 2.4,
-            "max_muon_dxy": 0.045,
-            "max_muon_dz": 0.2,
-            "muon_id": muon_id_loose,
-            "muon_iso_cut": 4.0,
+            "loose_muon_min_pt": 10.0,
+            "loose_muon_max_abs_eta": 2.4,
+            "loose_muon_max_abs_dxy": 0.045,
+            "loose_muon_max_abs_dz": 0.2,
+            "loose_muon_max_iso": 4.0,
+            "loose_muon_id": muon_id_loose,
         },
     )
 
@@ -423,10 +423,13 @@ def add_muon_config(
     configuration.add_config_parameters(
         MT_SCOPES,
         {
+            "tight_muon_min_pt": 20.0,
+            "tight_muon_max_abs_eta": 2.1,
+            "tight_muon_max_abs_dxy": 0.045,
+            "tight_muon_max_abs_dz": 0.2,
+            "tight_muon_max_iso": 4.0,
+            "tight_muon_id": muon_id_loose,
             "muon_index_in_pair": 0,
-            "min_muon_pt": 20.0,
-            "max_muon_eta": 2.1,
-            "muon_iso_cut": 4.0,
         },
     )
 
