@@ -514,24 +514,26 @@ def add_hadronic_tau_config(configuration: Configuration):
     configuration.add_config_parameters(
         SL_SCOPES,
         {
-            "min_tau_pt": 30.0,
-            "max_tau_eta": 2.3,
-            "max_tau_dz": 0.2,
-            "vsjet_tau_id_bit": 1,  # VVVLoose working point
-            "vsele_tau_id_bit": 2, # VVVLoose working point
-            "vsmu_tau_id_bit": 1,  # VLoose working point
+            "tight_tau_min_pt": 30.0,
+            "tight_tau_max_abs_eta": 2.3,
+            "tight_tau_max_abs_dz": 0.2,
+            "tight_tau_decay_modes": "0, 1, 10, 11",  # needs to be converted in a C++ vector in the code, so set it as string here
+            "tight_tau_id_vs_jet_wp": 1,              # VVVLoose working point, looser taus needed for tau misidentification estimate 
+            "tight_tau_id_vs_electron_wp": 2,         # VVVLoose working point, looser taus needed for tau misidentification estimate 
+            "tight_tau_id_vs_muon_wp": 1,             # VLoose working point, looser taus needed for tau misidentification estimate 
         },
     )
     # hadronic tau selection in fullhadronic channels
     configuration.add_config_parameters(
         FH_SCOPES,
         {
-            "min_tau_pt": 40.0,
-            "max_tau_eta": 2.1,
-            "max_tau_dz": 0.2,
-            "vsjet_tau_id_bit": 1,  # VVLoose working point
-            "vsele_tau_id_bit": 2, # VVLoose working point
-            "vsmu_tau_id_bit": 1,  # VLoose working point
+            "tight_tau_min_pt": 40.0,
+            "tight_tau_max_abs_eta": 2.1,
+            "tight_tau_max_abs_dz": 0.2,
+            "tight_tau_decay_modes": "0, 1, 10, 11",  # needs to be converted in a C++ vector in the code, so set it as string here
+            "tight_tau_id_vs_jet_wp": 1,              # VVVLoose working point, looser taus needed for tau misidentification estimate 
+            "tight_tau_id_vs_electron_wp": 2,         # VVVLoose working point, looser taus needed for tau misidentification estimate 
+            "tight_tau_id_vs_muon_wp": 1,             # VLoose working point, looser taus needed for tau misidentification estimate 
         },
     )
 
