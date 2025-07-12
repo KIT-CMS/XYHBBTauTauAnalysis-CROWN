@@ -50,7 +50,7 @@ namespace xyh {
             const float &abs_max_eta,
             const float &max_iso,
             const float &max_dxy,
-            const float &max_dz,
+            const float &max_dz
         ) {
             auto select = [
                 min_pt, abs_max_eta, max_iso, max_dxy, max_dz, electron_id
@@ -90,7 +90,7 @@ namespace xyh {
             };
 
             return df.Define(
-                outputname,
+                output_mask,
                 select,
                 {
                     electron_pt,
@@ -179,7 +179,7 @@ namespace xyh {
             };
 
             return df.Define(
-                outputname,
+                output_mask,
                 select,
                 {
                     muon_pt,
@@ -241,13 +241,13 @@ namespace xyh {
                 const ROOT::RVec<float> &eta,
                 const ROOT::RVec<float> &dz,
                 const ROOT::RVec<int> &decay_mode,
-                const ROOT::RVec<int> &id_vs_jet
+                const ROOT::RVec<int> &id_vs_jet,
                 const ROOT::RVec<int> &id_vs_electron,
-                const ROOT::RVec<int> &id_vs_muon,
+                const ROOT::RVec<int> &id_vs_muon
             ) {
                 // debug output for selection criteria and tau observables
                 Logger::get("xyh::object_selection::tau")->debug("Create selection masks for muons");
-                Logger::get("xyh::object_selection::tau")->debug("    min_pt {}, abs_max_eta {}, decay_modes {}, max_dz {}, id_vs_jet_wp {}, id_vs_electron_wp {}, id_vs_muon_wp {}", min_pt, abs_max_eta, decay_modes, max_dz, id_vs_jet_wp, id_vs_electron_wp, id_vs_muon_wp);
+                //Logger::get("xyh::object_selection::tau")->debug("    min_pt {}, abs_max_eta {}, decay_modes {}, max_dz {}, id_vs_jet_wp {}, id_vs_electron_wp {}, id_vs_muon_wp {}", min_pt, abs_max_eta, decay_modes, max_dz, id_vs_jet_wp, id_vs_electron_wp, id_vs_muon_wp);
                 Logger::get("xyh::object_selection::tau")->debug("    tau_id_vs_jet {}, tau_id_vs_electron {}, tau_id_vs_muon {}", tau_id_vs_jet, tau_id_vs_electron, tau_id_vs_muon);
                 Logger::get("xyh::object_selection::tau")->debug("    pt {}", pt);
                 Logger::get("xyh::object_selection::tau")->debug("    eta {}", eta);
@@ -264,7 +264,7 @@ namespace xyh {
                 }
 
                 // create the selection mask
-                mask = (
+                auto mask = (
                     (pt > min_pt)
                     && (abs(eta) < abs_max_eta)
                     && (abs(dz) < max_dz)
@@ -281,16 +281,16 @@ namespace xyh {
             };
 
             return df.Define(
-                outputname,
+                output_mask,
                 select,
                 {
                     tau_pt,
                     tau_eta,
                     tau_dz,
                     tau_decay_mode,
-                    tau_id_vs_jet
+                    tau_id_vs_jet,
                     tau_id_vs_electron,
-                    tau_id_vs_muon,
+                    tau_id_vs_muon
                 }
             );
         }
