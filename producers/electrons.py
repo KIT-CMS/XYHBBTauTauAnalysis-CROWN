@@ -187,13 +187,6 @@ ElectronDzCut = Producer(
     output=[],
     scopes=GLOBAL_SCOPES,
 )
-ElectronIDCut = Producer(
-    name="ElectronIDCut",
-    call='physicsobject::CutEqual<bool>({df}, {output}, \"{loose_electron_id}\", true)',
-    input=[],
-    output=[],
-    scopes=GLOBAL_SCOPES,
-)
 ElectronIsoCut = Producer(
     name="ElectronIsoCut",
     call="physicsobject::CutMax<float>({df}, {output}, {input}, {loose_electron_max_iso})",
@@ -212,7 +205,6 @@ DiElectronVetoElectrons = ProducerGroup(
         ElectronDxyCut,
         ElectronDzCut,
         ElectronIsoCut,
-        ElectronIDCut,
         DiElectronVetoPtCut,
         DiElectronVetoIDCut,
     ],
