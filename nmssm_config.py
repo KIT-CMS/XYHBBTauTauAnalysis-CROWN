@@ -226,12 +226,12 @@ def add_electron_config(
     configuration.add_config_parameters(
         GLOBAL_SCOPES,
         {
-            "min_ele_pt": 10.0,
-            "max_ele_eta": 2.5,
-            "max_ele_dxy": 0.045,
-            "max_ele_dz": 0.2,
-            "max_ele_iso": 4.0,
-            "ele_id": electron_id_loose,  # NanoAOD v9: Electron_mvaFall17V2noIso_WP90,
+            "loose_electron_min_pt": 10.0,
+            "loose_electron_max_abs_eta": 2.5,
+            "loose_electron_max_abs_dxy": 0.045,
+            "loose_electron_max_abs_dz": 0.2,
+            "loose_electron_max_iso": 4.0,
+            "loose_electron_id": electron_id_loose,  # NanoAOD v9: Electron_mvaFall17V2noIso_WP90,
         },
     )
 
@@ -239,10 +239,13 @@ def add_electron_config(
     configuration.add_config_parameters(
         ET_SCOPES,
         {
-            "electron_index_in_pair": 0,
-            "min_electron_pt": 25.0,
-            "max_electron_eta": 2.1,
-            "electron_iso_cut": 4.0,
+            "tight_electron_min_pt": 25.0,
+            "tight_electron_max_abs_eta": 2.1,
+            "tight_electron_max_abs_dxy": 0.045,
+            "tight_electron_max_abs_dz": 0.2,
+            "tight_electron_max_iso": 4.0,
+            "tight_electron_id": electron_id_loose,  # NanoAOD v9: Electron_mvaFall17V2noIso_WP90,
+            "electron_index_in_pair": 0,  # index of the electron in the dilepton pair
         },
     )
 

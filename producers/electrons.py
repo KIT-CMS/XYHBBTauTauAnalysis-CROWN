@@ -37,103 +37,67 @@ RenameElectronPt = Producer(
     output=[q.Electron_pt_corrected],
     scopes=["global"],
 )
-
-ElectronPtCut = Producer(
-    name="ElectronPtCut",
-    call="physicsobject::CutPt({df}, {input}, {output}, {min_ele_pt})",
-    input=[q.Electron_pt_corrected],
-    output=[],
+BaseElectrons = Producer(
+    name="BaseElectrons",
+    call="xyh::object_selection::electron({df}, {output}, {input}, \"{loose_electron_id}\", {loose_electron_min_pt}, {loose_electron_max_abs_eta}, {loose_electron_max_abs_dxy}, {loose_electron_max_abs_dz}, {loose_electron_max_iso})",
+    input=[
+        q.Electron_pt_corrected,
+        nanoAOD.Electron_eta,
+        nanoAOD.Electron_dxy,
+        nanoAOD.Electron_dz,
+        nanoAOD.Electron_iso,
+    ],
+    output=[q.base_electrons_mask],
     scopes=["global"],
 )
 ElectronEtaCut = Producer(
     name="ElectronEtaCut",
-    call="physicsobject::CutEta({df}, {input}, {output}, {max_ele_eta})",
+    call="physicsobject::CutEta({df}, {input}, {output}, {loose_electron_max_abs_eta})",
     input=[nanoAOD.Electron_eta],
     output=[],
     scopes=["global"],
 )
 ElectronDxyCut = Producer(
     name="ElectronDxyCut",
-    call="physicsobject::CutDxy({df}, {input}, {output}, {max_ele_dxy})",
+    call="physicsobject::CutDxy({df}, {input}, {output}, {loose_electron_max_abs_dxy})",
     input=[nanoAOD.Electron_dxy],
     output=[],
     scopes=["global"],
 )
 ElectronDzCut = Producer(
     name="ElectronDzCut",
-    call="physicsobject::CutDz({df}, {input}, {output}, {max_ele_dz})",
+    call="physicsobject::CutDz({df}, {input}, {output}, {loose_electron_max_abs_dz})",
     input=[nanoAOD.Electron_dz],
     output=[],
     scopes=["global"],
 )
 ElectronIDCut = Producer(
     name="ElectronIDCut",
-    call='physicsobject::electron::CutID({df}, {output}, "{ele_id}")',
+    call='physicsobject::electron::CutID({df}, {output}, "{loose_electron_id}")',
     input=[],
     output=[],
     scopes=["global"],
 )
 ElectronIsoCut = Producer(
     name="ElectronIsoCut",
-    call="physicsobject::electron::CutIsolation({df}, {output}, {input}, {max_ele_iso})",
+    call="physicsobject::electron::CutIsolation({df}, {output}, {input}, {loose_electron_iso})",
     input=[nanoAOD.Electron_iso],
     output=[],
     scopes=["global"],
 )
-BaseElectrons = ProducerGroup(
-    name="BaseElectrons",
-    call="physicsobject::CombineMasks({df}, {output}, {input})",
-    input=[],
-    output=[q.base_electrons_mask],
-    scopes=["global"],
-    subproducers=[
-        ElectronPtCut,
-        ElectronEtaCut,
-        ElectronDxyCut,
-        ElectronDzCut,
-        ElectronIDCut,
-        ElectronIsoCut,
-    ],
-)
-
-####################
-# Set of producers used for more specific selection of electrons in channels
-####################
-
-GoodElectronPtCut = Producer(
-    name="GoodElectronPtCut",
-    call="physicsobject::CutPt({df}, {input}, {output}, {min_electron_pt})",
-    input=[q.Electron_pt_corrected],
-    output=[],
-    scopes=["em", "et", "ee"],
-)
-GoodElectronEtaCut = Producer(
-    name="GoodElectronEtaCut",
-    call="physicsobject::CutEta({df}, {input}, {output}, {max_electron_eta})",
-    input=[nanoAOD.Electron_eta],
-    output=[],
-    scopes=["em", "et", "ee"],
-)
-GoodElectronIsoCut = Producer(
-    name="GoodElectronIsoCut",
-    call="physicsobject::electron::CutIsolation({df}, {output}, {input}, {electron_iso_cut})",
-    input=[nanoAOD.Electron_iso],
-    output=[],
-    scopes=["em", "et", "ee"],
-)
-GoodElectrons = ProducerGroup(
+GoodElectrons = Producer(
     name="GoodElectrons",
-    call="physicsobject::CombineMasks({df}, {output}, {input})",
-    input=[q.base_electrons_mask],
+    call="xyh::object_selection::electron({df}, {output}, {input}, \"{tight_electron_id}\",  \"{tight_electron_id}\", {tight_electron_min_pt}, {tight_electron_max_abs_eta}, {tight_electron_max_abs_dxy}, {tight_electron_max_abs_dz}, {tight_electron_max_iso})",
+    input=[
+        q.Electron_pt_corrected,
+        nanoAOD.Electron_eta,
+        nanoAOD.Electron_dxy,
+        nanoAOD.Electron_dz,
+        nanoAOD.Electron_iso,
+    ],
     output=[q.good_electrons_mask],
     scopes=["em", "et", "ee"],
-    subproducers=[
-        GoodElectronPtCut,
-        GoodElectronEtaCut,
-        GoodElectronIsoCut,
-    ],
 )
-
 VetoElectrons = Producer(
     name="VetoElectrons",
     call="physicsobject::VetoCandInMask({df}, {output}, {input}, {electron_index_in_pair})",
