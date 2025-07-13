@@ -1006,20 +1006,20 @@ def build_config(
     configuration.add_config_parameters(
         "global",
         {
-            "min_fatjet_pt": 200.,
-            "max_fatjet_eta": 2.5,
-            "fatjet_id": 6,  # tight & tightLepVeto
-            "fatjet_reapplyJES": False,
-            "fatjet_jes_sources": '{""}',
-            "fatjet_jes_shift": 0,
-            "fatjet_jer_shift": '"nom"',  # or '"up"', '"down"'
-            "fatjet_jec_file": EraModifier(  # TODO use AK4 file for fatjets because it either was is just copied and the fatjet file has no merged uncertainty scheme?
+            "ak8jet_min_pt": 200.,
+            "ak8jet_max_abs_eta": 2.5,
+            "ak8jet_id_wp": 6,  # tight & tightLepVeto
+            "ak8jet_reapplyJES": False,
+            "ak8jet_jes_sources": '{""}',
+            "ak8jet_jes_shift": 0,
+            "ak8jet_jer_shift": '"nom"',  # or '"up"', '"down"'
+            "ak8jet_jec_file": EraModifier(  # TODO use AK4 file for fatjets because it either was is just copied and the fatjet file has no merged uncertainty scheme?
                 {
                     _era: f'"data/jsonpog-integration/POG/JME/{_era}_UL/fatJet_jerc.json.gz"'
                     for _era in ERAS
                 }
             ),
-            "fatjet_jer_tag": EraModifier(
+            "ak8jet_jer_tag": EraModifier(
                 {
                     "2016preVFP": '"Summer20UL16APV_JRV3_MC"',
                     "2016postVFP": '"Summer20UL16_JRV3_MC"',
@@ -1027,8 +1027,8 @@ def build_config(
                     "2018": '"Summer19UL18_JRV2_MC"',
                 }
             ),
-            "fatjet_jes_tag_data": '""',
-            "fatjet_jes_tag": EraModifier(
+            "ak8jet_jes_tag_data": '""',
+            "ak8jet_jes_tag": EraModifier(
                 {
                     "2016preVFP": '"Summer19UL16APV_V7_MC"',
                     "2016postVFP": '"Summer19UL16_V7_MC"',
@@ -1036,7 +1036,7 @@ def build_config(
                     "2018": '"Summer19UL18_V5_MC"',
                 }
             ),
-            "fatjet_jec_algo": '"AK8PFPuppi"',  # TODO normally "AK8PFPuppi" would be used -> change to AK4 naming to get merged uncertainty scheme?
+            "ak8jet_jec_algo": '"AK8PFPuppi"',  # TODO normally "AK8PFPuppi" would be used -> change to AK4 naming to get merged uncertainty scheme?
         },
     )
 

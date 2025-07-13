@@ -1,5 +1,5 @@
 """
-Producers for jet energy scale and resolution corrections, object selections, overlap vetoes, and quantities to be stored.
+Producers for AK4 jet energy scale and resolution corrections, object selections, overlap vetoes, and quantities to be stored.
 """
 
 from ..quantities import output as q
@@ -40,7 +40,7 @@ JetEnergyCorrection_data, JetEnergyCorrection, RenameJetsData = jerc_producer_fa
 
 
 #
-# JET SELECTION
+# AK4 JET SELECTION
 #
 
 

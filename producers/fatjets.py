@@ -1,9 +1,20 @@
+"""
+Producers for AK8 jet energy scale and resolution corrections, object selections, overlap vetoes, and quantities to be stored.
+"""
+
+
+
 from ..quantities import output as q
 from ..quantities import nanoAOD as nanoAOD
 from code_generation.producer import Producer, ProducerGroup
 
 from ._helpers import jerc_producer_factory
 from ..constants import GLOBAL_SCOPES
+
+
+#
+# JET ENERGY SCALE AND RESOLUTION CORRECTIONS
+#
 
 
 # create jet energy correction producers for AK8 jets
@@ -27,46 +38,39 @@ FatJetEnergyCorrection_data, FatJetEnergyCorrection, RenameFatJetsData = jerc_pr
     },
     scopes=GLOBAL_SCOPES,
     producer_prefix="FatJet",
-    config_parameter_prefix="fatjet",
+    config_parameter_prefix="ak8jet",
 )
 
-FatJetPtCut = Producer(
-    name="FatJetPtCut",
-    call="physicsobject::CutMin<float>({df}, {output}, {input}, {min_fatjet_pt})",
-    input=[q.FatJet_pt_corrected],
-    output=[],
-    scopes=["global"],
-)
-FatJetEtaCut = Producer(
-    name="FatJetEtaCut",
-    call="physicsobject::CutAbsMax<float>({df}, {output}, {input}, {max_fatjet_eta})",
-    input=[nanoAOD.FatJet_eta],
-    output=[],
-    scopes=["global"],
-)
-FatJetIDCut = Producer(
-    name="FatJetIDCut",
-    call="physicsobject::CutMin<int>({df}, {output}, {input}, {fatjet_id})",
-    input=[nanoAOD.FatJet_ID],
-    output=[q.fatjet_id_mask],
-    scopes=["global"],
-)
-GoodFatJets = ProducerGroup(
-    name="GoodFatJets",
-    call='physicsobject::CombineMasks({df}, {output}, {input}, "all_of")',
-    input=[],
+
+#
+# AK8 JET SELECTION
+#
+
+
+# jet selection not applying the pileup ID (for PUPPI jets)
+GoodFatJetsWithoutPUID = Producer(
+    name="GoodFatJetsWithPUID",
+    call="xyh::object_selection::jet({df}, {output}, {input}, {ak8jet_min_pt}, {ak8jet_max_abs_eta}, {ak8jet_id_wp})",
+    input=[
+        q.FatJet_pt_corrected,
+        nanoAOD.FatJet_eta,
+        nanoAOD.FatJet_ID,
+    ],
     output=[q.good_fatjets_mask],
-    scopes=["global"],
-    subproducers=[FatJetPtCut, FatJetEtaCut, FatJetIDCut],
+    scopes=GLOBAL_SCOPES,
 )
 
-####################
-# Set of producers to apply a veto of fatjets overlapping with ditaupair candidates and ordering fatjets by their pt
-# 1. check all fatjets vs the two lepton candidates, if they are not within deltaR = 0.5, keep them --> mask
-# 2. Combine mask with good_fatjets_mask
-# 3. Generate FatJetCollection, an RVec containing all indices of good FatJets in pt order
-# 4. generate fatjet quantity outputs
-####################
+# use the selection with pileup ID as default 
+GoodFatJets = GoodFatJetsWithoutPUID
+
+
+#
+# OVERLAP VETOES
+# TODO could be simplified by designing a generic function
+#
+
+
+# check whether an AK8 jet is overlapping with the tight lepton candidates from resolved selection
 VetoOverlappingFatJets = Producer(
     name="VetoOverlappingFatJets",
     call="physicsobject::jet::VetoOverlappingJets({df}, {output}, {input}, {deltaR_fatjet_veto})",
@@ -74,6 +78,8 @@ VetoOverlappingFatJets = Producer(
     output=[q.fatjet_overlap_veto_mask],
     scopes=["mt", "et", "tt", "em", "mm", "ee"],
 )
+
+# check whether an AK8 jet is overlapping with the tight lepton candidates from boosted selection
 VetoOverlappingFatJets_boosted = Producer(
     name="VetoOverlappingFatJets_boosted",
     call="physicsobject::jet::VetoOverlappingJets({df}, {output}, {input}, {deltaR_fatjet_veto})",
@@ -82,6 +88,7 @@ VetoOverlappingFatJets_boosted = Producer(
     scopes=["mt", "et", "tt", "em", "mm", "ee"],
 )
 
+# create a mask that includes selected AK8 jets that do not overlap with the lepton candidates from the resolved selection
 GoodFatJetsWithVeto = ProducerGroup(
     name="GoodJetsWithVeto",
     call='physicsobject::CombineMasks({df}, {output}, {input}, "all_of")',
@@ -90,6 +97,8 @@ GoodFatJetsWithVeto = ProducerGroup(
     scopes=["mt", "et", "tt", "em", "mm", "ee"],
     subproducers=[VetoOverlappingFatJets],
 )
+
+# create a mask that includes selected AK8 jets that do not overlap with the lepton candidates from the boosted selection
 GoodFatJetsWithVeto_boosted = ProducerGroup(
     name="GoodJetsWithVeto_boosted",
     call='physicsobject::CombineMasks({df}, {output}, {input}, "all_of")',
@@ -99,6 +108,7 @@ GoodFatJetsWithVeto_boosted = ProducerGroup(
     subproducers=[VetoOverlappingFatJets_boosted],
 )
 
+# final AK8 jet collection as list of indices of selected jets, ordered by pt for the resolved selection
 FatJetCollection = ProducerGroup(
     name="FatJetCollection",
     call="physicsobject::OrderByPt({df}, {output}, {input})",
@@ -107,6 +117,8 @@ FatJetCollection = ProducerGroup(
     scopes=["mt", "et", "tt", "em", "mm", "ee"],
     subproducers=[GoodFatJetsWithVeto],
 )
+
+# final AK8 jet collection as list of indices of selected jets, ordered by pt for the boosted selection
 FatJetCollection_boosted = ProducerGroup(
     name="FatJetCollection_boosted",
     call="physicsobject::OrderByPt({df}, {output}, {input})",
@@ -115,6 +127,8 @@ FatJetCollection_boosted = ProducerGroup(
     scopes=["mt", "et", "tt", "em", "mm", "ee"],
     subproducers=[GoodFatJetsWithVeto_boosted],
 )
+
+# final AK8 jet collection as list of indices of selected jets without veto, ordered by pt for the boosted selection
 FatJetCollectionWithoutVeto = Producer(
     name="FatJetCollectionWithoutVeto",
     call="physicsobject::OrderByPt({df}, {output}, {input})",
@@ -123,10 +137,12 @@ FatJetCollectionWithoutVeto = Producer(
     scopes=["mt", "et", "tt", "em", "mm", "ee"],
 )
 
-##########################
-# Basic FatJet Quantities
-# n_fatjets, pt, eta, phi, b-tag value
-##########################
+
+#
+# JET QUANTITIES
+# TODO simplify this by designing a generic function
+#
+
 
 LVFatJet1 = Producer(
     name="LVFatJet1",
@@ -311,6 +327,10 @@ BasicFatJetQuantities = ProducerGroup(
         # fj_nsubjettiness_3over2_2,
     ],
 )
+
+#
+# AK8 JET-B JET MATCHING
+#
 
 FindFatjetMatchingBjet = Producer(
     name="FindFatjetMatchingBjet",
