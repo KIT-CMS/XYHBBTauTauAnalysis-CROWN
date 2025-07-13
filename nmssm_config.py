@@ -923,10 +923,10 @@ def build_config(
     configuration.add_config_parameters(
         "global",
         {
-            "min_jet_pt": 30.0,
-            "max_jet_eta": 2.5,
-            "jet_id": 6,  # 0 == fail, 2 == pass(tight) & fail(tightLepVeto), 6 == pass(tight) & pass(tightLepVeto)
-            "jet_puid": EraModifier(
+            "ak4jet_min_pt": 30.0,
+            "ak4jet_max_abs_eta": 2.5,
+            "ak4jet_id_wp": 6,  # 0 == fail, 2 == pass(tight) & fail(tightLepVeto), 6 == pass(tight) & pass(tightLepVeto)
+            "ak4jet_puid": EraModifier(
                 {
                     "2016preVFP": 1,  # 0 == fail, 1 == pass(loose), 3 == pass(loose,medium), 7 == pass(loose,medium,tight)
                     "2016postVFP": 1,  # 0 == fail, 1 == pass(loose), 3 == pass(loose,medium), 7 == pass(loose,medium,tight)
@@ -934,7 +934,7 @@ def build_config(
                     "2018": 4,  # 0 == fail, 4 == pass(loose), 6 == pass(loose,medium), 7 == pass(loose,medium,tight)
                 }
             ),
-            "jet_puid_max_pt": 50.0,  # recommended to apply puID only for jets below 50 GeV
+            "ak4jet_puid_max_pt": 50.0,  # recommended to apply puID only for jets below 50 GeV
         },
     )
 
@@ -1017,8 +1017,8 @@ def build_config(
     configuration.add_config_parameters(
         "global",
         {
-            "min_bjet_pt": 20.,
-            "max_bjet_eta": EraModifier(
+            "bjet_min_pt": 20.,
+            "bjet_max_abs_eta": EraModifier(
                 {
                     "2016preVFP": 2.4,
                     "2016postVFP": 2.4,
@@ -1056,7 +1056,7 @@ def build_config(
     configuration.add_config_parameters(
         GLOBAL_SCOPES + HAD_TAU_SCOPES,
         {
-            "btag_cut": EraModifier(  # medium
+            "bjet_min_deepjet_score": EraModifier(  # medium
                 {
                     "2016preVFP": 0.2598,
                     "2016postVFPP": 0.2489,

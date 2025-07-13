@@ -1,8 +1,9 @@
-#ifndef GUARDOBJECTSELECTION_H
-#define GUARDOBJECTSELECTION_H
+#ifndef GUARDOBJECTSELECTION_CXX
+#define GUARDOBJECTSELECTION_CXX
 
 
 #include "../../../../include/utility/Logger.hxx"
+#include "../include/object_selection.hxx"
 #include "ROOT/RDataFrame.hxx"
 #include "ROOT/RVec.hxx"
 #include <vector>
@@ -11,7 +12,7 @@
 // namespace xyh
 namespace xyh {
 
-    // namespace xyh::object_selection
+    // namespace object_selection
     namespace object_selection {
 
         /**
@@ -239,12 +240,12 @@ namespace xyh {
                 const ROOT::RVec<float> &eta,
                 const ROOT::RVec<float> &dz,
                 const ROOT::RVec<int> &decay_mode,
-                const ROOT::RVec<int> &id_vs_jet,
-                const ROOT::RVec<int> &id_vs_electron,
-                const ROOT::RVec<int> &id_vs_muon
+                const ROOT::RVec<UChar_t> &id_vs_jet,
+                const ROOT::RVec<UChar_t> &id_vs_electron,
+                const ROOT::RVec<UChar_t> &id_vs_muon
             ) {
                 // debug output for selection criteria and tau observables
-                Logger::get("xyh::object_selection::tau")->debug("Create selection masks for muons");
+                Logger::get("xyh::object_selection::tau")->debug("Create selection masks for hadronic taus");
                 //Logger::get("xyh::object_selection::tau")->debug("    min_pt {}, abs_max_eta {}, decay_modes {}, max_dz {}, id_vs_jet_wp {}, id_vs_electron_wp {}, id_vs_muon_wp {}", min_pt, abs_max_eta, decay_modes, max_dz, id_vs_jet_wp, id_vs_electron_wp, id_vs_muon_wp);
                 Logger::get("xyh::object_selection::tau")->debug("    tau_id_vs_jet {}, tau_id_vs_electron {}, tau_id_vs_muon {}", tau_id_vs_jet, tau_id_vs_electron, tau_id_vs_muon);
                 Logger::get("xyh::object_selection::tau")->debug("    pt {}", pt);
@@ -293,9 +294,149 @@ namespace xyh {
             );
         }
 
-    } // end namespace xyh::object_selection
+        /**
+         * @brief Create a selection mask for jets, based on various criteria, without pileup ID.
+         * 
+         * The selection criteria include kinematic and identification requirements.
+         * The function creates a new column with a boolean value for each jet, indicating whether it passes the selection criteria.
+         * The identification variable for the jets is a bitmask.
+         * Bit 0 corresponds to a jet that passes the loose jet ID.
+         * Bit 1 corresponds to a jet that passes the tight jet ID.
+         * Bit 2 corresponds to a jet that passes the tight jet ID and the tight lepton veto.
+         * 
+         * @param df The input data frame.
+         * @param output_mask The output mask column.
+         * @param jet_pt The tranverse momentum column.
+         * @param jet_eta The pseudorapidity column.
+         * @param jet_id The jet identification bitmask column.
+         * @param min_pt The minimum transverse momentum for selected jets.
+         * @param abs_max_eta The maximum absolute pseudorapidity for selected jets.
+         * @param id_wp The working point for the jet identification.
+         * @return A new data frame with the selection mask column.
+         * 
+         * @note The function does not apply pileup ID, as it is not present for PFPuppi jets.
+ *       *       If it should be applied, use the overloaded function with pileup ID.
+         */
+        ROOT::RDF::RNode jet(
+            ROOT::RDF::RNode df,
+            const std::string &output_mask,
+            const std::string &jet_pt,
+            const std::string &jet_eta,
+            const std::string &jet_id,
+            const float &min_pt,
+            const float &abs_max_eta,
+            const int &id_wp
+        ) {
+            auto select = [
+                min_pt, abs_max_eta, id_wp
+            ] (
+                const ROOT::RVec<float> &pt,
+                const ROOT::RVec<float> &eta,
+                const ROOT::RVec<int> &id
+            ) {
+                // debug output for selection criteria and jet observables
+                Logger::get("xyh::object_selection::jet")->debug("Create selection masks for jets");
+                Logger::get("xyh::object_selection::jet")->debug("    min_pt {}, abs_max_eta {}, id_wp {}", min_pt, abs_max_eta, id_wp);
+                Logger::get("xyh::object_selection::jet")->debug("    pt {}", pt);
+                Logger::get("xyh::object_selection::jet")->debug("    eta {}", eta);
+                Logger::get("xyh::object_selection::jet")->debug("    id {}", id);
+
+                // create the selection mask
+                auto mask = xyh::object_selection::select_jet(pt, eta, id, min_pt, abs_max_eta, id_wp);
+
+                // debug output for the final selection mask
+                Logger::get("xyh::object_selection::jet")->debug("    selection mask {}", mask);
+
+                return mask;
+            };
+
+            return df.Define(
+                output_mask,
+                select,
+                {
+                    jet_pt,
+                    jet_eta,
+                    jet_id
+                }
+            );
+        }
+
+        /**
+         * @brief Create a selection mask for jets, based on various criteria, with pileup ID.
+         * 
+         * The selection criteria include kinematic and identification requirements.
+         * The function creates a new column with a boolean value for each jet, indicating whether it passes the selection criteria.
+         * The identification variable for the jets is a bitmask.
+         * Bit 0 corresponds to a jet that passes the loose jet ID.
+         * Bit 1 corresponds to a jet that passes the tight jet ID.
+         * Bit 2 corresponds to a jet that passes the tight jet ID and the tight lepton veto.
+         * 
+         * @param df The input data frame.
+         * @param output_mask The output mask column.
+         * @param jet_pt The tranverse momentum column.
+         * @param jet_eta The pseudorapidity column.
+         * @param jet_id The jet identification bitmask column.
+         * @param min_pt The minimum transverse momentum for selected jets.
+         * @param abs_max_eta The maximum absolute pseudorapidity for selected jets.
+         * @param id_wp The working point for the jet identification.
+         * @return A new data frame with the selection mask column.
+         * 
+         * @note The function applies pileup ID.
+         *       If it should not be applied, use the overloaded function with pileup ID.
+         */
+        ROOT::RDF::RNode jet(
+            ROOT::RDF::RNode df,
+            const std::string &output_mask,
+            const std::string &jet_pt,
+            const std::string &jet_eta,
+            const std::string &jet_id,
+            const std::string &jet_puid,
+            const float &min_pt,
+            const float &abs_max_eta,
+            const int &id_wp,
+            const int &puid_wp,
+            const float &puid_max_pt
+        ) {
+            auto select = [
+                min_pt, abs_max_eta, id_wp, puid_wp, puid_max_pt
+            ] (
+                const ROOT::RVec<float> &pt,
+                const ROOT::RVec<float> &eta,
+                const ROOT::RVec<int> &id,
+                const ROOT::RVec<int> &puid
+            ) {
+                // debug output for selection criteria and jet observables
+                Logger::get("xyh::object_selection::jet")->debug("Create selection masks for jets");
+                Logger::get("xyh::object_selection::jet")->debug("    min_pt {}, abs_max_eta {}, id_wp {}, puid_wp {}, puid_max_pt {}", min_pt, abs_max_eta, id_wp, puid_wp, puid_max_pt);
+                Logger::get("xyh::object_selection::jet")->debug("    pt {}", pt);
+                Logger::get("xyh::object_selection::jet")->debug("    eta {}", eta);
+                Logger::get("xyh::object_selection::jet")->debug("    id {}", id);
+                Logger::get("xyh::object_selection::jet")->debug("    puid {}", puid);
+
+                // create the selection mask
+                auto mask = xyh::object_selection::select_jet(pt, eta, id, puid, min_pt, abs_max_eta, id_wp, puid_wp, puid_max_pt);
+
+                // debug output for the final selection mask
+                Logger::get("xyh::object_selection::jet")->debug("    selection mask {}", mask);
+
+                return mask;
+            };
+
+            return df.Define(
+                output_mask,
+                select,
+                {
+                    jet_pt,
+                    jet_eta,
+                    jet_id,
+                    jet_puid
+                }
+            );
+        }
+
+    } // end namespace object_selection
 
 } // end namespace xyh
 
 
-#endif  // end GUARDOBJECTSELECTION_H
+#endif  // end GUARDOBJECTSELECTION_CXX
