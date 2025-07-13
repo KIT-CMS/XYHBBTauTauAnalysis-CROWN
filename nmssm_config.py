@@ -301,8 +301,22 @@ def add_electron_config(
             "loose_electron_max_abs_eta": 2.5,
             "loose_electron_max_abs_dxy": 0.045,
             "loose_electron_max_abs_dz": 0.2,
-            "loose_electron_max_iso": 4.0,
+            "loose_electron_max_iso": 0.3,
             "loose_electron_id": electron_id_loose,  # NanoAOD v9: Electron_mvaFall17V2noIso_WP90,
+        },
+    )
+
+    # loose electrons and spatial separation for the di-electron veto
+    configuration.add_config_parameters(
+        GLOBAL_SCOPES,
+        {
+            "diele_electron_min_pt": 15.0,
+            "diele_electron_max_abs_eta": 2.5,
+            "diele_electron_max_abs_dxy": 0.045,
+            "diele_electron_max_abs_dz": 0.2,
+            "diele_electron_max_iso": 0.3,
+            "diele_electron_id_wp": 1,  # cut-based electron ID, 'veto' working point
+            "diele_electron_min_delta_r": 0.15,  # cut-based electron ID, 'veto' working point
         },
     )
 
