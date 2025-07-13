@@ -35,7 +35,7 @@ JetEnergyCorrection_data, JetEnergyCorrection, RenameJetsData = jerc_producer_fa
     },
     scopes=GLOBAL_SCOPES,
     producer_prefix="Jet",
-    config_parameter_prefix="jet",
+    config_parameter_prefix="ak4jet",
 )
 
 

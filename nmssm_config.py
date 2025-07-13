@@ -943,17 +943,17 @@ def build_config(
     configuration.add_config_parameters(
         "global",
         {
-            "jet_reapplyJES": False,
-            "jet_jes_sources": '{""}',
-            "jet_jes_shift": 0,
-            "jet_jer_shift": '"nom"',  # or '"up"', '"down"'
-            "jet_jec_file": EraModifier(
+            "ak4jet_reapplyJES": False,
+            "ak4jet_jes_sources": '{""}',
+            "ak4jet_jes_shift": 0,
+            "ak4jet_jer_shift": '"nom"',  # or '"up"', '"down"'
+            "ak4jet_jec_file": EraModifier(
                 {
                     _era: f'"data/jsonpog-integration/POG/JME/{_era}_UL/jet_jerc.json.gz"'
                     for _era in ERAS
                 }
             ),
-            "jet_jer_tag": EraModifier(
+            "ak4jet_jer_tag": EraModifier(
                 {
                     "2016preVFP": '"Summer20UL16APV_JRV3_MC"',
                     "2016postVFP": '"Summer20UL16_JRV3_MC"',
@@ -961,8 +961,8 @@ def build_config(
                     "2018": '"Summer19UL18_JRV2_MC"',
                 }
             ),
-            "jet_jes_tag_data": '""',
-            "jet_jes_tag": EraModifier(
+            "ak4jet_jes_tag_data": '""',
+            "ak4jet_jes_tag": EraModifier(
                 {
                     "2016preVFP": '"Summer19UL16APV_V7_MC"',
                     "2016postVFP": '"Summer19UL16_V7_MC"',
@@ -970,7 +970,7 @@ def build_config(
                     "2018": '"Summer19UL18_V5_MC"',
                 }
             ),
-            "jet_jec_algo": '"AK4PFchs"',
+            "ak4jet_jec_algo": '"AK4PFchs"',
         },
     )
 
