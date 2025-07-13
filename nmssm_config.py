@@ -428,8 +428,21 @@ def add_muon_config(
             "loose_muon_max_abs_eta": 2.4,
             "loose_muon_max_abs_dxy": 0.045,
             "loose_muon_max_abs_dz": 0.2,
-            "loose_muon_max_iso": 4.0,
+            "loose_muon_max_iso": 0.3,
             "loose_muon_id": muon_id_loose,
+        },
+    )
+
+    # loose electrons and spatial separation for the di-muon veto
+    configuration.add_config_parameters(
+        GLOBAL_SCOPES,
+        {
+            "dimu_muon_min_pt": 15.0,
+            "dimu_muon_max_abs_eta": 2.4,
+            "dimu_muon_max_abs_dxy": 0.045,
+            "dimu_muon_max_abs_dz": 0.2,
+            "dimu_muon_max_iso": 0.3,
+            "dimu_muon_min_delta_r": 0.15,
         },
     )
 
