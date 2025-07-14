@@ -7,8 +7,26 @@ def add_diTauTriggerSetup(configuration: Configuration):
     configuration.add_config_parameters(
         ["mt", "mm"],
         {
-            "singlemuon_trigger": EraModifier(
+            "single_mu_trigger": EraModifier(
                 {
+                    **{
+                        _era: [
+                            # trigger:            HLT_IsoMu24
+                            # final filter:       hltL3crIsoL1sSingleMu22L1f0L2f10QL3f24QL3trkIsoFiltered0p07 OR hltL3crIsoL1sSingleMu22L1f0L2f10QL3f24QL3trkIsoFiltered0p08 OR hltL3crIsoL1sSingleMu22L1f0L2f10QL3f24QL3trkIsoFiltered
+                            # filter bit:         2
+                            # documentation:      https://twiki.cern.ch/twiki/bin/view/CMS/MuonHLT2022
+                            {
+                                "flagname": "trg_single_mu24",
+                                "hlt_path": "HLT_IsoMu24",
+                                "ptcut": 26,
+                                "etacut": 2.4,
+                                "filterbit": 2,
+                                "trigger_particle_id": 13,
+                                "max_deltaR_triggermatch": 0.4,
+                            },
+                        ]
+                        for _era in ["2022preEE", "2022postEE", "2023preBPix", "2023postBPix"]
+                    },
                     "2018": [
                         {
                             "flagname": "trg_single_mu24",
@@ -210,8 +228,33 @@ def add_diTauTriggerSetup(configuration: Configuration):
     configuration.add_config_parameters(
         ["mt"],
         {
-            "mutau_cross_trigger": EraModifier(
+            "double_mutau_trigger": EraModifier(
                 {
+                    **{
+                        _era: [
+                            # trigger:            HLT_IsoMu20_eta2p1_LooseDeepTauPFTauHPS27_eta2p1_CrossL1
+                            # final filter muon:  hltL3crIsoBigORMu18erTauXXer2p1L1f0L2f10QL3f20QL3trkIsoFiltered
+                            # filter bit muon:    3
+                            # final filter tau:   hltHpsOverlapFilterIsoMu20LooseMuTauWPDeepTauPFTau27L1Seeded
+                            # filter bit tau:     9
+                            # documentation:      https://twiki.cern.ch/twiki/bin/view/CMS/TauTrigger#Trigger_Table_for_2022
+                            #                     https://twiki.cern.ch/twiki/bin/view/CMS/TauTrigger#Trigger_Table_for_2023
+                            {
+                                "flagname": "trg_mu20tau27",
+                                "hlt_path": "HLT_IsoMu20_eta2p1_LooseDeepTauPFTauHPS27_eta2p1_CrossL1",
+                                "p1_min_pt": 21,
+                                "p1_max_abs_eta": 2.1,
+                                "p1_particle_id": 13,
+                                "p1_filter_bit": 3,
+                                "p2_min_pt": 29,
+                                "p2_max_abs_eta": 2.1,
+                                "p2_particle_id": 15,
+                                "p2_filter_bit": 9,
+                                "match_max_delta_r": 0.4,
+                            }
+                        ]
+                        for _era in ["2022preEE", "2022postEE", "2023preBPix", "2023postBPix"]
+                    },
                     "2018": [
                         {
                             "flagname": "trg_cross_mu20tau27_hps",
