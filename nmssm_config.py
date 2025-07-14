@@ -1544,6 +1544,10 @@ def build_config(
                     "2016postVFP": "payloads/electron_trigger/B2G-22-006_ElecTriggerSF_UL16postVFP.json.gz",
                     "2017": "payloads/electron_trigger/B2G-22-006_ElecTriggerSF_UL17.json.gz",
                     "2018": "payloads/electron_trigger/B2G-22-006_ElecTriggerSF_UL18.json.gz",
+                    **{
+                        _era: ""  # TODO does not exist yet for Run3 samples, include as soon as available
+                        for _era in ERAS_RUN3
+                    }
                 }
             ),
             "boosted_singleelectron_trigger_sf_mc": [
@@ -1576,6 +1580,10 @@ def build_config(
                     "2016postVFP": "",
                     "2017": "",
                     "2018": "payloads/fatjet_trigger/scale_factor__AK8PFJet400_TrimMass30__singlemuon.json",
+                    **{
+                        _era: ""  # TODO does not exist yet for Run3 samples, include as soon as available
+                        for _era in ERAS_RUN3
+                    }
                 }
             ),
             "fatjet_trigger_sf_name": "SF_AK8PFJet400_TrimMass30",
@@ -1830,7 +1838,8 @@ def build_config(
                     jets.GoodJetsRun2,
                     jets.GoodJetsRun3,
                 ],
-            )
+                samples=available_sample_types,
+            ),
         )
 
     configuration.add_modification_rule(

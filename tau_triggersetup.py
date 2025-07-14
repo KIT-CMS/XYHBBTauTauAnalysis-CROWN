@@ -1,6 +1,8 @@
 from code_generation.configuration import Configuration
 from code_generation.modifiers import EraModifier
 
+from .constants import ERAS_RUN3
+
 
 def add_diTauTriggerSetup(configuration: Configuration):
     ## MT, MM scope trigger setup
@@ -174,6 +176,11 @@ def add_diTauTriggerSetup(configuration: Configuration):
             ),
             "boosted_singlemuon_trigger": EraModifier(
                 {
+                    # TODO placeholder for Run3 and 2016-2017 eras, add these triggers also there
+                    **{
+                        _era: []
+                        for _era in ERAS_RUN3 + ["2016preVFP", "2016postVFP", "2017"]
+                    },
                     "2018": [
                         {
                             "flagname": "trg_single_mu24_boosted",
@@ -339,6 +346,11 @@ def add_diTauTriggerSetup(configuration: Configuration):
         {
             "singleelectron_trigger": EraModifier(
                 {
+                    # TODO placeholder for Run3 eras, add these triggers also there
+                    **{
+                        _era: []
+                        for _era in ERAS_RUN3
+                    },
                     "2018": [
                         # {
                         #     "flagname": "trg_single_ele27",
@@ -423,6 +435,11 @@ def add_diTauTriggerSetup(configuration: Configuration):
             ),
             "boosted_singleelectron_trigger": EraModifier(
                 {
+                    # TODO placeholders, add triggers for 2018
+                    **{
+                        _era: []
+                        for _era in ERAS_RUN3
+                    },
                     "2018": [
                         # {
                         #     "flagname": "trg_single_ele27_boosted",
@@ -480,6 +497,11 @@ def add_diTauTriggerSetup(configuration: Configuration):
         {
             "eltau_cross_trigger": EraModifier(
                 {
+                    # TODO placeholder for Run3 eras, add these triggers also there
+                    **{
+                        _era: []
+                        for _era in ERAS_RUN3
+                    },
                     "2018": [
                         {
                             "flagname": "trg_cross_ele24tau30_hps",
@@ -617,6 +639,11 @@ def add_diTauTriggerSetup(configuration: Configuration):
         {
             "doubletau_trigger": EraModifier(
                 {
+                    # TODO placeholder for Run3 eras, add these triggers also there
+                    **{
+                        _era: []
+                        for _era in ERAS_RUN3
+                    },
                     "2018": [
                         {
                             "flagname": "trg_double_tau35_mediumiso_hps",
@@ -773,6 +800,11 @@ def add_diTauTriggerSetup(configuration: Configuration):
             ),
             "boosted_ditau_trigger": EraModifier(
                 {
+                    # TODO placeholder for Run3 eras, add these triggers also there
+                    **{
+                        _era: []
+                        for _era in ERAS_RUN3
+                    },
                     "2018": [
                         # {
                         #     "flagname": "trg_ak8pfht750_trimmass50",
