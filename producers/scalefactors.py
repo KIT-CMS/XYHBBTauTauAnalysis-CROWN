@@ -605,9 +605,9 @@ SingleMuTriggerSF = ExtendedVectorProducer(
         q.pt_1,
         q.eta_1,
     ],
-    output="mt_trigger_leg1_flagname",
+    output="m_trigger_flagname",
     scope=["mt"],
-    vec_config="double_mutau_trigger_leg1_sf",
+    vec_config="single_mu_trigger_sf",
 )
 
 
@@ -629,15 +629,15 @@ DoubleMuTauTriggerLeg1SF = ExtendedVectorProducer(
     vec_config="double_mutau_trigger_leg1_sf",
 )
 
-# tau leg scale factor
+# tau leg scale factor (for the Medium DeepTau WP)
 DoubleMuTauTriggerLeg2SF = ExtendedVectorProducer(
     name="GenerateMuTauCrossTriggerLeg2SF",
-    call='physicsobject::tau::scalefactor::Trigger({df}, correctionManager, {output}, {input}, "{tau_sf_file}", "tau_trigger", "{mt_trigger_leg2_sf_name}", {tau_id_vs_jet_wp}, "sf", {mt_trigger_leg2_variation})',
+    call='physicsobject::tau::scalefactor::Trigger({df}, correctionManager, {output}, {input}, "{tau_sf_file}", "tau_trigger", "{mt_trigger_leg2_sf_name}", "Medium", "sf", {mt_trigger_leg2_variation})',
     input=[
         q.pt_2,
         q.tau_decaymode_2,
     ],
-    output="flagname",
+    output="mt_trigger_leg2_flagname",
     scope=["mt"],
     vec_config="double_mutau_trigger_leg2_sf",
 )

@@ -31,7 +31,7 @@ from code_generation.modifiers import EraModifier, SampleModifier
 from code_generation.rules import AppendProducer, RemoveProducer, ReplaceProducer
 from code_generation.systematics import SystematicShift, SystematicShiftByQuantity
 
-from .constants import ERAS_RUN2, ERAS_RUN3, CORRECTIONLIB_CAMPAIGNS, ET_SCOPES, MT_SCOPES, SL_SCOPES, FH_SCOPES, HAD_TAU_SCOPES, GLOBAL_SCOPES
+from .constants import ERAS_RUN2, ERAS_RUN3, CORRECTIONLIB_CAMPAIGNS, ET_SCOPES, MT_SCOPES, SL_SCOPES, FH_SCOPES, HAD_TAU_SCOPES, SCOPES, GLOBAL_SCOPES
 
 
 def add_noise_filters_config(configuration: Configuration):
@@ -498,7 +498,7 @@ def add_muon_config(configuration: Configuration):
             "tight_muon_max_abs_dxy": 0.045,
             "tight_muon_max_abs_dz": 0.2,
             "tight_muon_max_iso": 4.0,
-            "loose_muon_id": "Muon_mediumId",
+            "tight_muon_id": "Muon_mediumId",
             "muon_index_in_pair": 0,
         },
     )
@@ -520,7 +520,7 @@ def add_muon_config(configuration: Configuration):
                        for _era in ERAS_RUN2
                     },
                     **{
-                        _era: ""  # reconstruction corrections not recommended for 2022+2023
+                        _era: "DOES_NOT_EXIST"  # reconstruction corrections not recommended for 2022+2023
                         for _era in ERAS_RUN3
                     }
                 }
@@ -539,14 +539,14 @@ def add_muon_config(configuration: Configuration):
         {
             "mc_muon_sf_file": EraModifier(
                 {
-                    "2016preVFP": "",  # TODO to be added when available
-                    "2016postVFP": "",  # TODO to be added when available
-                    "2017": "",  # TODO to be added when available
+                    "2016preVFP": "DOES_NOT_EXIST",  # TODO to be added when available
+                    "2016postVFP": "DOES_NOT_EXIST",  # TODO to be added when available
+                    "2017": "DOES_NOT_EXIST",  # TODO to be added when available
                     "2018": "data/embedding/muon_2018UL.json.gz",
-                    "2022preEE": "",  # TODO to be added when available
-                    "2022postEE": "",  # TODO to be added when available
-                    "2023preBPix": "",  # TODO to be added when available
-                    "2023postBPix": "",  # TODO to be added when available
+                    "2022preEE": "DOES_NOT_EXIST",  # TODO to be added when available
+                    "2022postEE": "DOES_NOT_EXIST",  # TODO to be added when available
+                    "2023preBPix": "DOES_NOT_EXIST",  # TODO to be added when available
+                    "2023postBPix": "DOES_NOT_EXIST",  # TODO to be added when available
                 }
             ),
             "mc_muon_id_sf": "ID_pt_eta_bins",
@@ -902,7 +902,7 @@ def add_boosted_hadronic_tau_config(configuration: Configuration):
                     "2017": "data/jsonpog-integration/POG/TAU/2017_ReReco/tau.json.gz",
                     "2018": "data/jsonpog-integration/POG/TAU/2018_ReReco/tau.json.gz",
                     **{
-                        _era: ""  # placeholder, as these corrections are not available for Run3
+                        _era: "DOES_NOT_EXIST"  # placeholder, as these corrections are not available for Run3
                         for _era in ERAS_RUN3
                     },
                 }
@@ -1081,7 +1081,7 @@ def add_ak4jet_config(configuration: Configuration):
                     "2017": 4,  # 0 == fail, 4 == pass(loose), 6 == pass(loose,medium), 7 == pass(loose,medium,tight)
                     "2018": 4,  # 0 == fail, 4 == pass(loose), 6 == pass(loose,medium), 7 == pass(loose,medium,tight)
                     **{
-                        _era: ""  # placeholder value as it does not exist for Run3 samples
+                        _era: 0  # placeholder value as it does not exist for Run3 samples
                         for _era in ERAS_RUN3
                     },
                 }
@@ -1158,7 +1158,7 @@ def add_ak4jet_config(configuration: Configuration):
 
     # lepton/tau-jet overlap removal
     configuration.add_config_parameters(
-        "global",
+        SCOPES,
         {
             "deltaR_jet_veto": 0.4,
         },
@@ -1230,9 +1230,9 @@ def add_ak8jet_config(configuration: Configuration):
 
     # lepton/tau-jet overlap removal
     configuration.add_config_parameters(
-        "global",
+        SCOPES,
         {
-            "deltaR_jet_veto": 0.8,
+            "deltaR_fatjet_veto": 0.8,
         },
     )
 
@@ -1256,22 +1256,6 @@ def add_bjet_config(configuration: Configuration):
     """
 
     # b jet selection
-    configuration.add_config_parameters(
-        "global",
-        {
-            "min_bjet_pt": 20.,
-            "max_bjet_eta": EraModifier(
-                {
-                    "2016preVFP": 2.4,
-                    "2016postVFP": 2.4,
-                    "2017": 2.5,
-                    "2018": 2.5,
-                }
-            ),
-        },
-    )
-
-    # electron energy scale corrections
     configuration.add_config_parameters(
         "global",
         {
@@ -1328,7 +1312,7 @@ def add_bjet_config(configuration: Configuration):
 def add_recoil_corrections_config(configuration: Configuration):
     ## all scopes MET selection
     configuration.add_config_parameters(
-        HAD_TAU_SCOPES,
+        SCOPES,
         {
             "propagateLeptons": SampleModifier(
                 {"data": False},
@@ -1344,6 +1328,10 @@ def add_recoil_corrections_config(configuration: Configuration):
                     "2016postVFP": "data/recoil_corrections/Type1_PuppiMET_2016.root",
                     "2017": "data/recoil_corrections/Type1_PuppiMET_2017.root",
                     "2018": "data/recoil_corrections/Type1_PuppiMET_2018.root",
+                    **{
+                        _era: "DOES_NOT_EXIST"  # TODO does not exist yet for Run3 samples, include as soon as available
+                        for _era in ERAS_RUN3
+                    },
                 }
             ),
             "recoil_systematics_file": EraModifier(
@@ -1352,6 +1340,10 @@ def add_recoil_corrections_config(configuration: Configuration):
                     "2016postVFP": "data/recoil_corrections/PuppiMETSys_2016.root",
                     "2017": "data/recoil_corrections/PuppiMETSys_2017.root",
                     "2018": "data/recoil_corrections/PuppiMETSys_2018.root",
+                    **{
+                        _era: "DOES_NOT_EXIST"  # TODO does not exist yet for Run3 samples, include as soon as available
+                        for _era in ERAS_RUN3
+                    },
                 }
             ),
             "applyRecoilCorrections": SampleModifier(
@@ -1385,7 +1377,7 @@ def add_z_pt_reweighting_config(configuration: Configuration):
 
     # Z pt reweighting
     configuration.add_config_parameters(
-        HAD_TAU_SCOPES,
+        SCOPES,
         {
             "zptmass_file": EraModifier(
                 {
@@ -1393,6 +1385,10 @@ def add_z_pt_reweighting_config(configuration: Configuration):
                     "2016postVFP": "data/zpt/htt_scalefactors_legacy_2016.root",
                     "2017": "data/zpt/htt_scalefactors_legacy_2017.root",
                     "2018": "data/zpt/htt_scalefactors_legacy_2018.root",
+                    **{
+                        _era: "DOES_NOT_EXIST"  # TODO does not exist yet for Run3 samples, include as soon as available
+                        for _era in ERAS_RUN3
+                    },
                 }
             ),
             "zptmass_functor": "zptmass_weight_nom",
@@ -1454,6 +1450,12 @@ def build_config(
     # b jet selection, identification, and corrections
     add_bjet_config(configuration)
 
+    # recoil corrections
+    add_recoil_corrections_config(configuration)
+
+    # Z pt reweighting
+    add_z_pt_reweighting_config(configuration)
+
     #
     # LOOSE OBJECT SELECTIONS
     #
@@ -1469,7 +1471,7 @@ def build_config(
                     "2017": '2017"',
                     "2018": '"2018"',
                     **{
-                        _era: ""  # TODO does not exist yet for Run3 samples, include as soon as available
+                        _era: "DOES_NOT_EXIST"  # TODO does not exist yet for Run3 samples, include as soon as available
                         for _era in ERAS_RUN3
                     },
                 }
@@ -1482,7 +1484,7 @@ def build_config(
                         for _era in ERAS_RUN2
                     },
                     **{
-                        _era: ""  # TODO does not exist yet for Run3 samples, include as soon as available
+                        _era: "DOES_NOT_EXIST"  # TODO does not exist yet for Run3 samples, include as soon as available
                         for _era in ERAS_RUN3
                     },
                 }
@@ -1496,12 +1498,12 @@ def build_config(
         {
             "pNetXbb_sf_file": EraModifier(
                 {
-                    "2016preVFP": "",
-                    "2016postVFP": "",
-                    "2017": "",
+                    "2016preVFP": "DOES_NOT_EXIST",
+                    "2016postVFP": "DOES_NOT_EXIST",
+                    "2017": "DOES_NOT_EXIST",
                     "2018": "payloads/particleNet/pNet_Xbb_SF_2018.json.gz",
                     **{
-                        _era: ""  # TODO does not exist yet for Run3 samples, include as soon as available
+                        _era: "DOES_NOT_EXIST"  # TODO does not exist yet for Run3 samples, include as soon as available
                         for _era in ERAS_RUN3
                     },
                 }
@@ -1638,7 +1640,7 @@ def build_config(
                     "2017": "payloads/electron_trigger/B2G-22-006_ElecTriggerSF_UL17.json.gz",
                     "2018": "payloads/electron_trigger/B2G-22-006_ElecTriggerSF_UL18.json.gz",
                     **{
-                        _era: ""  # TODO does not exist yet for Run3 samples, include as soon as available
+                        _era: "DOES_NOT_EXIST"  # TODO does not exist yet for Run3 samples, include as soon as available
                         for _era in ERAS_RUN3
                     }
                 }
@@ -1669,12 +1671,12 @@ def build_config(
         {
             "fatjet_trigger_sf_file": EraModifier(
                 {
-                    "2016preVFP": "",
-                    "2016postVFP": "",
-                    "2017": "",
+                    "2016preVFP": "DOES_NOT_EXIST",
+                    "2016postVFP": "DOES_NOT_EXIST",
+                    "2017": "DOES_NOT_EXIST",
                     "2018": "payloads/fatjet_trigger/scale_factor__AK8PFJet400_TrimMass30__singlemuon.json",
                     **{
-                        _era: ""  # TODO does not exist yet for Run3 samples, include as soon as available
+                        _era: "DOES_NOT_EXIST"  # TODO does not exist yet for Run3 samples, include as soon as available
                         for _era in ERAS_RUN3
                     }
                 }
@@ -1704,8 +1706,8 @@ def build_config(
             fatjets.GoodFatJets,
             jets.JetEnergyCorrection,
             jets.BJetEnergyCorrection,
-            jets.GoodJetsRun2,
-            jets.GoodBJets,
+            jets.GoodJetsWithPUID,  # run 2 producer, is replaced for run 3 eras
+            jets.GoodBJetsWithPUID,  # run 2 producer, is replaced for run 3 eras
             event.DiLeptonVeto,
             met.MetBasics,
         ],
@@ -1928,8 +1930,18 @@ def build_config(
             GLOBAL_SCOPES,
             ReplaceProducer(
                 producers=[
-                    jets.GoodJetsRun2,
-                    jets.GoodJetsRun3,
+                    jets.GoodJetsWithPUID,
+                    jets.GoodJetsWithoutPUID,
+                ],
+                samples=available_sample_types,
+            ),
+        )
+        configuration.add_modification_rule(
+            GLOBAL_SCOPES,
+            ReplaceProducer(
+                producers=[
+                    jets.GoodBJetsWithPUID,
+                    jets.GoodBJetsWithoutPUID,
                 ],
                 samples=available_sample_types,
             ),

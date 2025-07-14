@@ -71,9 +71,6 @@ GoodJetsWithoutPUID = Producer(
     scopes=GLOBAL_SCOPES,
 )
 
-# use the selection with pileup ID as default 
-GoodJets = GoodJetsWithoutPUID
-
 # base jet selection for b jets including the pileup ID (for CHS jets)
 GoodBJetsBaseWithPUID = Producer(
     name="GoodBJetsBaseWithPUID",
@@ -100,9 +97,6 @@ GoodBJetsBaseWithoutPUID = Producer(
     scopes=GLOBAL_SCOPES,
 )
 
-# use the selection with pileup ID as default
-GoodBJetsBase = GoodBJetsBaseWithoutPUID
-
 # requirement on b tagging score
 BTagCut = Producer(
     name="BTagCut",
@@ -112,14 +106,27 @@ BTagCut = Producer(
     scopes=GLOBAL_SCOPES,
 )
 
-# b jet selection combining the base b jet selection and the b tagging requirement
-GoodBJets = ProducerGroup(
-    name="GoodBJets",
+# b jet selection combining the base b jet selection and the b tagging requirement not applying the pileup ID (for PUPPI jets)
+GoodBJetsWithoutPUID = ProducerGroup(
+    name="GoodBJetsWithoutPUID",
     call='physicsobject::CombineMasks({df}, {output}, {input}, "all_of")',
-    input=GoodJets.output,
+    input=[],
     output=[q.good_bjets_mask],
     subproducers=[
-        GoodBJetsBase,
+        GoodBJetsBaseWithoutPUID,
+        BTagCut,
+    ],
+    scopes=GLOBAL_SCOPES,
+)
+
+# b jet selection combining the base b jet selection and the b tagging requirement including the pileup ID (for CHS jets)
+GoodBJetsWithPUID = ProducerGroup(
+    name="GoodBJetsWithPUID",
+    call='physicsobject::CombineMasks({df}, {output}, {input}, "all_of")',
+    input=[],
+    output=[q.good_bjets_mask],
+    subproducers=[
+        GoodBJetsBaseWithPUID,
         BTagCut,
     ],
     scopes=GLOBAL_SCOPES,
