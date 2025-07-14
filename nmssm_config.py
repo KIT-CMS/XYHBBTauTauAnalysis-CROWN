@@ -375,7 +375,7 @@ def add_muon_config(
         },
     )
 
-    # muon  identification and isolation corrections for mu->tau-embedded events
+    # muon identification and isolation corrections for mu->tau-embedded events
     configuration.add_config_parameters(
         MT_SCOPES,
         {
@@ -1363,7 +1363,7 @@ def build_config(
             pairquantities.MuMuPairQuantities,
             genparticles.MuMuGenPairQuantities,
             # scalefactors.MuonIDIso_SF,
-            triggers.MuMuGenerateSingleMuonTriggerFlags,
+            triggers.SingleMuTriggerFlags,
         ],
     )
     configuration.add_producers(
@@ -1405,7 +1405,8 @@ def build_config(
             scalefactors.Tau_2_oldIsoTauID_lt_SF,
             scalefactors.Tau_2_antiEleTauID_SF,
             scalefactors.Tau_2_antiMuTauID_SF,
-            triggers.MTGenerateSingleMuonTriggerFlags,
+            triggers.SingleMuTriggerFlags,
+            triggers.DoubleMuTauTriggerFlags,
             triggers.BoostedMTGenerateSingleMuonTriggerFlags,
             # triggers.MTGenerateCrossTriggerFlags,
             # triggers.GenerateSingleTrailingTauTriggerFlags,
@@ -1837,21 +1838,26 @@ def build_config(
                 scalefactors.TauEmbeddingMuonIsoSF_1_MC,
                 scalefactors.TauEmbeddingMuonIDSF_2_MC,
                 scalefactors.TauEmbeddingMuonIsoSF_2_MC,
-                scalefactors.MTGenerateSingleMuonTriggerSF_MC,
+                scalefactors.SingleMuTriggerSF,
             ],
             exclude_samples=["data", "embedding", "embedding_mc"],
         ),
     )
+
+    # add single muon and double muon-tau trigger scale factors for MC samples
     configuration.add_modification_rule(
         ["mt"],
         AppendProducer(
             producers=[
-                scalefactors.MTGenerateSingleMuonTriggerSF_MC,
+                scalefactors.SingleMuTriggerSF,
+                scalefactors.DoubleMuTauTriggerLeg1SF,
+                scalefactors.DoubleMuTauTriggerLeg2SF,
                 scalefactors.BoostedMTGenerateSingleMuonTriggerSF_MC,
             ],
             exclude_samples=["data", "embedding", "embedding_mc"],
         ),
     )
+
     configuration.add_modification_rule(
         ["et"],
         AppendProducer(
@@ -2091,7 +2097,8 @@ def build_config(
             boostedtaus.isoTauIDFlag_2.output_group,
             boostedtaus.antiEleTauIDFlag_2.output_group,
             boostedtaus.antiMuTauIDFlag_2.output_group,
-            triggers.MTGenerateSingleMuonTriggerFlags.output_group,
+            triggers.SingleMuTriggerFlags.output_group,
+            triggers.DoubleMuTauTriggerFlags.output_group,
             triggers.BoostedMTGenerateSingleMuonTriggerFlags.output_group,
             # triggers.MTGenerateCrossTriggerFlags.output_group,
             # triggers.GenerateSingleTrailingTauTriggerFlags.output_group,
@@ -2275,7 +2282,7 @@ def build_config(
         "mm",
         [
             q.nmuons,
-            triggers.MuMuGenerateSingleMuonTriggerFlags.output_group,
+            triggers.SingleMuTriggerFlags.output_group,
         ],
     )
     if "data" not in sample:
@@ -3116,62 +3123,76 @@ def build_config(
         exclude_samples=["data", "embedding", "embedding_mc"],
     )
 
-    configuration.add_shift(
-        SystematicShift(
-            name="singleMuonTriggerSFUp",
-            shift_config={
-                ("mt"): {
-                    "singlemuon_trigger_sf_mc": [
-                        {
-                            "flagname": "trg_wgt_single_mu24",
-                            "mc_trigger_sf": "Trg_IsoMu24_pt_eta_bins",
-                            "mc_muon_trg_extrapolation": 1.02,
+    #
+    # systematic shifts for single muon trigger corrections
+    #
+
+    if era in ["2016preVFP", "2016postVFP", "2017", "2018", "2022preEE", "2022postEE", "2023preBPix", "2023postBPix"]:
+        for _variation in ["up", "down"]:
+            configuration.add_shift(
+                SystematicShift(
+                    name=f"singleMuTriggerSF{_variation.upper()}",
+                    shift_config={
+                        ("mt"): {
+                            "single_mu_trigger_sf": [
+                                {
+                                    "m_trigger_flagname": "trg_wgt_single_mu24",
+                                    "m_trigger_sf_name": "NUM_IsoMu24_DEN_CutBasedIdTight_and_PFIsoTight",
+                                    "m_trigger_variation": f"syst{_variation}",
+                                },
+                            ],
+                        }
+                    },
+                    producers={("mt"): scalefactors.SingleMuTriggerSF},
+                ),
+                exclude_samples=["data", "embedding", "embedding_mc"],
+            )
+
+    # TODO adapt single-muon trigger variations for run2 eras?
+
+    #
+    # systematic shifts for double muon-tau trigger corrections
+    #
+
+    if era in ["2022preEE", "2022postEE", "2023preBPix", "2023postBPix"]:
+        for _variation in ["up", "down"]:
+            configuration.add_shift(
+                SystematicShift(
+                    name=f"doubleMuTauTriggerSF{_variation.upper()}",
+                    shift_config={
+                        ("mt"): {
+                            "double_mutau_trigger_leg1_sf": [
+                                {
+                                    "mt_trigger_leg1_sf_file": EraModifier(
+                                        {
+                                            _era: f"data/hleprare/TriggerScaleFactors/{_era}/CrossMuTauHlt_MuLeg_v1.json"
+                                            for _era in ["2022preEE", "2022postEE", "2023preBPix", "2023postBPix"]
+                                        }
+                                    ),
+                                    "mt_trigger_leg1_flagname": "trg_wgt_double_mu20tau27_leg1",
+                                    "mt_trigger_leg1_sf_name": "NUM_IsoMu20_DEN_CutBasedIdTight_and_PFIsoTight",
+                                    "mt_trigger_leg1_variation": f"syst{_variation}",
+                                },
+                            ],
+                            "double_mutau_trigger_leg2_sf": [
+                                {
+                                    "mt_trigger_leg2_flagname": "trg_wgt_double_mu20tau27_leg2",
+                                    "mt_trigger_leg2_sf_name": "mutau",
+                                    "mt_trigger_leg2_variation": _variation,
+                                },
+                            ],
                         },
-                        {
-                            "flagname": "trg_wgt_single_mu27",
-                            "mc_trigger_sf": "Trg_IsoMu27_pt_eta_bins",
-                            "mc_muon_trg_extrapolation": 1.02,
-                        },
-                        {
-                            "flagname": "trg_wgt_single_mu24ormu27",
-                            "mc_trigger_sf": "Trg_IsoMu27_or_IsoMu24_pt_eta_bins",
-                            "mc_muon_trg_extrapolation": 1.02,
-                        },
-                    ],
-                }
-            },
-            producers={("mt"): scalefactors.MTGenerateSingleMuonTriggerSF_MC},
-        ),
-        exclude_samples=["data", "embedding", "embedding_mc"],
-    )
-    configuration.add_shift(
-        SystematicShift(
-            name="singleMuonTriggerSFDown",
-            shift_config={
-                ("mt"): {
-                    "singlemuon_trigger_sf_mc": [
-                        {
-                            "flagname": "trg_wgt_single_mu24",
-                            "mc_trigger_sf": "Trg_IsoMu24_pt_eta_bins",
-                            "mc_muon_trg_extrapolation": 0.98,
-                        },
-                        {
-                            "flagname": "trg_wgt_single_mu27",
-                            "mc_trigger_sf": "Trg_IsoMu27_pt_eta_bins",
-                            "mc_muon_trg_extrapolation": 0.98,
-                        },
-                        {
-                            "flagname": "trg_wgt_single_mu24ormu27",
-                            "mc_trigger_sf": "Trg_IsoMu27_or_IsoMu24_pt_eta_bins",
-                            "mc_muon_trg_extrapolation": 0.98,
-                        },
-                    ],
-                }
-            },
-            producers={("mt"): scalefactors.MTGenerateSingleMuonTriggerSF_MC},
-        ),
-        exclude_samples=["data", "embedding", "embedding_mc"],
-    )
+                    },
+                    producers={
+                        ("mt"): [
+                            scalefactors.DoubleMuTauTriggerLeg1SF,
+                            scalefactors.DoubleMuTauTriggerLeg2SF,
+                        ],
+                    },
+                ),
+                exclude_samples=["data", "embedding", "embedding_mc"],
+            )
+
     configuration.add_shift(
         SystematicShift(
             name="boostedSingleMuonTriggerSFUp",
