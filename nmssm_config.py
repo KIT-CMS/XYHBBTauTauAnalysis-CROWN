@@ -2,7 +2,6 @@ from __future__ import annotations  # needed for type annotations in > python 3.
 
 from typing import List
 
-# from .producers import converters as converters
 from .producers import electrons as electrons
 from .producers import event as event
 from .producers import genparticles as genparticles
@@ -546,7 +545,7 @@ def add_hadronic_tau_config(configuration: Configuration):
             "tight_tau_max_abs_dz": 0.2,
             "tight_tau_decay_modes": "0, 1, 10, 11",  # needs to be converted in a C++ vector in the code, so set it as string here
             "tight_tau_id_vs_jet_wp": 1,              # VVVLoose working point, looser taus needed for tau misidentification estimate 
-            "tight_tau_id_vs_electron_wp": 2,         # VVVLoose working point, looser taus needed for tau misidentification estimate 
+            "tight_tau_id_vs_electron_wp": 1,         # VVVLoose working point, looser taus needed for tau misidentification estimate 
             "tight_tau_id_vs_muon_wp": 1,             # VLoose working point, looser taus needed for tau misidentification estimate 
         },
     )
@@ -559,7 +558,7 @@ def add_hadronic_tau_config(configuration: Configuration):
             "tight_tau_max_abs_dz": 0.2,
             "tight_tau_decay_modes": "0, 1, 10, 11",  # needs to be converted in a C++ vector in the code, so set it as string here
             "tight_tau_id_vs_jet_wp": 1,              # VVVLoose working point, looser taus needed for tau misidentification estimate 
-            "tight_tau_id_vs_electron_wp": 2,         # VVVLoose working point, looser taus needed for tau misidentification estimate 
+            "tight_tau_id_vs_electron_wp": 1,         # VVVLoose working point, looser taus needed for tau misidentification estimate 
             "tight_tau_id_vs_muon_wp": 1,             # VLoose working point, looser taus needed for tau misidentification estimate 
         },
     )
@@ -1377,8 +1376,6 @@ def build_config(
     configuration.add_producers(
         "global",
         [
-            # converters.ConvertDataAndSimColumns,
-            # converters.ConvertSimColumns,
             # event.RunLumiEventFilter,
             event.SampleFlags,
             event.Lumi,
@@ -1609,16 +1606,6 @@ def build_config(
             scalefactors.BoostedTTGenerateFatjetTriggerSF_MC,
         ],
     )
-    # configuration.add_modification_rule(
-    #     GLOBAL_SCOPES,
-    #     ReplaceProducer(
-    #         producers=[
-    #             converters.ConvertSimColumns,
-    #             converters.SimColumnsDummies,
-    #         ],
-    #         samples=["data"],
-    #     ),
-    # )
     configuration.add_modification_rule(
         ["et", "mt"],
         RemoveProducer(
@@ -1804,20 +1791,7 @@ def build_config(
             samples=["data", "embedding", "embedding_mc"],
         ),
     )
-    # configuration.add_modification_rule(
-    #     scopes,
-    #     AppendProducer(
-    #         producers=[event.GGH_NNLO_Reweighting, event.GGH_WG1_Uncertainties],
-    #         samples=["ggh_htautau", "rem_htautau"],
-    #     ),
-    # )
-    # configuration.add_modification_rule(
-    #     scopes,
-    #     AppendProducer(
-    #         producers=event.QQH_WG1_Uncertainties,
-    #         samples=["vbf_htautau", "rem_htautau"],
-    #     ),
-    # )
+
     configuration.add_modification_rule(
         HAD_TAU_SCOPES,
         AppendProducer(producers=event.TopPtReweighting, samples="ttbar"),
