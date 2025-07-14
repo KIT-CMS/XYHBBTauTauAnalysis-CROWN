@@ -1,166 +1,95 @@
+"""
+Producers for muon object selections and vetoes.
+"""
+
 from ..quantities import output as q
 from ..quantities import nanoAOD as nanoAOD
-from code_generation.producer import Producer, ProducerGroup
+from code_generation.producer import Producer
 
-####################
-# Set of producers used for loosest selection of muons
-####################
+from ..constants import MM_SCOPES, MT_SCOPES, MUON_SCOPES, GLOBAL_SCOPES, SCOPES
 
-MuonPtCut = Producer(
-    name="MuonPtCut",
-    call="physicsobject::CutPt({df}, {input}, {output}, {min_muon_pt})",
-    input=[nanoAOD.Muon_pt],
-    output=[],
-    scopes=["global"],
-)
-MuonEtaCut = Producer(
-    name="MuonEtaCut",
-    call="physicsobject::CutEta({df}, {input}, {output}, {max_muon_eta})",
-    input=[nanoAOD.Muon_eta],
-    output=[],
-    scopes=["global"],
-)
-MuonDxyCut = Producer(
-    name="MuonDxyCut",
-    call="physicsobject::CutDxy({df}, {input}, {output}, {max_muon_dxy})",
-    input=[nanoAOD.Muon_dxy],
-    output=[],
-    scopes=["global"],
-)
-MuonDzCut = Producer(
-    name="MuonDzCut",
-    call="physicsobject::CutDz({df}, {input}, {output}, {max_muon_dz})",
-    input=[nanoAOD.Muon_dz],
-    output=[],
-    scopes=["global"],
-)
-MuonIDCut = Producer(
-    name="MuonIDCut",
-    call='physicsobject::muon::CutID({df}, {output}, "{muon_id}")',
-    input=[],
-    output=[],
-    scopes=["global"],
-)
-MuonIsoCut = Producer(
-    name="MuonIsoCut",
-    call="physicsobject::muon::CutIsolation({df}, {output}, {input}, {muon_iso_cut})",
-    input=[nanoAOD.Muon_iso],
-    output=[],
-    scopes=["global"],
-)
-BaseMuons = ProducerGroup(
+
+#
+# OBJECT SELECTION
+#
+
+
+# loose muons (mainly used to evaluate veto masks)
+BaseMuons = Producer(
     name="BaseMuons",
-    call="physicsobject::CombineMasks({df}, {output}, {input})",
-    input=[],
+    call="xyh::object_selection::muon({df}, {output}, {input}, \"{loose_muon_id}\", {loose_muon_min_pt}, {loose_muon_max_abs_eta}, {loose_muon_max_abs_dxy}, {loose_muon_max_abs_dz}, {loose_muon_max_iso})",
+    input=[
+        nanoAOD.Muon_pt,
+        nanoAOD.Muon_eta,
+        nanoAOD.Muon_dxy,
+        nanoAOD.Muon_dz,
+        nanoAOD.Muon_iso,
+    ],
     output=[q.base_muons_mask],
-    scopes=["global"],
-    subproducers=[
-        MuonPtCut,
-        MuonEtaCut,
-        MuonDxyCut,
-        MuonDzCut,
-        MuonIDCut,
-        MuonIsoCut,
-    ],
+    scopes=GLOBAL_SCOPES,
 )
 
-####################
-# Set of producers used for more specific selection of muons in channels
-####################
+# tight muons (final state tau candidates)
+GoodMuons = Producer(
+    name="GoodMuons",
+    call="xyh::object_selection::muon({df}, {output}, {input}, \"{tight_muon_id}\", {tight_muon_min_pt}, {tight_muon_max_abs_eta}, {tight_muon_max_abs_dxy}, {tight_muon_max_abs_dz}, {tight_muon_max_iso})",
+    input=[
+        nanoAOD.Muon_pt,
+        nanoAOD.Muon_eta,
+        nanoAOD.Muon_dxy,
+        nanoAOD.Muon_dz,
+        nanoAOD.Muon_iso,
+    ],
+    output=[q.good_muons_mask],
+    scopes=MUON_SCOPES,
+)
 
-GoodMuonPtCut = Producer(
-    name="GoodMuonPtCut",
-    call="physicsobject::CutPt({df}, {input}, {output}, {min_muon_pt})",
-    input=[nanoAOD.Muon_pt],
-    output=[],
-    scopes=["em", "mt", "mm"],
-)
-GoodMuonEtaCut = Producer(
-    name="GoodMuonEtaCut",
-    call="physicsobject::CutEta({df}, {input}, {output}, {max_muon_eta})",
-    input=[nanoAOD.Muon_eta],
-    output=[],
-    scopes=["em", "mt", "mm"],
-)
-GoodMuonIsoCut = Producer(
-    name="GoodMuonIsoCut",
-    call="physicsobject::muon::CutIsolation({df}, {output}, {input}, {muon_iso_cut})",
-    input=[nanoAOD.Muon_iso],
-    output=[],
-    scopes=["em", "mt", "mm"],
-)
-GoodMuonDzCut = Producer(
-    name="GoodMuonDzCut",
-    call="physicsobject::CutDz({df}, {input}, {output}, {max_muon_dz})",
-    input=[nanoAOD.Muon_dz],
-    output=[],
-    scopes=["em", "mt", "mm"],
-)
-GoodMuonDxyCut = Producer(
-    name="GoodMuonDxyCut",
-    call="physicsobject::CutDxy({df}, {input}, {output}, {max_muon_dxy})",
-    input=[nanoAOD.Muon_dxy],
-    output=[],
-    scopes=["em", "mt", "mm"],
-)
-GoodMuons = ProducerGroup(
-    name="GoodMuons",
-    call="physicsobject::CombineMasks({df}, {output}, {input})",
-    input=[q.base_muons_mask],
-    output=[q.good_muons_mask],
-    scopes=["em", "mt", "mm"],
-    subproducers=[
-        GoodMuonPtCut,
-        GoodMuonEtaCut,
-        GoodMuonIsoCut,
-    ],
-)
-GoodMuonsWithDzDxyCuts = ProducerGroup(
-    name="GoodMuons",
-    call="physicsobject::CombineMasks({df}, {output}, {input})",
-    input=[q.base_muons_mask],
-    output=[q.good_muons_mask],
-    scopes=["em", "mt", "mm"],
-    subproducers=[
-        GoodMuonPtCut,
-        GoodMuonEtaCut,
-        GoodMuonIsoCut,
-        GoodMuonDzCut,
-        GoodMuonDxyCut,
-    ],
-)
+# count number of selected muons
 NumberOfGoodMuons = Producer(
     name="NumberOfGoodMuons",
-    call="quantities::NumberOfGoodLeptons({df}, {output}, {input})",
+    call="physicsobject::Count({df}, {output}, {input})",
     input=[q.good_muons_mask],
     output=[q.nmuons],
-    scopes=["mt", "em", "mm"],
-)
-VetoMuons = Producer(
-    name="VetoMuons",
-    call="physicsobject::VetoCandInMask({df}, {output}, {input}, {muon_index_in_pair})",
-    input=[q.base_muons_mask, q.dileptonpair],
-    output=[q.veto_muons_mask],
-    scopes=["em", "mt", "mm"],
-)
-VetoMuons_boosted = Producer(
-    name="VetoMuons_boosted",
-    call="physicsobject::VetoCandInMask({df}, {output}, {input}, {muon_index_in_pair})",
-    input=[q.base_muons_mask, q.boosteddileptonpair],
-    output=[q.veto_muons_boosted_mask],
-    scopes=["em", "mt", "mm"],
-)
-VetoSecondMuon = Producer(
-    name="VetoSecondMuon",
-    call="physicsobject::VetoCandInMask({df}, {output}, {input}, {second_muon_index_in_pair})",
-    input=[q.veto_muons_mask, q.dileptonpair],
-    output=[q.veto_muons_mask_2],
-    scopes=["mm"],
+    scopes=MUON_SCOPES,
 )
 
+
+#
+# EXTRA-MUON VETO
+#
+
+
+# mask for veto muons, excluding the selected muon from the di-tau pair for the resolved selection
+VetoMuons = Producer(
+    name="VetoMuons",
+    call="physicsobject::VetoSingleObject({df}, {output}, {input}, {muon_index_in_pair})",
+    input=[q.base_muons_mask, q.dileptonpair],
+    output=[q.veto_muons_mask],
+    scopes=MUON_SCOPES,
+)
+
+# mask for veto muons, excluding the selected muon from the di-tau pair for the boosted selection
+VetoMuons_boosted = Producer(
+    name="VetoMuons_boosted",
+    call="physicsobject::VetoSingleObject({df}, {output}, {input}, {muon_index_in_pair})",
+    input=[q.base_muons_mask, q.boosteddileptonpair],
+    output=[q.veto_muons_boosted_mask],
+    scopes=MUON_SCOPES,
+)
+
+# mask for veto muons, excluding the selected muons from the di-tau pair (mumu) for the boosted selection
+VetoSecondMuon = Producer(
+    name="VetoSecondMuon",
+    call="physicsobject::VetoSingleObject({df}, {output}, {input}, {second_muon_index_in_pair})",
+    input=[q.veto_muons_mask, q.dileptonpair],
+    output=[q.veto_muons_mask_2],
+    scopes=MM_SCOPES,
+)
+
+# extra-muon veto for the different channels for the resolved selection
 ExtraMuonsVeto = Producer(
     name="ExtraMuonsVeto",
-    call="physicsobject::LeptonVetoFlag({df}, {output}, {input})",
+    call="physicsobject::Veto({df}, {output}, {input})",
     input={
         "mm": [q.veto_muons_mask_2],
         "em": [q.veto_muons_mask],
@@ -169,58 +98,41 @@ ExtraMuonsVeto = Producer(
         "tt": [q.base_muons_mask],
     },
     output=[q.muon_veto_flag],
-    scopes=["em", "et", "mt", "tt", "mm"],
+    scopes=SCOPES,
 )
+
+# extra-muon veto for the different channels for the boosted selection
 BoostedExtraMuonsVeto = Producer(
     name="BoostedExtraMuonsVeto",
-    call="physicsobject::LeptonVetoFlag({df}, {output}, {input})",
+    call="physicsobject::Veto({df}, {output}, {input})",
     input={
         "mt": [q.veto_muons_boosted_mask],
     },
     output=[q.boosted_muon_veto_flag],
-    scopes=["mt"],
+    scopes=MT_SCOPES,
 )
 
-####################
-# Set of producers used for di-muon veto
-####################
 
-DiMuonVetoPtCut = Producer(
-    name="DiMuonVetoPtCut",
-    call="physicsobject::CutPt({df}, {input}, {output}, {min_dimuonveto_pt})",
-    input=[nanoAOD.Muon_pt],
-    output=[],
-    scopes=["global"],
-)
-DiMuonVetoIDCut = Producer(
-    name="DiMuonVetoIDCut",
-    call='physicsobject::muon::CutID({df}, {output}, "{dimuonveto_id}")',
-    input=[],
-    output=[],
-    scopes=["global"],
-)
-DiMuonVetoMuons = ProducerGroup(
-    name="DiMuonVetoMuons",
-    call="physicsobject::CombineMasks({df}, {output}, {input})",
-    input=MuonEtaCut.output + MuonDxyCut.output + MuonDzCut.output + MuonIsoCut.output,
-    output=[],
-    scopes=["global"],
-    subproducers=[
-        DiMuonVetoPtCut,
-        DiMuonVetoIDCut,
-    ],
-)
-DiMuonVeto = ProducerGroup(
+#
+# DI-MUON VETO
+#
+
+
+DiMuonVeto = Producer(
     name="DiMuonVeto",
-    call="physicsobject::CheckForDiLeptonPairs({df}, {output}, {input}, {dileptonveto_dR})",
+    call="xyh::vetoes::dimuon({df}, {output}, {input}, {dimu_muon_min_pt}, {dimu_muon_max_abs_eta}, {dimu_muon_max_iso}, {dimu_muon_max_abs_dxy}, {dimu_muon_max_abs_dz}, {dimu_muon_min_delta_r})",
     input=[
         nanoAOD.Muon_pt,
         nanoAOD.Muon_eta,
         nanoAOD.Muon_phi,
-        nanoAOD.Muon_mass,
+        nanoAOD.Muon_iso,
+        nanoAOD.Muon_dxy,
+        nanoAOD.Muon_dz,
+        nanoAOD.Muon_isPFcand,
+        nanoAOD.Muon_isTracker,
+        nanoAOD.Muon_isGlobal,
         nanoAOD.Muon_charge,
     ],
     output=[q.dimuon_veto],
-    scopes=["global"],
-    subproducers=[DiMuonVetoMuons],
+    scopes=GLOBAL_SCOPES,
 )

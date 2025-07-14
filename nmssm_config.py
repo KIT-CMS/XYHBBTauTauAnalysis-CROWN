@@ -42,6 +42,10 @@ def add_noise_filters_config(configuration: Configuration):
 
     - Run 2 UltraLegacy: https://twiki.cern.ch/twiki/bin/viewauth/CMS/MissingETOptionalFiltersRun2#UL_data
 
+    - 2022: https://twiki.cern.ch/twiki/bin/viewauth/CMS/MissingETOptionalFiltersRun2#Run_3_2022_and_2023_data_and_MC
+    
+    - 2023: https://twiki.cern.ch/twiki/bin/viewauth/CMS/MissingETOptionalFiltersRun2#Run_3_2022_and_2023_data_and_MC
+
     :todo add 2022 and 2023:
 
     :param configuration: the main configuration object
@@ -95,19 +99,46 @@ def add_noise_filters_config(configuration: Configuration):
                         "Flag_eeBadScFilter",
                         "Flag_ecalBadCalibFilter",
                     ],
-                    **{
-                        _era: [
-                            "Flag_goodVertices",
-                            "Flag_globalSuperTightHalo2016Filter",
-                            "Flag_EcalDeadCellTriggerPrimitiveFilter",
-                            "Flag_BadPFMuonFilter",
-                            "Flag_BadPFMuonDzFilter",
-                            "Flag_hfNoisyHitsFilter",
-                            "Flag_eeBadScFilter",
-                            # "Flag_ecalBadCalibFilter", should not be used in some sections of 2022 and 2023
-                        ]
-                        for _era in ERAS_RUN3
-                    },
+                    "2022preEE": [
+                        "Flag_goodVertices",
+                        "Flag_globalSuperTightHalo2016Filter",
+                        "Flag_EcalDeadCellTriggerPrimitiveFilter",
+                        "Flag_BadPFMuonFilter",
+                        "Flag_BadPFMuonDzFilter",
+                        "Flag_hfNoisyHitsFilter",
+                        "Flag_eeBadScFilter",
+                        "Flag_ecalBadCalibFilter",  # marked as "yellow" in TWiki
+                    ],
+                    "2022postEE": [
+                        "Flag_goodVertices",
+                        "Flag_globalSuperTightHalo2016Filter",
+                        "Flag_EcalDeadCellTriggerPrimitiveFilter",
+                        "Flag_BadPFMuonFilter",
+                        "Flag_BadPFMuonDzFilter",
+                        "Flag_hfNoisyHitsFilter",
+                        "Flag_eeBadScFilter",
+                        "Flag_ecalBadCalibFilter",  # marked as "yellow" in TWiki
+                    ],
+                     "2023preBPix": [
+                        "Flag_goodVertices",
+                        "Flag_globalSuperTightHalo2016Filter",
+                        "Flag_EcalDeadCellTriggerPrimitiveFilter",
+                        "Flag_BadPFMuonFilter",
+                        "Flag_BadPFMuonDzFilter",
+                        "Flag_hfNoisyHitsFilter",
+                        "Flag_eeBadScFilter",
+                        "Flag_ecalBadCalibFilter",  # marked as "yellow" in TWiki
+                    ],
+                    "2023postBPix": [
+                        "Flag_goodVertices",
+                        "Flag_globalSuperTightHalo2016Filter",
+                        "Flag_EcalDeadCellTriggerPrimitiveFilter",
+                        "Flag_BadPFMuonFilter",
+                        "Flag_BadPFMuonDzFilter",
+                        "Flag_hfNoisyHitsFilter",
+                        "Flag_eeBadScFilter",
+                        "Flag_ecalBadCalibFilter",  # marked as "yellow" in TWiki
+                    ],                   
                 },
             ),
         },
@@ -122,7 +153,22 @@ def add_pileup_reweighting_config(configuration: Configuration):
     [nanoaod-tools/jsonpog-integration](https://gitlab.cern.ch/nanoaod-tools/jsonpog-integration)
     repository.
 
-    :todo add 2022 and 2023:
+    - 2016-2018 and 2022-2023: https://twiki.cern.ch/twiki/bin/view/CMS/PileupJSONFileforData#Centrally_produced_correctionlib
+
+    - 2022-2023: https://twiki.cern.ch/twiki/bin/view/CMS/LumiRecommendationsRun3
+
+    The documentation of the `correctionlib` files can be found here:
+
+    | Era          | Documentation                                                                                          |
+    |--------------|--------------------------------------------------------------------------------------------------------|
+    | 2016preVFP   | https://cms-nanoaod-integration.web.cern.ch/commonJSONSFs/summaries/LUM_2016preVFP_UL_puWeights.html   |
+    | 2016postVFP  | https://cms-nanoaod-integration.web.cern.ch/commonJSONSFs/summaries/LUM_2016postVFP_UL_puWeights.html  |
+    | 2017         | https://cms-nanoaod-integration.web.cern.ch/commonJSONSFs/summaries/LUM_2017_UL_puWeights.html         |
+    | 2018         | https://cms-nanoaod-integration.web.cern.ch/commonJSONSFs/summaries/LUM_2018_UL_puWeights.html         |
+    | 2022preEE    | https://cms-nanoaod-integration.web.cern.ch/commonJSONSFs/summaries/LUM_2022_Summer22_puWeights.html   |
+    | 2022postEE   | https://cms-nanoaod-integration.web.cern.ch/commonJSONSFs/summaries/LUM_2022_Summer22EE_puWeights.html |
+    | 2023preBPix  | https://cms-nanoaod-integration.web.cern.ch/commonJSONSFs/summaries/LUM_2023_Summer23_puWeights.html   |
+    | 2023postBPix | https://cms-nanoaod-integration.web.cern.ch/commonJSONSFs/summaries/LUM_2023_Summer23_puWeights.html   |
 
     :param configuration: the main configuration object
     :type configuration: Configuration
@@ -188,8 +234,6 @@ def add_golden_json_config(configuration: Configuration):
     - 2022: https://twiki.cern.ch/twiki/bin/view/CMS/PdmVRun3Analysis#Year_2022
 
     - 2023: https://twiki.cern.ch/twiki/bin/view/CMS/PdmVRun3Analysis#Year_2023
-
-    :todo: add documentation
 
     :param configuration: the main configuration object
     :type configuration: Configuration
@@ -274,12 +318,26 @@ def add_electron_config(configuration: Configuration):
     configuration.add_config_parameters(
         GLOBAL_SCOPES,
         {
-            "min_ele_pt": 10.0,
-            "max_ele_eta": 2.5,
-            "max_ele_dxy": 0.045,
-            "max_ele_dz": 0.2,
-            "max_ele_iso": 4.0,
-            "ele_id": "Electron_mvaNoIso_WP90",
+            "loose_electron_min_pt": 10.0,
+            "loose_electron_max_abs_eta": 2.5,
+            "loose_electron_max_abs_dxy": 0.045,
+            "loose_electron_max_abs_dz": 0.2,
+            "loose_electron_max_iso": 0.3,
+            "loose_electron_id": "Electron_mvaNoIso_WP90",  # NanoAOD v9: Electron_mvaFall17V2noIso_WP90
+        },
+    )
+
+    # loose electrons and spatial separation for the di-electron veto
+    configuration.add_config_parameters(
+        GLOBAL_SCOPES,
+        {
+            "diele_electron_min_pt": 15.0,
+            "diele_electron_max_abs_eta": 2.5,
+            "diele_electron_max_abs_dxy": 0.045,
+            "diele_electron_max_abs_dz": 0.2,
+            "diele_electron_max_iso": 0.3,
+            "diele_electron_id_wp": 1,  # cut-based electron ID, 'veto' working point
+            "diele_electron_min_delta_r": 0.15,  # cut-based electron ID, 'veto' working point
         },
     )
 
@@ -287,10 +345,13 @@ def add_electron_config(configuration: Configuration):
     configuration.add_config_parameters(
         ET_SCOPES,
         {
-            "electron_index_in_pair": 0,
-            "min_electron_pt": 25.0,
-            "max_electron_eta": 2.1,
-            "electron_iso_cut": 4.0,
+            "tight_electron_min_pt": 25.0,
+            "tight_electron_max_abs_eta": 2.1,
+            "tight_electron_max_abs_dxy": 0.045,
+            "tight_electron_max_abs_dz": 0.2,
+            "tight_electron_max_iso": 4.0,
+            "tight_electron_id": "Electron_mvaNoIso_WP90",  # NanoAOD v9: Electron_mvaFall17V2noIso_WP90,
+            "electron_index_in_pair": 0,  # index of the electron in the dilepton pair
         },
     )
 
@@ -406,12 +467,25 @@ def add_muon_config(configuration: Configuration):
     configuration.add_config_parameters(
         GLOBAL_SCOPES,
         {
-            "min_muon_pt": 10.0,
-            "max_muon_eta": 2.4,
-            "max_muon_dxy": 0.045,
-            "max_muon_dz": 0.2,
-            "muon_id": "Muon_mediumId",
-            "muon_iso_cut": 4.0,
+            "loose_muon_min_pt": 10.0,
+            "loose_muon_max_abs_eta": 2.4,
+            "loose_muon_max_abs_dxy": 0.045,
+            "loose_muon_max_abs_dz": 0.2,
+            "loose_muon_max_iso": 0.3,
+            "loose_muon_id": "Muon_mediumId",
+        },
+    )
+
+    # loose electrons and spatial separation for the di-muon veto
+    configuration.add_config_parameters(
+        GLOBAL_SCOPES,
+        {
+            "dimu_muon_min_pt": 15.0,
+            "dimu_muon_max_abs_eta": 2.4,
+            "dimu_muon_max_abs_dxy": 0.045,
+            "dimu_muon_max_abs_dz": 0.2,
+            "dimu_muon_max_iso": 0.3,
+            "dimu_muon_min_delta_r": 0.15,
         },
     )
 
@@ -419,10 +493,13 @@ def add_muon_config(configuration: Configuration):
     configuration.add_config_parameters(
         MT_SCOPES,
         {
+            "tight_muon_min_pt": 20.0,
+            "tight_muon_max_abs_eta": 2.1,
+            "tight_muon_max_abs_dxy": 0.045,
+            "tight_muon_max_abs_dz": 0.2,
+            "tight_muon_max_iso": 4.0,
+            "loose_muon_id": "Muon_mediumId",
             "muon_index_in_pair": 0,
-            "min_muon_pt": 20.0,
-            "max_muon_eta": 2.1,
-            "muon_iso_cut": 4.0,
         },
     )
 
@@ -547,24 +624,26 @@ def add_hadronic_tau_config(configuration: Configuration):
     configuration.add_config_parameters(
         SL_SCOPES,
         {
-            "min_tau_pt": 20.0,
-            "max_tau_eta": 2.5,
-            "max_tau_dz": 0.2,
-            "vsjet_tau_id_bit": 1,  # VVVLoose working point
-            "vsele_tau_id_bit": 2, # VVVLoose working point
-            "vsmu_tau_id_bit": 1,  # VLoose working point
+            "tight_tau_min_pt": 20.0,
+            "tight_tau_max_abs_eta": 2.5,
+            "tight_tau_max_abs_dz": 0.2,
+            "tight_tau_decay_modes": "0, 1, 10, 11",  # needs to be converted in a C++ vector in the code, so set it as string here
+            "tight_tau_id_vs_jet_wp": 1,              # VVVLoose working point, looser taus needed for tau misidentification estimate 
+            "tight_tau_id_vs_electron_wp": 2,         # VVVLoose working point, looser taus needed for tau misidentification estimate 
+            "tight_tau_id_vs_muon_wp": 1,             # VLoose working point, looser taus needed for tau misidentification estimate 
         },
     )
     # hadronic tau selection in fullhadronic channels
     configuration.add_config_parameters(
         FH_SCOPES,
         {
-            "min_tau_pt": 20.0,
-            "max_tau_eta": 2.5,
-            "max_tau_dz": 0.2,
-            "vsjet_tau_id_bit": 1,  # VVLoose working point
-            "vsele_tau_id_bit": 2, # VVLoose working point
-            "vsmu_tau_id_bit": 1,  # VLoose working point
+            "tight_tau_min_pt": 20.0,
+            "tight_tau_max_abs_eta": 2.5,
+            "tight_tau_max_abs_dz": 0.2,
+            "tight_tau_decay_modes": "0, 1, 10, 11",  # needs to be converted in a C++ vector in the code, so set it as string here
+            "tight_tau_id_vs_jet_wp": 1,              # VVVLoose working point, looser taus needed for tau misidentification estimate 
+            "tight_tau_id_vs_electron_wp": 2,         # VVVLoose working point, looser taus needed for tau misidentification estimate 
+            "tight_tau_id_vs_muon_wp": 1,             # VLoose working point, looser taus needed for tau misidentification estimate 
         },
     )
 
@@ -787,7 +866,7 @@ def add_boosted_hadronic_tau_config(configuration: Configuration):
     configuration.add_config_parameters(
         SL_SCOPES,
         {
-            "min_boostedtau_pt": 30.0,
+            "min_boostedtau_pt": 40.0,
             "max_boostedtau_eta": 2.3,
             # "iso_boostedtau_id_bit": 1,
             # "antiele_boostedtau_id_bit": 1,
@@ -801,7 +880,7 @@ def add_boosted_hadronic_tau_config(configuration: Configuration):
     configuration.add_config_parameters(
         FH_SCOPES,
         {
-            "min_boostedtau_pt": 30.0,
+            "min_boostedtau_pt": 40.0,
             "max_boostedtau_eta": 2.3,
             # "iso_boostedtau_id_bit": 2,
             # "antiele_boostedtau_id_bit": 2,
@@ -992,10 +1071,10 @@ def add_ak4jet_config(configuration: Configuration):
     configuration.add_config_parameters(
         "global",
         {
-            "min_jet_pt": 30.0,
-            "max_jet_eta": 4.7,
-            "jet_id": 6,  # 0 == fail, 2 == pass(tight) & fail(tightLepVeto), 6 == pass(tight) & pass(tightLepVeto)
-            "jet_puid": EraModifier(
+            "ak4jet_min_pt": 30.0,
+            "ak4jet_max_abs_eta": 4.7,
+            "ak4jet_id_wp": 6,  # 0 == fail, 2 == pass(tight) & fail(tightLepVeto), 6 == pass(tight) & pass(tightLepVeto)
+            "ak4jet_puid": EraModifier(
                 {
                     "2016preVFP": 1,  # 0 == fail, 1 == pass(loose), 3 == pass(loose,medium), 7 == pass(loose,medium,tight)
                     "2016postVFP": 1,  # 0 == fail, 1 == pass(loose), 3 == pass(loose,medium), 7 == pass(loose,medium,tight)
@@ -1007,7 +1086,7 @@ def add_ak4jet_config(configuration: Configuration):
                     },
                 }
             ),
-            "jet_puid_max_pt": EraModifier(
+            "ak4jet_puid_max_pt": EraModifier(
                 {
                     **{
                         _era: 50.0  # recommended to apply puID only for jets below 50 GeV
@@ -1027,17 +1106,17 @@ def add_ak4jet_config(configuration: Configuration):
     configuration.add_config_parameters(
         "global",
         {
-            "jet_reapplyJES": False,
-            "jet_jes_sources": '{""}',
-            "jet_jes_shift": 0,
-            "jet_jer_shift": '"nom"',  # or '"up"', '"down"'
-            "jet_jec_file": EraModifier(
+            "ak4jet_reapplyJES": False,
+            "ak4jet_jes_sources": '{""}',
+            "ak4jet_jes_shift": 0,
+            "ak4jet_jer_shift": '"nom"',  # or '"up"', '"down"'
+            "ak4jet_jec_file": EraModifier(
                 {
                     _era: f'"data/jsonpog-integration/POG/JME/{_campaign}/jet_jerc.json.gz"'
                     for _era, _campaign in CORRECTIONLIB_CAMPAIGNS.items()
                 }
             ),
-            "jet_jer_tag": EraModifier(
+            "ak4jet_jer_tag": EraModifier(
                 {
                     "2016preVFP": '"Summer20UL16APV_JRV3_MC"',
                     "2016postVFP": '"Summer20UL16_JRV3_MC"',
@@ -1049,8 +1128,8 @@ def add_ak4jet_config(configuration: Configuration):
                     "2023postBPix": '"Summer23BPixPrompt23_RunD_JRV1_MC"',
                 }
             ),
-            "jet_jes_tag_data": '""',
-            "jet_jes_tag": EraModifier(
+            "ak4jet_jes_tag_data": '""',
+            "ak4jet_jes_tag": EraModifier(
                 {
                     "2016preVFP": '"Summer19UL16APV_V7_MC"',
                     "2016postVFP": '"Summer19UL16_V7_MC"',
@@ -1062,7 +1141,7 @@ def add_ak4jet_config(configuration: Configuration):
                     "2023postBPix": '"Summer23BPixPrompt23_V2_MC"',
                 }
             ),
-            "jet_jec_algo": EraModifier(
+            "ak4jet_jec_algo": EraModifier(
                 {
                     **{
                         _era: '"AK4PFchs"'
@@ -1107,20 +1186,20 @@ def add_ak8jet_config(configuration: Configuration):
     configuration.add_config_parameters(
         "global",
         {
-            "min_fatjet_pt": 200.,
-            "max_fatjet_eta": 2.5,
-            "fatjet_id": 6,  # tight & tightLepVeto
-            "fatjet_reapplyJES": False,
-            "fatjet_jes_sources": '{""}',
-            "fatjet_jes_shift": 0,
-            "fatjet_jer_shift": '"nom"',  # or '"up"', '"down"'
-            "fatjet_jec_file": EraModifier(  # TODO use AK4 file for fatjets because it either was is just copied and the fatjet file has no merged uncertainty scheme?
+            "ak8jet_min_pt": 200.,
+            "ak8jet_max_abs_eta": 2.5,
+            "ak8jet_id_wp": 6,  # tight & tightLepVeto
+            "ak8jet_reapplyJES": False,
+            "ak8jet_jes_sources": '{""}',
+            "ak8jet_jes_shift": 0,
+            "ak8jet_jer_shift": '"nom"',  # or '"up"', '"down"'
+            "ak8jet_jec_file": EraModifier(  # TODO use AK4 file for fatjets because it either was is just copied and the fatjet file has no merged uncertainty scheme?
                 {
                     _era: f'"data/jsonpog-integration/POG/JME/{_campaign}/fatJet_jerc.json.gz"'
                     for _era, _campaign in CORRECTIONLIB_CAMPAIGNS.items()
                 }
             ),
-            "fatjet_jer_tag": EraModifier(
+            "ak8jet_jer_tag": EraModifier(
                 {
                     "2016preVFP": '"Summer20UL16APV_JRV3_MC"',
                     "2016postVFP": '"Summer20UL16_JRV3_MC"',
@@ -1132,8 +1211,8 @@ def add_ak8jet_config(configuration: Configuration):
                     "2023postBPix": '"Summer23BPixPrompt23_RunD_JRV1_MC"',
                 }
             ),
-            "fatjet_jes_tag_data": '""',
-            "fatjet_jes_tag": EraModifier(
+            "ak8jet_jes_tag_data": '""',
+            "ak8jet_jes_tag": EraModifier(
                 {
                     "2016preVFP": '"Summer19UL16APV_V7_MC"',
                     "2016postVFP": '"Summer19UL16_V7_MC"',
@@ -1145,7 +1224,7 @@ def add_ak8jet_config(configuration: Configuration):
                     "2023postBPix": "Summer23BPixPrompt23_V3_MC",
                 }
             ),
-            "fatjet_jec_algo": '"AK8PFPuppi"',  # TODO normally "AK8PFPuppi" would be used -> change to AK4 naming to get merged uncertainty scheme?
+            "ak8jet_jec_algo": '"AK8PFPuppi"',  # TODO normally "AK8PFPuppi" would be used -> change to AK4 naming to get merged uncertainty scheme?
         },
     )
 
@@ -1187,9 +1266,23 @@ def add_bjet_config(configuration: Configuration):
                     "2016postVFP": 2.4,
                     "2017": 2.5,
                     "2018": 2.5,
+                }
+            ),
+        },
+    )
+
+    # electron energy scale corrections
+    configuration.add_config_parameters(
+        "global",
+        {
+            "bjet_min_pt": 20.,
+            "bjet_max_abs_eta": EraModifier(
+                {
+                    "2016preVFP": 2.4,
+                    "2016postVFP": 2.4,
                     **{
                         _era: 2.5
-                        for _era in ERAS_RUN3
+                        for _era in ["2016preVFP", "2016postVFP"] + ERAS_RUN3
                     },
                 }
             ),
@@ -1201,7 +1294,7 @@ def add_bjet_config(configuration: Configuration):
     configuration.add_config_parameters(
         GLOBAL_SCOPES + HAD_TAU_SCOPES,
         {
-            "btag_cut": EraModifier(  # medium
+            "bjet_min_deepjet_score": EraModifier(  # medium
                 {
                     "2016preVFP": 0.2598,
                     "2016postVFPP": 0.2489,
@@ -2017,26 +2110,7 @@ def build_config(
             samples=["nmssm_Ybb", "nmssm_Ytautau"],
         ),
     )
-    # configuration.add_modification_rule(
-    #     ["et", "mt"],
-    #     RemoveProducer(
-    #         producers=[
-    #             pairquantities.tau_gen_match_2,
-    #             # boostedtaus.boosted_tau_gen_match_2,
-    #         ],
-    #         samples="data",
-    #     ),
-    # )
-    # configuration.add_modification_rule(
-    #     ["tt"],
-    #     RemoveProducer(
-    #         producers=[
-    #             pairquantities.tau_gen_match_1,
-    #             pairquantities.tau_gen_match_2,
-    #         ],
-    #         samples="data",
-    #     ),
-    # )
+ 
     configuration.add_modification_rule(
         HAD_TAU_SCOPES,
         RemoveProducer(
@@ -2444,7 +2518,6 @@ def build_config(
             # q.gen_taujet_pt_2,
             q.tau_decaymode_1,
             q.tau_decaymode_2,
-            # q.tau_gen_match_2,
             q.muon_veto_flag,
             q.boosted_muon_veto_flag,
             q.electron_veto_flag,
@@ -2456,7 +2529,6 @@ def build_config(
             q.boosted_dz_1,
             q.boosted_tau_decaymode_1,
             q.boosted_tau_decaymode_2,
-            # q.boosted_tau_gen_match_2,
             q.boosted_pt_1,
             q.boosted_pt_2,
             q.boosted_eta_1,
@@ -2508,7 +2580,6 @@ def build_config(
             # q.gen_taujet_pt_2,
             q.tau_decaymode_1,
             q.tau_decaymode_2,
-            # q.tau_gen_match_2,
             q.muon_veto_flag,
             q.boosted_electron_veto_flag,
             q.electron_veto_flag,
@@ -2520,7 +2591,6 @@ def build_config(
             q.boosted_dz_1,
             q.boosted_tau_decaymode_1,
             q.boosted_tau_decaymode_2,
-            # q.boosted_tau_gen_match_2,
             q.boosted_pt_1,
             q.boosted_pt_2,
             q.boosted_eta_1,
@@ -2583,16 +2653,12 @@ def build_config(
             # q.gen_taujet_pt_2,
             q.tau_decaymode_1,
             q.tau_decaymode_2,
-            # q.tau_gen_match_1,
-            # q.tau_gen_match_2,
             q.muon_veto_flag,
             q.electron_veto_flag,
             q.dimuon_veto,
             q.dilepton_veto,
             q.boosted_tau_decaymode_1,
             q.boosted_tau_decaymode_2,
-            # q.boosted_tau_gen_match_1,
-            # q.boosted_tau_gen_match_2,
             q.boosted_pt_1,
             q.boosted_pt_2,
             q.boosted_eta_1,

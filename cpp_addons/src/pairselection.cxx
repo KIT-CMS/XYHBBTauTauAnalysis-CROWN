@@ -123,7 +123,7 @@ namespace semileptonic {
 /// Events contain at least one good lepton and one good boostedtau, if the
 /// boostedtau_mask and the mounmask both have nonzero elements. These masks are
 /// constructed using the functions from the physicsobject namespace
-/// (e.g. physicsobject::CutPt).
+/// (e.g. physicsobject::CutMin<float>).
 ///
 /// \returns an `ROOT::RVec<int>` with two values, the first one beeing
 /// the lepton index and the second one beeing the tau index.
@@ -240,7 +240,7 @@ namespace fullhadronic {
 /// channel. First, only events that contain two goodboostedTaus are considered. Events
 /// contain at two good boostedtau, if the boostedtau_mask has at least two nonzero elements.
 /// These mask is contructed constructed using the functions from the
-/// physicsobject namespace (e.g. physicsobject::CutPt).
+/// physicsobject namespace (e.g. physicsobject::CutMin<float>).
 ///
 /// \returns an `ROOT::RVec<int>` with two values, the first one beeing
 /// the leading tau index and the second one beeing trailing tau index.
