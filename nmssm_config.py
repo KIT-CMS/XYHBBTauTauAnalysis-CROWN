@@ -1460,10 +1460,12 @@ def build_config(
     add_bjet_config(configuration)
 
     # recoil corrections
-    add_recoil_corrections_config(configuration)
+    # TODO needs to be refined for run 3, not considered at the moment(https://github.com/kit-cms/XYHBBTauTauAnalysis-CROWN/issues/6)
+    #add_recoil_corrections_config(configuration)
 
     # Z pt reweighting
-    add_z_pt_reweighting_config(configuration)
+    # TODO needs to be refined for run 3, not considered at the moment (https://github.com/kit-cms/XYHBBTauTauAnalysis-CROWN/issues/7)
+    #add_z_pt_reweighting_config(configuration)
 
     #
     # LOOSE OBJECT SELECTIONS
@@ -1765,10 +1767,12 @@ def build_config(
             scalefactors.btagging_SF_boosted,
             scalefactors.Xbb_tagging_SF,
             scalefactors.Xbb_tagging_SF_boosted,
-            met.MetCorrections,
-            met.PFMetCorrections,
-            met.MetCorrections_boosted,
-            met.PFMetCorrections_boosted,
+            # TODO producers need to be refined for run 3, not considered at the moment
+            #met.MetCorrections,
+            #met.PFMetCorrections,
+            #met.MetCorrections_boosted,
+            #met.PFMetCorrections_boosted,
+            met.RenameMet,
             pairquantities.DiTauPairMETQuantities,
             genparticles.GenMatching,
             genparticles.GenMatchingBoosted,
@@ -2180,12 +2184,15 @@ def build_config(
         HAD_TAU_SCOPES,
         AppendProducer(producers=event.TopPtReweighting, samples="ttbar"),
     )
-    configuration.add_modification_rule(
-        HAD_TAU_SCOPES,
-        AppendProducer(
-            producers=event.ZPtMassReweighting, samples=["dyjets", "electroweak_boson"]
-        ),
-    )
+
+    # TODO needs to be refined for run 3, not considered at the moment
+    #configuration.add_modification_rule(
+    #    HAD_TAU_SCOPES,
+    #    AppendProducer(
+    #        producers=event.ZPtMassReweighting, samples=["dyjets", "electroweak_boson"]
+    #    ),
+    #)
+
     # changes needed for data
     # global scope
     configuration.add_modification_rule(
@@ -2476,16 +2483,16 @@ def build_config(
             q.gen_m_vis,
             q.met,
             q.metphi,
-            q.pfmet,
-            q.pfmetphi,
+            #q.pfmet,
+            #q.pfmetphi,
             q.met_boosted,
             q.metphi_boosted,
-            q.pfmet_boosted,
-            q.pfmetphi_boosted,
+            #q.pfmet_boosted,
+            #q.pfmetphi_boosted,
             q.met_uncorrected,
             q.metphi_uncorrected,
-            q.pfmet_uncorrected,
-            q.pfmetphi_uncorrected,
+            #q.pfmet_uncorrected,
+            #q.pfmetphi_uncorrected,
             q.metSumEt,
             q.metcov00,
             q.metcov01,
@@ -2505,14 +2512,15 @@ def build_config(
             q.gen_match_2,
             q.boosted_gen_match_1,
             q.boosted_gen_match_2,
-            q.pzetamissvis_pf,
-            q.mTdileptonMET_pf,
-            q.mt_1_pf,
-            q.mt_2_pf,
-            q.pt_tt_pf,
+            # TODO remove these variables as PF MET is not used anymore by us
+            #q.pzetamissvis_pf,
+            #q.mTdileptonMET_pf,
+            #q.mt_1_pf,
+            #q.mt_2_pf,
+            #q.pt_tt_pf,
             # q.pt_ttjj_pf,
-            q.pt_ttbb_pf,
-            q.mt_tot_pf,
+            #q.pt_ttbb_pf,
+            #q.mt_tot_pf,
             q.pt_dijet,
             q.jet_hemisphere,
         ],
