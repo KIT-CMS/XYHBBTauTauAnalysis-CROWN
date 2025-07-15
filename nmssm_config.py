@@ -1074,7 +1074,7 @@ def add_ak4jet_config(configuration: Configuration):
             "ak4jet_min_pt": 30.0,
             "ak4jet_max_abs_eta": 4.7,
             "ak4jet_id_wp": 6,  # 0 == fail, 2 == pass(tight) & fail(tightLepVeto), 6 == pass(tight) & pass(tightLepVeto)
-            "ak4jet_puid": EraModifier(
+            "ak4jet_puid_wp": EraModifier(
                 {
                     "2016preVFP": 1,  # 0 == fail, 1 == pass(loose), 3 == pass(loose,medium), 7 == pass(loose,medium,tight)
                     "2016postVFP": 1,  # 0 == fail, 1 == pass(loose), 3 == pass(loose,medium), 7 == pass(loose,medium,tight)
@@ -1266,7 +1266,7 @@ def add_bjet_config(configuration: Configuration):
                     "2016postVFP": 2.4,
                     **{
                         _era: 2.5
-                        for _era in ["2016preVFP", "2016postVFP"] + ERAS_RUN3
+                        for _era in ["2017", "2018"] + ERAS_RUN3
                     },
                 }
             ),
