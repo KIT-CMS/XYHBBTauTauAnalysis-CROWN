@@ -346,7 +346,7 @@ def add_electron_config(configuration: Configuration):
         ET_SCOPES,
         {
             "tight_electron_min_pt": 25.0,
-            "tight_electron_max_abs_eta": 2.1,
+            "tight_electron_max_abs_eta": 2.5,
             "tight_electron_max_abs_dxy": 0.045,
             "tight_electron_max_abs_dz": 0.2,
             "tight_electron_max_iso": 4.0,
@@ -443,6 +443,15 @@ def add_muon_config(configuration: Configuration):
 
     - [Muon correction recommendations](https://muon-wiki.docs.cern.ch/guidelines/corrections/)
 
+    The relative isolation of the muon has the following working points:
+
+    | ``PFIsoVeryLoose``     | 0.4  |                     |
+    | ``PFIsoLoose``         | 0.25 | use for loose muons |
+    | ``PFIsoMedium``        | 0.20 |                     |
+    | ``PFIsoTight``         | 0.15 | use for tight muons |
+    | ``PFIsoVeryTight``     | 0.10 |                     |
+    | ``PFIsoVeryVeryTight`` | 0.05 |                     |
+    
     Correction factors are obtained from the
     [nanoaod-tools/jsonpog-integration](gitlab.cern.ch/nanoaod-tools/jsonpog-integration) repository.
 
@@ -471,7 +480,7 @@ def add_muon_config(configuration: Configuration):
             "loose_muon_max_abs_eta": 2.4,
             "loose_muon_max_abs_dxy": 0.045,
             "loose_muon_max_abs_dz": 0.2,
-            "loose_muon_max_iso": 0.3,
+            "loose_muon_max_iso": 0.25,
             "loose_muon_id": "Muon_mediumId",
         },
     )
@@ -484,7 +493,7 @@ def add_muon_config(configuration: Configuration):
             "dimu_muon_max_abs_eta": 2.4,
             "dimu_muon_max_abs_dxy": 0.045,
             "dimu_muon_max_abs_dz": 0.2,
-            "dimu_muon_max_iso": 0.3,
+            "dimu_muon_max_iso": 0.25,
             "dimu_muon_min_delta_r": 0.15,
         },
     )
@@ -494,10 +503,10 @@ def add_muon_config(configuration: Configuration):
         MT_SCOPES,
         {
             "tight_muon_min_pt": 20.0,
-            "tight_muon_max_abs_eta": 2.1,
+            "tight_muon_max_abs_eta": 2.4,
             "tight_muon_max_abs_dxy": 0.045,
             "tight_muon_max_abs_dz": 0.2,
-            "tight_muon_max_iso": 4.0,
+            "tight_muon_max_iso": 0.4,
             "tight_muon_id": "Muon_mediumId",
             "muon_index_in_pair": 0,
         },
@@ -1714,7 +1723,7 @@ def build_config(
         ],
     )
     ## add prefiring
-    if era != "2018":
+    if era in ["2016preVFP", "2016postVFP", "2017"]:
         configuration.add_producers(
             "global",
             [
