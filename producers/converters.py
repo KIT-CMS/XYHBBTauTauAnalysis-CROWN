@@ -136,7 +136,7 @@ ConvertGenParticleMotherid = Producer(
 
 GenParticleMotheridDummy = Producer(
     name="GenParticleMotheridDummy",
-    call='event::quantity::Define{df}, {output}, ROOT::VecOps::RVec<int>())',
+    call='event::quantity::Define({df}, {output}, ROOT::VecOps::RVec<int>())',
     input=[],
     output=[nanoAOD.GenParticle_motherid],
     scopes=["global"],
