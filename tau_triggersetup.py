@@ -1,13 +1,13 @@
 from code_generation.configuration import Configuration
 from code_generation.modifiers import EraModifier
 
-from .constants import ERAS_RUN3
+from .constants import M_SCOPES, MT_SCOPES, ERAS_RUN2, ERAS_RUN3
 
 
 def add_diTauTriggerSetup(configuration: Configuration):
     ## MT, MM scope trigger setup
     configuration.add_config_parameters(
-        ["mt", "mm"],
+        M_SCOPES,
         {
             "single_mu_trigger": EraModifier(
                 {
@@ -233,7 +233,7 @@ def add_diTauTriggerSetup(configuration: Configuration):
         },
     )
     configuration.add_config_parameters(
-        ["mt"],
+        MT_SCOPES,
         {
             "double_mutau_trigger": EraModifier(
                 {
@@ -249,11 +249,11 @@ def add_diTauTriggerSetup(configuration: Configuration):
                             {
                                 "flagname": "trg_mu20tau27",
                                 "hlt_path": "HLT_IsoMu20_eta2p1_LooseDeepTauPFTauHPS27_eta2p1_CrossL1",
-                                "p1_min_pt": 21,
+                                "p1_min_pt": 20,
                                 "p1_max_abs_eta": 2.1,
                                 "p1_particle_id": 13,
                                 "p1_filter_bit": 3,
-                                "p2_min_pt": 29,
+                                "p2_min_pt": 27,
                                 "p2_max_abs_eta": 2.1,
                                 "p2_particle_id": 15,
                                 "p2_filter_bit": 9,
@@ -266,74 +266,74 @@ def add_diTauTriggerSetup(configuration: Configuration):
                         {
                             "flagname": "trg_cross_mu20tau27_hps",
                             "hlt_path": "HLT_IsoMu20_eta2p1_LooseChargedIsoPFTauHPS27_eta2p1_CrossL1",
-                            "p1_ptcut": 21,
-                            "p1_etacut": 2.1,
-                            "p1_filterbit": 3,
-                            "p1_trigger_particle_id": 13,
-                            "p2_ptcut": 32,
-                            "p2_etacut": 2.1,
-                            "p2_filterbit": -1,  # TODO switch to "p2_filterbit": 4, if the bits are correct
-                            "p2_trigger_particle_id": 15,
-                            "max_deltaR_triggermatch": 0.4,
+                            "p1_min_pt": 21,
+                            "p1_max_abs_eta": 2.1,
+                            "p1_filter_bit": 3,
+                            "p1_particle_id": 13,
+                            "p2_min_pt": 32,
+                            "p2_max_abs_eta": 2.1,
+                            "p2_filter_bit": -1,  # TODO switch to "p2_filterbit": 4, if the bits are correct
+                            "p2_particle_id": 15,
+                            "match_max_delta_r": 0.4,
                         },
                         # the non HPS version exists for data only, but add it anyway to have the flag in the ntuple
                         {
                             "flagname": "trg_cross_mu20tau27",
                             "hlt_path": "HLT_IsoMu20_eta2p1_LooseChargedIsoPFTau27_eta2p1_CrossL1",
-                            "p1_ptcut": 21,
-                            "p1_etacut": 2.1,
-                            "p1_filterbit": 3,
-                            "p1_trigger_particle_id": 13,
-                            "p2_ptcut": 32,
-                            "p2_etacut": 2.1,
-                            "p2_filterbit": -1,  # TODO switch to "p2_filterbit": 4, if the bits are correct
-                            "p2_trigger_particle_id": 15,
-                            "max_deltaR_triggermatch": 0.4,
+                            "p1_min_pt": 21,
+                            "p1_max_abs_eta": 2.1,
+                            "p1_filter_bit": 3,
+                            "p1_particle_id": 13,
+                            "p2_min_pt": 32,
+                            "p2_max_abs_eta": 2.1,
+                            "p2_filter_bit": -1,  # TODO switch to "p2_filterbit": 4, if the bits are correct
+                            "p2_particle_id": 15,
+                            "match_max_delta_r": 0.4,
                         },
                     ],
                     "2017": [
                         {
                             "flagname": "trg_cross_mu20tau27",
                             "hlt_path": "HLT_IsoMu20_eta2p1_LooseChargedIsoPFTau27_eta2p1_CrossL1",
-                            "p1_ptcut": 21,
-                            "p1_etacut": 2.1,
-                            "p1_filterbit": 3,
-                            "p1_trigger_particle_id": 13,
-                            "p2_ptcut": 32,
-                            "p2_etacut": 2.1,
-                            "p2_filterbit": 4,
-                            "p2_trigger_particle_id": 15,
-                            "max_deltaR_triggermatch": 0.4,
+                            "p1_min_pt": 21,
+                            "p1_max_abs_eta": 2.1,
+                            "p1_filter_bit": 3,
+                            "p1_particle_id": 13,
+                            "p2_min_pt": 32,
+                            "p2_max_abs_eta": 2.1,
+                            "p2_filter_bit": 4,
+                            "p2_particle_id": 15,
+                            "match_max_delta_r": 0.4,
                         }
                     ],
                     "2016postVFP": [
                         {
                             "flagname": "trg_cross_mu19tau20",
                             "hlt_path": "HLT_IsoMu19_eta2p1_LooseIsoPFTau20_SingleL1",
-                            "p1_ptcut": 20,
-                            "p1_etacut": 2.1,
-                            "p1_filterbit": 3,
-                            "p1_trigger_particle_id": 13,
-                            "p2_ptcut": 22,
-                            "p2_etacut": 2.1,
-                            "p2_filterbit": 4,
-                            "p2_trigger_particle_id": 15,
-                            "max_deltaR_triggermatch": 0.4,
+                            "p1_min_pt": 20,
+                            "p1_max_abs_eta": 2.1,
+                            "p1_filter_bit": 3,
+                            "p1_particle_id": 13,
+                            "p2_min_pt": 22,
+                            "p2_max_abs_eta": 2.1,
+                            "p2_filter_bit": 4,
+                            "p2_particle_id": 15,
+                            "match_max_delta_r": 0.4,
                         }
                     ],
                     "2016preVFP": [
                         {
                             "flagname": "trg_cross_mu19tau20",
                             "hlt_path": "HLT_IsoMu19_eta2p1_LooseIsoPFTau20_SingleL1",
-                            "p1_ptcut": 20,
-                            "p1_etacut": 2.1,
-                            "p1_filterbit": 3,
-                            "p1_trigger_particle_id": 13,
-                            "p2_ptcut": 22,
-                            "p2_etacut": 2.1,
-                            "p2_filterbit": 4,
-                            "p2_trigger_particle_id": 15,
-                            "max_deltaR_triggermatch": 0.4,
+                            "p1_min_pt": 20,
+                            "p1_max_abs_eta": 2.1,
+                            "p1_filter_bit": 3,
+                            "p1_particle_id": 13,
+                            "p2_min_pt": 22,
+                            "p2_max_abs_eta": 2.1,
+                            "p2_filter_bit": 4,
+                            "p2_particle_id": 15,
+                            "match_max_delta_r": 0.4,
                         }
                     ],
                 }
@@ -946,7 +946,7 @@ def add_diTauTriggerSetup(configuration: Configuration):
 
     # single muon trigger scale factors
     configuration.add_config_parameters(
-        ["mt"],
+        M_SCOPES,
         {
             "single_mu_trigger_sf": [
                 {
@@ -960,14 +960,20 @@ def add_diTauTriggerSetup(configuration: Configuration):
 
     # double muon-tau trigger scale factors
     configuration.add_config_parameters(
-        ["mt"],
+        MT_SCOPES,
         {
             "double_mutau_trigger_leg1_sf": [
                 {
                     "mt_trigger_leg1_sf_file": EraModifier(
                         {
-                            _era: f"data/hleprare/TriggerScaleFactors/{_era}/CrossMuTauHlt_MuLeg_v1.json"
-                            for _era in ["2022preEE", "2022postEE", "2023preBPix", "2023postBPix"]
+                            **{
+                                _era: "DOES_NOT_EXIST"  # TODO does not exist for Run2 eras
+                                for _era in ERAS_RUN2
+                            },
+                            **{
+                                _era: f"data/hleprare/TriggerScaleFactors/{_era}/CrossMuTauHlt_MuLeg_v1.json"
+                                for _era in ERAS_RUN3
+                            },
                         }
                     ),
                     "mt_trigger_leg1_flagname": "trg_wgt_double_mu20tau27_leg1",

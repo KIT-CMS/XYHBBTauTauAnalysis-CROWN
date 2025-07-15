@@ -600,7 +600,7 @@ EleID_SF_boosted = ProducerGroup(
 # single muon trigger scale factor
 SingleMuTriggerSF = ExtendedVectorProducer(
     name="SingleMuTriggerSF",
-    call='physicsobject::muon::scalefactor::Trigger({df}, correctionManager, {output}, {input}, "{muon_sf_file}", "{m_trigger_sf_name}", {m_trigger_variation})',
+    call='physicsobject::muon::scalefactor::Trigger({df}, correctionManager, {output}, {input}, "{muon_sf_file}", "{m_trigger_sf_name}", "{m_trigger_variation}")',
     input=[
         q.pt_1,
         q.eta_1,
@@ -619,7 +619,7 @@ SingleMuTriggerSF = ExtendedVectorProducer(
 # muon leg scale factor
 DoubleMuTauTriggerLeg1SF = ExtendedVectorProducer(
     name="DoubleMuTauTriggerLeg1SF",
-    call='physicsobject::muon::scalefactor::Trigger({df}, correctionManager, {output}, {input}, "{mt_trigger_leg1_sf_file}", "{mt_trigger_leg1_sf_name}", {mt_trigger_leg1_variation})',
+    call='physicsobject::muon::scalefactor::Trigger({df}, correctionManager, {output}, {input}, "{mt_trigger_leg1_sf_file}", "{mt_trigger_leg1_sf_name}", "{mt_trigger_leg1_variation}")',
     input=[
         q.pt_1,
         q.eta_1,
@@ -632,7 +632,7 @@ DoubleMuTauTriggerLeg1SF = ExtendedVectorProducer(
 # tau leg scale factor (for the Medium DeepTau WP)
 DoubleMuTauTriggerLeg2SF = ExtendedVectorProducer(
     name="GenerateMuTauCrossTriggerLeg2SF",
-    call='physicsobject::tau::scalefactor::Trigger({df}, correctionManager, {output}, {input}, "{tau_sf_file}", "tau_trigger", "{mt_trigger_leg2_sf_name}", "Medium", "sf", {mt_trigger_leg2_variation})',
+    call='physicsobject::tau::scalefactor::Trigger({df}, correctionManager, {output}, {input}, "{tau_sf_file}", "tau_trigger", "{mt_trigger_leg2_sf_name}", "Medium", "sf", "{mt_trigger_leg2_variation}")',
     input=[
         q.pt_2,
         q.tau_decaymode_2,
