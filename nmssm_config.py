@@ -1706,8 +1706,9 @@ def build_config(
             fatjets.GoodFatJets,
             jets.JetEnergyCorrection,
             jets.BJetEnergyCorrection,
-            jets.GoodJetsWithPUID,  # run 2 producer, is replaced for run 3 eras
-            jets.GoodBJetsWithPUID,  # run 2 producer, is replaced for run 3 eras
+            jets.JetIDRun2,                     # run 2 producer, is replaced for run 3 eras
+            jets.GoodJetsWithPUID,              # run 2 producer, is replaced for run 3 eras
+            jets.GoodBJetsWithPUID,             # run 2 producer, is replaced for run 3 eras
             event.DiLeptonVeto,
             met.MetBasics,
         ],
@@ -1926,6 +1927,16 @@ def build_config(
     # some jet selections are different for Run2 and Run3, hence the producer is replaced
     # we need to fix a bug in the tau ID manually for 2022 and 2023 samples, this is why we need to replace the corresponding producers
     if era in ERAS_RUN3:
+        configuration.add_modification_rule(
+            GLOBAL_SCOPES,
+            ReplaceProducer(
+                producers=[
+                    jets.JetIDRun2,
+                    jets.JetIDRun3NanoV12Corrected,
+                ],
+                samples=available_sample_types,
+            ),
+        )
         configuration.add_modification_rule(
             GLOBAL_SCOPES,
             ReplaceProducer(
