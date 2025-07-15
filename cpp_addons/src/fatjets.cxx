@@ -1,7 +1,6 @@
 #ifndef GUARDFATJETSEXT_H
 #define GUARDFATJETSEXT_H
 
-#include "../include/basefunctions.hxx"
 #include "../include/defaults.hxx"
 #include "../include/utility/Logger.hxx"
 #include "ROOT/RDataFrame.hxx"
@@ -119,38 +118,7 @@ auto FindXbbFatjet(ROOT::RDF::RNode df, const std::string &output_name,
 
 namespace quantities {
 namespace fatjet {
-/// Function to writeout the value of the softdrop mass for a fatjet.
-///
-/// \param[in] df the input dataframe
-/// \param[out] outputname the name of the produced quantity
-/// \param[in] m_softdrop name of the column that contains the softdrop mass of
-/// the fatjets
-/// \param[in] fatjetcollection name of the vector that contains fatjet indices
-/// of the fatjets belonging to the collection, its length constitutes the
-/// output quantity \param position The position in the fatjet collection
-/// vector, which is used to store the index of the particle in the particle
-/// quantity vectors.
-///
-/// \returns a dataframe with the new column
 
-ROOT::RDF::RNode msoftdrop(ROOT::RDF::RNode df, const std::string &outputname,
-                           const std::string &m_softdrop,
-                           const std::string &fatjetcollection,
-                           const int &position) {
-    return df.Define(outputname,
-                    [position](const ROOT::RVec<float> &softdrop_masses,
-                                const ROOT::RVec<int> &fatjetcollection) {
-                        float mass = default_float;
-                        if (position >= 0) {
-                           const int index = fatjetcollection.at(position);
-                           if (index >= 0) {
-                               mass = softdrop_masses.at(index);
-                           }
-                        }
-                        return mass;
-                    },
-                    {m_softdrop, fatjetcollection});
-}
 /// Function to writeout the value of the particleNet Xbb vs QCD tagger for a
 /// fatjet.
 ///
@@ -228,70 +196,6 @@ nsubjettiness_ratio(ROOT::RDF::RNode df, const std::string &outputname,
                         return ratio;
                     },
                     {tauN, tauNm1, fatjetcollection});
-}
-/// Function to writeout the value of the hadron flavor for a fatjet.
-///
-/// \param[in] df the input dataframe
-/// \param[out] outputname the name of the produced quantity
-/// \param[in] fatjet_hadflavor name of the column that contains the hadron flavor of
-/// the fatjets
-/// \param[in] fatjetcollection name of the vector that contains fatjet indices
-/// of the fatjets belonging to the collection, its length constitutes the
-/// output quantity \param position The position in the fatjet collection
-/// vector, which is used to store the index of the particle in the particle
-/// quantity vectors.
-///
-/// \returns a dataframe with the new column
-
-ROOT::RDF::RNode hadflavor(ROOT::RDF::RNode df, const std::string &outputname,
-                           const std::string &fatjet_hadflavor,
-                           const std::string &fatjetcollection,
-                           const int &position) {
-    return df.Define(outputname,
-                    [position](const ROOT::RVec<int> &fatjet_hadflavor,
-                               const ROOT::RVec<int> &fatjetcollection) {
-                        int flavor = default_int;
-                        if (position >= 0) { 
-                            const int index = fatjetcollection.at(position);
-                            if (index >= 0) {
-                                flavor = fatjet_hadflavor.at(index);
-                            }
-                        }
-                        return flavor;
-                    },
-                    {fatjet_hadflavor, fatjetcollection});
-}
-/// Function to writeout  the number of hadrons for a fatjet.
-///
-/// \param[in] df the input dataframe
-/// \param[out] outputname the name of the produced quantity
-/// \param[in] fatjet_nHadrons name of the column that contains the number of 
-/// hadrons of the fatjets
-/// \param[in] fatjetcollection name of the vector that contains fatjet indices
-/// of the fatjets belonging to the collection, its length constitutes the
-/// output quantity \param position The position in the fatjet collection
-/// vector, which is used to store the index of the particle in the particle
-/// quantity vectors.
-///
-/// \returns a dataframe with the new column
-
-ROOT::RDF::RNode nHadrons(ROOT::RDF::RNode df, const std::string &outputname,
-                           const std::string &fatjet_nHadrons,
-                           const std::string &fatjetcollection,
-                           const int &position) {
-    return df.Define(outputname,
-                     [position](const ROOT::RVec<UChar_t> &fatjet_nHadrons,
-                                const ROOT::RVec<int> &fatjetcollection) {
-                        int nHad = default_int;
-                        if (position >= 0) { 
-                            const int index = fatjetcollection.at(position);
-                            if (index >= 0) {
-                                nHad = static_cast<int>(fatjet_nHadrons.at(index));
-                            }
-                        }
-                        return nHad;
-                    },
-                    {fatjet_nHadrons, fatjetcollection});
 }
 } // end namespace fatjet
 } // end namespace quantities
