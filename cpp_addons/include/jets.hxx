@@ -15,8 +15,10 @@ BJetPtCorrection(
     const std::string &corr_factor
 );
 
+namespace quantities {
+
 ROOT::RDF::RNode
-CorrectJetIDRun3(
+CorrectJetIDRun3NanoV12(
     ROOT::RDF::RNode df,
     const std::string &outputname,
     const std::string &jet_pt,
@@ -27,6 +29,8 @@ CorrectJetIDRun3(
     const std::string &jet_mu_ef,
     const std::string &jet_ch_em_ef
 ); 
+
+} // end quantities
 
 } // end jet
 

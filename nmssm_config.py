@@ -402,14 +402,14 @@ def add_electron_config(configuration: Configuration):
         {
             "mc_electron_sf_file": EraModifier(
                 {
-                    "2016preVFP": "",  # TODO to be added when available
-                    "2016postVFP": "",  # TODO to be added when available
-                    "2017": "",  # TODO to be added when available
+                    "2016preVFP": "DOES_NOT_EXIST",  # TODO to be added when available
+                    "2016postVFP": "DOES_NOT_EXIST",  # TODO to be added when available
+                    "2017": "DOES_NOT_EXIST",  # TODO to be added when available
                     "2018": "data/embedding/electron_2018UL.json.gz",
-                    "2022preEE": "",  # TODO to be added when available
-                    "2022postEE": "",  # TODO to be added when available
-                    "2023preBPix": "",  # TODO to be added when available
-                    "2023postBPix": "",  # TODO to be added when available
+                    "2022preEE": "DOES_NOT_EXIST",  # TODO to be added when available
+                    "2022postEE": "DOES_NOT_EXIST",  # TODO to be added when available
+                    "2023preBPix": "DOES_NOT_EXIST",  # TODO to be added when available
+                    "2023postBPix": "DOES_NOT_EXIST",  # TODO to be added when available
                 },
             ),
             "mc_electron_id_sf": "ID90_pt_eta_bins",
@@ -1227,10 +1227,10 @@ def add_ak8jet_config(configuration: Configuration):
                     "2016postVFP": '"Summer19UL16_V7_MC"',
                     "2017": '"Summer19UL17_V5_MC"',
                     "2018": '"Summer19UL18_V5_MC"',
-                    "2022preEE": "Summer22_22Sep2023_V2_MC",
-                    "2022postEE": "Summer22EE_22Sep2023_V2_MC",
-                    "2023preBPix": "Summer23Prompt23_V2_MC",
-                    "2023postBPix": "Summer23BPixPrompt23_V3_MC",
+                    "2022preEE": '"Summer22_22Sep2023_V2_MC"',
+                    "2022postEE": '"Summer22EE_22Sep2023_V2_MC"',
+                    "2023preBPix": '"Summer23Prompt23_V2_MC"',
+                    "2023postBPix": '"Summer23BPixPrompt23_V3_MC"',
                 }
             ),
             "ak8jet_jec_algo": '"AK8PFPuppi"',  # TODO normally "AK8PFPuppi" would be used -> change to AK4 naming to get merged uncertainty scheme?
@@ -1482,7 +1482,7 @@ def build_config(
                     "2017": '2017"',
                     "2018": '"2018"',
                     **{
-                        _era: "DOES_NOT_EXIST"  # TODO does not exist yet for Run3 samples, include as soon as available
+                        _era: '"DOES_NOT_EXIST"'  # TODO does not exist yet for Run3 samples, include as soon as available
                         for _era in ERAS_RUN3
                     },
                 }
@@ -1495,7 +1495,7 @@ def build_config(
                         for _era in ERAS_RUN2
                     },
                     **{
-                        _era: "DOES_NOT_EXIST"  # TODO does not exist yet for Run3 samples, include as soon as available
+                        _era: '"DOES_NOT_EXIST"'  # TODO does not exist yet for Run3 samples, include as soon as available
                         for _era in ERAS_RUN3
                     },
                 }

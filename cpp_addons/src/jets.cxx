@@ -49,14 +49,7 @@ ROOT::RDF::RNode BJetPtCorrection(ROOT::RDF::RNode df, const std::string &correc
                      {jet_pt, good_bjet_mask, corr_factor});
 }
 
-} // end jet
-
-} // end physicsobject
-
-
 namespace quantities {
-
-namespace jet {
 
 /**
  * @brief Patch for wrong Jet ID values in Run3 NanoAOD v12 samples.
@@ -157,6 +150,16 @@ ROOT::RDF::RNode CorrectJetIDRun3NanoV12(
     );
 }
 
+} // end quantities
+
+} // end jet
+
+} // end physicsobject
+
+namespace quantities {
+
+namespace jet {
+
 /** @brief Function to writeout the value of the resolution of a b-jet. The resolution was estimated as a part of a DNN based energy regresion task.
  *
  * @param df the input dataframe
@@ -196,5 +199,6 @@ bRegRes(
 } // end jet
 
 } // end quantities
+
 
 #endif

@@ -46,7 +46,7 @@ JetEnergyCorrection_data, JetEnergyCorrection, RenameJetsData = jerc_producer_fa
 # correct the jet ID value for Run3 samples
 JetIDRun3NanoV12Corrected = Producer(
     name="JetIDRun3NanoV12Corrected",
-    call="quantities::jet::CorrectJetIDRun3({df}, {output}, {input})",
+    call="physicsobject::jet::quantities::CorrectJetIDRun3NanoV12({df}, {output}, {input})",
     input=[
         nanoAOD.Jet_pt,
         nanoAOD.Jet_eta,
