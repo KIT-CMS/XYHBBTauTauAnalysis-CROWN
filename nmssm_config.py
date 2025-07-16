@@ -663,8 +663,15 @@ def add_hadronic_tau_config(configuration: Configuration):
             "tau_dms": "0,1,10,11",
             "tau_sf_file": EraModifier(
                 {
-                    _era: f"data/jsonpog-integration/POG/TAU/{_campaign}/tau.json.gz"
-                    for _era, _campaign in CORRECTIONLIB_CAMPAIGNS.items()
+                    **{
+                        _era: f"data/jsonpog-integration/POG/TAU/{_campaign}/tau.json.gz"
+                        for _era, _campaign in CORRECTIONLIB_CAMPAIGNS.items()
+                        if _era in ERAS_RUN2
+                    },
+                    "2022preEE": "data/jsonpog-integration/POG/TAU/2022_Summer22/tau_DeepTau2018v2p5_2022_preEE.json.gz",
+                    "2022postEE": "data/jsonpog-integration/POG/TAU/2022_Summer22EE/tau_DeepTau2018v2p5_2022_postEE.json.gz",
+                    "2023preBPix": "data/jsonpog-integration/POG/TAU/2023_Summer23/tau_DeepTau2018v2p5_2023_preBPix.json.gz",
+                    "2023postBPix": "data/jsonpog-integration/POG/TAU/2023_Summer23BPix/tau_DeepTau2018v2p5_2023_postBPix.json.gz",
                 }
             ),
             "tau_ES_json_name": "tau_energy_scale",
@@ -692,8 +699,15 @@ def add_hadronic_tau_config(configuration: Configuration):
             "tau_id_vs_jet_norm_shift": 1.0,  # temporary fix
             "tau_sf_file": EraModifier(
                 {
-                    _era: f"data/jsonpog-integration/POG/TAU/{_campaign}/tau.json.gz"
-                    for _era, _campaign in CORRECTIONLIB_CAMPAIGNS.items()
+                    **{
+                        _era: f"data/jsonpog-integration/POG/TAU/{_campaign}/tau.json.gz"
+                        for _era, _campaign in CORRECTIONLIB_CAMPAIGNS.items()
+                        if _era in ERAS_RUN2
+                    },
+                    "2022preEE": "data/jsonpog-integration/POG/TAU/2022_Summer22/tau_DeepTau2018v2p5_2022_preEE.json.gz",
+                    "2022postEE": "data/jsonpog-integration/POG/TAU/2022_Summer22EE/tau_DeepTau2018v2p5_2022_postEE.json.gz",
+                    "2023preBPix": "data/jsonpog-integration/POG/TAU/2023_Summer23/tau_DeepTau2018v2p5_2023_preBPix.json.gz",
+                    "2023postBPix": "data/jsonpog-integration/POG/TAU/2023_Summer23BPix/tau_DeepTau2018v2p5_2023_postBPix.json.gz",
                 }
             ),
             "tau_ES_json_name": "tau_energy_scale",

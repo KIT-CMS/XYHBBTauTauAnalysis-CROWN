@@ -51,8 +51,8 @@ CORRECTIONLIB_CAMPAIGNS = {
         _era: f"{_era}_UL"
         for _era in ERAS_RUN2
     },
-    "2022preEE": "Summer22",
-    "2022postEE": "Summer22EE",
-    "2023preBPix": "Summer23",
-    "2023postBPix": "Summer23",
+    "2022preEE": "2022_Summer22",
+    "2022postEE": "2022_Summer22EE",
+    "2023preBPix": "2023_Summer23",
+    "2023postBPix": "2023_Summer23BPix",
 }
