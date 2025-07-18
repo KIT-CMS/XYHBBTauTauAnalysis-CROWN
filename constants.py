@@ -33,9 +33,26 @@ MM_SCOPES = ["mm"]
 ELECTRON_SCOPES = ET_SCOPES + EM_SCOPES + EE_SCOPES
 MUON_SCOPES = MT_SCOPES + EM_SCOPES + MM_SCOPES
 SL_SCOPES = ET_SCOPES + MT_SCOPES
+E_SCOPES = ET_SCOPES
+M_SCOPES = MT_SCOPES
 FH_SCOPES = TT_SCOPES
 FL_SCOPES = EM_SCOPES + EE_SCOPES + MM_SCOPES
 HAD_TAU_SCOPES = SL_SCOPES + FH_SCOPES
 SCOPES = HAD_TAU_SCOPES
 
-ERAS = ["2016preVFP", "2016postVFP", "2017", "2018"]
+# eras for Run 2 and Run 3
+ERAS_RUN2 = ["2016preVFP", "2016postVFP", "2017", "2018"]
+ERAS_RUN3 = ["2022preEE", "2022postEE", "2023preBPix", "2023postBPix"]
+ERAS = ERAS_RUN2 + ERAS_RUN3
+
+# correctionlib campaigns
+CORRECTIONLIB_CAMPAIGNS = {
+    **{
+        _era: f"{_era}_UL"
+        for _era in ERAS_RUN2
+    },
+    "2022preEE": "2022_Summer22",
+    "2022postEE": "2022_Summer22EE",
+    "2023preBPix": "2023_Summer23",
+    "2023postBPix": "2023_Summer23BPix",
+}

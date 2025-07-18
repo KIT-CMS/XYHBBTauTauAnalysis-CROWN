@@ -347,6 +347,77 @@ PFMetCorrections = ProducerGroup(
     ],
 )
 
+# dummy producer to rename MET pt if corrections are not available yet
+RenameMetPt = Producer(
+    name="RenameMetPt",
+    call="event::quantity::Rename<float>({df}, {output}, {input})",
+    input=[q.met_uncorrected],
+    output=[q.met],
+    scopes=["et", "mt", "tt", "em", "mm", "ee"],
+)
+
+# dummy producer to rename MET phi if corrections are not available yet
+RenameMetPhi = Producer(
+    name="RenameMetPhi",
+    call="event::quantity::Rename<float>({df}, {output}, {input})",
+    input=[q.metphi_uncorrected],
+    output=[q.metphi],
+    scopes=["et", "mt", "tt", "em", "mm", "ee"],
+)
+
+# dummy producer to rename MET pt for the boosted selection if corrections are not available yet
+RenameMetPtBoosted = Producer(
+    name="RenameMetPtBoosted",
+    call="event::quantity::Rename<float>({df}, {output}, {input})",
+    input=[q.met_uncorrected],
+    output=[q.met_boosted],
+    scopes=["et", "mt", "tt", "em", "mm", "ee"],
+)
+
+# dummy producer to rename MET phi for the boosted selection if corrections are not available yet
+RenameMetPhiBoosted = Producer(
+    name="RenameMetPhiBoosted",
+    call="event::quantity::Rename<float>({df}, {output}, {input})",
+    input=[q.metphi_uncorrected],
+    output=[q.metphi_boosted],
+    scopes=["et", "mt", "tt", "em", "mm", "ee"],
+)
+
+# dummy producer to rename MET vector if corrections are not available yet
+RenameMetP4RecoilCorrected = Producer(
+    name="RenameMetP4RecoilCorrected",
+    call="event::quantity::Rename<float>({df}, {output}, {input})",
+    input=[q.met_p4],
+    output=[q.met_p4_recoilcorrected],
+    scopes=["et", "mt", "tt", "em", "mm", "ee"],
+)
+
+# dummy producer to rename MET vector for boosted selection if corrections are not available yet
+RenameMetP4RecoilCorrectedBoosted = Producer(
+    name="RenameMetP4RecoilCorrectedBoosted",
+    call="event::quantity::Rename<float>({df}, {output}, {input})",
+    input=[q.met_p4],
+    output=[q.met_p4_boosted_recoilcorrected],
+    scopes=["et", "mt", "tt", "em", "mm", "ee"],
+)
+
+# group all rename producers
+RenameMet = ProducerGroup(
+    name="RenameMet",
+    call=None,
+    input=None,
+    output=None,
+    scopes=["et", "mt", "tt", "em", "mm", "ee"],
+    subproducers=[
+        RenameMetPt,
+        RenameMetPtBoosted,
+        RenameMetPhi,
+        RenameMetPhiBoosted,
+        RenameMetP4RecoilCorrected,
+        RenameMetP4RecoilCorrectedBoosted,
+    ],
+)
+
 MetPt_boosted = Producer(
     name="MetPt_boosted",
     call="lorentzvector::GetPt({df}, {output}, {input})",
