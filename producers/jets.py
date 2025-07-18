@@ -165,8 +165,8 @@ GoodBJetsWithPUID = ProducerGroup(
 
 
 # pt correction from energy scale corrections
-BJetPtCorrection = Producer(
-    name="BJetPtCorrection",
+BJetPtCorrectionRun2 = Producer(
+    name="BJetPtCorrectionRun2",
     call="physicsobject::jet::BJetPtCorrection({df}, {output}, {input})",
     input=[
         q.Jet_pt_corrected,
@@ -178,8 +178,8 @@ BJetPtCorrection = Producer(
 )
 
 # mass correction from energy scale corrections
-BJetMassCorrection = Producer(
-    name="BJetMassCorrection",
+BJetMassCorrectionRun2 = Producer(
+    name="BJetMassCorrectionRun2",
     call="physicsobject::MassCorrectionWithPt({df}, {output}, {input})",
     input=[
         q.Jet_mass_corrected,
@@ -191,14 +191,45 @@ BJetMassCorrection = Producer(
 )
 
 # producer group for b jet energy corrections to apply
-BJetEnergyCorrection = ProducerGroup(
-    name="BJetEnergyCorrection",
+BJetEnergyCorrectionRun2 = ProducerGroup(
+    name="BJetEnergyCorrectionRun2",
     call=None,
     input=None,
     output=None,
     subproducers=[
-        BJetPtCorrection,
-        BJetMassCorrection,
+        BJetPtCorrectionRun2,
+        BJetMassCorrectionRun2,
+    ],
+    scopes=GLOBAL_SCOPES,
+)
+
+# rename original pt as b jet regression does not exist in Run 3
+RenameBJetPtCorrection = Producer(
+    name="RenameBJetPtCorrection",
+    call="event::quantity::Rename<float>({df}, {output}, {input})",
+    input=[q.Jet_pt_corrected],
+    output=[q.Jet_pt_corrected_bReg],
+    scopes=GLOBAL_SCOPES,
+)
+
+# rename original mass as b jet regression does not exist in Run 3
+RenameBJetMassCorrection = Producer(
+    name="RenameBJetMassCorrection",
+    call="event::quantity::Rename<float>({df}, {output}, {input})",
+    input=[q.Jet_mass_corrected],
+    output=[q.Jet_mass_corrected_bReg],
+    scopes=GLOBAL_SCOPES,
+)
+
+# producer group for b jet energy corrections to apply
+RenameBJetEnergyCorrection = ProducerGroup(
+    name="RenameBJetEnergyCorrection",
+    call=None,
+    input=None,
+    output=None,
+    subproducers=[
+        RenameBJetPtCorrection,
+        RenameBJetMassCorrection,
     ],
     scopes=GLOBAL_SCOPES,
 )

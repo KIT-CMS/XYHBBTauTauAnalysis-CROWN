@@ -1738,6 +1738,28 @@ def build_config(
             met.MetBasics,
         ],
     )
+
+    # some producers need to be different for Run 2 and Run 3 eras
+    # - electron pt correction (different procedure for Run 2 and Run 3)
+    # - b jet energy regression (does not exist in Run 3)
+    if era in ERAS_RUN2:
+        # run 2 producers
+        configuration.add_producers(
+            "global",
+            [
+                electrons.ElectronPtCorrectionMCRun2,
+                jets.BJetEnergyCorrectionRun2,
+            ],
+        )
+    elif era in ERAS_RUN3:
+        configuration.add_producers(
+            "global",
+            [
+                electrons.ElectronPtCorrectionMCRun3,
+                jets.RenameBJetEnergyCorrection,
+            ]
+        )
+
     ## add prefiring
     if era in ["2016preVFP", "2016postVFP", "2017"]:
         configuration.add_producers(
@@ -1792,6 +1814,23 @@ def build_config(
             genparticles.GenMatchingBoosted,
         ],
     )
+    
+    # load different b jet pair quantities producers for Run 2 and Run 3
+    if era in ERAS_RUN2:
+        configuration.add_producers(
+            HAD_TAU_SCOPES,
+            [
+                pairquantities_bbpair.DiBjetPairQuantitiesRun2,
+            ]
+        )
+    elif era in ERAS_RUN3:
+        configuration.add_producers(
+            HAD_TAU_SCOPES,
+            [
+                pairquantities_bbpair.DiBjetPairQuantitiesRun3,
+            ]
+        )
+
     configuration.add_producers(
         "mm",
         [
@@ -3005,62 +3044,80 @@ def build_config(
     #########################
     # Electron energy correction shifts
     #########################
-    configuration.add_shift(
-        SystematicShift(
-            name="eleEsResoUp",
-            shift_config={
-                ("global"): {"ele_es_variation": "resolutionUp"},
-            },
-            producers={
-                ("global"): [
-                    electrons.ElectronPtCorrectionMC,
-                ],
-            },
-        ),
-        exclude_samples=["data", "embedding", "embedding_mc"],
-    )
-    configuration.add_shift(
-        SystematicShift(
-            name="eleEsResoDown",
-            shift_config={
-                ("global"): {"ele_es_variation": "resolutionDown"},
-            },
-            producers={
-                ("global"): [
-                    electrons.ElectronPtCorrectionMC,
-                ],
-            },
-        ),
-        exclude_samples=["data", "embedding", "embedding_mc"],
-    )
-    configuration.add_shift(
-        SystematicShift(
-            name="eleEsScaleUp",
-            shift_config={
-                ("global"): {"ele_es_variation": "scaleUp"},
-            },
-            producers={
-                ("global"): [
-                    electrons.ElectronPtCorrectionMC,
-                ],
-            },
-        ),
-        exclude_samples=["data", "embedding", "embedding_mc"],
-    )
-    configuration.add_shift(
-        SystematicShift(
-            name="eleEsScaleDown",
-            shift_config={
-                ("global"): {"ele_es_variation": "scaleDown"},
-            },
-            producers={
-                ("global"): [
-                    electrons.ElectronPtCorrectionMC,
-                ],
-            },
-        ),
-        exclude_samples=["data", "embedding", "embedding_mc"],
-    )
+
+    if era in ERAS_RUN2:
+        configuration.add_shift(
+            SystematicShift(
+                name="eleEsResoUp",
+                shift_config={
+                    ("global"): {"ele_es_variation": "resolutionUp"},
+                },
+                producers={
+                    ("global"): [
+                        (
+                            electrons.ElectronPtCorrectionMCRun2
+                            if era in ERAS_RUN2
+                            else electrons.ElectronPtCorrectionMCRun3
+                        )
+                    ],
+                },
+            ),
+            exclude_samples=["data", "embedding", "embedding_mc"],
+        )
+        configuration.add_shift(
+            SystematicShift(
+                name="eleEsResoDown",
+                shift_config={
+                    ("global"): {"ele_es_variation": "resolutionDown"},
+                },
+                producers={
+                    ("global"): [
+                        (
+                            electrons.ElectronPtCorrectionMCRun2
+                            if era in ERAS_RUN2
+                            else electrons.ElectronPtCorrectionMCRun3
+                        )
+                    ],
+                },
+            ),
+            exclude_samples=["data", "embedding", "embedding_mc"],
+        )
+        configuration.add_shift(
+            SystematicShift(
+                name="eleEsScaleUp",
+                shift_config={
+                    ("global"): {"ele_es_variation": "scaleUp"},
+                },
+                producers={
+                    ("global"): [
+                        (
+                            electrons.ElectronPtCorrectionMCRun2
+                            if era in ERAS_RUN2
+                            else electrons.ElectronPtCorrectionMCRun3
+                        )
+                    ],
+                },
+            ),
+            exclude_samples=["data", "embedding", "embedding_mc"],
+        )
+        configuration.add_shift(
+            SystematicShift(
+                name="eleEsScaleDown",
+                shift_config={
+                    ("global"): {"ele_es_variation": "scaleDown"},
+                },
+                producers={
+                    ("global"): [
+                        (
+                            electrons.ElectronPtCorrectionMCRun2
+                            if era in ERAS_RUN2
+                            else electrons.ElectronPtCorrectionMCRun3
+                        )
+                    ],
+                },
+            ),
+            exclude_samples=["data", "embedding", "embedding_mc"],
+        )
 
     #########################
     # MET Shifts
