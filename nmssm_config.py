@@ -180,14 +180,8 @@ def add_pileup_reweighting_config(configuration: Configuration):
 
             "PU_reweighting_file": EraModifier(
                 {
-                    **{
-                        _era: f"data/jsonpog-integration/POG/LUM/{_era}_UL/puWeights.json.gz"
-                        for _era in ERAS_RUN2
-                    },
-                    "2022preEE": "Summer22",
-                    "2022postEE": "Summer22EE",
-                    "2023preBPix": "Summer23",
-                    "2023postBPix": "Summer23",
+                    _era: f"data/jsonpog-integration/POG/LUM/{_campaign}/puWeights.json.gz"
+                    for _era, _campaign in CORRECTIONLIB_CAMPAIGNS.items()
                 }
             ),
             "PU_reweighting_era": EraModifier(
