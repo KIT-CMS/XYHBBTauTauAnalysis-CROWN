@@ -1576,19 +1576,6 @@ def build_config(
         },
     )
 
-    # lepton vetoes
-    configuration.add_config_parameters(
-        "global",
-        {
-            "min_dielectronveto_pt": 15.0,
-            "dielectronveto_id": "Electron_cutBased",
-            "dielectronveto_id_wp": 1,
-            "min_dimuonveto_pt": 15.0,
-            "dimuonveto_id": "Muon_looseId",
-            "dileptonveto_dR": 0.15,
-        },
-    )
-
     # deltaR condition for resolved tau definition
     configuration.add_config_parameters(
         HAD_TAU_SCOPES,
