@@ -1462,6 +1462,7 @@ def build_config(
     add_hadronic_tau_config(configuration)
 
     # boosted hadronic tau selection and corrections for identification and energy scale
+    # TODO add boosted hadronic tau _corrections_ for Run 3
     add_boosted_hadronic_tau_config(configuration)
 
     # b jet selection, identification, and corrections
@@ -1798,11 +1799,10 @@ def build_config(
             pairselection.LVbjet2,
             pairselection.LVbjet1_boosted,
             pairselection.LVbjet2_boosted,
-            pairquantities_bbpair.DiBjetPairQuantities,
             pairquantities_bbpair.DiBjetPairQuantities_boosted,
             genparticles.GenDiBjetPairQuantities,
-            # fatjets.FindFatjetMatchingBjet,
-            # fatjets.BasicMatchedFatJetQuantities,
+            fatjets.FindFatjetMatchingBjet,
+            fatjets.BasicMatchedFatJetQuantities,
             fatjets.FindXbbFatjet,
             fatjets.BasicXbbFatJetQuantities,
             fatjets.FindXbbFatjet_boosted,
@@ -1896,16 +1896,25 @@ def build_config(
             scalefactors.Tau_2_VsJetTauID_lt_SF,
             scalefactors.Tau_2_VsEleTauID_SF,
             scalefactors.Tau_2_VsMuTauID_SF,
-            scalefactors.Tau_2_oldIsoTauID_lt_SF,
-            scalefactors.Tau_2_antiEleTauID_SF,
-            scalefactors.Tau_2_antiMuTauID_SF,
             triggers.SingleMuTriggerFlags,
             triggers.DoubleMuTauTriggerFlags,
-            triggers.BoostedMTGenerateSingleMuonTriggerFlags,
+            #triggers.BoostedMTGenerateSingleMuonTriggerFlags,  TODO rework trigger setup before enabling this
             # triggers.MTGenerateCrossTriggerFlags,
             # triggers.GenerateSingleTrailingTauTriggerFlags,
         ],
     )
+
+    # add the old MVA ID scale factor producers only for Run 2 eras (not available for Run 3)
+    if era in ERAS_RUN2:
+        configuration.add_producers(
+            "mt",
+            [
+                scalefactors.Tau_2_oldIsoTauID_lt_SF,
+                scalefactors.Tau_2_antiEleTauID_SF,
+                scalefactors.Tau_2_antiMuTauID_SF,
+            ],
+        )
+
     configuration.add_producers(
         "et",
         [
@@ -1942,15 +1951,24 @@ def build_config(
             scalefactors.Tau_2_VsJetTauID_lt_SF,
             scalefactors.Tau_2_VsEleTauID_SF,
             scalefactors.Tau_2_VsMuTauID_SF,
-            scalefactors.Tau_2_oldIsoTauID_lt_SF,
-            scalefactors.Tau_2_antiEleTauID_SF,
-            scalefactors.Tau_2_antiMuTauID_SF,
-            triggers.ETGenerateSingleElectronTriggerFlags,
-            triggers.BoostedETGenerateSingleElectronTriggerFlags,
+            triggers.SingleEleTriggerFlags,
+            #triggers.BoostedETGenerateSingleElectronTriggerFlags,  TODO rework trigger setup before enabling this
             # triggers.ETGenerateCrossTriggerFlags,
             # triggers.GenerateSingleTrailingTauTriggerFlags,
         ],
     )
+
+    # add the old MVA ID scale factor producers only for Run 2 eras (not available for Run 3)
+    if era in ERAS_RUN2:
+        configuration.add_producers(
+            "et",
+            [
+                scalefactors.Tau_2_oldIsoTauID_lt_SF,
+                scalefactors.Tau_2_antiEleTauID_SF,
+                scalefactors.Tau_2_antiMuTauID_SF,
+            ],
+        )
+
     configuration.add_producers(
         "tt",
         [
@@ -1983,21 +2001,29 @@ def build_config(
             scalefactors.Tau_2_VsJetTauID_tt_SF,
             scalefactors.Tau_2_VsEleTauID_SF,
             scalefactors.Tau_2_VsMuTauID_SF,
-            scalefactors.Tau_1_oldIsoTauID_tt_SF,
-            scalefactors.Tau_1_antiEleTauID_SF,
-            scalefactors.Tau_1_antiMuTauID_SF,
-            scalefactors.Tau_2_oldIsoTauID_tt_SF,
-            scalefactors.Tau_2_antiEleTauID_SF,
-            scalefactors.Tau_2_antiMuTauID_SF,
             triggers.TTGenerateDoubleTriggerFlags,
-            # triggers.BoostedTTGenerateDoubleTriggerFlags,
+            #triggers.BoostedTTGenerateDoubleTriggerFlags,  TODO rework trigger setup before enabling this
             # triggers.GenerateSingleTrailingTauTriggerFlags,
             # triggers.GenerateSingleLeadingTauTriggerFlags,
-            triggers.BoostedTTTriggerFlags,
+            #triggers.BoostedTTTriggerFlags,
             scalefactors.TTGenerateDoubleTauTriggerSF_MC,
-            scalefactors.BoostedTTGenerateFatjetTriggerSF_MC,
+            #scalefactors.BoostedTTGenerateFatjetTriggerSF_MC,
         ],
     )
+
+    # add the old MVA ID scale factor producers only for Run 2 eras (not available for Run 3)
+    if era in ERAS_RUN2:
+        configuration.add_producers(
+            "tt",
+            [
+                scalefactors.Tau_1_oldIsoTauID_tt_SF,
+                scalefactors.Tau_1_antiEleTauID_SF,
+                scalefactors.Tau_1_antiMuTauID_SF,
+                scalefactors.Tau_2_oldIsoTauID_tt_SF,
+                scalefactors.Tau_2_antiEleTauID_SF,
+                scalefactors.Tau_2_antiMuTauID_SF,
+            ],
+        )
 
     # boosted X->bb scale factors exist for 2018 for now
     # TODO include X->bb scale factors for all eras
@@ -2033,17 +2059,7 @@ def build_config(
             samples="data",
         ),
     )
-    configuration.add_modification_rule(
-        ["et", "mt"],
-        RemoveProducer(
-            producers=[
-                scalefactors.Tau_2_antiMuTauID_SF,
-                scalefactors.Tau_2_oldIsoTauID_lt_SF,
-                scalefactors.Tau_2_antiEleTauID_SF,
-            ],
-            samples=["data", "embedding"],
-        ),
-    )
+
     configuration.add_modification_rule(
         ["et", "mt", "tt"],
         AppendProducer(
@@ -2071,20 +2087,35 @@ def build_config(
             samples="data",
         ),
     )
-    configuration.add_modification_rule(
-        ["tt"],
-        RemoveProducer(
-            producers=[
-                scalefactors.Tau_1_oldIsoTauID_tt_SF,
-                scalefactors.Tau_1_antiEleTauID_SF,
-                scalefactors.Tau_1_antiMuTauID_SF,
-                scalefactors.Tau_2_oldIsoTauID_tt_SF,
-                scalefactors.Tau_2_antiEleTauID_SF,
-                scalefactors.Tau_2_antiMuTauID_SF,
-            ],
-            samples=["data", "embedding"],
-        ),
-    )
+
+    # the old MVA ID producers must only be removed for Run 2 eras as they have not been added to Run 3 eras
+    if era in ERAS_RUN2:
+        configuration.add_modification_rule(
+            ["et", "mt"],
+            RemoveProducer(
+                producers=[
+                    scalefactors.Tau_2_antiMuTauID_SF,
+                    scalefactors.Tau_2_oldIsoTauID_lt_SF,
+                    scalefactors.Tau_2_antiEleTauID_SF,
+                ],
+                samples=["data", "embedding"],
+            ),
+        )
+        configuration.add_modification_rule(
+            ["tt"],
+            RemoveProducer(
+                producers=[
+                    scalefactors.Tau_1_oldIsoTauID_tt_SF,
+                    scalefactors.Tau_1_antiEleTauID_SF,
+                    scalefactors.Tau_1_antiMuTauID_SF,
+                    scalefactors.Tau_2_oldIsoTauID_tt_SF,
+                    scalefactors.Tau_2_antiEleTauID_SF,
+                    scalefactors.Tau_2_antiMuTauID_SF,
+                ],
+                samples=["data", "embedding"],
+            ),
+        )
+
     configuration.add_modification_rule(
         HAD_TAU_SCOPES,
         RemoveProducer(
@@ -2107,7 +2138,6 @@ def build_config(
                 fatjets.fj_Xbb_nBhad_boosted,
                 fatjets.fj_Xbb_nChad_boosted,
                 scalefactors.Xbb_tagging_SF_boosted,
-
             ],
             samples=["data", "embedding", "embedding_mc"],
         ),
@@ -2119,6 +2149,9 @@ def build_config(
             samples="data",
         ),
     )
+
+    # for Run 2, just rename energy value in data is just renamed
+    # for Run 3, apply the "data correction" for boosted tau energies, which is just a renaming operation
     configuration.add_modification_rule(
         HAD_TAU_SCOPES,
         ReplaceProducer(
@@ -2126,9 +2159,10 @@ def build_config(
                 boostedtaus.boostedTauEnergyCorrection,
                 boostedtaus.boostedTauEnergyCorrection_data,
             ],
-            samples="data",
+            samples=["data"] if era in ERAS_RUN2 else available_sample_types,
         ),
     )
+
     configuration.add_modification_rule(
         "global",
         ReplaceProducer(
@@ -2304,7 +2338,7 @@ def build_config(
         RemoveProducer(
             producers=[
                 scalefactors.TTGenerateDoubleTauTriggerSF_MC,
-                scalefactors.BoostedTTGenerateFatjetTriggerSF_MC,
+                #scalefactors.BoostedTTGenerateFatjetTriggerSF_MC,  TODO rework trigger setup before enabling this
             ],
             samples=["data"],
         ),
@@ -2316,9 +2350,9 @@ def build_config(
             producers=[
                 scalefactors.TauEmbeddingMuonIDSF_1_MC,
                 scalefactors.TauEmbeddingMuonIsoSF_1_MC,
-                scalefactors.TauEmbeddingBoostedMuonIDSF_1_MC,
-                scalefactors.TauEmbeddingBoostedMuonIsoSF_1_MC,
-                scalefactors.Muon_SF_boosted,
+                #scalefactors.TauEmbeddingBoostedMuonIDSF_1_MC,  # TODO in Run 2, corrections have been taken from "own" measurements
+                #scalefactors.TauEmbeddingBoostedMuonIsoSF_1_MC,  # TODO in Run 2, corrections have been taken from "own" measurements
+                #scalefactors.Muon_SF_boosted,
             ],
             exclude_samples=["data", "embedding", "embedding_mc"],
         ),
@@ -2329,9 +2363,9 @@ def build_config(
             producers=[
                 scalefactors.TauEmbeddingElectronIDSF_1_MC,
                 scalefactors.TauEmbeddingElectronIsoSF_1_MC,
-                scalefactors.TauEmbeddingBoostedElectronIDSF_1_MC,
-                scalefactors.TauEmbeddingBoostedElectronIsoSF_1_MC,
-                scalefactors.EleID_SF_boosted,
+                #scalefactors.TauEmbeddingBoostedElectronIDSF_1_MC,  # TODO in Run 2, corrections have been taken from "own" measurements
+                #scalefactors.TauEmbeddingBoostedElectronIsoSF_1_MC,  # TODO in Run 2, corrections have been taken from "own" measurements
+                #scalefactors.EleID_SF_boosted,
             ],
             exclude_samples=["data", "embedding", "embedding_mc"],
         ),
@@ -2358,7 +2392,7 @@ def build_config(
                 scalefactors.SingleMuTriggerSF,
                 scalefactors.DoubleMuTauTriggerLeg1SF,
                 scalefactors.DoubleMuTauTriggerLeg2SF,
-                scalefactors.BoostedMTGenerateSingleMuonTriggerSF_MC,
+                #scalefactors.BoostedMTGenerateSingleMuonTriggerSF_MC,
             ],
             exclude_samples=["data", "embedding", "embedding_mc"],
         ),
@@ -2368,8 +2402,8 @@ def build_config(
         ["et"],
         AppendProducer(
             producers=[
-                scalefactors.ETGenerateSingleElectronTriggerSF_MC,
-                scalefactors.BoostedETGenerateSingleElectronTriggerSF_MC,
+                scalefactors.SingleEleTriggerSF,
+                #scalefactors.BoostedETGenerateSingleElectronTriggerSF_MC,
             ],
             exclude_samples=["data", "embedding", "embedding_mc"],
         ),
@@ -2456,8 +2490,6 @@ def build_config(
             q.bpair_mass_2,
             q.bpair_btag_value_1,
             q.bpair_btag_value_2,
-            q.bpair_reg_res_1,
-            q.bpair_reg_res_2,
             q.bpair_m_inv,
             q.bpair_deltaR,
             q.bpair_pt_dijet,
@@ -2595,9 +2627,6 @@ def build_config(
             scalefactors.Tau_2_VsJetTauID_lt_SF.output_group,
             scalefactors.Tau_2_VsEleTauID_SF.output_group,
             scalefactors.Tau_2_VsMuTauID_SF.output_group,
-            scalefactors.Tau_2_oldIsoTauID_lt_SF.output_group,
-            scalefactors.Tau_2_antiEleTauID_SF.output_group,
-            scalefactors.Tau_2_antiMuTauID_SF.output_group,
             pairquantities.VsJetTauIDFlag_2.output_group,
             pairquantities.VsEleTauIDFlag_2.output_group,
             pairquantities.VsMuTauIDFlag_2.output_group,
@@ -2606,7 +2635,7 @@ def build_config(
             boostedtaus.antiMuTauIDFlag_2.output_group,
             triggers.SingleMuTriggerFlags.output_group,
             triggers.DoubleMuTauTriggerFlags.output_group,
-            triggers.BoostedMTGenerateSingleMuonTriggerFlags.output_group,
+            #triggers.BoostedMTGenerateSingleMuonTriggerFlags.output_group,  TODO rework trigger setup before enabling this
             # triggers.MTGenerateCrossTriggerFlags.output_group,
             # triggers.GenerateSingleTrailingTauTriggerFlags.output_group,
             # q.taujet_pt_2,
@@ -2649,6 +2678,18 @@ def build_config(
             # q.boosted_mass_add,
         ],
     )
+
+    # add the old MVA ID scale factor producers only for Run 2 eras (not available for Run 3)
+    if era in ERAS_RUN2:
+        configuration.add_outputs(
+            "mt",
+            [
+                scalefactors.Tau_2_oldIsoTauID_lt_SF.output_group,
+                scalefactors.Tau_2_antiEleTauID_SF.output_group,
+                scalefactors.Tau_2_antiMuTauID_SF.output_group,
+            ],
+        )
+
     configuration.add_outputs(
         "et",
         [
@@ -2658,17 +2699,14 @@ def build_config(
             scalefactors.Tau_2_VsJetTauID_lt_SF.output_group,
             scalefactors.Tau_2_VsEleTauID_SF.output_group,
             scalefactors.Tau_2_VsMuTauID_SF.output_group,
-            scalefactors.Tau_2_oldIsoTauID_lt_SF.output_group,
-            scalefactors.Tau_2_antiEleTauID_SF.output_group,
-            scalefactors.Tau_2_antiMuTauID_SF.output_group,
             pairquantities.VsJetTauIDFlag_2.output_group,
             pairquantities.VsEleTauIDFlag_2.output_group,
             pairquantities.VsMuTauIDFlag_2.output_group,
             boostedtaus.isoTauIDFlag_2.output_group,
             boostedtaus.antiEleTauIDFlag_2.output_group,
             boostedtaus.antiMuTauIDFlag_2.output_group,
-            triggers.ETGenerateSingleElectronTriggerFlags.output_group,
-            triggers.BoostedETGenerateSingleElectronTriggerFlags.output_group,
+            triggers.SingleEleTriggerFlags.output_group,
+            #triggers.BoostedETGenerateSingleElectronTriggerFlags.output_group,  TODO rework trigger setup before enabling this
             # triggers.ETGenerateCrossTriggerFlags.output_group,
             # triggers.GenerateSingleTrailingTauTriggerFlags.output_group,
             # q.taujet_pt_2,
@@ -2711,6 +2749,18 @@ def build_config(
             # q.boosted_mass_add,
         ],
     )
+
+    # add the old MVA ID scale factor producers only for Run 2 eras (not available for Run 3)
+    if era in ERAS_RUN2:
+        configuration.add_outputs(
+            "mt",
+            [
+                scalefactors.Tau_2_oldIsoTauID_lt_SF.output_group,
+                scalefactors.Tau_2_antiEleTauID_SF.output_group,
+                scalefactors.Tau_2_antiMuTauID_SF.output_group,
+            ],
+        )
+
     configuration.add_outputs(
         "tt",
         [
@@ -2721,12 +2771,6 @@ def build_config(
             scalefactors.Tau_2_VsJetTauID_tt_SF.output_group,
             scalefactors.Tau_2_VsEleTauID_SF.output_group,
             scalefactors.Tau_2_VsMuTauID_SF.output_group,
-            scalefactors.Tau_1_oldIsoTauID_tt_SF.output_group,
-            scalefactors.Tau_1_antiEleTauID_SF.output_group,
-            scalefactors.Tau_1_antiMuTauID_SF.output_group,
-            scalefactors.Tau_2_oldIsoTauID_tt_SF.output_group,
-            scalefactors.Tau_2_antiEleTauID_SF.output_group,
-            scalefactors.Tau_2_antiMuTauID_SF.output_group,
             pairquantities.VsJetTauIDFlag_1.output_group,
             pairquantities.VsEleTauIDFlag_1.output_group,
             pairquantities.VsMuTauIDFlag_1.output_group,
@@ -2739,7 +2783,7 @@ def build_config(
             boostedtaus.isoTauIDFlag_2.output_group,
             boostedtaus.antiEleTauIDFlag_2.output_group,
             boostedtaus.antiMuTauIDFlag_2.output_group,
-            triggers.BoostedTTTriggerFlags.output_group,
+            #triggers.BoostedTTTriggerFlags.output_group,  TODO rework trigger setup before enabling this
             triggers.TTGenerateDoubleTriggerFlags.output_group,
             # triggers.GenerateSingleTrailingTauTriggerFlags.output_group,
             # triggers.GenerateSingleLeadingTauTriggerFlags.output_group,
@@ -2777,6 +2821,21 @@ def build_config(
             q.fj_leading_msoftdrop,
         ],
     )
+
+    # add the old MVA ID scale factor producers only for Run 2 eras (not available for Run 3)
+    if era in ERAS_RUN2:
+        configuration.add_outputs(
+            "mt",
+            [
+                scalefactors.Tau_1_oldIsoTauID_tt_SF.output_group,
+                scalefactors.Tau_1_antiEleTauID_SF.output_group,
+                scalefactors.Tau_1_antiMuTauID_SF.output_group,
+                scalefactors.Tau_2_oldIsoTauID_tt_SF.output_group,
+                scalefactors.Tau_2_antiEleTauID_SF.output_group,
+                scalefactors.Tau_2_antiMuTauID_SF.output_group,
+            ],
+        )
+
     configuration.add_outputs(
         "mm",
         [
@@ -3394,40 +3453,136 @@ def build_config(
     #     ),
     #     exclude_samples=["data", "embedding", "embedding_mc"],
     # )
-    configuration.add_shift(
-        SystematicShift(
-            name="boostedElectronIdSFUp",
-            scopes=["et"],
-            shift_config={
-                ("et"): {"ele_sf_variation": "sfup"},
-            },
-            producers={
-                ("et"): [
-                    scalefactors.EleID_SF_boosted,
-                ],
-            },
-        ),
-        exclude_samples=["data", "embedding", "embedding_mc"],
-    )
-    configuration.add_shift(
-        SystematicShift(
-            name="boostedElectronIdSFDown",
-            scopes=["et"],
-            shift_config={
-                ("et"): {"ele_sf_variation": "sfdown"},
-            },
-            producers={
-                ("et"): [
-                    scalefactors.EleID_SF_boosted,
-                ],
-            },
-        ),
-        exclude_samples=["data", "embedding", "embedding_mc"],
-    )
+
+    # perform systematic variations for old MVA ID scale factors only for Run 2 eras (not available for Run 3)
+    if era in ERAS_RUN2:
+        configuration.add_shift(
+            SystematicShift(
+                name="boostedElectronIdSFUp",
+                scopes=["et"],
+                shift_config={
+                    ("et"): {"ele_sf_variation": "sfup"},
+                },
+                producers={
+                    ("et"): [
+                        scalefactors.EleID_SF_boosted,
+                    ],
+                },
+            ),
+            exclude_samples=["data", "embedding", "embedding_mc"],
+        )
+        configuration.add_shift(
+            SystematicShift(
+                name="boostedElectronIdSFDown",
+                scopes=["et"],
+                shift_config={
+                    ("et"): {"ele_sf_variation": "sfdown"},
+                },
+                producers={
+                    ("et"): [
+                        scalefactors.EleID_SF_boosted,
+                    ],
+                },
+            ),
+            exclude_samples=["data", "embedding", "embedding_mc"],
+        )
+        configuration.add_shift(
+            SystematicShift(
+                name="boostedMuonRecoSFUp",
+                scopes=["mt"],
+                shift_config={
+                    ("mt"): {"muon_reco_sf_variation": "systup"},
+                },
+                producers={
+                    ("mt"): [
+                        scalefactors.Muon_1_Reco_SF_boosted,
+                    ],
+                },
+            ),
+            exclude_samples=["data", "embedding", "embedding_mc"],
+        )
+        configuration.add_shift(
+            SystematicShift(
+                name="boostedMuonRecoSFDown",
+                scopes=["mt"],
+                shift_config={
+                    ("mt"): {"muon_reco_sf_variation": "systdown"},
+                },
+                producers={
+                    ("mt"): [
+                        scalefactors.Muon_1_Reco_SF_boosted,
+                    ],
+                },
+            ),
+            exclude_samples=["data", "embedding", "embedding_mc"],
+        )
+        configuration.add_shift(
+            SystematicShift(
+                name="boostedMuonIdSFUp",
+                scopes=["mt"],
+                shift_config={
+                    ("mt"): {"muon_id_sf_variation": "systup"},
+                },
+                producers={
+                    ("mt"): [
+                        scalefactors.Muon_1_ID_SF_boosted,
+                    ],
+                },
+            ),
+            exclude_samples=["data", "embedding", "embedding_mc"],
+        )
+        configuration.add_shift(
+            SystematicShift(
+                name="boostedMuonIdSFDown",
+                scopes=["mt"],
+                shift_config={
+                    ("mt"): {"muon_id_sf_variation": "systdown"},
+                },
+                producers={
+                    ("mt"): [
+                        scalefactors.Muon_1_ID_SF_boosted,
+                    ],
+                },
+            ),
+            exclude_samples=["data", "embedding", "embedding_mc"],
+        )
+        configuration.add_shift(
+            SystematicShift(
+                name="boostedMuonIsoSFUp",
+                scopes=["mt"],
+                shift_config={
+                    ("mt"): {"muon_iso_sf_variation": "systup"},
+                },
+                producers={
+                    ("mt"): [
+                        scalefactors.Muon_1_Iso_SF_boosted,
+                    ],
+                },
+            ),
+            exclude_samples=["data", "embedding", "embedding_mc"],
+        )
+        configuration.add_shift(
+            SystematicShift(
+                name="boostedMuonIsoSFDown",
+                scopes=["mt"],
+                shift_config={
+                    ("mt"): {"muon_iso_sf_variation": "systdown"},
+                },
+                producers={
+                    ("mt"): [
+                        scalefactors.Muon_1_Iso_SF_boosted,
+                    ],
+                },
+            ),
+            exclude_samples=["data", "embedding", "embedding_mc"],
+        )
+
+
 
     #########################
     # Muon id/iso sf shifts
     #########################
+    # TODO muon scale factors from own measurements have been used in Run 2, needs to be synchronized
 
     # configuration.add_shift(
     #     SystematicShift(
@@ -3490,100 +3645,77 @@ def build_config(
     #     exclude_samples=["data", "embedding", "embedding_mc"],
     # )
 
-    configuration.add_shift(
-        SystematicShift(
-            name="boostedMuonRecoSFUp",
-            scopes=["mt"],
-            shift_config={
-                ("mt"): {"muon_reco_sf_variation": "systup"},
-            },
-            producers={
-                ("mt"): [
-                    scalefactors.Muon_1_Reco_SF_boosted,
-                ],
-            },
-        ),
-        exclude_samples=["data", "embedding", "embedding_mc"],
-    )
-    configuration.add_shift(
-        SystematicShift(
-            name="boostedMuonRecoSFDown",
-            scopes=["mt"],
-            shift_config={
-                ("mt"): {"muon_reco_sf_variation": "systdown"},
-            },
-            producers={
-                ("mt"): [
-                    scalefactors.Muon_1_Reco_SF_boosted,
-                ],
-            },
-        ),
-        exclude_samples=["data", "embedding", "embedding_mc"],
-    )
-    configuration.add_shift(
-        SystematicShift(
-            name="boostedMuonIdSFUp",
-            scopes=["mt"],
-            shift_config={
-                ("mt"): {"muon_id_sf_variation": "systup"},
-            },
-            producers={
-                ("mt"): [
-                    scalefactors.Muon_1_ID_SF_boosted,
-                ],
-            },
-        ),
-        exclude_samples=["data", "embedding", "embedding_mc"],
-    )
-    configuration.add_shift(
-        SystematicShift(
-            name="boostedMuonIdSFDown",
-            scopes=["mt"],
-            shift_config={
-                ("mt"): {"muon_id_sf_variation": "systdown"},
-            },
-            producers={
-                ("mt"): [
-                    scalefactors.Muon_1_ID_SF_boosted,
-                ],
-            },
-        ),
-        exclude_samples=["data", "embedding", "embedding_mc"],
-    )
-    configuration.add_shift(
-        SystematicShift(
-            name="boostedMuonIsoSFUp",
-            scopes=["mt"],
-            shift_config={
-                ("mt"): {"muon_iso_sf_variation": "systup"},
-            },
-            producers={
-                ("mt"): [
-                    scalefactors.Muon_1_Iso_SF_boosted,
-                ],
-            },
-        ),
-        exclude_samples=["data", "embedding", "embedding_mc"],
-    )
-    configuration.add_shift(
-        SystematicShift(
-            name="boostedMuonIsoSFDown",
-            scopes=["mt"],
-            shift_config={
-                ("mt"): {"muon_iso_sf_variation": "systdown"},
-            },
-            producers={
-                ("mt"): [
-                    scalefactors.Muon_1_Iso_SF_boosted,
-                ],
-            },
-        ),
-        exclude_samples=["data", "embedding", "embedding_mc"],
-    )
-
     #########################
     # Trigger shifts
     #########################
+
+    if era in ERAS_RUN2:
+        configuration.add_shift(
+            SystematicShift(
+                name="singleElectronTriggerSFUp",
+                shift_config={
+                    ("et"): {
+                        "singlelectron_trigger_sf_mc": [
+                            {
+                                "flagname": "trg_wgt_single_ele32orele35",
+                                "mc_trigger_sf": "Trg32_or_Trg35_Iso_pt_eta_bins",
+                                "mc_electron_trg_extrapolation": 1.02,
+                            },
+                            {
+                                "flagname": "trg_wgt_single_ele32",
+                                "mc_trigger_sf": "Trg32_Iso_pt_eta_bins",
+                                "mc_electron_trg_extrapolation": 1.02,
+                            },
+                            {
+                                "flagname": "trg_wgt_single_ele35",
+                                "mc_trigger_sf": "Trg35_Iso_pt_eta_bins",
+                                "mc_electron_trg_extrapolation": 1.02,
+                            },
+                            {
+                                "flagname": "trg_wgt_single_ele27orele32orele35",
+                                "mc_trigger_sf": "Trg_Iso_pt_eta_bins",
+                                "mc_electron_trg_extrapolation": 1.02,
+                            },
+                        ]
+                    }
+                },
+                producers={("et"): scalefactors.ETGenerateSingleElectronTriggerSF_MC},
+            ),
+            exclude_samples=["data", "embedding", "embedding_mc"],
+        )
+        configuration.add_shift(
+            SystematicShift(
+                name="singleElectronTriggerSFDown",
+                shift_config={
+                    ("et"): {
+                        "singlelectron_trigger_sf_mc": [
+                            {
+                                "flagname": "trg_wgt_single_ele32orele35",
+                                "mc_trigger_sf": "Trg32_or_Trg35_Iso_pt_eta_bins",
+                                "mc_electron_trg_extrapolation": 0.98,
+                            },
+                            {
+                                "flagname": "trg_wgt_single_ele32",
+                                "mc_trigger_sf": "Trg32_Iso_pt_eta_bins",
+                                "mc_electron_trg_extrapolation": 0.98,
+                            },
+                            {
+                                "flagname": "trg_wgt_single_ele35",
+                                "mc_trigger_sf": "Trg35_Iso_pt_eta_bins",
+                                "mc_electron_trg_extrapolation": 0.98,
+                            },
+                            {
+                                "flagname": "trg_wgt_single_ele27orele32orele35",
+                                "mc_trigger_sf": "Trg_Iso_pt_eta_bins",
+                                "mc_electron_trg_extrapolation": 0.98,
+                            },
+                        ]
+                    }
+                },
+                producers={("et"): scalefactors.ETGenerateSingleElectronTriggerSF_MC},
+            ),
+            exclude_samples=["data", "embedding", "embedding_mc"],
+        )
     configuration.add_shift(
         SystematicShift(
             name="singleElectronTriggerSFUp",
@@ -3655,6 +3787,7 @@ def build_config(
     # systematic shifts for single muon trigger corrections
     #
 
+    # TODO check run 2 eras
     if era in ["2016preVFP", "2016postVFP", "2017", "2018", "2022preEE", "2022postEE", "2023preBPix", "2023postBPix"]:
         for _variation in ["up", "down"]:
             configuration.add_shift(
@@ -3675,8 +3808,6 @@ def build_config(
                 ),
                 exclude_samples=["data", "embedding", "embedding_mc"],
             )
-
-    # TODO adapt single-muon trigger variations for run2 eras?
 
     #
     # systematic shifts for double muon-tau trigger corrections
@@ -3721,88 +3852,90 @@ def build_config(
                 exclude_samples=["data", "embedding", "embedding_mc"],
             )
 
-    configuration.add_shift(
-        SystematicShift(
-            name="boostedSingleMuonTriggerSFUp",
-            shift_config={
-                ("mt"): {
-                    "boosted_singlemuon_trigger_sf_mc": [
-                        {
-                            "flagname": "trg_wgt_single_mu24_boosted",
-                            "muon_trigger_sf_name": "NUM_IsoMu24_DEN_CutBasedIdTight_and_PFIsoTight",
-                            "muon_trg_sf_variation": "systup",  # "sf" is nominal, "systup"/"systdown" are up/down variations
-                        },
-                        {
-                            "flagname": "trg_wgt_single_mu50_boosted",
-                            "muon_trigger_sf_name": "NUM_Mu50_or_OldMu100_or_TkMu100_DEN_CutBasedIdGlobalHighPt_and_TkIsoLoose",
-                            "muon_trg_sf_variation": "systup",  # "sf" is nominal, "systup"/"systdown" are up/down variations
-                        },
-                    ],
-                }
-            },
-            producers={("mt"): scalefactors.BoostedMTGenerateSingleMuonTriggerSF_MC},
-        ),
-        exclude_samples=["data", "embedding", "embedding_mc"],
-    )
-    configuration.add_shift(
-        SystematicShift(
-            name="boostedSingleMuonTriggerSFDown",
-            shift_config={
-                ("mt"): {
-                    "boosted_singlemuon_trigger_sf_mc": [
-                        {
-                            "flagname": "trg_wgt_single_mu24_boosted",
-                            "muon_trigger_sf_name": "NUM_IsoMu24_DEN_CutBasedIdTight_and_PFIsoTight",
-                            "muon_trg_sf_variation": "systdown",  # "nominal" is nominal, "systup"/"systdown" are up/down variations
-                        },
-                        {
-                            "flagname": "trg_wgt_single_mu50_boosted",
-                            "muon_trigger_sf_name": "NUM_Mu50_or_OldMu100_or_TkMu100_DEN_CutBasedIdGlobalHighPt_and_TkIsoLoose",
-                            "muon_trg_sf_variation": "systdown",  # "nominal" is nominal, "systup"/"systdown" are up/down variations
-                        },
-                    ],
-                }
-            },
-            producers={("mt"): scalefactors.BoostedMTGenerateSingleMuonTriggerSF_MC},
-        ),
-        exclude_samples=["data", "embedding", "embedding_mc"],
-    )
-    configuration.add_shift(
-        SystematicShift(
-            name="boostedSingleElectronTriggerSFUp",
-            shift_config={
-                ("et"): {
-                    "boosted_singleelectron_trigger_sf_mc": [
-                        {
-                            "flagname": "trg_wgt_single_ele_boosted",
-                            "ele_trg_sf_name": "ElectronTriggerSF",
-                            "ele_trg_sf_variation": "up",
-                        },
-                    ],
-                }
-            },
-            producers={("et"): scalefactors.BoostedETGenerateSingleElectronTriggerSF_MC},
-        ),
-        exclude_samples=["data", "embedding", "embedding_mc"],
-    )
-    configuration.add_shift(
-        SystematicShift(
-            name="boostedSingleElectronTriggerSFDown",
-            shift_config={
-                ("et"): {
-                    "boosted_singleelectron_trigger_sf_mc": [
-                        {
-                            "flagname": "trg_wgt_single_ele_boosted",
-                            "ele_trg_sf_name": "ElectronTriggerSF",
-                            "ele_trg_sf_variation": "down",
-                        },
-                    ],
-                }
-            },
-            producers={("et"): scalefactors.BoostedETGenerateSingleElectronTriggerSF_MC},
-        ),
-        exclude_samples=["data", "embedding", "embedding_mc"],
-    )
+    # TODO rework setup of boosted triggers before touching this
+
+    #configuration.add_shift(
+    #    SystematicShift(
+    #        name="boostedSingleMuonTriggerSFUp",
+    #        shift_config={
+    #            ("mt"): {
+    #                "boosted_singlemuon_trigger_sf_mc": [
+    #                    {
+    #                        "flagname": "trg_wgt_single_mu24_boosted",
+    #                        "muon_trigger_sf_name": "NUM_IsoMu24_DEN_CutBasedIdTight_and_PFIsoTight",
+    #                        "muon_trg_sf_variation": "systup",  # "sf" is nominal, "systup"/"systdown" are up/down variations
+    #                    },
+    #                    {
+    #                        "flagname": "trg_wgt_single_mu50_boosted",
+    #                        "muon_trigger_sf_name": "NUM_Mu50_or_OldMu100_or_TkMu100_DEN_CutBasedIdGlobalHighPt_and_TkIsoLoose",
+    #                        "muon_trg_sf_variation": "systup",  # "sf" is nominal, "systup"/"systdown" are up/down variations
+    #                    },
+    #                ],
+    #            }
+    #        },
+    #        producers={("mt"): scalefactors.BoostedMTGenerateSingleMuonTriggerSF_MC},
+    #    ),
+    #    exclude_samples=["data", "embedding", "embedding_mc"],
+    #)
+    #configuration.add_shift(
+    #    SystematicShift(
+    #        name="boostedSingleMuonTriggerSFDown",
+    #        shift_config={
+    #            ("mt"): {
+    #                "boosted_singlemuon_trigger_sf_mc": [
+    #                    {
+    #                        "flagname": "trg_wgt_single_mu24_boosted",
+    #                        "muon_trigger_sf_name": "NUM_IsoMu24_DEN_CutBasedIdTight_and_PFIsoTight",
+    #                        "muon_trg_sf_variation": "systdown",  # "nominal" is nominal, "systup"/"systdown" are up/down variations
+    #                    },
+    #                    {
+    #                        "flagname": "trg_wgt_single_mu50_boosted",
+    #                        "muon_trigger_sf_name": "NUM_Mu50_or_OldMu100_or_TkMu100_DEN_CutBasedIdGlobalHighPt_and_TkIsoLoose",
+    #                        "muon_trg_sf_variation": "systdown",  # "nominal" is nominal, "systup"/"systdown" are up/down variations
+    #                    },
+    #                ],
+    #            }
+    #        },
+    #        producers={("mt"): scalefactors.BoostedMTGenerateSingleMuonTriggerSF_MC},
+    #    ),
+    #    exclude_samples=["data", "embedding", "embedding_mc"],
+    #)
+    #configuration.add_shift(
+    #    SystematicShift(
+    #        name="boostedSingleElectronTriggerSFUp",
+    #        shift_config={
+    #            ("et"): {
+    #                "boosted_singleelectron_trigger_sf_mc": [
+    #                    {
+    #                        "flagname": "trg_wgt_single_ele_boosted",
+    #                        "ele_trg_sf_name": "ElectronTriggerSF",
+    #                        "ele_trg_sf_variation": "up",
+    #                    },
+    #                ],
+    #            }
+    #        },
+    #        producers={("et"): scalefactors.BoostedETGenerateSingleElectronTriggerSF_MC},
+    #    ),
+    #    exclude_samples=["data", "embedding", "embedding_mc"],
+    #)
+    #configuration.add_shift(
+    #    SystematicShift(
+    #        name="boostedSingleElectronTriggerSFDown",
+    #        shift_config={
+    #            ("et"): {
+    #                "boosted_singleelectron_trigger_sf_mc": [
+    #                    {
+    #                        "flagname": "trg_wgt_single_ele_boosted",
+    #                        "ele_trg_sf_name": "ElectronTriggerSF",
+    #                        "ele_trg_sf_variation": "down",
+    #                    },
+    #                ],
+    #            }
+    #        },
+    #        producers={("et"): scalefactors.BoostedETGenerateSingleElectronTriggerSF_MC},
+    #    ),
+    #    exclude_samples=["data", "embedding", "embedding_mc"],
+    #)
 
     configuration.add_shift(
         SystematicShift(
@@ -3825,32 +3958,36 @@ def build_config(
         exclude_samples=["data", "embedding", "embedding_mc"],
     )
 
-    configuration.add_shift(
-        SystematicShift(
-            name="fatjetTriggerSFUp",
-            shift_config={("tt"): {"fatjet_trigger_sf_syst": "up"}},
-            producers={
-                ("tt"): scalefactors.BoostedTTGenerateFatjetTriggerSF_MC,
-            },
-        ),
-        exclude_samples=["data", "embedding", "embedding_mc"],
-    )
-    configuration.add_shift(
-        SystematicShift(
-            name="fatjetTriggerSFDown",
-            shift_config={("tt"): {"fatjet_trigger_sf_syst": "down"}},
-            producers={
-                ("tt"): scalefactors.BoostedTTGenerateFatjetTriggerSF_MC,
-            },
-        ),
-        exclude_samples=["data", "embedding", "embedding_mc"],
-    )
+    #configuration.add_shift(
+    #    SystematicShift(
+    #        name="fatjetTriggerSFUp",
+    #        shift_config={("tt"): {"fatjet_trigger_sf_syst": "up"}},
+    #        producers={
+    #            ("tt"): scalefactors.BoostedTTGenerateFatjetTriggerSF_MC,
+    #        },
+    #    ),
+    #    exclude_samples=["data", "embedding", "embedding_mc"],
+    #)
+    #configuration.add_shift(
+    #    SystematicShift(
+    #        name="fatjetTriggerSFDown",
+    #        shift_config={("tt"): {"fatjet_trigger_sf_syst": "down"}},
+    #        producers={
+    #            ("tt"): scalefactors.BoostedTTGenerateFatjetTriggerSF_MC,
+    #        },
+    #    ),
+    #    exclude_samples=["data", "embedding", "embedding_mc"],
+    #)
 
     #########################
     # TauID scale factor shifts, channel dependent # Tau energy scale shifts, dm dependent
     #########################
     add_tauVariations(configuration, sample)
-    add_boostedtauVariations(configuration, sample)
+    
+    # include boosted tau variations only for Run 2 as correction files do not exist for Run 3
+    if era in ERAS_RUN2:
+        add_boostedtauVariations(configuration, sample)
+
     #########################
     # Import triggersetup   #
     #########################
