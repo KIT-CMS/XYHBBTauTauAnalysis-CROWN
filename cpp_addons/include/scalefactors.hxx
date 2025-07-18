@@ -2,29 +2,6 @@
 #define GUARD_SCALEFACTORSEXT_H
 
 
-namespace v12 {
-
-namespace scalefactor {
-
-namespace jet {
-
-ROOT::RDF::RNode
-btagSF(ROOT::RDF::RNode df,
-       correctionManager::CorrectionManager &correctionManager,
-       const std::string &pt, const std::string &eta,
-       const std::string &btag_discr, const std::string &flavor,
-       const std::string &jet_mask, const std::string &bjet_mask,
-       const std::string &jet_veto_mask, const std::string &variation,
-       const std::string &sf_output, const std::string &sf_file,
-       const std::string &corr_algorithm);
-
-} // namespace jet
-
-} // scalefactor
-
-} // namespace v12
-
-
 namespace scalefactor {
 
 namespace electron {
@@ -131,18 +108,6 @@ trigger(
 );
 
 } // namespace fatjet
-
-namespace embedding {
-
-ROOT::RDF::RNode
-ditau_trigger_sf(ROOT::RDF::RNode df, correctionManager::CorrectionManager &correctionManager,
-                 const std::string &pt,
-                 const std::string &decaymode, const std::string &output,
-                 const std::string &wp, const std::string &sf_file,
-                 const std::string &corr_name, const std::string &type,
-                 const std::string &corr_type, const std::string &syst);
-
-} // end embedding
 
 } // end scalefactor
 

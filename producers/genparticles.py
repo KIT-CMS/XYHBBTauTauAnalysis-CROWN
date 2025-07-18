@@ -401,14 +401,14 @@ genjet_mass_2 = Producer(
 )
 genjet_hadFlavour_1 = Producer(
     name="genjet_hadFlavour_1",
-    call="event::quantity::Get<Int_t>({df}, {output}, {input}, 0)",
+    call="event::quantity::Get<UChar_t>({df}, {output}, {input}, 0)",
     input=[nanoAOD.GenJet_hadFlavour, q.gen_dibjetpair],
     output=[q.genjet_hadFlavour_1],
     scopes=["mt", "et", "tt", "mm"],
 )
 genjet_hadFlavour_2 = Producer(
     name="genjet_hadFlavour_2",
-    call="event::quantity::Get<Int_t>({df}, {output}, {input}, 1)",
+    call="event::quantity::Get<UChar_t>({df}, {output}, {input}, 1)",
     input=[nanoAOD.GenJet_hadFlavour, q.gen_dibjetpair],
     output=[q.genjet_hadFlavour_2],
     scopes=["mt", "et", "tt", "mm"],
