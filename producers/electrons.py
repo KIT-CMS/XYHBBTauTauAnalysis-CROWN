@@ -4,7 +4,7 @@ Producers for electron energy scale corrections, object selections, and vetoes.
 
 from ..quantities import output as q
 from ..quantities import nanoAOD as nanoAOD
-from code_generation.producer import Producer
+from code_generation.producer import Producer, ProducerGroup
 
 from ..constants import EE_SCOPES, ET_SCOPES, ELECTRON_SCOPES, SCOPES, GLOBAL_SCOPES
 
@@ -26,10 +26,10 @@ ElectronPtCorrectionEmbedding = Producer(
     scopes=GLOBAL_SCOPES,
 )
 
-# corrections in MC samples
-ElectronPtCorrectionMC = Producer(
-    name="ElectronPtCorrectionMC",
-    call='physicsobject::electron::PtCorrectionMC({df}, correctionManager, {output}, {input}, {ele_es_file}, {ele_es_era}, "{ele_es_variation}")',
+# corrections in MC samples in Run 2, for which an additional scale factor file needs to be provided
+ElectronPtCorrectionMCRun2 = Producer(
+    name="ElectronPtCorrectionMCRun2",
+    call='physicsobject::electron::PtCorrectionMC({df}, correctionManager, {output}, {input}, "{ele_es_file}", "{ele_es_era}", "{ele_es_variation}")',
     input=[
         nanoAOD.Electron_pt,
         nanoAOD.Electron_eta,
@@ -41,7 +41,51 @@ ElectronPtCorrectionMC = Producer(
     scopes=GLOBAL_SCOPES,
 )
 
-# dummy corrections in data and for cases in which corrections are already applied on NANOAOD level (just rename column)
+# electron scale correction for data in Run 3
+ElectronPtCorrectionDataRun3 = Producer(
+    name="ElectronPtCorrectionDataRun3",
+    call='physicsobject::electron::PtCorrectionDataFromCorrectionlib({df}, correctionManager, {output}, {input}, "{ele_es_file}", "{ele_es_sf_data_name}")',
+    input=[
+        nanoAOD.Electron_pt,
+        nanoAOD.Electron_eta,
+        nanoAOD.Electron_deltaEtaSC,
+        nanoAOD.Electron_seedGain,
+        nanoAOD.Electron_r9,
+        nanoAOD.run
+    ],
+    output=[q.Electron_pt_corrected],
+    scopes=GLOBAL_SCOPES,
+)
+
+# event seed for initializing the smearing
+ElectronPtSmearingSeed = Producer(
+    name="ElectronPtSmearingSeed",
+    call="event::quantity::GenerateEventSeed({df}, {output}, {input}, {ele_es_master_seed})",
+    input=[
+        nanoAOD.luminosityBlock,
+        nanoAOD.run,
+        nanoAOD.event,
+    ],
+    output=[],
+    scopes=GLOBAL_SCOPES,
+)
+
+# electron scale and resolution correction for MC in Run 3
+ElectronPtCorrectionMCRun3 = ProducerGroup(
+    name="ElectronPtCorrectionMCRun3",
+    call='physicsobject::electron::PtCorrectionMCFromCorrectionlib({df}, correctionManager, {output}, {input}, "{ele_es_file}", "{ele_es_sf_mc_name}", "{ele_es_variation}")',
+    input=[
+        nanoAOD.Electron_pt,
+        nanoAOD.Electron_eta,
+        nanoAOD.Electron_deltaEtaSC,
+        nanoAOD.Electron_r9,
+    ],
+    output=[q.Electron_pt_corrected],
+    scopes=GLOBAL_SCOPES,
+    subproducers=[ElectronPtSmearingSeed],
+)
+
+# dummy corrections for cases in which corrections are already applied on NanoAOD level (just rename column)
 RenameElectronPt = Producer(
     name="RenameElectronPt",
     call="event::quantity::Rename<ROOT::RVec<float>>({df}, {output}, {input})",

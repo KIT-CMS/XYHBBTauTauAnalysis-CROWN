@@ -1489,14 +1489,15 @@ def build_config(
     configuration.add_config_parameters(
         "global",
         {
+            "ele_es_master_seed": 42,  # TODO choose value different from jet smearing seed
             "ele_es_era": EraModifier(
                 {
-                    "2016preVFP": '"2016preVFP"',
-                    "2016postVFP": '"2016postVFP"',
-                    "2017": '2017"',
-                    "2018": '"2018"',
+                    "2016preVFP": "2016preVFP",
+                    "2016postVFP": "2016postVFP",
+                    "2017": "2017",
+                    "2018": "2018",
                     **{
-                        _era: '"DOES_NOT_EXIST"'  # TODO does not exist yet for Run3 samples, include as soon as available
+                        _era: "DOES_NOT_EXIST"  # not needed for Run 3 producer
                         for _era in ERAS_RUN3
                     },
                 }
@@ -1505,13 +1506,38 @@ def build_config(
             "ele_es_file": EraModifier(
                 {
                     **{
-                        _era: f'"data/electron_energy_scale/{_era}_UL/EGM_ScaleUnc.json.gz"'
+                        _era: f"data/electron_energy_scale/{_era}_UL/EGM_ScaleUnc.json.gz"
                         for _era in ERAS_RUN2
                     },
                     **{
-                        _era: '"DOES_NOT_EXIST"'  # TODO does not exist yet for Run3 samples, include as soon as available
-                        for _era in ERAS_RUN3
+                        _era: f"data/jsonpog-integration/POG/EGM/{_campaign}/electronSS_EtDependent.json.gz"
+                        for _era, _campaign in CORRECTIONLIB_CAMPAIGNS.items()
+                        if _era in ERAS_RUN3
                     },
+                }
+            ),
+            "ele_es_sf_data_name": EraModifier(
+                {
+                    **{
+                        _era: "DOES_NOT_EXIST"  # not needed for Run 2 producer
+                        for _era in ERAS_RUN2
+                    },
+                    **{
+                        _era: f"EGMScale_Compound_Ele_{_era}"
+                        for _era in ERAS_RUN3
+                    }
+                }
+            ),
+            "ele_es_sf_mc_name": EraModifier(
+                {
+                    **{
+                        _era: "DOES_NOT_EXIST"  # not needed for Run 2 producer
+                        for _era in ERAS_RUN2
+                    },
+                    **{
+                        _era: f"EGMSmearAndSyst_ElePTsplit_{_era}"
+                        for _era in ERAS_RUN3
+                    }
                 }
             ),
         },
@@ -2158,16 +2184,30 @@ def build_config(
             samples=["data"],
         ),
     )
-    configuration.add_modification_rule(
-        "global",
-        ReplaceProducer(
-            producers=[
-                electrons.ElectronPtCorrectionMC,
-                electrons.RenameElectronPt,
-            ],
-            samples=["data"],
-        ),
-    )
+
+    # replace electron pt correction for data, different producers need to be replaced in Run2 and Run3
+    if era in ERAS_RUN2:
+        configuration.add_modification_rule(
+            "global",
+            ReplaceProducer(
+                producers=[
+                    electrons.ElectronPtCorrectionMCRun2,
+                    electrons.RenameElectronPt,
+                ],
+                samples=["data"],
+            ),
+        )
+    elif era in ERAS_RUN3:
+        configuration.add_modification_rule(
+            "global",
+            ReplaceProducer(
+                producers=[
+                    electrons.ElectronPtCorrectionMCRun3,
+                    electrons.ElectronPtCorrectionDataRun3,
+                ],
+                samples=["data"],
+            ),
+        )
 
     configuration.add_modification_rule(
         "global",
