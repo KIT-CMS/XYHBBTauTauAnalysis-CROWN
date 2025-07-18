@@ -1574,6 +1574,7 @@ def build_config(
             "tautau_truegen_daughter_1_pdgid": 15,
             "tautau_truegen_daughter_2_pdgid": 15,
             "gen_taupair_match_deltaR": 0.2,
+            "fatjet_bpair_matching_max_dR": 0.2,
         },
     )
 
@@ -3716,72 +3717,31 @@ def build_config(
             ),
             exclude_samples=["data", "embedding", "embedding_mc"],
         )
-    configuration.add_shift(
-        SystematicShift(
-            name="singleElectronTriggerSFUp",
-            shift_config={
-                ("et"): {
-                    "singlelectron_trigger_sf_mc": [
-                        {
-                            "flagname": "trg_wgt_single_ele32orele35",
-                            "mc_trigger_sf": "Trg32_or_Trg35_Iso_pt_eta_bins",
-                            "mc_electron_trg_extrapolation": 1.02,
-                        },
-                        {
-                            "flagname": "trg_wgt_single_ele32",
-                            "mc_trigger_sf": "Trg32_Iso_pt_eta_bins",
-                            "mc_electron_trg_extrapolation": 1.02,
-                        },
-                        {
-                            "flagname": "trg_wgt_single_ele35",
-                            "mc_trigger_sf": "Trg35_Iso_pt_eta_bins",
-                            "mc_electron_trg_extrapolation": 1.02,
-                        },
-                        {
-                            "flagname": "trg_wgt_single_ele27orele32orele35",
-                            "mc_trigger_sf": "Trg_Iso_pt_eta_bins",
-                            "mc_electron_trg_extrapolation": 1.02,
-                        },
-                    ]
-                }
-            },
-            producers={("et"): scalefactors.ETGenerateSingleElectronTriggerSF_MC},
-        ),
-        exclude_samples=["data", "embedding", "embedding_mc"],
-    )
-    configuration.add_shift(
-        SystematicShift(
-            name="singleElectronTriggerSFDown",
-            shift_config={
-                ("et"): {
-                    "singlelectron_trigger_sf_mc": [
-                        {
-                            "flagname": "trg_wgt_single_ele32orele35",
-                            "mc_trigger_sf": "Trg32_or_Trg35_Iso_pt_eta_bins",
-                            "mc_electron_trg_extrapolation": 0.98,
-                        },
-                        {
-                            "flagname": "trg_wgt_single_ele32",
-                            "mc_trigger_sf": "Trg32_Iso_pt_eta_bins",
-                            "mc_electron_trg_extrapolation": 0.98,
-                        },
-                        {
-                            "flagname": "trg_wgt_single_ele35",
-                            "mc_trigger_sf": "Trg35_Iso_pt_eta_bins",
-                            "mc_electron_trg_extrapolation": 0.98,
-                        },
-                        {
-                            "flagname": "trg_wgt_single_ele27orele32orele35",
-                            "mc_trigger_sf": "Trg_Iso_pt_eta_bins",
-                            "mc_electron_trg_extrapolation": 0.98,
-                        },
-                    ]
-                }
-            },
-            producers={("et"): scalefactors.ETGenerateSingleElectronTriggerSF_MC},
-        ),
-        exclude_samples=["data", "embedding", "embedding_mc"],
-    )
+
+    #
+    # systematic shifts for single electron trigger corrections
+    #
+
+    if era in ERAS_RUN3:
+        for _variation in ["up", "down"]:
+            configuration.add_shift(
+                SystematicShift(
+                    name=f"singleEleTriggerSF{_variation.upper()}",
+                    shift_config={
+                        ("mt"): {
+                            "single_ele_trigger_sf": [
+                                {
+                                    "e_trigger_flagname": "trg_wgt_single_ele30",
+                                    "e_trigger_sf_name": "HLT_SF_Ele30_MVAiso90ID",
+                                    "e_trigger_variation": f"sf{_variation}",
+                                },
+                            ],
+                        }
+                    },
+                    producers={("mt"): scalefactors.SingleEleTriggerSF},
+                ),
+                exclude_samples=["data", "embedding", "embedding_mc"],
+            )
 
     #
     # systematic shifts for single muon trigger corrections

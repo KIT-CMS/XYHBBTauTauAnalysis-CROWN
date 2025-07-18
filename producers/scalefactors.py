@@ -593,6 +593,25 @@ EleID_SF_boosted = ProducerGroup(
 
 
 #
+# SINGLE ELECTRON TRIGGER SCALE FACTORS
+#
+
+
+# single muon trigger scale factor
+SingleEleTriggerSF = ExtendedVectorProducer(
+    name="SingleEleTriggerSF",
+    call='physicsobject::electron::scalefactor::Trigger({df}, correctionManager, {output}, {input}, "{e_trigger_era}", "{e_trigger_path_id_name}", "{e_trigger_sf_file}", "{e_trigger_sf_name}", "{e_trigger_variation}")',
+    input=[
+        q.pt_1,
+        q.eta_1,
+    ],
+    output="e_trigger_flagname",
+    scope=["et", "ee"],
+    vec_config="single_ele_trigger_sf",
+)
+
+
+#
 # SINGLE MUON TRIGGER SCALE FACTORS
 #
 
@@ -606,7 +625,7 @@ SingleMuTriggerSF = ExtendedVectorProducer(
         q.eta_1,
     ],
     output="m_trigger_flagname",
-    scope=["mt"],
+    scope=["mt", "mm"],
     vec_config="single_mu_trigger_sf",
 )
 

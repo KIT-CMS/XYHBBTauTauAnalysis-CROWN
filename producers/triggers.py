@@ -4,6 +4,29 @@ from code_generation.producer import ExtendedVectorProducer
 
 
 #
+#  SINGLE ELECTRON TRIGGERS
+#
+
+
+# single electron trigger flags, including trigger object matching
+SingleEleTriggerFlags = ExtendedVectorProducer(
+    name="SingleEleTriggerFlags",
+    call='trigger::GenerateSingleTriggerFlag({df}, {output}, {input}, "{hlt_path}", {min_pt}, {max_abs_eta}, {particle_id}, {filter_bit}, {match_max_delta_r})',
+    input=[
+        q.p4_1,
+        nanoAOD.TriggerObject_bit,
+        nanoAOD.TriggerObject_id,
+        nanoAOD.TriggerObject_pt,
+        nanoAOD.TriggerObject_eta,
+        nanoAOD.TriggerObject_phi,
+    ],
+    output="flagname",
+    scope=["et", "ee"],
+    vec_config="single_ele_trigger",
+)
+
+
+#
 #  SINGLE MUON TRIGGERS
 #
 

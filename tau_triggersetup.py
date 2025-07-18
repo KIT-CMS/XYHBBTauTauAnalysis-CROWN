@@ -1,7 +1,7 @@
 from code_generation.configuration import Configuration
 from code_generation.modifiers import EraModifier
 
-from .constants import M_SCOPES, MT_SCOPES, ERAS_RUN2, ERAS_RUN3
+from .constants import E_SCOPES, M_SCOPES, MT_SCOPES, ERAS_RUN2, ERAS_RUN3, CORRECTIONLIB_CAMPAIGNS
 
 
 def add_diTauTriggerSetup(configuration: Configuration):
@@ -344,11 +344,25 @@ def add_diTauTriggerSetup(configuration: Configuration):
     configuration.add_config_parameters(
         ["et"],
         {
-            "singleelectron_trigger": EraModifier(
+            "single_ele_trigger": EraModifier(
                 {
                     # TODO placeholder for Run3 eras, add these triggers also there
                     **{
-                        _era: []
+                        _era: [
+                            # trigger:        HLT_Ele30_WPTight_Gsf
+                            # final filter:   hltEle30WPTightGsfTrackIsoFilter 
+                            # filter bit:     2
+                            # documentation:  https://twiki.cern.ch/twiki/bin/view/CMS/EgHLTRunIIISummary
+                            {
+                                "flagname": "trg_single_ele30",
+                                "hlt_path": "HLT_Ele30_WPTight_Gsf",
+                                "min_pt": 31.,
+                                "max_abs_eta": 2.5,
+                                "filter_bit": 18,
+                                "particle_id": 11,
+                                "match_max_delta_r": 0.4,
+                            },
+                        ]
                         for _era in ERAS_RUN3
                     },
                     "2018": [
@@ -364,71 +378,71 @@ def add_diTauTriggerSetup(configuration: Configuration):
                         {
                             "flagname": "trg_single_ele32",
                             "hlt_path": "HLT_Ele32_WPTight_Gsf",
-                            "ptcut": 33,
-                            "etacut": 2.1,
-                            "filterbit": -1,
-                            "trigger_particle_id": 11,
-                            "max_deltaR_triggermatch": 0.4,
+                            "min_pt": 33,
+                            "max_abs_eta": 2.1,
+                            "filter_bit": -1,
+                            "particle_id": 11,
+                            "match_max_delta_r": 0.4,
                         },
                         {
                             "flagname": "trg_single_ele35",
                             "hlt_path": "HLT_Ele35_WPTight_Gsf",
-                            "ptcut": 36,
-                            "etacut": 2.1,
-                            "filterbit": -1,
-                            "trigger_particle_id": 11,
-                            "max_deltaR_triggermatch": 0.4,
+                            "min_pt": 36,
+                            "max_abs_eta": 2.1,
+                            "filter_bit": -1,
+                            "particle_id": 11,
+                            "match_max_delta_r": 0.4,
                         },
                     ],
                     "2017": [
                         {
                             "flagname": "trg_single_ele27",
                             "hlt_path": "HLT_Ele27_WPTight_Gsf",
-                            "ptcut": 28,
-                            "etacut": 2.1,
-                            "filterbit": 1,
-                            "trigger_particle_id": 11,
-                            "max_deltaR_triggermatch": 0.4,
+                            "min_pt": 28,
+                            "max_abs_eta": 2.1,
+                            "filter_bit": 1,
+                            "particle_id": 11,
+                            "match_max_delta_r": 0.4,
                         },
                         {
                             "flagname": "trg_single_ele32",
                             "hlt_path": "HLT_Ele32_WPTight_Gsf",
-                            "ptcut": 33,
-                            "etacut": 2.1,
-                            "filterbit": 1,
-                            "trigger_particle_id": 11,
-                            "max_deltaR_triggermatch": 0.4,
+                            "min_pt": 33,
+                            "max_abs_eta": 2.1,
+                            "filter_bit": 1,
+                            "particle_id": 11,
+                            "match_max_delta_r": 0.4,
                         },
                         {
                             "flagname": "trg_single_ele35",
                             "hlt_path": "HLT_Ele35_WPTight_Gsf",
-                            "ptcut": 36,
-                            "etacut": 2.1,
-                            "filterbit": 1,
-                            "trigger_particle_id": 11,
-                            "max_deltaR_triggermatch": 0.4,
+                            "min_pt": 36,
+                            "max_abs_eta": 2.1,
+                            "filter_bit": 1,
+                            "particle_id": 11,
+                            "match_max_delta_r": 0.4,
                         },
                     ],
                     "2016postVFP": [
                         {
                             "flagname": "trg_single_ele25",
                             "hlt_path": "HLT_Ele25_eta2p1_WPTight_Gsf",
-                            "ptcut": 26,
-                            "etacut": 2.1,
-                            "filterbit": 1,
-                            "trigger_particle_id": 11,
-                            "max_deltaR_triggermatch": 0.4,
+                            "min_pt": 26,
+                            "max_abs_eta": 2.1,
+                            "filter_bit": 1,
+                            "particle_id": 11,
+                            "match_max_delta_r": 0.4,
                         },
                     ],
                     "2016preVFP": [
                         {
                             "flagname": "trg_single_ele25",
                             "hlt_path": "HLT_Ele25_eta2p1_WPTight_Gsf",
-                            "ptcut": 26,
-                            "etacut": 2.1,
-                            "filterbit": 1,
-                            "trigger_particle_id": 11,
-                            "max_deltaR_triggermatch": 0.4,
+                            "min_pt": 26,
+                            "max_abs_eta": 2.1,
+                            "filter_bit": 1,
+                            "particle_id": 11,
+                            "match_max_delta_r": 0.4,
                         },
                     ],
                 }
@@ -941,6 +955,47 @@ def add_diTauTriggerSetup(configuration: Configuration):
                     ]
                 }
             ),
+        },
+    )
+
+    # single electron trigger scale factors
+    configuration.add_config_parameters(
+        E_SCOPES,
+        {
+
+            "e_trigger_sf_file": EraModifier(
+                {
+                    **{
+                        _era: "DOES_NOT_EXIST"  # TODO does not exist for Run2 eras
+                        for _era in ERAS_RUN2
+                    },
+                    **{
+                        _era: f"data/jsonpog-integration/POG/EGM/{_campaign}/electronHlt.json.gz"
+                        for _era, _campaign in CORRECTIONLIB_CAMPAIGNS.items()
+                        if _era in ERAS_RUN3
+                    },
+                }
+            ),
+            "single_ele_trigger_sf": [
+                {
+                    "e_trigger_flagname": "trg_wgt_single_ele30",
+                    "e_trigger_era": EraModifier(
+                        {
+                            **{
+                                _era: "DOES_NOT_EXIST"  # TODO does not exist for Run2 eras as correctionlib
+                                for _era in ERAS_RUN2
+                            },
+                            "2022preEE": "2022Re-recoBCD",
+                            "2022postEE": "2022Re-recoE+PromptFG ",
+                            "2023preBPix": "2023PromptC",
+                            "2023postBPix": "2023PromptD",
+                        }
+                    ),
+                    "e_trigger_sf_name": "Electron-HLT-SF",
+                    "e_trigger_path_id_name": "HLT_SF_Ele30_MVAiso90ID",
+                    "e_trigger_variation": "sf",
+                },
+            ],
         },
     )
 
