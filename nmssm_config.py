@@ -1731,16 +1731,10 @@ def build_config(
             event.PUweights,
             event.LHE_Scale_weight,
             muons.BaseMuons,
-            electrons.ElectronPtCorrectionMC,
-            # electrons.RenameElectronPt,
             electrons.BaseElectrons,
             fatjets.FatJetEnergyCorrection,
             fatjets.GoodFatJets,
             jets.JetEnergyCorrection,
-            jets.BJetEnergyCorrection,
-            jets.JetIDRun2,                     # run 2 producer, is replaced for run 3 eras
-            jets.GoodJetsWithPUID,              # run 2 producer, is replaced for run 3 eras
-            jets.GoodBJetsWithPUID,             # run 2 producer, is replaced for run 3 eras
             event.DiLeptonVeto,
             met.MetBasics,
         ],
@@ -1749,6 +1743,8 @@ def build_config(
     # some producers need to be different for Run 2 and Run 3 eras
     # - electron pt correction (different procedure for Run 2 and Run 3)
     # - b jet energy regression (does not exist in Run 3)
+    # - a bug in the jet ID column production needs to be fixed in Run 3
+    # - PUPPI jets in Run 3 do not have a pileup ID, hence it is removed from the list of selection criteria
     if era in ERAS_RUN2:
         # run 2 producers
         configuration.add_producers(
@@ -1756,6 +1752,9 @@ def build_config(
             [
                 electrons.ElectronPtCorrectionMCRun2,
                 jets.BJetEnergyCorrectionRun2,
+                jets.JetIDRun2,
+                jets.GoodJetsWithPUID,
+                jets.GoodBJetsWithPUID,
             ],
         )
     elif era in ERAS_RUN3:
@@ -1764,6 +1763,9 @@ def build_config(
             [
                 electrons.ElectronPtCorrectionMCRun3,
                 jets.RenameBJetEnergyCorrection,
+                jets.JetIDRun3NanoV12Corrected,
+                jets.GoodJetsWithoutPUID,
+                jets.GoodBJetsWithoutPUID,
             ]
         )
 
@@ -1997,37 +1999,16 @@ def build_config(
         ],
     )
 
-    # some jet selections are different for Run2 and Run3, hence the producer is replaced
-    # we need to fix a bug in the tau ID manually for 2022 and 2023 samples, this is why we need to replace the corresponding producers
-    if era in ERAS_RUN3:
+    # boosted X->bb scale factors exist for 2018 for now
+    # TODO include X->bb scale factors for all eras
+    if era != "2018":
         configuration.add_modification_rule(
-            GLOBAL_SCOPES,
-            ReplaceProducer(
+            HAD_TAU_SCOPES,
+            RemoveProducer(
                 producers=[
-                    jets.JetIDRun2,
-                    jets.JetIDRun3NanoV12Corrected,
+                    scalefactors.Xbb_tagging_SF,
                 ],
-                samples=available_sample_types,
-            ),
-        )
-        configuration.add_modification_rule(
-            GLOBAL_SCOPES,
-            ReplaceProducer(
-                producers=[
-                    jets.GoodJetsWithPUID,
-                    jets.GoodJetsWithoutPUID,
-                ],
-                samples=available_sample_types,
-            ),
-        )
-        configuration.add_modification_rule(
-            GLOBAL_SCOPES,
-            ReplaceProducer(
-                producers=[
-                    jets.GoodBJetsWithPUID,
-                    jets.GoodBJetsWithoutPUID,
-                ],
-                samples=available_sample_types,
+                exclude_samples=["data", "embedding", "embedding_mc"],  # on data samples they are removed anyways
             ),
         )
 
@@ -2841,6 +2822,17 @@ def build_config(
                 q.gen_boostedtaupair_match_flag,
             ],
         )
+
+        # remove Run 2-specific variables
+        if era in ERAS_RUN2:
+            configuration.add_outputs(
+                ["mt", "et", "tt"],
+                [
+                    q.bpair_reg_res_1,  # removed in Run 3  
+                    q.bpair_reg_res_2,  # removed in Run 3
+                ]
+            )
+
     #########################
     # LHE Scale Weight variations
     # up is muR=2.0, muF=2.0
