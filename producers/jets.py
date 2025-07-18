@@ -462,7 +462,7 @@ BasicJetQuantities = ProducerGroup(
         LVJet1,
         LVJet2,
         NumberOfJets,
-        #NumberOfJets_boosted,  TODO add boosted again
+        NumberOfJets_boosted,
         jpt_1,
         jeta_1,
         jphi_1,
@@ -586,7 +586,7 @@ BasicBJetQuantities = ProducerGroup(
         # LVBJet1,
         # LVBJet2,
         NumberOfBJets,
-        #NumberOfBJets_boosted,  TODO add boosted again
+        NumberOfBJets_boosted,
         # bpt_1,
         # beta_1,
         # bphi_1,
