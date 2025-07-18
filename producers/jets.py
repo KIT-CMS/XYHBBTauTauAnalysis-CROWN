@@ -206,7 +206,7 @@ BJetEnergyCorrectionRun2 = ProducerGroup(
 # rename original pt as b jet regression does not exist in Run 3
 RenameBJetPtCorrection = Producer(
     name="RenameBJetPtCorrection",
-    call="event::quantity::Rename<float>({df}, {output}, {input})",
+    call="event::quantity::Rename<ROOT::RVec<float>>({df}, {output}, {input})",
     input=[q.Jet_pt_corrected],
     output=[q.Jet_pt_corrected_bReg],
     scopes=GLOBAL_SCOPES,
@@ -215,7 +215,7 @@ RenameBJetPtCorrection = Producer(
 # rename original mass as b jet regression does not exist in Run 3
 RenameBJetMassCorrection = Producer(
     name="RenameBJetMassCorrection",
-    call="event::quantity::Rename<float>({df}, {output}, {input})",
+    call="event::quantity::Rename<ROOT::RVec<float>>({df}, {output}, {input})",
     input=[q.Jet_mass_corrected],
     output=[q.Jet_mass_corrected_bReg],
     scopes=GLOBAL_SCOPES,
