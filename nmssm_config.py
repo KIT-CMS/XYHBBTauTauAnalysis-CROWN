@@ -1799,7 +1799,6 @@ def build_config(
             pairselection.LVbjet2,
             pairselection.LVbjet1_boosted,
             pairselection.LVbjet2_boosted,
-            pairquantities_bbpair.DiBjetPairQuantities_boosted,
             genparticles.GenDiBjetPairQuantities,
             fatjets.FindFatjetMatchingBjet,
             fatjets.BasicMatchedFatJetQuantities,
@@ -1810,8 +1809,6 @@ def build_config(
             fatjets.LeadingFatJetQuantities,
             scalefactors.btagging_SF,
             scalefactors.btagging_SF_boosted,
-            scalefactors.Xbb_tagging_SF,
-            scalefactors.Xbb_tagging_SF_boosted,
             # TODO producers need to be refined for run 3, not considered at the moment
             #met.MetCorrections,
             #met.PFMetCorrections,
@@ -1823,7 +1820,18 @@ def build_config(
             genparticles.GenMatchingBoosted,
         ],
     )
-    
+
+    # the Xbb tagging scale factors only exist for 2018
+    # TODO provide these scale factors for all eras
+    if era in ["2018"]:
+        configuration.add_producers(
+            HAD_TAU_SCOPES,
+            [
+                scalefactors.Xbb_tagging_SF,
+                scalefactors.Xbb_tagging_SF_boosted,
+            ]
+        )
+
     # load different b jet pair quantities producers for Run 2 and Run 3
     if era in ERAS_RUN2:
         configuration.add_producers(
@@ -2199,10 +2207,28 @@ def build_config(
                 fatjets.fj_Xbb_hadflavor,
                 fatjets.fj_Xbb_nBhad,
                 fatjets.fj_Xbb_nChad,
-                scalefactors.Xbb_tagging_SF,
                 fatjets.fj_Xbb_hadflavor_boosted,
                 fatjets.fj_Xbb_nBhad_boosted,
                 fatjets.fj_Xbb_nChad_boosted,
+            ],
+            samples=["data", "embedding", "embedding_mc"],
+        ),
+    )
+
+    # in 2018, we need to remove the Xbb tagging scale factors for data
+    # TODO also provide these scale factors for other eras
+    if era in ["2018"]:
+        configuration.add_modification_rule(
+            HAD_TAU_SCOPES,
+            RemoveProducer(
+                producers=[
+                    scalefactors.Xbb_tagging_SF,
+                    scalefactors.Xbb_tagging_SF_boosted,
+                ],
+                samples=["data", "embedding", "embedding_mc"],
+            ),
+        )
+
     if era in ERAS_RUN2:
         configuration.add_modification_rule(
             HAD_TAU_SCOPES,
@@ -2405,8 +2431,6 @@ def build_config(
         ["mt"],
         AppendProducer(
             producers=[
-                scalefactors.TauEmbeddingMuonIDSF_1_MC,
-                scalefactors.TauEmbeddingMuonIsoSF_1_MC,
                 #scalefactors.TauEmbeddingBoostedMuonIDSF_1_MC,  # TODO in Run 2, corrections have been taken from "own" measurements
                 #scalefactors.TauEmbeddingBoostedMuonIsoSF_1_MC,  # TODO in Run 2, corrections have been taken from "own" measurements
                 #scalefactors.Muon_SF_boosted,
@@ -2418,8 +2442,6 @@ def build_config(
         ["et"],
         AppendProducer(
             producers=[
-                scalefactors.TauEmbeddingElectronIDSF_1_MC,
-                scalefactors.TauEmbeddingElectronIsoSF_1_MC,
                 #scalefactors.TauEmbeddingBoostedElectronIDSF_1_MC,  # TODO in Run 2, corrections have been taken from "own" measurements
                 #scalefactors.TauEmbeddingBoostedElectronIsoSF_1_MC,  # TODO in Run 2, corrections have been taken from "own" measurements
                 #scalefactors.EleID_SF_boosted,
@@ -2560,8 +2582,6 @@ def build_config(
             q.bpair_mass_2_boosted,
             q.bpair_btag_value_1_boosted,
             q.bpair_btag_value_2_boosted,
-            q.bpair_reg_res_1_boosted,
-            q.bpair_reg_res_2_boosted,
             q.bpair_m_inv_boosted,
             q.bpair_deltaR_boosted,
             q.bpair_pt_dijet_boosted,
@@ -2602,8 +2622,6 @@ def build_config(
             # q.btag_value_2,
             q.btag_weight,
             q.btag_weight_boosted,
-            q.pNet_Xbb_weight,
-            q.pNet_Xbb_weight_boosted,
             q.mass_1,
             q.mass_2,
             q.dxy_1,
@@ -2669,6 +2687,13 @@ def build_config(
             q.jet_hemisphere,
         ],
     )
+    if era in ["2018"]:
+        # in 2018, we have the Xbb tagging scale factors
+        configuration.add_outputs(
+            q.pNet_Xbb_weight,
+            q.pNet_Xbb_weight_boosted,
+        )
+ 
     # add genWeight for everything but data
     if sample != "data":
         configuration.add_outputs(
@@ -2682,7 +2707,6 @@ def build_config(
             q.ntaus,
             q.nboostedtaus,
             scalefactors.Tau_2_VsJetTauID_lt_SF.output_group,
-            scalefactors.Tau_2_VsEleTauID_SF.output_group,
             scalefactors.Tau_2_VsMuTauID_SF.output_group,
             pairquantities.VsJetTauIDFlag_2.output_group,
             pairquantities.VsEleTauIDFlag_2.output_group,
@@ -2969,6 +2993,8 @@ def build_config(
                 [
                     q.bpair_reg_res_1,  # removed in Run 3  
                     q.bpair_reg_res_2,  # removed in Run 3
+                    q.bpair_reg_res_1_boosted,  # removed in Run 3
+                    q.bpair_reg_res_2_boosted,  # removed in Run 3
                 ]
             )
 
@@ -3321,36 +3347,41 @@ def build_config(
     #########################
     # particleNet Xbb scale factor uncertainties
     #########################
-    configuration.add_shift(
-        SystematicShift(
-            name="pNetXbbSFUp",
-            shift_config={
-                ("mt", "et", "tt"): {"pNetXbb_sf_variation": "up"},
-            },
-            producers={
-                ("mt", "et", "tt"): {
-                    scalefactors.Xbb_tagging_SF,
-                    scalefactors.Xbb_tagging_SF_boosted,
-                }
-            },
-        ),
-        exclude_samples=["data", "embedding", "embedding_mc"],
-    )
-    configuration.add_shift(
-        SystematicShift(
-            name="pNetXbbSFDown",
-            shift_config={
-                ("mt", "et", "tt"): {"pNetXbb_sf_variation": "down"},
-            },
-            producers={
-                ("mt", "et", "tt"): {
-                    scalefactors.Xbb_tagging_SF,
-                    scalefactors.Xbb_tagging_SF_boosted,
-                }
-            },
-        ),
-        exclude_samples=["data", "embedding", "embedding_mc"],
-    )
+
+    # add Xbb tagging scale factor shifts for 2018
+    # TODO also provide these scale factors for other eras
+    if era in ["2018"]:
+        configuration.add_shift(
+            SystematicShift(
+                name="pNetXbbSFUp",
+                shift_config={
+                    ("mt", "et", "tt"): {"pNetXbb_sf_variation": "up"},
+                },
+                producers={
+                    ("mt", "et", "tt"): {
+                        scalefactors.Xbb_tagging_SF,
+                        scalefactors.Xbb_tagging_SF_boosted,
+                    }
+                },
+            ),
+            exclude_samples=["data", "embedding", "embedding_mc"],
+        )
+        configuration.add_shift(
+            SystematicShift(
+                name="pNetXbbSFDown",
+                shift_config={
+                    ("mt", "et", "tt"): {"pNetXbb_sf_variation": "down"},
+                },
+                producers={
+                    ("mt", "et", "tt"): {
+                        scalefactors.Xbb_tagging_SF,
+                        scalefactors.Xbb_tagging_SF_boosted,
+                    }
+                },
+            ),
+            exclude_samples=["data", "embedding", "embedding_mc"],
+        )
+
     #########################
     # MET Recoil Shifts
     #########################
@@ -3473,66 +3504,98 @@ def build_config(
     # Electron id/iso sf shifts
     #########################
 
-    # configuration.add_shift(
-    #     SystematicShift(
-    #         name="electronIdSFUp",
-    #         scopes=["et"],
-    #         shift_config={
-    #             ("et"): {"mc_electron_id_extrapolation": 1.02},
-    #         },
-    #         producers={
-    #             ("et"): [
-    #                 scalefactors.TauEmbeddingElectronIDSF_1_MC,
-    #             ],
-    #         },
-    #     ),
-    #     exclude_samples=["data", "embedding", "embedding_mc"],
-    # )
-    # configuration.add_shift(
-    #     SystematicShift(
-    #         name="electronIdSFDown",
-    #         scopes=["et"],
-    #         shift_config={
-    #             ("et"): {"mc_electron_id_extrapolation": 0.98},
-    #         },
-    #         producers={
-    #             ("et"): [
-    #                 scalefactors.TauEmbeddingElectronIDSF_1_MC,
-    #             ],
-    #         },
-    #     ),
-    #     exclude_samples=["data", "embedding", "embedding_mc"],
-    # )
-    # configuration.add_shift(
-    #     SystematicShift(
-    #         name="electronIsoSFUp",
-    #         scopes=["et"],
-    #         shift_config={
-    #             ("et"): {"mc_electron_iso_extrapolation": 1.02},
-    #         },
-    #         producers={
-    #             ("et"): [
-    #                 scalefactors.TauEmbeddingElectronIsoSF_1_MC,
-    #             ],
-    #         },
-    #     ),
-    #     exclude_samples=["data", "embedding", "embedding_mc"],
-    # )
-    # configuration.add_shift(
-    #     SystematicShift(
-    #         name="electronIsoSFDown",
-    #         scopes=["et"],
-    #         shift_config={
-    #             ("et"): {"mc_electron_iso_extrapolation": 0.98},
-    #         },
-    #         producers={
-    #             ("et"): [
-    #                 scalefactors.TauEmbeddingElectronIsoSF_1_MC,
-    #             ],
-    #         },
-    #     ),
-    #     exclude_samples=["data", "embedding", "embedding_mc"],
-    # )
+    if era == "2018":
+        configuration.add_shift(
+            SystematicShift(
+                name="electronIdSFUp",
+                scopes=["et"],
+                shift_config={
+                    ("et"): {"mc_electron_id_extrapolation": 1.02},
+                },
+                producers={
+                    ("et"): [
+                        scalefactors.TauEmbeddingElectronIDSF_1_MC,
+                    ],
+                },
+            ),
+            exclude_samples=["data", "embedding", "embedding_mc"],
+        )
+        configuration.add_shift(
+            SystematicShift(
+                name="electronIdSFDown",
+                scopes=["et"],
+                shift_config={
+                    ("et"): {"mc_electron_id_extrapolation": 0.98},
+                },
+                producers={
+                    ("et"): [
+                        scalefactors.TauEmbeddingElectronIDSF_1_MC,
+                    ],
+                },
+            ),
+            exclude_samples=["data", "embedding", "embedding_mc"],
+        )
+        configuration.add_shift(
+            SystematicShift(
+                name="electronIsoSFUp",
+                scopes=["et"],
+                shift_config={
+                    ("et"): {"mc_electron_iso_extrapolation": 1.02},
+                },
+                producers={
+                    ("et"): [
+                        scalefactors.TauEmbeddingElectronIsoSF_1_MC,
+                    ],
+                },
+            ),
+            exclude_samples=["data", "embedding", "embedding_mc"],
+        )
+        configuration.add_shift(
+            SystematicShift(
+                name="electronIsoSFDown",
+                scopes=["et"],
+                shift_config={
+                    ("et"): {"mc_electron_iso_extrapolation": 0.98},
+                },
+                producers={
+                    ("et"): [
+                        scalefactors.TauEmbeddingElectronIsoSF_1_MC,
+                    ],
+                },
+            ),
+            exclude_samples=["data", "embedding", "embedding_mc"],
+        )
+    elif era in ERAS_RUN3:
+        configuration.add_shift(
+            SystematicShift(
+                name="electronIdSFUp",
+                scopes=["et"],
+                shift_config={
+                    ("et"): {"ele_sf_variation": "sfup"},
+                },
+                producers={
+                    ("et"): [
+                        scalefactors.EleID_SF,
+                    ],
+                },
+            )
+        )
+        configuration.add_shift(
+            SystematicShift(
+                name="electronIdSFDown",
+                scopes=["et"],
+                shift_config={
+                    ("et"): {"ele_sf_variation": "sfdown"},
+                },
+                producers={
+                    ("et"): [
+                        scalefactors.EleID_SF,
+                    ],
+                },
+            )
+        )
+
+
 
     # perform systematic variations for old MVA ID scale factors only for Run 2 eras (not available for Run 3)
     if era in ERAS_RUN2:
@@ -3664,66 +3727,128 @@ def build_config(
     #########################
     # TODO muon scale factors from own measurements have been used in Run 2, needs to be synchronized
 
-    # configuration.add_shift(
-    #     SystematicShift(
-    #         name="muonIdSFUp",
-    #         scopes=["mt"],
-    #         shift_config={
-    #             ("mt"): {"mc_muon_id_extrapolation": 1.02},
-    #         },
-    #         producers={
-    #             ("mt"): [
-    #                 scalefactors.TauEmbeddingMuonIDSF_1_MC,
-    #             ],
-    #         },
-    #     ),
-    #     exclude_samples=["data", "embedding", "embedding_mc"],
-    # )
-    # configuration.add_shift(
-    #     SystematicShift(
-    #         name="muonIdSFDown",
-    #         scopes=["mt"],
-    #         shift_config={
-    #             ("mt"): {"mc_muon_id_extrapolation": 0.98},
-    #         },
-    #         producers={
-    #             ("mt"): [
-    #                 scalefactors.TauEmbeddingMuonIDSF_1_MC,
-    #             ],
-    #         },
-    #     ),
-    #     exclude_samples=["data", "embedding", "embedding_mc"],
-    # )
-    # configuration.add_shift(
-    #     SystematicShift(
-    #         name="muonIsoSFUp",
-    #         scopes=["mt"],
-    #         shift_config={
-    #             ("mt"): {"mc_muon_iso_extrapolation": 1.02},
-    #         },
-    #         producers={
-    #             ("mt"): [
-    #                 scalefactors.TauEmbeddingMuonIsoSF_1_MC,
-    #             ],
-    #         },
-    #     ),
-    #     exclude_samples=["data", "embedding", "embedding_mc"],
-    # )
-    # configuration.add_shift(
-    #     SystematicShift(
-    #         name="muonIsoSFDown",
-    #         scopes=["mt"],
-    #         shift_config={
-    #             ("mt"): {"mc_muon_iso_extrapolation": 0.98},
-    #         },
-    #         producers={
-    #             ("mt"): [
-    #                 scalefactors.TauEmbeddingMuonIsoSF_1_MC,
-    #             ],
-    #         },
-    #     ),
-    #     exclude_samples=["data", "embedding", "embedding_mc"],
-    # )
+    if era in ERAS_RUN2:
+        configuration.add_shift(
+            SystematicShift(
+                name="muonIdSFUp",
+                scopes=["mt"],
+                shift_config={
+                    ("mt"): {"mc_muon_id_extrapolation": 1.02},
+                },
+                producers={
+                    ("mt"): [
+                        scalefactors.TauEmbeddingMuonIDSF_1_MC,
+                    ],
+                },
+            ),
+            exclude_samples=["data", "embedding", "embedding_mc"],
+        )
+        configuration.add_shift(
+            SystematicShift(
+                name="muonIdSFDown",
+                scopes=["mt"],
+                shift_config={
+                    ("mt"): {"mc_muon_id_extrapolation": 0.98},
+                },
+                producers={
+                    ("mt"): [
+                        scalefactors.TauEmbeddingMuonIDSF_1_MC,
+                    ],
+                },
+            ),
+            exclude_samples=["data", "embedding", "embedding_mc"],
+        )
+        configuration.add_shift(
+            SystematicShift(
+                name="muonIsoSFUp",
+                scopes=["mt"],
+                shift_config={
+                    ("mt"): {"mc_muon_iso_extrapolation": 1.02},
+                },
+                producers={
+                    ("mt"): [
+                        scalefactors.TauEmbeddingMuonIsoSF_1_MC,
+                    ],
+                },
+            ),
+            exclude_samples=["data", "embedding", "embedding_mc"],
+        )
+        configuration.add_shift(
+            SystematicShift(
+                name="muonIsoSFDown",
+                scopes=["mt"],
+                shift_config={
+                    ("mt"): {"mc_muon_iso_extrapolation": 0.98},
+                },
+                producers={
+                    ("mt"): [
+                        scalefactors.TauEmbeddingMuonIsoSF_1_MC,
+                    ],
+                },
+            ),
+            exclude_samples=["data", "embedding", "embedding_mc"],
+        )
+    elif era in ERAS_RUN3:
+        configuration.add_shift(
+            SystematicShift(
+                name="muonIdSFUp",
+                scopes=["mt"],
+                shift_config={
+                    ("mt"): {"muon_id_sf_variation": "systup"},
+                },
+                producers={
+                    ("mt"): [
+                        scalefactors.MuonIDIso_SF,
+                    ],
+                },
+            ),
+            exclude_samples=["data", "embedding", "embedding_mc"],
+        )
+        configuration.add_shift(
+            SystematicShift(
+                name="muonIdSFDown",
+                scopes=["mt"],
+                shift_config={
+                    ("mt"): {"muon_id_sf_variation": "systdown"},
+                },
+                producers={
+                    ("mt"): [
+                        scalefactors.MuonIDIso_SF,
+                    ],
+                },
+            ),
+            exclude_samples=["data", "embedding", "embedding_mc"],
+        )
+        configuration.add_shift(
+            SystematicShift(
+                name="muonIsoSFUp",
+                scopes=["mt"],
+                shift_config={
+                    ("mt"): {"muon_iso_sf_variation": "syst_up"},
+                },
+                producers={
+                    ("mt"): [
+                        scalefactors.MuonIDIso_SF,
+                    ],
+                },
+            ),
+            exclude_samples=["data", "embedding", "embedding_mc"],
+        )
+        configuration.add_shift(
+            SystematicShift(
+                name="muonIsoSFDown",
+                scopes=["mt"],
+                shift_config={
+                    ("mt"): {"muon_iso_sf_variation": "syst_down"},
+                },
+                producers={
+                    ("mt"): [
+                        scalefactors.MuonIDIso_SF,
+                    ],
+                },
+            ),
+            exclude_samples=["data", "embedding", "embedding_mc"],
+        )
 
     #########################
     # Trigger shifts
