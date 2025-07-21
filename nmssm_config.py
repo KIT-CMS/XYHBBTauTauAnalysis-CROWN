@@ -626,7 +626,7 @@ def add_hadronic_tau_config(configuration: Configuration):
     configuration.add_config_parameters(
         SL_SCOPES,
         {
-            "tight_tau_min_pt": 20.0,
+            "tight_tau_min_pt": 25.0,
             "tight_tau_max_abs_eta": 2.5,
             "tight_tau_max_abs_dz": 0.2,
             "tight_tau_decay_modes": "0, 1, 10, 11",  # needs to be converted in a C++ vector in the code, so set it as string here
@@ -639,7 +639,7 @@ def add_hadronic_tau_config(configuration: Configuration):
     configuration.add_config_parameters(
         FH_SCOPES,
         {
-            "tight_tau_min_pt": 20.0,
+            "tight_tau_min_pt": 25.0,
             "tight_tau_max_abs_eta": 2.5,
             "tight_tau_max_abs_dz": 0.2,
             "tight_tau_decay_modes": "0, 1, 10, 11",  # needs to be converted in a C++ vector in the code, so set it as string here
