@@ -325,7 +325,7 @@ bpair_deltaR_boosted = Producer(
     scopes=["mt", "et", "tt", "mm"],
 )
 
-UnrollBjetLV1_boosted = ProducerGroup(
+UnrollBjetLV1Run2_boosted = ProducerGroup(
     name="UnrollBjetLV1_boosted",
     call=None,
     input=None,
@@ -340,7 +340,7 @@ UnrollBjetLV1_boosted = ProducerGroup(
         bpair_bRegRes_1_boosted,
     ],
 )
-UnrollBjetLV2_boosted = ProducerGroup(
+UnrollBjetLV2Run2_boosted = ProducerGroup(
     name="UnrollBjetLV2_boosted",
     call=None,
     input=None,
@@ -355,16 +355,60 @@ UnrollBjetLV2_boosted = ProducerGroup(
         bpair_bRegRes_2_boosted,
     ],
 )
+UnrollBjetLV1Run3_boosted = ProducerGroup(
+    name="UnrollBjetLV1_boosted",
+    call=None,
+    input=None,
+    output=None,
+    scopes=["et", "mt", "tt", "mm"],
+    subproducers=[
+        bpair_pt_1_boosted,
+        bpair_eta_1_boosted,
+        bpair_phi_1_boosted,
+        bpair_mass_1_boosted,
+        bpair_btag_value_1_boosted,
+    ],
+)
+UnrollBjetLV2Run3_boosted = ProducerGroup(
+    name="UnrollBjetLV2_boosted",
+    call=None,
+    input=None,
+    output=None,
+    scopes=["et", "mt", "tt", "mm"],
+    subproducers=[
+        bpair_pt_2_boosted,
+        bpair_eta_2_boosted,
+        bpair_phi_2_boosted,
+        bpair_mass_2_boosted,
+        bpair_btag_value_2_boosted,
+    ],
+)
 
-DiBjetPairQuantities_boosted = ProducerGroup(
+DiBjetPairQuantitiesRun2_boosted = ProducerGroup(
     name="DiBjetPairQuantities_boosted",
     call=None,
     input=None,
     output=None,
     scopes=["mt", "et", "tt", "mm"],
     subproducers=[
-        UnrollBjetLV1_boosted,
-        UnrollBjetLV2_boosted,
+        UnrollBjetLV1Run2_boosted,
+        UnrollBjetLV2Run2_boosted,
+        p4_bpair_boosted,
+        bpair_m_inv_boosted,
+        bpair_pt_dijet_boosted,
+        bpair_deltaR_boosted,
+    ],
+)
+
+DiBjetPairQuantitiesRun3_boosted = ProducerGroup(
+    name="DiBjetPairQuantities_boosted",
+    call=None,
+    input=None,
+    output=None,
+    scopes=["mt", "et", "tt", "mm"],
+    subproducers=[
+        UnrollBjetLV1Run3_boosted,
+        UnrollBjetLV2Run3_boosted,
         p4_bpair_boosted,
         bpair_m_inv_boosted,
         bpair_pt_dijet_boosted,

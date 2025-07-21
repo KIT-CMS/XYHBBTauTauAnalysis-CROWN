@@ -386,7 +386,7 @@ RenameMetPhiBoosted = Producer(
 # dummy producer to rename MET vector if corrections are not available yet
 RenameMetP4RecoilCorrected = Producer(
     name="RenameMetP4RecoilCorrected",
-    call="event::quantity::Rename<float>({df}, {output}, {input})",
+    call="event::quantity::Rename<ROOT::Math::PtEtaPhiMVector>({df}, {output}, {input})",
     input=[q.met_p4],
     output=[q.met_p4_recoilcorrected],
     scopes=["et", "mt", "tt", "em", "mm", "ee"],
@@ -395,7 +395,7 @@ RenameMetP4RecoilCorrected = Producer(
 # dummy producer to rename MET vector for boosted selection if corrections are not available yet
 RenameMetP4RecoilCorrectedBoosted = Producer(
     name="RenameMetP4RecoilCorrectedBoosted",
-    call="event::quantity::Rename<float>({df}, {output}, {input})",
+    call="event::quantity::Rename<ROOT::Math::PtEtaPhiMVector>({df}, {output}, {input})",
     input=[q.met_p4],
     output=[q.met_p4_boosted_recoilcorrected],
     scopes=["et", "mt", "tt", "em", "mm", "ee"],
