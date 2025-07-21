@@ -705,6 +705,8 @@ def add_hadronic_tau_config(configuration: Configuration):
             ),
             "tau_ES_json_name": "tau_energy_scale",
             "tau_id_algorithm": tau_id,
+            "tau_es_vs_jet_wp": "Medium",
+            "tau_es_vs_ele_wp": "VVLoose",
             "tau_ES_shift_DM0": "nom",
             "tau_ES_shift_DM1": "nom",
             "tau_ES_shift_DM10": "nom",
@@ -1828,6 +1830,8 @@ def build_config(
             HAD_TAU_SCOPES,
             [
                 pairquantities_bbpair.DiBjetPairQuantitiesRun2,
+                pairquantities_bbpair.DiBjetPairQuantitiesRun2_boosted,
+                taus.TauEnergyCorrectionMCRun2,
             ]
         )
     elif era in ERAS_RUN3:
@@ -1835,6 +1839,8 @@ def build_config(
             HAD_TAU_SCOPES,
             [
                 pairquantities_bbpair.DiBjetPairQuantitiesRun3,
+                pairquantities_bbpair.DiBjetPairQuantitiesRun3_boosted,
+                taus.TauEnergyCorrectionMCRun3,
             ]
         )
 
@@ -1867,7 +1873,6 @@ def build_config(
             muons.ExtraMuonsVeto,
             muons.VetoMuons_boosted,
             muons.BoostedExtraMuonsVeto,
-            taus.TauEnergyCorrection,
             # taus.BaseTaus,
             taus.GoodTaus,
             taus.NumberOfGoodTaus,
@@ -1892,7 +1897,6 @@ def build_config(
             boostedtaus.boostedMTDiTauPairQuantities,
             genparticles.MTGenDiTauPairQuantities,
             scalefactors.Tau_2_VsJetTauID_lt_SF,
-            scalefactors.Tau_2_VsEleTauID_SF,
             scalefactors.Tau_2_VsMuTauID_SF,
             triggers.SingleMuTriggerFlags,
             triggers.DoubleMuTauTriggerFlags,
@@ -1901,6 +1905,27 @@ def build_config(
             # triggers.GenerateSingleTrailingTauTriggerFlags,
         ],
     )
+
+    # some producers need to be different for Run 2 and Run 3 eras
+    # - muon scale factors are taken from own measurements in Run 2 and from POG in Run 3
+    if era in ERAS_RUN2:
+        # run 2 producers
+        configuration.add_producers(
+            ["mt"],
+            [
+                scalefactors.TauEmbeddingMuonIDSF_1_MC,
+                scalefactors.TauEmbeddingMuonIsoSF_1_MC,
+                scalefactors.Tau_2_VsEleTauID_SF_Run2,
+            ],
+        )
+    elif era in ERAS_RUN3:
+        configuration.add_producers(
+            ["mt"],
+            [
+                scalefactors.MuonIDIso_SF,
+                scalefactors.Tau_2_VsEleTauID_SF_Run3,
+            ]
+        )
 
     # add the old MVA ID scale factor producers only for Run 2 eras (not available for Run 3)
     if era in ERAS_RUN2:
@@ -1917,7 +1942,6 @@ def build_config(
         "et",
         [
             electrons.GoodElectrons,
-            taus.TauEnergyCorrection,
             # taus.BaseTaus,
             taus.GoodTaus,
             taus.NumberOfGoodTaus,
@@ -1947,7 +1971,6 @@ def build_config(
             boostedtaus.boostedETDiTauPairQuantities,
             genparticles.ETGenDiTauPairQuantities,
             scalefactors.Tau_2_VsJetTauID_lt_SF,
-            scalefactors.Tau_2_VsEleTauID_SF,
             scalefactors.Tau_2_VsMuTauID_SF,
             triggers.SingleEleTriggerFlags,
             #triggers.BoostedETGenerateSingleElectronTriggerFlags,  TODO rework trigger setup before enabling this
@@ -1955,6 +1978,27 @@ def build_config(
             # triggers.GenerateSingleTrailingTauTriggerFlags,
         ],
     )
+
+    # some producers need to be different for Run 2 and Run 3 eras
+    # - electron scale factors are taken from own measurements in Run 2 and from POG in Run 3
+    if era in ERAS_RUN2:
+        # run 2 producers
+        configuration.add_producers(
+            ["et"],
+            [
+                scalefactors.TauEmbeddingElectronIDSF_1_MC,
+                scalefactors.TauEmbeddingElectronIsoSF_1_MC,
+                scalefactors.Tau_2_VsEleTauID_SF_Run2,
+            ],
+        )
+    elif era in ERAS_RUN3:
+        configuration.add_producers(
+            ["et"],
+            [
+                scalefactors.EleID_SF,
+                scalefactors.Tau_2_VsEleTauID_SF_Run3,
+            ]
+        )
 
     # add the old MVA ID scale factor producers only for Run 2 eras (not available for Run 3)
     if era in ERAS_RUN2:
@@ -1972,7 +2016,6 @@ def build_config(
         [
             electrons.ExtraElectronsVeto,
             muons.ExtraMuonsVeto,
-            taus.TauEnergyCorrection,
             # taus.BaseTaus,
             taus.GoodTaus,
             taus.NumberOfGoodTaus,
@@ -1994,10 +2037,8 @@ def build_config(
             boostedtaus.boostedTTDiTauPairQuantities,
             genparticles.TTGenDiTauPairQuantities,
             scalefactors.Tau_1_VsJetTauID_SF,
-            scalefactors.Tau_1_VsEleTauID_SF,
             scalefactors.Tau_1_VsMuTauID_SF,
             scalefactors.Tau_2_VsJetTauID_tt_SF,
-            scalefactors.Tau_2_VsEleTauID_SF,
             scalefactors.Tau_2_VsMuTauID_SF,
             triggers.TTGenerateDoubleTriggerFlags,
             #triggers.BoostedTTGenerateDoubleTriggerFlags,  TODO rework trigger setup before enabling this
@@ -2014,6 +2055,8 @@ def build_config(
         configuration.add_producers(
             "tt",
             [
+                scalefactors.Tau_1_VsEleTauID_SF_Run2,
+                scalefactors.Tau_2_VsEleTauID_SF_Run2,
                 scalefactors.Tau_1_oldIsoTauID_tt_SF,
                 scalefactors.Tau_1_antiEleTauID_SF,
                 scalefactors.Tau_1_antiMuTauID_SF,
@@ -2022,18 +2065,13 @@ def build_config(
                 scalefactors.Tau_2_antiMuTauID_SF,
             ],
         )
-
-    # boosted X->bb scale factors exist for 2018 for now
-    # TODO include X->bb scale factors for all eras
-    if era != "2018":
-        configuration.add_modification_rule(
-            HAD_TAU_SCOPES,
-            RemoveProducer(
-                producers=[
-                    scalefactors.Xbb_tagging_SF,
-                ],
-                exclude_samples=["data", "embedding", "embedding_mc"],  # on data samples they are removed anyways
-            ),
+    elif era in ERAS_RUN3:
+        configuration.add_producers(
+            "tt",
+            [
+                scalefactors.Tau_1_VsEleTauID_SF_Run3,
+                scalefactors.Tau_2_VsEleTauID_SF_Run3,
+            ],
         )
 
     configuration.add_modification_rule(
@@ -2042,11 +2080,30 @@ def build_config(
             producers=[
                 scalefactors.Tau_2_VsMuTauID_SF,
                 scalefactors.Tau_2_VsJetTauID_lt_SF,
-                scalefactors.Tau_2_VsEleTauID_SF,
             ],
             samples="data",
         ),
     )
+    if era in ERAS_RUN2:
+        configuration.add_modification_rule(
+            ["et", "mt"],
+            RemoveProducer(
+                producers=[
+                    scalefactors.Tau_2_VsEleTauID_SF_Run2,
+                ],
+                samples="data",
+            ),
+        )
+    elif era in ERAS_RUN3:
+        configuration.add_modification_rule(
+            ["et", "mt"],
+            RemoveProducer(
+                producers=[
+                    scalefactors.Tau_2_VsEleTauID_SF_Run3,
+                ],
+                samples="data",
+            ),
+        )
 
     configuration.add_modification_rule(
         ["et", "mt", "tt"],
@@ -2066,15 +2123,36 @@ def build_config(
         RemoveProducer(
             producers=[
                 scalefactors.Tau_1_VsJetTauID_SF,
-                scalefactors.Tau_1_VsEleTauID_SF,
                 scalefactors.Tau_1_VsMuTauID_SF,
                 scalefactors.Tau_2_VsJetTauID_tt_SF,
-                scalefactors.Tau_2_VsEleTauID_SF,
                 scalefactors.Tau_2_VsMuTauID_SF,
             ],
             samples="data",
         ),
     )
+    if era in ERAS_RUN2:
+        configuration.add_modification_rule(
+            ["tt"],
+            RemoveProducer(
+                producers=[
+                    scalefactors.Tau_1_VsEleTauID_SF_Run2,
+                    scalefactors.Tau_2_VsEleTauID_SF_Run2,
+                ],
+                samples="data",
+            ),
+        )
+    elif era in ERAS_RUN3:
+        configuration.add_modification_rule(
+            ["tt"],
+            RemoveProducer(
+                producers=[
+                    scalefactors.Tau_1_VsEleTauID_SF_Run3,
+                    scalefactors.Tau_2_VsEleTauID_SF_Run3,
+                ],
+                samples="data",
+            ),
+        )
+
 
     # the old MVA ID producers must only be removed for Run 2 eras as they have not been added to Run 3 eras
     if era in ERAS_RUN2:
@@ -2125,18 +2203,22 @@ def build_config(
                 fatjets.fj_Xbb_hadflavor_boosted,
                 fatjets.fj_Xbb_nBhad_boosted,
                 fatjets.fj_Xbb_nChad_boosted,
-                scalefactors.Xbb_tagging_SF_boosted,
-            ],
-            samples=["data", "embedding", "embedding_mc"],
-        ),
-    )
-    configuration.add_modification_rule(
-        HAD_TAU_SCOPES,
-        ReplaceProducer(
-            producers=[taus.TauEnergyCorrection, taus.TauEnergyCorrection_data],
-            samples="data",
-        ),
-    )
+    if era in ERAS_RUN2:
+        configuration.add_modification_rule(
+            HAD_TAU_SCOPES,
+            ReplaceProducer(
+                producers=[taus.TauEnergyCorrectionMCRun2, taus.TauEnergyCorrection_data],
+                samples="data",
+            ),
+        )
+    elif era in ERAS_RUN3:
+        configuration.add_modification_rule(
+            HAD_TAU_SCOPES,
+            ReplaceProducer(
+                producers=[taus.TauEnergyCorrectionMCRun3, taus.TauEnergyCorrection_data],
+                samples="data",
+            ),
+        )
 
     # for Run 2, just rename energy value in data is just renamed
     # for Run 3, apply the "data correction" for boosted tau energies, which is just a renaming operation
@@ -2659,9 +2741,17 @@ def build_config(
         configuration.add_outputs(
             "mt",
             [
+                scalefactors.Tau_2_VsEleTauID_SF_Run2.output_group,
                 scalefactors.Tau_2_oldIsoTauID_lt_SF.output_group,
                 scalefactors.Tau_2_antiEleTauID_SF.output_group,
                 scalefactors.Tau_2_antiMuTauID_SF.output_group,
+            ],
+        )
+    elif era in ERAS_RUN3:
+        configuration.add_outputs(
+            "mt",
+            [
+                scalefactors.Tau_2_VsEleTauID_SF_Run3.output_group,
             ],
         )
 
@@ -2672,7 +2762,6 @@ def build_config(
             q.ntaus,
             q.nboostedtaus,
             scalefactors.Tau_2_VsJetTauID_lt_SF.output_group,
-            scalefactors.Tau_2_VsEleTauID_SF.output_group,
             scalefactors.Tau_2_VsMuTauID_SF.output_group,
             pairquantities.VsJetTauIDFlag_2.output_group,
             pairquantities.VsEleTauIDFlag_2.output_group,
@@ -2730,9 +2819,17 @@ def build_config(
         configuration.add_outputs(
             "mt",
             [
+                scalefactors.Tau_2_VsEleTauID_SF_Run2.output_group,
                 scalefactors.Tau_2_oldIsoTauID_lt_SF.output_group,
                 scalefactors.Tau_2_antiEleTauID_SF.output_group,
                 scalefactors.Tau_2_antiMuTauID_SF.output_group,
+            ],
+        )
+    elif era in ERAS_RUN3:
+        configuration.add_outputs(
+            "mt",
+            [
+                scalefactors.Tau_2_VsEleTauID_SF_Run3.output_group,
             ],
         )
 
@@ -2741,10 +2838,8 @@ def build_config(
         [
             q.ntaus,
             scalefactors.Tau_1_VsJetTauID_SF.output_group,
-            scalefactors.Tau_1_VsEleTauID_SF.output_group,
             scalefactors.Tau_1_VsMuTauID_SF.output_group,
             scalefactors.Tau_2_VsJetTauID_tt_SF.output_group,
-            scalefactors.Tau_2_VsEleTauID_SF.output_group,
             scalefactors.Tau_2_VsMuTauID_SF.output_group,
             pairquantities.VsJetTauIDFlag_1.output_group,
             pairquantities.VsEleTauIDFlag_1.output_group,
@@ -2800,14 +2895,24 @@ def build_config(
     # add the old MVA ID scale factor producers only for Run 2 eras (not available for Run 3)
     if era in ERAS_RUN2:
         configuration.add_outputs(
-            "mt",
+            "tt",
             [
+                scalefactors.Tau_1_VsEleTauID_SF_Run2.output_group,
+                scalefactors.Tau_2_VsEleTauID_SF_Run2.output_group,
                 scalefactors.Tau_1_oldIsoTauID_tt_SF.output_group,
                 scalefactors.Tau_1_antiEleTauID_SF.output_group,
                 scalefactors.Tau_1_antiMuTauID_SF.output_group,
                 scalefactors.Tau_2_oldIsoTauID_tt_SF.output_group,
                 scalefactors.Tau_2_antiEleTauID_SF.output_group,
                 scalefactors.Tau_2_antiMuTauID_SF.output_group,
+            ],
+        )
+    elif era in ERAS_RUN3:
+        configuration.add_outputs(
+            "tt",
+            [
+                scalefactors.Tau_1_VsEleTauID_SF_Run3.output_group,
+                scalefactors.Tau_2_VsEleTauID_SF_Run3.output_group,
             ],
         )
 
@@ -3916,7 +4021,20 @@ def build_config(
     #########################
     # TauID scale factor shifts, channel dependent # Tau energy scale shifts, dm dependent
     #########################
-    add_tauVariations(configuration, sample)
+    if era in ERAS_RUN2:
+        add_tauVariations(
+            configuration,
+            scalefactors.Tau_1_VsEleTauID_SF_Run2,
+            scalefactors.Tau_2_VsEleTauID_SF_Run2,
+            sample,
+        )
+    elif era in ERAS_RUN3:
+        add_tauVariations(
+            configuration,
+            scalefactors.Tau_1_VsEleTauID_SF_Run3,
+            scalefactors.Tau_2_VsEleTauID_SF_Run3,
+            sample,
+        )
     
     # include boosted tau variations only for Run 2 as correction files do not exist for Run 3
     if era in ERAS_RUN2:

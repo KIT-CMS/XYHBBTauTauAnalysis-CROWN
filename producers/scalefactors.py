@@ -138,7 +138,7 @@ Muon_SF_boosted = ProducerGroup(
     scopes=["mt"],
     subproducers={
         "mt": [
-            # Muon_1_Reco_SF_boosted,
+            # Muon_1_Reco_SF_boosted,  does not exist in Run 3
             Muon_1_ID_SF_boosted,
             Muon_1_Iso_SF_boosted,
         ],
@@ -172,8 +172,8 @@ Tau_1_VsJetTauID_SF = ExtendedVectorProducer(
     scope=["tt"],
     vec_config="vsjet_tau_id_sf",
 )
-Tau_1_VsEleTauID_SF = ExtendedVectorProducer(
-    name="Tau_1_VsEleTauID_SF",
+Tau_1_VsEleTauID_SF_Run2 = ExtendedVectorProducer(
+    name="Tau_1_VsEleTauID_SF_Run2",
     call="""physicsobject::tau::scalefactor::Id_vsEle(
         {df}, 
         correctionManager, 
@@ -186,6 +186,24 @@ Tau_1_VsEleTauID_SF = ExtendedVectorProducer(
         "{tau_sf_vsele_endcap}")
         """,
     input=[q.eta_1, q.gen_match_1],
+    output="tau_1_vsele_sf_outputname",
+    scope=["tt"],
+    vec_config="vsele_tau_id",
+)
+Tau_1_VsEleTauID_SF_Run3 = ExtendedVectorProducer(
+    name="Tau_1_VsEleTauID_SF_Run3",
+    call="""physicsobject::tau::scalefactor::Id_vsEle(
+        {df}, 
+        correctionManager, 
+        {output}, 
+        {input}, 
+        "{tau_sf_file}", 
+        "{tau_id_discriminator}", 
+        "{vsele_tau_id_WP}", 
+        "{tau_sf_vsele_barrel}", 
+        "{tau_sf_vsele_endcap}")
+        """,
+    input=[q.eta_1, q.tau_decaymode_1, q.gen_match_1],
     output="tau_1_vsele_sf_outputname",
     scope=["tt"],
     vec_config="vsele_tau_id",
@@ -257,8 +275,8 @@ Tau_2_VsJetTauID_tt_SF = ExtendedVectorProducer(
     scope=["tt"],
     vec_config="vsjet_tau_id_sf",
 )
-Tau_2_VsEleTauID_SF = ExtendedVectorProducer(
-    name="Tau_2_VsEleTauID_SF",
+Tau_2_VsEleTauID_SF_Run2 = ExtendedVectorProducer(
+    name="Tau_2_VsEleTauID_SF_Run2",
     call="""physicsobject::tau::scalefactor::Id_vsEle(
         {df}, 
         correctionManager, 
@@ -271,6 +289,24 @@ Tau_2_VsEleTauID_SF = ExtendedVectorProducer(
         "{tau_sf_vsele_endcap}")
         """,
     input=[q.eta_2, q.gen_match_2],
+    output="tau_2_vsele_sf_outputname",
+    scope=["et", "mt", "tt"],
+    vec_config="vsele_tau_id",
+)
+Tau_2_VsEleTauID_SF_Run3 = ExtendedVectorProducer(
+    name="Tau_2_VsEleTauID_SF_Run3",
+    call="""physicsobject::tau::scalefactor::Id_vsEle(
+        {df}, 
+        correctionManager, 
+        {output}, 
+        {input}, 
+        "{tau_sf_file}", 
+        "{tau_id_discriminator}", 
+        "{vsele_tau_id_WP}", 
+        "{tau_sf_vsele_barrel}", 
+        "{tau_sf_vsele_endcap}")
+        """,
+    input=[q.eta_2, q.tau_decaymode_2, q.gen_match_2],
     output="tau_2_vsele_sf_outputname",
     scope=["et", "mt", "tt"],
     vec_config="vsele_tau_id",
@@ -296,7 +332,7 @@ Tau_2_VsMuTauID_SF = ExtendedVectorProducer(
     scope=["et", "mt", "tt"],
     vec_config="vsmu_tau_id",
 )
-TauID_SF = ProducerGroup(
+TauID_SF_Run2 = ProducerGroup(
     name="TauID_SF",
     call=None,
     input=None,
@@ -305,20 +341,47 @@ TauID_SF = ProducerGroup(
     subproducers={
         "tt": [
             Tau_1_VsJetTauID_SF,
-            Tau_1_VsEleTauID_SF,
+            Tau_1_VsEleTauID_SF_Run2,
             Tau_1_VsMuTauID_SF,
             Tau_2_VsJetTauID_tt_SF,
-            Tau_2_VsEleTauID_SF,
+            Tau_2_VsEleTauID_SF_Run2,
             Tau_2_VsMuTauID_SF,
         ],
         "mt": [
             Tau_2_VsJetTauID_lt_SF,
-            Tau_2_VsEleTauID_SF,
+            Tau_2_VsEleTauID_SF_Run2,
             Tau_2_VsMuTauID_SF,
         ],
         "et": [
             Tau_2_VsJetTauID_lt_SF,
-            Tau_2_VsEleTauID_SF,
+            Tau_2_VsEleTauID_SF_Run2,
+            Tau_2_VsMuTauID_SF,
+        ],
+    },
+)
+TauID_SF_Run3 = ProducerGroup(
+    name="TauID_SF",
+    call=None,
+    input=None,
+    output=None,
+    scopes=["tt", "mt", "et"],
+    subproducers={
+        "tt": [
+            Tau_1_VsJetTauID_SF,
+            Tau_1_VsEleTauID_SF_Run3,
+            Tau_1_VsMuTauID_SF,
+            Tau_2_VsJetTauID_tt_SF,
+            Tau_2_VsEleTauID_SF_Run3,
+            Tau_2_VsMuTauID_SF,
+        ],
+        "mt": [
+            Tau_2_VsJetTauID_lt_SF,
+            Tau_2_VsEleTauID_SF_Run3,
+            Tau_2_VsMuTauID_SF,
+        ],
+        "et": [
+            Tau_2_VsJetTauID_lt_SF,
+            Tau_2_VsEleTauID_SF_Run3,
             Tau_2_VsMuTauID_SF,
         ],
     },
@@ -426,33 +489,33 @@ Tau_2_antiMuTauID_SF = ExtendedVectorProducer(
     scope=["et", "mt", "tt"],
     vec_config="antimu_boostedtau_id",
 )
-BoostedTauID_SF = ProducerGroup(
-    name="BoostedTauID_SF",
-    call=None,
-    input=None,
-    output=None,
-    scopes=["tt", "mt", "et"],
-    subproducers={
-        "tt": [
-            Tau_1_VsJetTauID_SF,
-            Tau_1_VsEleTauID_SF,
-            Tau_1_VsMuTauID_SF,
-            Tau_2_oldIsoTauID_tt_SF,
-            Tau_2_antiEleTauID_SF,
-            Tau_2_antiMuTauID_SF,
-        ],
-        "mt": [
-            Tau_2_oldIsoTauID_lt_SF,
-            Tau_2_antiEleTauID_SF,
-            Tau_2_antiMuTauID_SF,
-        ],
-        "et": [
-            Tau_2_oldIsoTauID_lt_SF,
-            Tau_2_antiEleTauID_SF,
-            Tau_2_antiMuTauID_SF,
-        ],
-    },
-)
+#BoostedTauID_SF = ProducerGroup(
+#    name="BoostedTauID_SF",
+#    call=None,
+#    input=None,
+#    output=None,
+#    scopes=["tt", "mt", "et"],
+#    subproducers={
+#        "tt": [
+#            Tau_1_VsJetTauID_SF,
+#            Tau_1_VsEleTauID_SF,
+#            Tau_1_VsMuTauID_SF,
+#            Tau_2_oldIsoTauID_tt_SF,
+#            Tau_2_antiEleTauID_SF,
+#            Tau_2_antiMuTauID_SF,
+#        ],
+#        "mt": [
+#            Tau_2_oldIsoTauID_lt_SF,
+#            Tau_2_antiEleTauID_SF,
+#            Tau_2_antiMuTauID_SF,
+#        ],
+#        "et": [
+#            Tau_2_oldIsoTauID_lt_SF,
+#            Tau_2_antiEleTauID_SF,
+#            Tau_2_antiMuTauID_SF,
+#        ],
+#    },
+#)
 
 #########################
 # Electron ID/ISO SF
@@ -532,14 +595,20 @@ EleID_SF = ProducerGroup(
     output=None,
     scopes=["em", "ee", "et"],
     subproducers={
-        "em": [Ele_1_Reco_SF, Ele_1_IDWP90_SF],
+        "em": [
+            #Ele_1_Reco_SF,  TODO a bit tedious to implement
+            Ele_1_IDWP90_SF,
+        ],
         "ee": [
-            Ele_1_Reco_SF,
-            Ele_2_Reco_SF,
+            #Ele_1_Reco_SF,  TODO a bit tedious to implement
+            #Ele_2_Reco_SF,  TODO a bit tedious to implement
             Ele_1_IDWP90_SF,
             Ele_2_IDWP90_SF,
         ],
-        "et": [Ele_1_Reco_SF, Ele_1_IDWP90_SF],
+        "et": [
+            #Ele_1_Reco_SF,  TODO a bit tedious to implement
+            Ele_1_IDWP90_SF,
+        ],
     },
 )
 Ele_1_Reco_SF_boosted = Producer(
@@ -583,7 +652,10 @@ EleID_SF_boosted = ProducerGroup(
     output=None,
     scopes=["et"],
     subproducers={
-        "et": [Ele_1_Reco_SF_boosted, Ele_1_IDWP90_SF_boosted],
+        "et": [
+            #Ele_1_Reco_SF_boosted,
+            Ele_1_IDWP90_SF_boosted
+        ],
     },
 )
 
