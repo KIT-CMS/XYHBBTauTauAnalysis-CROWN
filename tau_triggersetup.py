@@ -1068,7 +1068,7 @@ def add_diTauTriggerSetup(configuration: Configuration):
                         }
                     ),
                     "et_trigger_leg1_sf_name": "Electron-HLT-SF",
-                    "et_trigger_leg1_path_id_name": "HLT_SF_Ele30_MVAiso90ID",
+                    "et_trigger_leg1_path_id_name": "HLT_SF_Ele24_TightID",
                     "et_trigger_leg1_variation": "sf",
 
                 },
