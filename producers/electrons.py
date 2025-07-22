@@ -29,7 +29,7 @@ ElectronPtCorrectionEmbedding = Producer(
 # corrections in MC samples in Run 2, for which an additional scale factor file needs to be provided
 ElectronPtCorrectionMCRun2 = Producer(
     name="ElectronPtCorrectionMCRun2",
-    call='physicsobject::electron::PtCorrectionMC({df}, correctionManager, {output}, {input}, "{ele_es_file}", "{ele_es_era}", "{ele_es_variation}")',
+    call='physicsobject::electron::PtCorrectionMC({df}, correctionManager, {output}, {input}, "{ele_es_file}", "{ele_es_sf_name}", "{ele_es_era}", "{ele_es_variation}")',
     input=[
         nanoAOD.Electron_pt,
         nanoAOD.Electron_eta,
@@ -44,7 +44,7 @@ ElectronPtCorrectionMCRun2 = Producer(
 # electron scale correction for data in Run 3
 ElectronPtCorrectionDataRun3 = Producer(
     name="ElectronPtCorrectionDataRun3",
-    call='physicsobject::electron::PtCorrectionDataFromCorrectionlib({df}, correctionManager, {output}, {input}, "{ele_es_file}", "{ele_es_sf_data_name}")',
+    call='physicsobject::electron::PtCorrectionData({df}, correctionManager, {output}, {input}, "{ele_es_file}", "{ele_es_sf_data_name}")',
     input=[
         nanoAOD.Electron_pt,
         nanoAOD.Electron_eta,
@@ -60,7 +60,7 @@ ElectronPtCorrectionDataRun3 = Producer(
 # event seed for initializing the smearing
 ElectronPtSmearingSeed = Producer(
     name="ElectronPtSmearingSeed",
-    call="event::quantity::GenerateEventSeed({df}, {output}, {input}, {ele_es_master_seed})",
+    call="event::quantity::GenerateSeed({df}, {output}, {input}, {ele_es_master_seed})",
     input=[
         nanoAOD.luminosityBlock,
         nanoAOD.run,
@@ -73,7 +73,7 @@ ElectronPtSmearingSeed = Producer(
 # electron scale and resolution correction for MC in Run 3
 ElectronPtCorrectionMCRun3 = ProducerGroup(
     name="ElectronPtCorrectionMCRun3",
-    call='physicsobject::electron::PtCorrectionMCFromCorrectionlib({df}, correctionManager, {output}, {input}, "{ele_es_file}", "{ele_es_sf_mc_name}", "{ele_es_variation}")',
+    call='physicsobject::electron::PtCorrectionMC({df}, correctionManager, {output}, {input}, "{ele_es_file}", "{ele_es_sf_mc_name}", "{ele_es_variation}")',
     input=[
         nanoAOD.Electron_pt,
         nanoAOD.Electron_eta,

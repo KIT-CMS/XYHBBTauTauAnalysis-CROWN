@@ -1512,6 +1512,18 @@ def build_config(
                     },
                 }
             ),
+            "ele_es_sf_name": EraModifier(
+                {
+                    **{
+                        _era: "UL-EGM_ScaleUnc"  # not needed for Run 2 producer
+                        for _era in ERAS_RUN2
+                    },
+                    **{
+                        _era: "DOES_NOT_EXIST"  # not needed for Run 3 producer
+                        for _era in ERAS_RUN3
+                    },
+                }
+            ),
             "ele_es_sf_data_name": EraModifier(
                 {
                     **{
@@ -3928,6 +3940,7 @@ def build_config(
     # systematic shifts for single electron trigger corrections
     #
 
+    # TODO check run 2 eras
     if era in ERAS_RUN3:
         for _variation in ["up", "down"]:
             configuration.add_shift(
