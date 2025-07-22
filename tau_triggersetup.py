@@ -668,30 +668,30 @@ def add_diTauTriggerSetup(configuration: Configuration):
 
     ## TT scope trigger setup
     configuration.add_config_parameters(
-        ["tt"],
+        TT_SCOPES,
         {
             "double_tau_trigger": EraModifier(
                 {
                     # TODO placeholder for Run3 eras, add these triggers also there
                     **{
                         _era: [
-                            # trigger:        HLT_DoubleMediumDeepTauPFTauHPS35_L2NN_eta2p1
-                            # final filter:   hltHpsDoublePFTau35MediumDitauWPDeepTauDz02 
-                            # filter bit:     7
-                            # documentation:  https://twiki.cern.ch/twiki/bin/view/CMS/TauTrigger#Trigger_Table_for_2022
-                            {
-                                "flagname": "trg_double_tau35",
-                                "hlt_path": "HLT_DoubleMediumDeepTauPFTauHPS35_L2NN_eta2p1",
-                                "p1_min_pt": 36.,
-                                "p1_max_abs_eta": 2.1,
-                                "p1_particle_id": 15,
-                                "p1_filter_bit": 7,
-                                "p2_min_pt": 36.,
-                                "p2_max_abs_eta": 2.1,
-                                "p2_particle_id": 15,
-                                "p2_filter_bit": 7,
-                                "match_max_delta_r": 0.4,
-                            },
+                            ## trigger:        HLT_DoubleMediumDeepTauPFTauHPS35_L2NN_eta2p1
+                            ## final filter:   hltHpsDoublePFTau35MediumDitauWPDeepTauDz02 
+                            ## filter bit:     7
+                            ## documentation:  https://twiki.cern.ch/twiki/bin/view/CMS/TauTrigger#Trigger_Table_for_2022
+                            #{
+                            #    "flagname": "trg_double_tau35",
+                            #    "hlt_path": "HLT_DoubleMediumDeepTauPFTauHPS35_L2NN_eta2p1",
+                            #    "p1_min_pt": 36.,
+                            #    "p1_max_abs_eta": 2.1,
+                            #    "p1_particle_id": 15,
+                            #    "p1_filter_bit": 7,
+                            #    "p2_min_pt": 36.,
+                            #    "p2_max_abs_eta": 2.1,
+                            #    "p2_particle_id": 15,
+                            #    "p2_filter_bit": 7,
+                            #    "match_max_delta_r": 0.4,
+                            #},
                         ]
                         for _era in ERAS_RUN3
                     },
@@ -1000,7 +1000,6 @@ def add_diTauTriggerSetup(configuration: Configuration):
     configuration.add_config_parameters(
         E_SCOPES,
         {
-
             "e_trigger_sf_file": EraModifier(
                 {
                     **{
