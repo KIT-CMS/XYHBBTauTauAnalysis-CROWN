@@ -70,9 +70,12 @@ namespace xyh {
                 const ROOT::RVec<float> &iso,
                 const ROOT::RVec<float> &dxy,
                 const ROOT::RVec<float> &dz,
-                const ROOT::RVec<bool> &id,
+                const ROOT::RVec<UChar_t> &id_v12,
                 const ROOT::RVec<int> &charge
             ) {
+                // convert ID column to integer
+                ROOT::RVec<int> id = static_cast<ROOT::RVec<int>>(id_v12);
+
                 // debug output for selection criteria and electron observables
                 Logger::get("xyh::vetoes::dielectron")->debug("Create selection masks for electrons");
                 Logger::get("xyh::vetoes::dielectron")->debug("    min_pt {}, abs_max_eta {}, max_iso {}, max_dxy {}, max_dz {}, id_wp {}, min_delta_r {}", min_pt, abs_max_eta, max_iso, max_dxy, max_dz, id_wp, min_delta_r);

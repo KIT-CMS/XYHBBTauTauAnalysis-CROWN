@@ -5,7 +5,6 @@ Producers for hadronic tau energy scale corrections and object selections.
 from ..quantities import output as q
 from ..quantities import nanoAOD as nanoAOD
 from code_generation.producer import Producer, ProducerGroup
-
 from ..constants import HAD_TAU_SCOPES
 
 
@@ -13,6 +12,73 @@ from ..constants import HAD_TAU_SCOPES
 # ENERGY SCALE CORRECTIONS
 #
 
+# tau pt correction for Run 2
+TauPtCorrectionRun2 = Producer(
+    name="TauPtCorrectionRun2",
+    call="""
+        physicsobject::tau::PtCorrectionMC(
+            {df},
+            correctionManager,
+            {output},
+            {input},
+            "{tau_sf_file}",
+            "{tau_ES_json_name}",
+            "{tau_id_algorithm}",
+            "{tau_elefake_es_DM0_barrel}",
+            "{tau_elefake_es_DM1_barrel}",
+            "{tau_elefake_es_DM0_endcap}",
+            "{tau_elefake_es_DM1_endcap}",
+            "{tau_mufake_es}",
+            "{tau_ES_shift_DM0}",
+            "{tau_ES_shift_DM1}",
+            "{tau_ES_shift_DM10}",
+            "{tau_ES_shift_DM11}"
+        )
+    """,
+    input=[
+        nanoAOD.Tau_pt,
+        nanoAOD.Tau_eta,
+        nanoAOD.Tau_decayMode,
+        nanoAOD.Tau_genMatch,
+    ],
+    output=[q.Tau_pt_corrected],
+    scopes=HAD_TAU_SCOPES,
+)
+
+# tau pt correction for Run 3
+TauPtCorrectionRun3 = Producer(
+    name="TauPtCorrectionRun3",
+    call="""
+        physicsobject::tau::PtCorrectionMC(
+            {df},
+            correctionManager,
+            {output},
+            {input},
+            "{tau_sf_file}",
+            "{tau_ES_json_name}",
+            "{tau_id_algorithm}",
+            "{tau_elefake_es_DM0_barrel}",
+            "{tau_elefake_es_DM1_barrel}",
+            "{tau_elefake_es_DM0_endcap}",
+            "{tau_elefake_es_DM1_endcap}",
+            "{tau_mufake_es}",
+            "{tau_ES_shift_DM0}",
+            "{tau_ES_shift_DM1}",
+            "{tau_ES_shift_DM10}",
+            "{tau_ES_shift_DM11}",
+            "{tau_es_vs_jet_wp}",
+            "{tau_es_vs_ele_wp}"
+        )
+    """,
+    input=[
+        nanoAOD.Tau_pt,
+        nanoAOD.Tau_eta,
+        nanoAOD.Tau_decayMode,
+        nanoAOD.Tau_genMatch,
+    ],
+    output=[q.Tau_pt_corrected],
+    scopes=HAD_TAU_SCOPES,
+)
 
 # pt correction for hadronic taus in embedding samples
 TauPtCorrection_byValue = Producer(
@@ -26,7 +92,7 @@ TauPtCorrection_byValue = Producer(
     scopes=HAD_TAU_SCOPES,
 )
 
-# pt correction for electrons that fake hadronic taus 
+# pt correction for electrons that fake hadronic taus
 TauPtCorrection_eleFake = Producer(
     name="TauPtCorrection_eleFake",
     call='physicsobject::tau::PtCorrectionMC_eleFake({df}, correctionManager, {output}, {input}, "{tau_sf_file}", "{tau_ES_json_name}", "{tau_id_algorithm}", "{tau_elefake_es_DM0_barrel}", "{tau_elefake_es_DM1_barrel}", "{tau_elefake_es_DM0_endcap}", "{tau_elefake_es_DM1_endcap}")',
@@ -124,6 +190,19 @@ TauEnergyCorrection = ProducerGroup(
         TauPtCorrection_eleFake,
         TauPtCorrection_muFake,
         TauPtCorrection_genTau,
+        TauMassCorrection,
+    ],
+)
+
+# producer group encapsulating all tau energy scale corrections in Run 3 MC samples
+TauEnergyCorrectionMCRun3 = ProducerGroup(
+    name="TauEnergyCorrectionMCRun3",
+    call=None,
+    input=None,
+    output=None,
+    scopes=HAD_TAU_SCOPES,
+    subproducers=[
+        TauPtCorrectionRun3,
         TauMassCorrection,
     ],
 )

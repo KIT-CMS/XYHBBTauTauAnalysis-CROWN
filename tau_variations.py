@@ -7,7 +7,12 @@ from .producers import electrons as electrons
 from .producers import taus as taus
 
 
-def add_tauVariations(configuration: Configuration, sample: str):
+def add_tauVariations(
+    configuration: Configuration,
+    tau_1_id_vs_ele_sf_producer: str, 
+    tau_2_id_vs_ele_sf_producer: str, 
+    sample: str
+):
     if sample == "embedding" or sample == "embedding_mc" or sample == "data":
         return configuration
     #########################
@@ -188,28 +193,28 @@ def add_tauVariations(configuration: Configuration, sample: str):
         SystematicShift(
             name="vsEleBarrelDown",
             shift_config={("et", "mt"): {"tau_sf_vsele_barrel": "down"}},
-            producers={("et", "mt"): scalefactors.Tau_2_VsEleTauID_SF},
+            producers={("et", "mt"): tau_2_id_vs_ele_sf_producer},
         )
     )
     configuration.add_shift(
         SystematicShift(
             name="vsEleBarrelUp",
             shift_config={("et", "mt"): {"tau_sf_vsele_barrel": "up"}},
-            producers={("et", "mt"): scalefactors.Tau_2_VsEleTauID_SF},
+            producers={("et", "mt"): tau_2_id_vs_ele_sf_producer},
         )
     )
     configuration.add_shift(
         SystematicShift(
             name="vsEleEndcapDown",
             shift_config={("et", "mt"): {"tau_sf_vsele_endcap": "down"}},
-            producers={("et", "mt"): scalefactors.Tau_2_VsEleTauID_SF},
+            producers={("et", "mt"): tau_2_id_vs_ele_sf_producer},
         )
     )
     configuration.add_shift(
         SystematicShift(
             name="vsEleEndcapUp",
             shift_config={("et", "mt"): {"tau_sf_vsele_endcap": "up"}},
-            producers={("et", "mt"): scalefactors.Tau_2_VsEleTauID_SF},
+            producers={("et", "mt"): tau_2_id_vs_ele_sf_producer},
         )
     )
     configuration.add_shift(
@@ -218,8 +223,8 @@ def add_tauVariations(configuration: Configuration, sample: str):
             shift_config={"tt": {"tau_sf_vsele_barrel": "down"}},
             producers={
                 "tt": [
-                    scalefactors.Tau_1_VsEleTauID_SF,
-                    scalefactors.Tau_2_VsEleTauID_SF,
+                    tau_1_id_vs_ele_sf_producer,
+                    tau_2_id_vs_ele_sf_producer,
                 ]
             },
         )
@@ -230,8 +235,8 @@ def add_tauVariations(configuration: Configuration, sample: str):
             shift_config={"tt": {"tau_sf_vsele_barrel": "up"}},
             producers={
                 "tt": [
-                    scalefactors.Tau_1_VsEleTauID_SF,
-                    scalefactors.Tau_2_VsEleTauID_SF,
+                    tau_1_id_vs_ele_sf_producer,
+                    tau_2_id_vs_ele_sf_producer,
                 ]
             },
         )
@@ -242,8 +247,8 @@ def add_tauVariations(configuration: Configuration, sample: str):
             shift_config={"tt": {"tau_sf_vsele_endcap": "down"}},
             producers={
                 "tt": [
-                    scalefactors.Tau_1_VsEleTauID_SF,
-                    scalefactors.Tau_2_VsEleTauID_SF,
+                    tau_1_id_vs_ele_sf_producer,
+                    tau_2_id_vs_ele_sf_producer,
                 ]
             },
         )
@@ -254,8 +259,8 @@ def add_tauVariations(configuration: Configuration, sample: str):
             shift_config={"tt": {"tau_sf_vsele_endcap": "up"}},
             producers={
                 "tt": [
-                    scalefactors.Tau_1_VsEleTauID_SF,
-                    scalefactors.Tau_2_VsEleTauID_SF,
+                    tau_1_id_vs_ele_sf_producer,
+                    tau_2_id_vs_ele_sf_producer,
                 ]
             },
         )

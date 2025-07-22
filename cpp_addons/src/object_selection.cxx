@@ -239,11 +239,14 @@ namespace xyh {
                 const ROOT::RVec<float> &pt,
                 const ROOT::RVec<float> &eta,
                 const ROOT::RVec<float> &dz,
-                const ROOT::RVec<int> &decay_mode,
+                const ROOT::RVec<UChar_t> &decay_mode_v12,
                 const ROOT::RVec<UChar_t> &id_vs_jet,
                 const ROOT::RVec<UChar_t> &id_vs_electron,
                 const ROOT::RVec<UChar_t> &id_vs_muon
             ) {
+                // convert decay mode column to integer
+                ROOT::RVec<int> decay_mode = static_cast<ROOT::RVec<int>>(decay_mode_v12);
+
                 // debug output for selection criteria and tau observables
                 Logger::get("xyh::object_selection::tau")->debug("Create selection masks for hadronic taus");
                 //Logger::get("xyh::object_selection::tau")->debug("    min_pt {}, abs_max_eta {}, decay_modes {}, max_dz {}, id_vs_jet_wp {}, id_vs_electron_wp {}, id_vs_muon_wp {}", min_pt, abs_max_eta, decay_modes, max_dz, id_vs_jet_wp, id_vs_electron_wp, id_vs_muon_wp);
@@ -332,7 +335,7 @@ namespace xyh {
             ] (
                 const ROOT::RVec<float> &pt,
                 const ROOT::RVec<float> &eta,
-                const ROOT::RVec<int> &id
+                const ROOT::RVec<UChar_t> &id
             ) {
                 // debug output for selection criteria and jet observables
                 Logger::get("xyh::object_selection::jet")->debug("Create selection masks for jets");
@@ -402,7 +405,7 @@ namespace xyh {
             ] (
                 const ROOT::RVec<float> &pt,
                 const ROOT::RVec<float> &eta,
-                const ROOT::RVec<int> &id,
+                const ROOT::RVec<UChar_t> &id,
                 const ROOT::RVec<int> &puid
             ) {
                 // debug output for selection criteria and jet observables

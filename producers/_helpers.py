@@ -9,6 +9,7 @@ def jerc_producer_factory(
     scopes: list[str],
     producer_prefix: str = "Jet",
     config_parameter_prefix: str = "jet",
+    lhc_run: int = 2,
 ) -> Tuple[ProducerGroup, ProducerGroup, ProducerGroup]:
     """
     Factory function to create producers needed for jet energy corrections.
@@ -67,6 +68,10 @@ def jerc_producer_factory(
         - `{config_parameter_prefix}_jes_shift`: Name of the systematic shift that should be applied to the JEC.
         - `{config_parameter_prefix}_jer_shift`: Name of the systematic shift that should be applied to the JER.
 
+    lhc_run: int, default: 2
+    
+        LHC run number for which the JEC/JER corrections should be applied. Must be either `2` or `3`.
+
     Returns
     -------
 
@@ -123,7 +128,7 @@ def jerc_producer_factory(
 
     # jet pt correction for MC jets
     jet_pt_correction_mc = Producer(
-        name=f"{producer_prefix}PtCorrectionMC",
+        name=f"{producer_prefix}PtCorrectionMCRun{lhc_run}",
         call=(
             "physicsobject::jet::PtCorrectionMC("
                 "{df}, "
@@ -137,7 +142,9 @@ def jerc_producer_factory(
                 f"{{{config_parameter_prefix}_jer_tag}}, "
                 f"{{{config_parameter_prefix}_reapplyJES}}, "
                 f"{{{config_parameter_prefix}_jes_shift}}, "
-                f"{{{config_parameter_prefix}_jer_shift}}" 
+                f"{{{config_parameter_prefix}_jer_shift}}, "
+                "42, "
+                f"{lhc_run}"
             ")"
         ),
         input=[
