@@ -24,8 +24,6 @@ TauPtCorrectionRun2 = Producer(
             "{tau_sf_file}",
             "{tau_ES_json_name}",
             "{tau_id_algorithm}",
-            nullptr,
-            nullptr,
             "{tau_elefake_es_DM0_barrel}",
             "{tau_elefake_es_DM1_barrel}",
             "{tau_elefake_es_DM0_endcap}",
@@ -59,8 +57,6 @@ TauPtCorrectionRun3 = Producer(
             "{tau_sf_file}",
             "{tau_ES_json_name}",
             "{tau_id_algorithm}",
-            "{tau_es_vs_jet_wp}",
-            "{tau_es_vs_ele_wp}",
             "{tau_elefake_es_DM0_barrel}",
             "{tau_elefake_es_DM1_barrel}",
             "{tau_elefake_es_DM0_endcap}",
@@ -69,7 +65,9 @@ TauPtCorrectionRun3 = Producer(
             "{tau_ES_shift_DM0}",
             "{tau_ES_shift_DM1}",
             "{tau_ES_shift_DM10}",
-            "{tau_ES_shift_DM11}"
+            "{tau_ES_shift_DM11}",
+            "{tau_es_vs_jet_wp}",
+            "{tau_es_vs_ele_wp}"
         )
     """,
     input=[

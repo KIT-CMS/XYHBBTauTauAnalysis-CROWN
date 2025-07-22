@@ -247,7 +247,7 @@ def add_diTauTriggerSetup(configuration: Configuration):
                             # documentation:      https://twiki.cern.ch/twiki/bin/view/CMS/TauTrigger#Trigger_Table_for_2022
                             #                     https://twiki.cern.ch/twiki/bin/view/CMS/TauTrigger#Trigger_Table_for_2023
                             {
-                                "flagname": "trg_mu20tau27",
+                                "flagname": "trg_double_mu20tau27",
                                 "hlt_path": "HLT_IsoMu20_eta2p1_LooseDeepTauPFTauHPS27_eta2p1_CrossL1",
                                 "p1_min_pt": 22.,
                                 "p1_max_abs_eta": 2.1,
@@ -1016,6 +1016,7 @@ def add_diTauTriggerSetup(configuration: Configuration):
             "single_ele_trigger_sf": [
                 {
                     "e_trigger_flagname": "trg_wgt_single_ele30",
+                    "e_trigger_flag": "trg_single_ele30",
                     "e_trigger_era": EraModifier(
                         {
                             **{
@@ -1042,6 +1043,7 @@ def add_diTauTriggerSetup(configuration: Configuration):
         {
             "double_eletau_trigger_leg1_sf": [
                 {
+                    "et_trigger_flag": "trg_double_ele24tau30",
                     "et_trigger_leg1_flagname": "trg_wgt_double_ele24tau30_leg1",
                     "et_trigger_leg1_sf_file": EraModifier(
                         {
@@ -1070,12 +1072,12 @@ def add_diTauTriggerSetup(configuration: Configuration):
                     "et_trigger_leg1_sf_name": "Electron-HLT-SF",
                     "et_trigger_leg1_path_id_name": "HLT_SF_Ele24_TightID",
                     "et_trigger_leg1_variation": "sf",
-
                 },
             ],
             "double_eletau_trigger_leg2_sf": [
                 {
                     "et_trigger_leg2_flagname": "trg_wgt_double_ele24tau30_leg2",
+                    "et_trigger_flag": "trg_double_ele24tau30",
                     "et_trigger_leg2_sf_name": "etau",
                     "et_trigger_leg2_variation": "nom",
                 },
@@ -1090,6 +1092,7 @@ def add_diTauTriggerSetup(configuration: Configuration):
             "single_mu_trigger_sf": [
                 {
                     "m_trigger_flagname": "trg_wgt_single_mu24",
+                    "m_trigger_flag": "trg_single_mu24",
                     "m_trigger_sf_name": "NUM_IsoMu24_DEN_CutBasedIdTight_and_PFIsoTight",
                     "m_trigger_variation": "nominal",
                 },
@@ -1116,6 +1119,7 @@ def add_diTauTriggerSetup(configuration: Configuration):
                         }
                     ),
                     "mt_trigger_leg1_flagname": "trg_wgt_double_mu20tau27_leg1",
+                    "mt_trigger_flag": "trg_double_mu20tau27",
                     "mt_trigger_leg1_sf_name": "NUM_IsoMu20_DEN_CutBasedIdTight_and_PFIsoTight",
                     "mt_trigger_leg1_variation": "nominal",
                 },
@@ -1123,6 +1127,7 @@ def add_diTauTriggerSetup(configuration: Configuration):
             "double_mutau_trigger_leg2_sf": [
                 {
                     "mt_trigger_leg2_flagname": "trg_wgt_double_mu20tau27_leg2",
+                    "mt_trigger_flag": "trg_double_mu20tau27",
                     "mt_trigger_leg2_sf_name": "mutau",
                     "mt_trigger_leg2_variation": "nom",
                 },

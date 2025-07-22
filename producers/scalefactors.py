@@ -671,10 +671,10 @@ EleID_SF_boosted = ProducerGroup(
 #
 
 
-# single muon trigger scale factor
+# single electron trigger scale factor
 SingleEleTriggerSF = ExtendedVectorProducer(
     name="SingleEleTriggerSF",
-    call='physicsobject::electron::scalefactor::Trigger({df}, correctionManager, {output}, {input}, "{e_trigger_era}", "{e_trigger_path_id_name}", "{e_trigger_sf_file}", "{e_trigger_sf_name}", "{e_trigger_variation}")',
+    call='physicsobject::electron::scalefactor::Trigger({df}, correctionManager, {output}, {input}, "{e_trigger_flag}", "{e_trigger_era}", "{e_trigger_path_id_name}", "{e_trigger_sf_file}", "{e_trigger_sf_name}", "{e_trigger_variation}")',
     input=[
         q.pt_1,
         q.eta_1,
@@ -693,7 +693,7 @@ SingleEleTriggerSF = ExtendedVectorProducer(
 # single muon trigger scale factor
 SingleMuTriggerSF = ExtendedVectorProducer(
     name="SingleMuTriggerSF",
-    call='physicsobject::muon::scalefactor::Trigger({df}, correctionManager, {output}, {input}, "{muon_sf_file}", "{m_trigger_sf_name}", "{m_trigger_variation}")',
+    call='physicsobject::muon::scalefactor::Trigger({df}, correctionManager, {output}, {input}, "{m_trigger_flag}", "{muon_sf_file}", "{m_trigger_sf_name}", "{m_trigger_variation}")',
     input=[
         q.pt_1,
         q.eta_1,
@@ -712,7 +712,7 @@ SingleMuTriggerSF = ExtendedVectorProducer(
 # muon leg scale factor
 DoubleMuTauTriggerLeg1SF = ExtendedVectorProducer(
     name="DoubleMuTauTriggerLeg1SF",
-    call='physicsobject::muon::scalefactor::Trigger({df}, correctionManager, {output}, {input}, "{mt_trigger_leg1_sf_file}", "{mt_trigger_leg1_sf_name}", "{mt_trigger_leg1_variation}")',
+    call='physicsobject::muon::scalefactor::Trigger({df}, correctionManager, {output}, {input}, "{mt_trigger_flag}", "{mt_trigger_leg1_sf_file}", "{mt_trigger_leg1_sf_name}", "{mt_trigger_leg1_variation}")',
     input=[
         q.pt_1,
         q.eta_1,
@@ -725,7 +725,7 @@ DoubleMuTauTriggerLeg1SF = ExtendedVectorProducer(
 # tau leg scale factor (for the Medium DeepTau WP)
 DoubleMuTauTriggerLeg2SF = ExtendedVectorProducer(
     name="GenerateMuTauCrossTriggerLeg2SF",
-    call='physicsobject::tau::scalefactor::Trigger({df}, correctionManager, {output}, {input}, "{tau_sf_file}", "tau_trigger", "{mt_trigger_leg2_sf_name}", "Medium", "sf", "{mt_trigger_leg2_variation}")',
+    call='physicsobject::tau::scalefactor::Trigger({df}, correctionManager, {output}, {input}, "{mt_trigger_flag}", "{tau_sf_file}", "tau_trigger", "{mt_trigger_leg2_sf_name}", "Medium", "sf", "{mt_trigger_leg2_variation}")',
     input=[
         q.pt_2,
         q.tau_decaymode_2,
@@ -757,7 +757,7 @@ DoubleMuTauTriggerSF = ProducerGroup(
 # muon leg scale factor
 DoubleEleTauTriggerLeg1SF = ExtendedVectorProducer(
     name="DoubleEleTauTriggerLeg1SF",
-    call='physicsobject::electron::scalefactor::Trigger({df}, correctionManager, {output}, {input}, "{et_trigger_leg1_era}", "{et_trigger_leg1_path_id_name}", "{et_trigger_leg1_sf_file}", "{et_trigger_leg1_sf_name}", "{et_trigger_leg1_variation}")',
+    call='physicsobject::electron::scalefactor::Trigger({df}, correctionManager, {output}, {input}, "{et_trigger_flag}", "{et_trigger_leg1_era}", "{et_trigger_leg1_path_id_name}", "{et_trigger_leg1_sf_file}", "{et_trigger_leg1_sf_name}", "{et_trigger_leg1_variation}")',
     input=[
         q.pt_1,
         q.eta_1,
@@ -770,7 +770,7 @@ DoubleEleTauTriggerLeg1SF = ExtendedVectorProducer(
 # tau leg scale factor (for the Medium DeepTau WP)
 DoubleEleTauTriggerLeg2SF = ExtendedVectorProducer(
     name="GenerateEleTauCrossTriggerLeg2SF",
-    call='physicsobject::tau::scalefactor::Trigger({df}, correctionManager, {output}, {input}, "{tau_sf_file}", "tau_trigger", "{et_trigger_leg2_sf_name}", "Medium", "sf", "{et_trigger_leg2_variation}")',
+    call='physicsobject::tau::scalefactor::Trigger({df}, correctionManager, {output}, {input}, "{et_trigger_flag}", "{tau_sf_file}", "tau_trigger", "{et_trigger_leg2_sf_name}", "Medium", "sf", "{et_trigger_leg2_variation}")',
     input=[
         q.pt_2,
         q.tau_decaymode_2,
