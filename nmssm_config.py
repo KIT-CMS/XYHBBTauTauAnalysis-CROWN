@@ -1981,6 +1981,7 @@ def build_config(
             scalefactors.Tau_2_VsJetTauID_lt_SF,
             scalefactors.Tau_2_VsMuTauID_SF,
             triggers.SingleEleTriggerFlags,
+            triggers.DoubleEleTauTriggerFlags,
             #triggers.BoostedETGenerateSingleElectronTriggerFlags,  TODO rework trigger setup before enabling this
             # triggers.ETGenerateCrossTriggerFlags,
             # triggers.GenerateSingleTrailingTauTriggerFlags,
@@ -2469,19 +2470,20 @@ def build_config(
         AppendProducer(
             producers=[
                 scalefactors.SingleMuTriggerSF,
-                scalefactors.DoubleMuTauTriggerLeg1SF,
-                scalefactors.DoubleMuTauTriggerLeg2SF,
+                scalefactors.DoubleMuTauTriggerSF,
                 #scalefactors.BoostedMTGenerateSingleMuonTriggerSF_MC,
             ],
             exclude_samples=["data", "embedding", "embedding_mc"],
         ),
     )
 
+    # add single electron and double electron-tau trigger scale factors for MC samples
     configuration.add_modification_rule(
         ["et"],
         AppendProducer(
             producers=[
                 scalefactors.SingleEleTriggerSF,
+                scalefactors.DoubleEleTauTriggerSF,
                 #scalefactors.BoostedETGenerateSingleElectronTriggerSF_MC,
             ],
             exclude_samples=["data", "embedding", "embedding_mc"],
@@ -3948,6 +3950,67 @@ def build_config(
             )
 
     #
+    # systematic shifts for double electron-tau trigger corrections
+    #
+
+    if era in ["2022preEE", "2022postEE", "2023preBPix", "2023postBPix"]:
+        for _variation in ["up", "down"]:
+            configuration.add_shift(
+                SystematicShift(
+                    name=f"doubleEleTauTriggerSF{_variation.upper()}",
+                    shift_config={
+                        ("et"): {
+                            "double_eletau_trigger_leg1_sf": [
+                                {
+                                    "et_trigger_leg1_flagname": "trg_wgt_double_ele24tau30_leg1",
+                                    "et_trigger_leg1_sf_file": EraModifier(
+                                        {
+                                            **{
+                                                _era: "DOES_NOT_EXIST"  # TODO does not exist for Run2 eras
+                                                for _era in ERAS_RUN2
+                                            },
+                                            **{
+                                                _era: f"data/hleprare/TriggerScaleFactors/{_era}/CrossEleTauHlt_EleLeg_v1.json"
+                                                for _era in ERAS_RUN3
+                                            },
+                                        }
+                                    ),
+                                    "et_trigger_leg1_era": EraModifier(
+                                        {
+                                            **{
+                                                _era: "DOES_NOT_EXIST"  # TODO does not exist for Run2 eras as correctionlib
+                                                for _era in ERAS_RUN2
+                                            },
+                                            "2022preEE": "2022Re-recoBCD",
+                                            "2022postEE": "2022Re-recoE+PromptFG ",
+                                            "2023preBPix": "2023PromptC",
+                                            "2023postBPix": "2023PromptD",
+                                        }
+                                    ),
+                                    "et_trigger_leg1_sf_name": "Electron-HLT-SF",
+                                    "et_trigger_leg1_path_id_name": "HLT_SF_Ele30_MVAiso90ID",
+                                    "et_trigger_leg1_variation": f"sf{_variation}",
+                                },
+                            ],
+                            "double_eletau_trigger_leg2_sf": [
+                                {
+                                    "et_trigger_leg2_flagname": "trg_wgt_double_ele24tau30_leg2",
+                                    "et_trigger_leg2_sf_name": "etau",
+                                    "et_trigger_leg2_variation": _variation,
+                                },
+                            ]
+                        },
+                    },
+                    producers={
+                        ("et"): [
+                            scalefactors.DoubleEleTauTriggerSF,
+                        ],
+                    },
+                ),
+                exclude_samples=["data", "embedding", "embedding_mc"],
+            )
+
+    #
     # systematic shifts for single muon trigger corrections
     #
 
@@ -4008,8 +4071,7 @@ def build_config(
                     },
                     producers={
                         ("mt"): [
-                            scalefactors.DoubleMuTauTriggerLeg1SF,
-                            scalefactors.DoubleMuTauTriggerLeg2SF,
+                            scalefactors.DoubleMuTauTriggerSF,
                         ],
                     },
                 ),
