@@ -3,6 +3,8 @@ from ..quantities import nanoAOD as nanoAOD
 from code_generation.producer import Producer, ProducerGroup
 from code_generation.producer import ExtendedVectorProducer
 
+from ..constants import E_SCOPES, ET_SCOPES, M_SCOPES, MT_SCOPES
+
 
 ############################
 # Muon ID, ISO SF
@@ -678,7 +680,7 @@ SingleEleTriggerSF = ExtendedVectorProducer(
         q.eta_1,
     ],
     output="e_trigger_flagname",
-    scope=["et", "ee"],
+    scope=E_SCOPES,
     vec_config="single_ele_trigger_sf",
 )
 
@@ -697,7 +699,7 @@ SingleMuTriggerSF = ExtendedVectorProducer(
         q.eta_1,
     ],
     output="m_trigger_flagname",
-    scope=["mt", "mm"],
+    scope=M_SCOPES,
     vec_config="single_mu_trigger_sf",
 )
 
@@ -716,7 +718,7 @@ DoubleMuTauTriggerLeg1SF = ExtendedVectorProducer(
         q.eta_1,
     ],
     output="mt_trigger_leg1_flagname",
-    scope=["mt"],
+    scope=MT_SCOPES,
     vec_config="double_mutau_trigger_leg1_sf",
 )
 
@@ -729,9 +731,68 @@ DoubleMuTauTriggerLeg2SF = ExtendedVectorProducer(
         q.tau_decaymode_2,
     ],
     output="mt_trigger_leg2_flagname",
-    scope=["mt"],
+    scope=MT_SCOPES,
     vec_config="double_mutau_trigger_leg2_sf",
 )
+
+# producer group containing the scale factors for both legs of the double muon-tau trigger
+DoubleMuTauTriggerSF = ProducerGroup(
+    name="DoubleMuTauTriggerSF",
+    call=None,
+    input=None,
+    output=None,
+    scopes=MT_SCOPES,
+    subproducers=[
+        DoubleMuTauTriggerLeg1SF,
+        DoubleMuTauTriggerLeg2SF,
+    ],
+)
+
+
+#
+# DOUBLE ELECTRON-TAU TRIGGER SCALE FACTORS
+#
+
+
+# muon leg scale factor
+DoubleEleTauTriggerLeg1SF = ExtendedVectorProducer(
+    name="DoubleEleTauTriggerLeg1SF",
+    call='physicsobject::electron::scalefactor::Trigger({df}, correctionManager, {output}, {input}, "{et_trigger_leg1_era}", "{et_trigger_leg1_path_id_name}", "{et_trigger_leg1_sf_file}", "{et_trigger_leg1_sf_name}", "{et_trigger_leg1_variation}")',
+    input=[
+        q.pt_1,
+        q.eta_1,
+    ],
+    output="et_trigger_leg1_flagname",
+    scope=ET_SCOPES,
+    vec_config="double_eletau_trigger_leg1_sf",
+)
+
+# tau leg scale factor (for the Medium DeepTau WP)
+DoubleEleTauTriggerLeg2SF = ExtendedVectorProducer(
+    name="GenerateEleTauCrossTriggerLeg2SF",
+    call='physicsobject::tau::scalefactor::Trigger({df}, correctionManager, {output}, {input}, "{tau_sf_file}", "tau_trigger", "{et_trigger_leg2_sf_name}", "Medium", "sf", "{et_trigger_leg2_variation}")',
+    input=[
+        q.pt_2,
+        q.tau_decaymode_2,
+    ],
+    output="et_trigger_leg2_flagname",
+    scope=ET_SCOPES,
+    vec_config="double_eletau_trigger_leg2_sf",
+)
+
+# producer group containing the scale factors for both legs of the double electron-tau trigger
+DoubleEleTauTriggerSF = ProducerGroup(
+    name="DoubleEleTauTriggerSF",
+    call=None,
+    input=None,
+    output=None,
+    scopes=ET_SCOPES,
+    subproducers=[
+        DoubleEleTauTriggerLeg1SF,
+        DoubleEleTauTriggerLeg2SF,
+    ],
+)
+
 
 BoostedMTGenerateSingleMuonTriggerSF_MC = ExtendedVectorProducer(
     name="BoostedMTGenerateSingleMuonTriggerSF_MC",
