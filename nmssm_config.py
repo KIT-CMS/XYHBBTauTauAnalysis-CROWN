@@ -1920,6 +1920,8 @@ def build_config(
             scalefactors.Tau_2_VsMuTauID_SF,
             triggers.SingleMuTriggerFlags,
             triggers.DoubleMuTauTriggerFlags,
+            scalefactors.SingleMuTriggerSF,
+            scalefactors.DoubleMuTauTriggerSF,
             #triggers.BoostedMTGenerateSingleMuonTriggerFlags,  TODO rework trigger setup before enabling this
             # triggers.MTGenerateCrossTriggerFlags,
             # triggers.GenerateSingleTrailingTauTriggerFlags,
@@ -1994,6 +1996,8 @@ def build_config(
             scalefactors.Tau_2_VsMuTauID_SF,
             triggers.SingleEleTriggerFlags,
             triggers.DoubleEleTauTriggerFlags,
+            scalefactors.SingleEleTriggerSF,
+            scalefactors.DoubleEleTauTriggerSF,
             #triggers.BoostedETGenerateSingleElectronTriggerFlags,  TODO rework trigger setup before enabling this
             # triggers.ETGenerateCrossTriggerFlags,
             # triggers.GenerateSingleTrailingTauTriggerFlags,
@@ -2125,6 +2129,28 @@ def build_config(
                 samples="data",
             ),
         )
+
+    configuration.add_modification_rule(
+        ["mt"],
+        RemoveProducer(
+            producers=[
+                scalefactors.SingleMuTriggerSF,
+                scalefactors.DoubleMuTauTriggerSF,
+            ],
+            samples=["data", "embedding", "embedding_mc"],
+        ),
+    )
+
+    configuration.add_modification_rule(
+        ["et"],
+        RemoveProducer(
+            producers=[
+                scalefactors.SingleEleTriggerSF,
+                scalefactors.DoubleEleTauTriggerSF,
+            ],
+            samples=["data", "embedding", "embedding_mc"],
+        ),
+    )
 
     configuration.add_modification_rule(
         ["et", "mt", "tt"],
@@ -2318,7 +2344,7 @@ def build_config(
         "global",
         RemoveProducer(
             producers=[event.npartons],
-            exclude_samples=["dyjets", "wjets", "electroweak_boson"],
+            exclude_samples=["dyjets", "dyjets_madgraph", "dyjets_powheg", "dyjets_amcatnlo", "wjets", "wjets_madgraph", "wjets_amcatnlo", "electroweak_boson"],
         ),
     )
     configuration.add_modification_rule(
@@ -2471,32 +2497,6 @@ def build_config(
                 scalefactors.TauEmbeddingMuonIDSF_2_MC,
                 scalefactors.TauEmbeddingMuonIsoSF_2_MC,
                 scalefactors.SingleMuTriggerSF,
-            ],
-            exclude_samples=["data", "embedding", "embedding_mc"],
-        ),
-    )
-
-    # add single muon and double muon-tau trigger scale factors for MC samples
-    configuration.add_modification_rule(
-        ["mt"],
-        AppendProducer(
-            producers=[
-                scalefactors.SingleMuTriggerSF,
-                scalefactors.DoubleMuTauTriggerSF,
-                #scalefactors.BoostedMTGenerateSingleMuonTriggerSF_MC,
-            ],
-            exclude_samples=["data", "embedding", "embedding_mc"],
-        ),
-    )
-
-    # add single electron and double electron-tau trigger scale factors for MC samples
-    configuration.add_modification_rule(
-        ["et"],
-        AppendProducer(
-            producers=[
-                scalefactors.SingleEleTriggerSF,
-                scalefactors.DoubleEleTauTriggerSF,
-                #scalefactors.BoostedETGenerateSingleElectronTriggerSF_MC,
             ],
             exclude_samples=["data", "embedding", "embedding_mc"],
         ),
@@ -2717,6 +2717,9 @@ def build_config(
     configuration.add_outputs(
         "mt",
         [
+            p
+            for p in scalefactors.DoubleMuTauTriggerSF.get_outputs("mt")
+        ] + [
             q.nmuons,
             q.ntaus,
             q.nboostedtaus,
@@ -2730,6 +2733,7 @@ def build_config(
             boostedtaus.antiMuTauIDFlag_2.output_group,
             triggers.SingleMuTriggerFlags.output_group,
             triggers.DoubleMuTauTriggerFlags.output_group,
+            scalefactors.SingleMuTriggerSF.output_group,
             #triggers.BoostedMTGenerateSingleMuonTriggerFlags.output_group,  TODO rework trigger setup before enabling this
             # triggers.MTGenerateCrossTriggerFlags.output_group,
             # triggers.GenerateSingleTrailingTauTriggerFlags.output_group,
@@ -2796,6 +2800,10 @@ def build_config(
     configuration.add_outputs(
         "et",
         [
+            p
+            for p in scalefactors.DoubleEleTauTriggerSF.get_outputs("et")
+        ]
+        + [
             q.nelectrons,
             q.ntaus,
             q.nboostedtaus,
@@ -2808,6 +2816,8 @@ def build_config(
             boostedtaus.antiEleTauIDFlag_2.output_group,
             boostedtaus.antiMuTauIDFlag_2.output_group,
             triggers.SingleEleTriggerFlags.output_group,
+            triggers.DoubleEleTauTriggerFlags.output_group,
+            scalefactors.SingleEleTriggerSF.output_group,
             #triggers.BoostedETGenerateSingleElectronTriggerFlags.output_group,  TODO rework trigger setup before enabling this
             # triggers.ETGenerateCrossTriggerFlags.output_group,
             # triggers.GenerateSingleTrailingTauTriggerFlags.output_group,
@@ -2867,9 +2877,36 @@ def build_config(
         configuration.add_outputs(
             "mt",
             [
+                p
+                for p in scalefactors.MuonIDIso_SF.get_outputs("mt")
+            ] + [
                 scalefactors.Tau_2_VsEleTauID_SF_Run3.output_group,
             ],
         )
+
+    # add the old MVA ID scale factor producers only for Run 2 eras (not available for Run 3)
+    if era in ERAS_RUN2:
+        configuration.add_outputs(
+            "et",
+            [
+                scalefactors.Tau_2_VsEleTauID_SF_Run2.output_group,
+                scalefactors.Tau_2_oldIsoTauID_lt_SF.output_group,
+                scalefactors.Tau_2_antiEleTauID_SF.output_group,
+                scalefactors.Tau_2_antiMuTauID_SF.output_group,
+            ],
+        )
+    elif era in ERAS_RUN3:
+        configuration.add_outputs(
+            "et",
+            [
+                p
+                for p in scalefactors.EleID_SF.get_outputs("et")
+            ]
+            + [
+                scalefactors.Tau_2_VsEleTauID_SF_Run3.output_group,
+            ],
+        )
+
 
     configuration.add_outputs(
         "tt",

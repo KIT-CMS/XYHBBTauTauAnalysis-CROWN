@@ -15,14 +15,14 @@ def add_diTauTriggerSetup(configuration: Configuration):
                         _era: [
                             # trigger:            HLT_IsoMu24
                             # final filter:       hltL3crIsoL1sSingleMu22L1f0L2f10QL3f24QL3trkIsoFiltered0p07 OR hltL3crIsoL1sSingleMu22L1f0L2f10QL3f24QL3trkIsoFiltered0p08 OR hltL3crIsoL1sSingleMu22L1f0L2f10QL3f24QL3trkIsoFiltered
-                            # filter bit:         2
+                            # filter bit:         2 (switched off for now)
                             # documentation:      https://twiki.cern.ch/twiki/bin/view/CMS/MuonHLT2022
                             {
                                 "flagname": "trg_single_mu24",
                                 "hlt_path": "HLT_IsoMu24",
                                 "min_pt": 26.,
                                 "max_abs_eta": 2.4,
-                                "filter_bit": 2,
+                                "filter_bit": -1,
                                 "particle_id": 13,
                                 "match_max_delta_r": 0.4,
                             },
@@ -351,14 +351,14 @@ def add_diTauTriggerSetup(configuration: Configuration):
                         _era: [
                             # trigger:        HLT_Ele30_WPTight_Gsf
                             # final filter:   hltEle30WPTightGsfTrackIsoFilter 
-                            # filter bit:     2
+                            # filter bit:     1 (switched off for now)
                             # documentation:  https://twiki.cern.ch/twiki/bin/view/CMS/EgHLTRunIIISummary
                             {
                                 "flagname": "trg_single_ele30",
                                 "hlt_path": "HLT_Ele30_WPTight_Gsf",
                                 "min_pt": 32.,
                                 "max_abs_eta": 2.5,
-                                "filter_bit": 18,
+                                "filter_bit": -1,
                                 "particle_id": 11,
                                 "match_max_delta_r": 0.4,
                             },
