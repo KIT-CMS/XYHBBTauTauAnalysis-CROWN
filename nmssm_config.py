@@ -1188,7 +1188,7 @@ def add_ak4jet_config(configuration: Configuration):
         {
             "jet_veto_map_file": EraModifier(
                 {
-                    _era: f'"data/jsonpog-integration/POG/JME/{_campaign}/jetvetomaps.json.gz"'
+                    _era: f"data/jsonpog-integration/POG/JME/{_campaign}/jetvetomaps.json.gz"
                     for _era, _campaign in CORRECTIONLIB_CAMPAIGNS.items()
                 }
             ),
