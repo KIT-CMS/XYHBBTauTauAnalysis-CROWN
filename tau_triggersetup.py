@@ -1135,6 +1135,29 @@ def add_diTauTriggerSetup(configuration: Configuration):
         },
     )
 
+    # double tau-tau trigger scale factors
+    configuration.add_config_parameters(
+        TT_SCOPES,
+        {
+            "double_tautau_trigger_leg1_sf": [
+                {
+                    "tt_trigger_leg1_flagname": "trg_wgt_double_tau35_leg1",
+                    "tt_trigger_flag": "trg_double_tau35",
+                    "tt_trigger_leg1_sf_name": "tautau",
+                    "tt_trigger_leg1_variation": "nom",
+                },
+            ],
+            "double_tautau_trigger_leg2_sf": [
+                {
+                    "tt_trigger_leg2_flagname": "trg_wgt_double_tau35_leg2",
+                    "tt_trigger_flag": "trg_double_tau35",
+                    "tt_trigger_leg2_sf_name": "tautau",
+                    "tt_trigger_leg2_variation": "nom",
+                },
+            ],
+        },
+    )
+
     ## TT singletau trigger
     # configuration.add_config_parameters(
     #     ["tt"],

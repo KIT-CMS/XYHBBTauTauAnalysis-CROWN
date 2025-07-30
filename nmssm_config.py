@@ -2066,6 +2066,7 @@ def build_config(
             scalefactors.Tau_2_VsJetTauID_tt_SF,
             scalefactors.Tau_2_VsMuTauID_SF,
             triggers.DoubleTauTauTriggerFlags,
+            scalefactors.DoubleTauTauTriggerSF,
             #triggers.BoostedTTGenerateDoubleTriggerFlags,  TODO rework trigger setup before enabling this
             # triggers.GenerateSingleTrailingTauTriggerFlags,
             # triggers.GenerateSingleLeadingTauTriggerFlags,
@@ -2459,7 +2460,7 @@ def build_config(
         "tt",
         RemoveProducer(
             producers=[
-                scalefactors.TTGenerateDoubleTauTriggerSF_MC,
+                scalefactors.DoubleTauTauTriggerSF,
                 #scalefactors.BoostedTTGenerateFatjetTriggerSF_MC,  TODO rework trigger setup before enabling this
             ],
             samples=["data"],
@@ -2987,6 +2988,9 @@ def build_config(
         configuration.add_outputs(
             "tt",
             [
+                p
+                for p in scalefactors.DoubleTauTauTriggerSF.get_outputs("tt")
+            ] + [
                 scalefactors.Tau_1_VsEleTauID_SF_Run3.output_group,
                 scalefactors.Tau_2_VsEleTauID_SF_Run3.output_group,
             ],

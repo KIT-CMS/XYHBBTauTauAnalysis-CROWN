@@ -3,7 +3,7 @@ from ..quantities import nanoAOD as nanoAOD
 from code_generation.producer import Producer, ProducerGroup
 from code_generation.producer import ExtendedVectorProducer
 
-from ..constants import E_SCOPES, ET_SCOPES, M_SCOPES, MT_SCOPES
+from ..constants import E_SCOPES, ET_SCOPES, M_SCOPES, MT_SCOPES, TT_SCOPES
 
 
 ############################
@@ -769,7 +769,7 @@ DoubleEleTauTriggerLeg1SF = ExtendedVectorProducer(
 
 # tau leg scale factor (for the Medium DeepTau WP)
 DoubleEleTauTriggerLeg2SF = ExtendedVectorProducer(
-    name="GenerateEleTauCrossTriggerLeg2SF",
+    name="DoubleEleTauTriggerLeg2SF",
     call='physicsobject::tau::scalefactor::Trigger({df}, correctionManager, {output}, {input}, "{et_trigger_flag}", "{tau_sf_file}", "tau_trigger", "{et_trigger_leg2_sf_name}", "Medium", "sf", "{et_trigger_leg2_variation}")',
     input=[
         q.pt_2,
@@ -790,6 +790,51 @@ DoubleEleTauTriggerSF = ProducerGroup(
     subproducers=[
         DoubleEleTauTriggerLeg1SF,
         DoubleEleTauTriggerLeg2SF,
+    ],
+)
+
+
+#
+# DOUBLE TAU-TAU TRIGGER SCALE FACTORS
+#
+
+
+# muon leg scale factor
+DoubleTauTauTriggerLeg1SF = ExtendedVectorProducer(
+    name="DoubleTauTauTriggerLeg1SF",
+    call='physicsobject::tau::scalefactor::Trigger({df}, correctionManager, {output}, {input}, "{tt_trigger_flag}", "{tau_sf_file}", "tau_trigger", "{tt_trigger_leg1_sf_name}", "Medium", "sf", "{tt_trigger_leg1_variation}")',
+    input=[
+        q.pt_1,
+        q.tau_decaymode_1,
+    ],
+    output="tt_trigger_leg1_flagname",
+    scope=TT_SCOPES,
+    vec_config="double_tautau_trigger_leg1_sf",
+)
+
+# tau leg scale factor (for the Medium DeepTau WP)
+DoubleTauTauTriggerLeg2SF = ExtendedVectorProducer(
+    name="DoubleTauTauTriggerLeg2SF",
+    call='physicsobject::tau::scalefactor::Trigger({df}, correctionManager, {output}, {input}, "{tt_trigger_flag}", "{tau_sf_file}", "tau_trigger", "{tt_trigger_leg2_sf_name}", "Medium", "sf", "{tt_trigger_leg2_variation}")',
+    input=[
+        q.pt_2,
+        q.tau_decaymode_2,
+    ],
+    output="tt_trigger_leg2_flagname",
+    scope=TT_SCOPES,
+    vec_config="double_tautau_trigger_leg2_sf",
+)
+
+# producer group containing the scale factors for both legs of the double electron-tau trigger
+DoubleTauTauTriggerSF = ProducerGroup(
+    name="DoubleTauTauTriggerSF",
+    call=None,
+    input=None,
+    output=None,
+    scopes=TT_SCOPES,
+    subproducers=[
+        DoubleTauTauTriggerLeg1SF,
+        DoubleTauTauTriggerLeg2SF,
     ],
 )
 
