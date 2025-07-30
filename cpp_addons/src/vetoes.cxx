@@ -2,6 +2,7 @@
 #define GUARDVETOES_CXX
 
 
+#include "../../../../include/utility/CorrectionManager.hxx"
 #include "../../../../include/utility/Logger.hxx"
 #include "../include/vetoes.hxx"
 #include "ROOT/RDataFrame.hxx"
@@ -103,7 +104,7 @@ namespace xyh {
                 auto has_dielectron = xyh::vetoes::dilepton_veto(object_index, eta, phi, charge, min_delta_r, "xyh::vetoes::dielectron");
 
                 // debug output for the final selection mask
-                Logger::get("xyh::object_selection::electron")->debug("    veto value is {}", has_dielectron);
+                Logger::get("xyh::vetoes::dielectron")->debug("    veto value is {}", has_dielectron);
 
                 return has_dielectron;
             };
@@ -215,7 +216,7 @@ namespace xyh {
                 auto has_dimuon = xyh::vetoes::dilepton_veto(object_index, eta, phi, charge, min_delta_r, "xyh::vetoes::dimuon");
 
                 // debug output for the final selection mask
-                Logger::get("xyh::object_selection::dimuon")->debug("    veto value is {}", has_dimuon);
+                Logger::get("xyh::vetoes::dimuon")->debug("    veto value is {}", has_dimuon);
 
                 return has_dimuon;
             };
@@ -234,6 +235,163 @@ namespace xyh {
                     muon_is_tracker,
                     muon_is_global,
                     muon_charge
+                }
+            );
+        }
+
+        /**
+         * @brief Create a veto flag for events with jets in regions, which are known to produce wrong measurements.
+         * The function checks for jets which pass the base selection criteria if they are in a eta-phi region with
+         * "hot" and/or "cold" towers. Events with any jet in such a region are vetoed in data and simulation.
+         * The locations are provided by a `correctionlib` file and depend on the data-taking era. This procedure
+         * follows the official [JME POG recommendations](https://cms-jerc.web.cern.ch/Recommendations/#jet-veto-maps)
+         *  
+         * The documentation of the `correctionlib` files for the respective eras can be found here:
+         * - [2022preEE](https://cms-nanoaod-integration.web.cern.ch/commonJSONSFs/summaries/JME_2022_Summer22_jetvetomaps.html)
+         * - [2022postEE](https://cms-nanoaod-integration.web.cern.ch/commonJSONSFs/summaries/JME_2022_Summer22EE_jetvetomaps.html)
+         * - [2023preBPix](https://cms-nanoaod-integration.web.cern.ch/commonJSONSFs/summaries/JME_2023_Summer23_jetvetomaps.html)
+         * - [2023postBPix](https://cms-nanoaod-integration.web.cern.ch/commonJSONSFs/summaries/JME_2023_Summer23BPix_jetvetomaps.html)
+         * 
+         * @param df The input data frame.
+         * @param correctionManager The CorrectionManager object
+         * @param output_mask The output mask column.
+         * @param jet_pt The tranverse momentum column of the jets.
+         * @param jet_eta The pseudorapidity column of the jets.
+         * @param jet_phi The azimuthal angle column of the jets.
+         * @param jet_id The jet identification bitmask column of the jets.
+         * @param jet_ch_em_ef The charged electromagnetic energy fraction column of the jets.
+         * @param jet_n_em_ef The neutral electromagnetic energy fraction column of the jets.
+         * @param muon_eta The pseudorapidity column of the muons.
+         * @param muon_phi The azimuthal column of the muons.
+         * @param muon_is_pfcand The ID column of the muons, which flags if the muon is a particle-flow candidate.
+         * @param jet_vetomap_file The file path to the correctionlib jet veto map.
+         * @param jet_vetomap_name The name of the correction to access jet veto map.
+         * @param jet_vetomap_type The jet veto map type; for analyses, this name should be `"jetvetomap"`.
+         * @param min_pt The minimum transverse momentum for selected jets.
+         * @param id_wp The working point for the jet identification.
+         * @param max_em_frac The maximum charged and neutral electromagnetic energy fraction for selected jets.
+         * @param min_delta_r_jet_muon The minimum deltaR separation between jets and particle-flow muons.
+         * 
+         * @return A new data frame with the selection mask column.
+         * 
+         * @note The veto map selection is mandatory for Run 3 analyses and can also be applied to Run 2 analyses.
+         */
+        ROOT::RDF::RNode jet_vetomap(
+            ROOT::RDF::RNode df,
+            correctionManager::CorrectionManager &correctionManager,
+            const std::string &output_mask,
+            const std::string &jet_pt,
+            const std::string &jet_id,
+            const std::string &jet_ch_em_ef,
+            const std::string &jet_n_em_ef,
+            const std::string &muon_eta,
+            const std::string &muon_phi,
+            const std::string &muon_is_pfcand,
+            const std::string &jet_vetomap_file,
+            const std::string &jet_vetomap_name,
+            const std::string &jet_vetomap_type,
+            const float &min_pt,
+            const int &id_wp,
+            const float &max_em_frac,
+            const float &min_delta_r_jet_muon
+        ) {
+            // load the veto map evaluator
+            auto evaluator = correctionManager.loadCorrection(jet_vetomap_file, jet_vetomap_name);
+
+            auto select = [
+                evaluator, min_pt, id_wp, max_em_frac, min_delta_r_jet_muon, jet_vetomap_type
+            ] (
+                const ROOT::RVec<float> &jet_pt,
+                const ROOT::RVec<float> &jet_eta,
+                const ROOT::RVec<float> &jet_phi,
+                const ROOT::RVec<UChar_t> &jet_id,
+                const ROOT::RVec<float> &jet_ch_em_ef,
+                const ROOT::RVec<float> &jet_n_em_ef,
+                const ROOT::RVec<float> &muon_eta,
+                const ROOT::RVec<float> &muon_phi,
+                const ROOT::RVec<bool> &muon_is_pfcand
+            ) {
+                // debug output for selection criteria and jet observables
+                Logger::get("xyh::vetoes::jet_vetomap")->debug("Create selection masks for jets");
+                Logger::get("xyh::vetoes::jet_vetomap")->debug("    min_pt {}, id_wp {}, max_em_fraction {}", min_pt, id_wp, max_em_frac);
+                Logger::get("xyh::vetoes::jet_vetomap")->debug("    pt {}", jet_pt);
+                Logger::get("xyh::vetoes::jet_vetomap")->debug("    eta {}", jet_eta);
+                Logger::get("xyh::vetoes::jet_vetomap")->debug("    phi {}", jet_phi);
+                Logger::get("xyh::vetoes::jet_vetomap")->debug("    id {}", jet_id);
+                Logger::get("xyh::vetoes::jet_vetomap")->debug("    ch_em_ef {}", jet_ch_em_ef);
+                Logger::get("xyh::vetoes::jet_vetomap")->debug("    n_em_ef {}", jet_n_em_ef);
+
+                // create the index of selected jets
+                auto jet_index = ROOT::VecOps::Nonzero(
+                    (jet_pt > min_pt)
+                    && (jet_id == id_wp)
+                    && ((jet_ch_em_ef + jet_n_em_ef) < max_em_frac)
+                );
+
+                // debug output for muon observables
+                Logger::get("xyh::vetoes::jet_vetomap")->debug("Create selection masks for muons");
+                Logger::get("xyh::vetoes::jet_vetomap")->debug("    eta {}", muon_eta);
+                Logger::get("xyh::vetoes::jet_vetomap")->debug("    phi {}", muon_phi);
+                Logger::get("xyh::vetoes::jet_vetomap")->debug("    is_pfcand {}", muon_is_pfcand);
+
+                // create the index of selected muons
+                auto muon_index = ROOT::VecOps::Nonzero(muon_is_pfcand);
+
+                // create container with indices for vetoed jets
+                auto jet_index_vetoed = ROOT::RVec<int>(0);
+
+                for (const auto &i : jet_index) {
+                    // check if the jet overlaps with a selected muon
+                    bool has_muon_overlap = false;
+                    for (const auto &j : muon_index) {
+                        // if delta_r is smaller than overlap threshold, the jet has an overlap with a muon
+                        auto delta_r = ROOT::VecOps::DeltaR(jet_eta.at(i), jet_phi.at(i), muon_eta.at(j), muon_phi.at(j));
+                        if (delta_r < min_delta_r_jet_muon) {
+                            has_muon_overlap = true;
+                            break;
+                        }
+                    };
+
+                    // if there is a muon overlap, the jet is not considered for the veto map evaluation
+                    if (has_muon_overlap) {
+                        continue;
+                    }
+
+                    // evaluate the jet veto map value
+                    auto jet_vetoed = evaluator->evaluate({
+                        jet_vetomap_type,
+                        jet_eta.at(i),
+                        jet_phi.at(i)
+                    });
+
+                    // if the jet is vetoed, add it to the vetoed jet index
+                    if (jet_vetoed) {
+                        jet_index_vetoed.push_back(i);
+                    };
+                }
+
+                // check if any jet has been vetoed
+                bool event_veto = (!jet_index_vetoed.empty()) ? true : false;
+
+                // debug output for vetoes
+                Logger::get("xyh::vetoes::jet_vetomap")->debug("Vetoes");
+                Logger::get("xyh::vetoes::jet_vetomap")->debug("    jet_index_vetoed {}", jet_index_vetoed);
+                Logger::get("xyh::vetoes::jet_vetomap")->debug("    event_veto {}", event_veto);
+
+                return mask;
+            };
+
+            return df.Define(
+                output_mask,
+                select,
+                {
+                    jet_pt,
+                    jet_id,
+                    jet_ch_em_ef,
+                    jet_n_em_ef,
+                    muon_eta,
+                    muon_phi,
+                    muon_is_pfcand
                 }
             );
         }
