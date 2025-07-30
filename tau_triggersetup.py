@@ -15,14 +15,14 @@ def add_diTauTriggerSetup(configuration: Configuration):
                         _era: [
                             # trigger:            HLT_IsoMu24
                             # final filter:       hltL3crIsoL1sSingleMu22L1f0L2f10QL3f24QL3trkIsoFiltered0p07 OR hltL3crIsoL1sSingleMu22L1f0L2f10QL3f24QL3trkIsoFiltered0p08 OR hltL3crIsoL1sSingleMu22L1f0L2f10QL3f24QL3trkIsoFiltered
-                            # filter bit:         2 (switched off for now)
+                            # filter bit:         1
                             # documentation:      https://twiki.cern.ch/twiki/bin/view/CMS/MuonHLT2022
                             {
                                 "flagname": "trg_single_mu24",
                                 "hlt_path": "HLT_IsoMu24",
                                 "min_pt": 26.,
                                 "max_abs_eta": 2.4,
-                                "filter_bit": -1,
+                                "filter_bit": 1,
                                 "particle_id": 13,
                                 "match_max_delta_r": 0.4,
                             },
@@ -241,9 +241,9 @@ def add_diTauTriggerSetup(configuration: Configuration):
                         _era: [
                             # trigger:            HLT_IsoMu20_eta2p1_LooseDeepTauPFTauHPS27_eta2p1_CrossL1
                             # final filter muon:  hltL3crIsoBigORMu18erTauXXer2p1L1f0L2f10QL3f20QL3trkIsoFiltered
-                            # filter bit muon:    3
+                            # filter bit muon:    1
                             # final filter tau:   hltHpsOverlapFilterIsoMu20LooseMuTauWPDeepTauPFTau27L1Seeded
-                            # filter bit tau:     9
+                            # filter bit tau:     3, 9  TODO implement matching to multiple filters
                             # documentation:      https://twiki.cern.ch/twiki/bin/view/CMS/TauTrigger#Trigger_Table_for_2022
                             #                     https://twiki.cern.ch/twiki/bin/view/CMS/TauTrigger#Trigger_Table_for_2023
                             {
@@ -252,7 +252,7 @@ def add_diTauTriggerSetup(configuration: Configuration):
                                 "p1_min_pt": 22.,
                                 "p1_max_abs_eta": 2.1,
                                 "p1_particle_id": 13,
-                                "p1_filter_bit": 3,
+                                "p1_filter_bit": 1,
                                 "p2_min_pt": 29.,
                                 "p2_max_abs_eta": 2.1,
                                 "p2_particle_id": 15,
@@ -351,14 +351,14 @@ def add_diTauTriggerSetup(configuration: Configuration):
                         _era: [
                             # trigger:        HLT_Ele30_WPTight_Gsf
                             # final filter:   hltEle30WPTightGsfTrackIsoFilter 
-                            # filter bit:     1 (switched off for now)
+                            # filter bit:     1 (at least "approximately")
                             # documentation:  https://twiki.cern.ch/twiki/bin/view/CMS/EgHLTRunIIISummary
                             {
                                 "flagname": "trg_single_ele30",
                                 "hlt_path": "HLT_Ele30_WPTight_Gsf",
                                 "min_pt": 32.,
                                 "max_abs_eta": 2.5,
-                                "filter_bit": -1,
+                                "filter_bit": 1,
                                 "particle_id": 11,
                                 "match_max_delta_r": 0.4,
                             },
@@ -513,22 +513,23 @@ def add_diTauTriggerSetup(configuration: Configuration):
                 {
                     **{
                         _era: [
+                            # TODO check: do the trigger flags make sense for this trigger?
                             # trigger:            HLT_Ele30_WPTight_Gsf
                             # final filter ele:   hltOverlapFilterIsoEle24IsoTau30WPTightGsfCaloJet5
-                            # filter bit ele:     3
+                            # filter bit ele:     2  TODO
                             # final filter tau:   hltHpsOverlapFilterIsoEle24WPTightGsfLooseETauWPDeepTauPFTau30
-                            # filter bit tau:     8
+                            # filter bit tau:     3, 8  TODO
                             # documentation:      https://twiki.cern.ch/twiki/bin/viewauth/CMS/TauTrigger#Trigger_Table_for_2022
                             {
                                 "flagname": "trg_double_ele24tau30",
                                 "hlt_path": "HLT_Ele24_eta2p1_WPTight_Gsf_LooseDeepTauPFTauHPS30_eta2p1_CrossL1",
                                 "p1_min_pt": 26.,
                                 "p1_max_abs_eta": 2.1,
-                                "p1_filter_bit": 3,
+                                "p1_filter_bit": -1,
                                 "p1_particle_id": 11,
                                 "p2_min_pt": 32.,
                                 "p2_max_abs_eta": 2.1,
-                                "p2_filter_bit": 8,
+                                "p2_filter_bit": -1,
                                 "p2_particle_id": 15,
                                 "match_max_delta_r": 0.4,
                             }
@@ -677,7 +678,7 @@ def add_diTauTriggerSetup(configuration: Configuration):
                         _era: [
                             # trigger:        HLT_DoubleMediumDeepTauPFTauHPS35_L2NN_eta2p1
                             # final filter:   hltHpsDoublePFTau35MediumDitauWPDeepTauDz02 
-                            # filter bit:     7
+                            # filter bit:     3, 7
                             # documentation:  https://twiki.cern.ch/twiki/bin/view/CMS/TauTrigger#Trigger_Table_for_2022
                             {
                                 "flagname": "trg_double_tau35",
