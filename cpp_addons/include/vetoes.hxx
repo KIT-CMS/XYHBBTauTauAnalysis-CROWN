@@ -116,6 +116,8 @@ ROOT::RDF::RNode jet_vetomap(
     correctionManager::CorrectionManager &correctionManager,
     const std::string &output_mask,
     const std::string &jet_pt,
+    const std::string &jet_eta,
+    const std::string &jet_phi,
     const std::string &jet_id,
     const std::string &jet_ch_em_ef,
     const std::string &jet_n_em_ef,
@@ -130,6 +132,7 @@ ROOT::RDF::RNode jet_vetomap(
     const float &max_em_frac,
     const float &min_delta_r_jet_muon
 );
+
 
 } // end namespace vetoes 
 

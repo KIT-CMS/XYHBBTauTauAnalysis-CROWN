@@ -243,8 +243,9 @@ namespace xyh {
          * @brief Create a veto flag for events with jets in regions, which are known to produce wrong measurements.
          * The function checks for jets which pass the base selection criteria if they are in a eta-phi region with
          * "hot" and/or "cold" towers. Events with any jet in such a region are vetoed in data and simulation.
+         * If the event is vetoed, a value of `true` is stored in the new column, otherwise `false`.
          * The locations are provided by a `correctionlib` file and depend on the data-taking era. This procedure
-         * follows the official [JME POG recommendations](https://cms-jerc.web.cern.ch/Recommendations/#jet-veto-maps)
+         * follows the official [JME POG recommendations](https://cms-jerc.web.cern.ch/Recommendations/#jet-veto-maps).
          *  
          * The documentation of the `correctionlib` files for the respective eras can be found here:
          * - [2022preEE](https://cms-nanoaod-integration.web.cern.ch/commonJSONSFs/summaries/JME_2022_Summer22_jetvetomaps.html)
@@ -281,6 +282,8 @@ namespace xyh {
             correctionManager::CorrectionManager &correctionManager,
             const std::string &output_mask,
             const std::string &jet_pt,
+            const std::string &jet_eta,
+            const std::string &jet_phi,
             const std::string &jet_id,
             const std::string &jet_ch_em_ef,
             const std::string &jet_n_em_ef,
@@ -378,7 +381,7 @@ namespace xyh {
                 Logger::get("xyh::vetoes::jet_vetomap")->debug("    jet_index_vetoed {}", jet_index_vetoed);
                 Logger::get("xyh::vetoes::jet_vetomap")->debug("    event_veto {}", event_veto);
 
-                return mask;
+                return event_veto;
             };
 
             return df.Define(
@@ -386,6 +389,8 @@ namespace xyh {
                 select,
                 {
                     jet_pt,
+                    jet_eta,
+                    jet_phi,
                     jet_id,
                     jet_ch_em_ef,
                     jet_n_em_ef,

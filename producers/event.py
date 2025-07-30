@@ -245,15 +245,16 @@ JetVetoMapVeto = Producer(
     call="""
     xyh::vetoes::jet_vetomap(
         {df},
+        correctionManager,
         {output},
         {input},
+        "{jet_veto_map_file}",
+        "{jet_veto_map_name}",
+        "{jet_veto_map_type}",
         {jet_veto_min_pt},
         {jet_veto_id_wp},
         {jet_veto_max_em_frac},
-        {jet_veto_min_delta_r_jet_muon},
-        "{jet_veto_map_file}",
-        "{jet_veto_map_name}",
-        "{jet_veto_map_type}"
+        {jet_veto_min_delta_r_jet_muon}
     )
     """,
     input=[
