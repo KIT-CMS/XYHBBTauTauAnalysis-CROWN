@@ -682,11 +682,11 @@ def add_diTauTriggerSetup(configuration: Configuration):
                             {
                                 "flagname": "trg_double_tau35",
                                 "hlt_path": "HLT_DoubleMediumDeepTauPFTauHPS35_L2NN_eta2p1",
-                                "p1_min_pt": 36.,
+                                "p1_min_pt": 40.,
                                 "p1_max_abs_eta": 2.1,
                                 "p1_filter_bit": 7,
                                 "p1_particle_id": 15,
-                                "p2_min_pt": 36.,
+                                "p2_min_pt": 40.,
                                 "p2_particle_id": 15,
                                 "p2_max_abs_eta": 2.1,
                                 "p2_filter_bit": 7,
@@ -1143,7 +1143,7 @@ def add_diTauTriggerSetup(configuration: Configuration):
                 {
                     "tt_trigger_leg1_flagname": "trg_wgt_double_tau35_leg1",
                     "tt_trigger_flag": "trg_double_tau35",
-                    "tt_trigger_leg1_sf_name": "tautau",
+                    "tt_trigger_leg1_sf_name": "ditau",
                     "tt_trigger_leg1_variation": "nom",
                 },
             ],
@@ -1151,7 +1151,7 @@ def add_diTauTriggerSetup(configuration: Configuration):
                 {
                     "tt_trigger_leg2_flagname": "trg_wgt_double_tau35_leg2",
                     "tt_trigger_flag": "trg_double_tau35",
-                    "tt_trigger_leg2_sf_name": "tautau",
+                    "tt_trigger_leg2_sf_name": "ditau",
                     "tt_trigger_leg2_variation": "nom",
                 },
             ],

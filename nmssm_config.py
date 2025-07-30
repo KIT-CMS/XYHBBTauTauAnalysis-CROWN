@@ -2097,8 +2097,8 @@ def build_config(
             #triggers.BoostedTTGenerateDoubleTriggerFlags,  TODO rework trigger setup before enabling this
             # triggers.GenerateSingleTrailingTauTriggerFlags,
             # triggers.GenerateSingleLeadingTauTriggerFlags,
-            #triggers.BoostedTTTriggerFlags,
-            scalefactors.TTGenerateDoubleTauTriggerSF_MC,
+            # triggers.BoostedTTTriggerFlags,
+            # scalefactors.TTGenerateDoubleTauTriggerSF_MC,
             #scalefactors.BoostedTTGenerateFatjetTriggerSF_MC,
         ],
     )
@@ -3035,8 +3035,8 @@ def build_config(
         configuration.add_outputs(
             "tt",
             [
-                q.trg_wgt_double_tau_1,
-                q.trg_wgt_double_tau_2,
+                #q.trg_wgt_double_tau_1,
+                #q.trg_wgt_double_tau_2,
                 #q.trg_wgt_fatjet,  TODO rework trigger setup before enabling this
             ],
         )
@@ -4246,26 +4246,26 @@ def build_config(
     #    exclude_samples=["data", "embedding", "embedding_mc"],
     #)
 
-    configuration.add_shift(
-        SystematicShift(
-            name="ditauTriggerSFUp",
-            shift_config={("tt"): {"ditau_trigger_syst": "up"}},
-            producers={
-                ("tt"): scalefactors.TTGenerateDoubleTauTriggerSF_MC,
-            },
-        ),
-        exclude_samples=["data", "embedding", "embedding_mc"],
-    )
-    configuration.add_shift(
-        SystematicShift(
-            name="ditauTriggerSFDown",
-            shift_config={("tt"): {"ditau_trigger_syst": "down"}},
-            producers={
-                ("tt"): scalefactors.TTGenerateDoubleTauTriggerSF_MC,
-            },
-        ),
-        exclude_samples=["data", "embedding", "embedding_mc"],
-    )
+    #configuration.add_shift(
+    #    SystematicShift(
+    #        name="ditauTriggerSFUp",
+    #        shift_config={("tt"): {"ditau_trigger_syst": "up"}},
+    #        producers={
+    #            ("tt"): scalefactors.TTGenerateDoubleTauTriggerSF_MC,
+    #        },
+    #    ),
+    #    exclude_samples=["data", "embedding", "embedding_mc"],
+    #)
+    #configuration.add_shift(
+    #    SystematicShift(
+    #        name="ditauTriggerSFDown",
+    #        shift_config={("tt"): {"ditau_trigger_syst": "down"}},
+    #        producers={
+    #            ("tt"): scalefactors.TTGenerateDoubleTauTriggerSF_MC,
+    #        },
+    #    ),
+    #    exclude_samples=["data", "embedding", "embedding_mc"],
+    #)
 
     #configuration.add_shift(
     #    SystematicShift(
