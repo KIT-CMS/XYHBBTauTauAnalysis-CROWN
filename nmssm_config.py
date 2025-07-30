@@ -1182,6 +1182,32 @@ def add_ak4jet_config(configuration: Configuration):
         },
     )
 
+    # jet veto configuration
+    configuration.add_config_parameters(
+        GLOBAL_SCOPES,
+        {
+            "jet_veto_map_file": EraModifier(
+                {
+                    _era: f'"data/jsonpog-integration/POG/JME/{_campaign}/jetvetomaps.json.gz"'
+                    for _era, _campaign in CORRECTIONLIB_CAMPAIGNS.items()
+                }
+            ),
+            "jet_veto_map_name": EraModifier(
+                {
+                    "2022preEE": "Summer22_23Sep2023_RunCD_V1",
+                    "2022postEE": "Summer22EE_23Sep2023_RunEFG_V1",
+                    "2023preBPix": "Summer23Prompt23_RunC_V1",
+                    "2023postBPix": "Summer23Prompt23_RunC_V1",
+                },
+            ),
+            "jet_veto_map_type": "jetvetomap",
+            "jet_veto_min_pt": 15.0,
+            "jet_veto_id_wp": 2,  # tight
+            "jet_veto_max_em_frac": 0.9,
+            "jet_veto_min_delta_r_jet_muon": 0.2,
+        }
+    )
+
 
 def add_ak8jet_config(configuration: Configuration):
     """
@@ -1748,6 +1774,7 @@ def build_config(
             fatjets.FatJetEnergyCorrection,
             fatjets.GoodFatJets,
             jets.JetEnergyCorrection,
+            event.JetVetoMapVeto,
             event.DiLeptonVeto,
             met.MetBasics,
         ],
@@ -2747,6 +2774,7 @@ def build_config(
             q.electron_veto_flag,
             q.dimuon_veto,
             q.dilepton_veto,
+            q.jet_vetomap_veto,
             # q.id_wgt_mu_1,
             # q.iso_wgt_mu_1,
             q.boosted_dxy_1,

@@ -431,9 +431,11 @@ leading_fatjet_p4 = Quantity("leading_fatjet_p4")
 fj_leading_pt = Quantity("fj_leading_pt")
 fj_leading_msoftdrop = Quantity("fj_leading_msoftdrop")
 
+# event vetoes
 dielectron_veto = Quantity("dielectron_veto")
 dimuon_veto = Quantity("dimuon_veto")
 dilepton_veto = Quantity("dilepton_veto")
+jet_vetomap_veto = Quantity("jet_vetomap_veto")
 
 ## Gen Quantities
 gen_p4_1 = Quantity("gen_p4_1")
