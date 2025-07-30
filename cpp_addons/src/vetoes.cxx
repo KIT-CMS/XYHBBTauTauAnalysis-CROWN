@@ -324,7 +324,7 @@ namespace xyh {
                 // create the index of selected jets
                 auto jet_index = ROOT::VecOps::Nonzero(
                     (jet_pt > min_pt)
-                    && (jet_id == id_wp)
+                    && (jet_id >= id_wp)
                     && ((jet_ch_em_ef + jet_n_em_ef) < max_em_frac)
                 );
 
