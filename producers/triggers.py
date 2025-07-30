@@ -2,7 +2,7 @@ from ..quantities import output as q
 from ..quantities import nanoAOD as nanoAOD
 from code_generation.producer import ExtendedVectorProducer
 
-from ..constants import E_SCOPES, ET_SCOPES, M_SCOPES, MT_SCOPES
+from ..constants import E_SCOPES, ET_SCOPES, M_SCOPES, MT_SCOPES, TT_SCOPES
 
 
 #
@@ -84,6 +84,29 @@ DoubleMuTauTriggerFlags = ExtendedVectorProducer(
     output="flagname",
     scope=MT_SCOPES,
     vec_config="double_mutau_trigger",
+)
+
+
+#
+# DOUBLE TAU-TAU TRIGGERS
+#
+
+# double tau-tau trigger flags, including trigger object matching
+DoubleTauTauTriggerFlags = ExtendedVectorProducer(
+    name="DoubleTauTauTriggerFlags",
+    call='trigger::GenerateDoubleTriggerFlag({df}, {output}, {input}, "{hlt_path}", {p1_min_pt}, {p2_min_pt}, {p1_max_abs_eta}, {p2_max_abs_eta}, {p1_particle_id}, {p2_particle_id}, {p1_filter_bit}, {p2_filter_bit}, {match_max_delta_r})',
+    input=[
+        q.p4_1,
+        q.p4_2,
+        nanoAOD.TriggerObject_bit,
+        nanoAOD.TriggerObject_id,
+        nanoAOD.TriggerObject_pt,
+        nanoAOD.TriggerObject_eta,
+        nanoAOD.TriggerObject_phi,
+    ],
+    output="flagname",
+    scope=TT_SCOPES,
+    vec_config="double_tautau_trigger",
 )
 
 

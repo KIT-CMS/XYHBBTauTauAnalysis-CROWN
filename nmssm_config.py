@@ -2065,7 +2065,7 @@ def build_config(
             scalefactors.Tau_1_VsMuTauID_SF,
             scalefactors.Tau_2_VsJetTauID_tt_SF,
             scalefactors.Tau_2_VsMuTauID_SF,
-            triggers.TTGenerateDoubleTriggerFlags,
+            triggers.DoubleTauTauTriggerFlags,
             #triggers.BoostedTTGenerateDoubleTriggerFlags,  TODO rework trigger setup before enabling this
             # triggers.GenerateSingleTrailingTauTriggerFlags,
             # triggers.GenerateSingleLeadingTauTriggerFlags,
@@ -2928,8 +2928,9 @@ def build_config(
             boostedtaus.isoTauIDFlag_2.output_group,
             boostedtaus.antiEleTauIDFlag_2.output_group,
             boostedtaus.antiMuTauIDFlag_2.output_group,
+            triggers.DoubleTauTauTriggerFlags.output_group,
             #triggers.BoostedTTTriggerFlags.output_group,  TODO rework trigger setup before enabling this
-            triggers.TTGenerateDoubleTriggerFlags.output_group,
+            #triggers.TTGenerateDoubleTriggerFlags.output_group,  TODO rework trigger setup before enabling this
             # triggers.GenerateSingleTrailingTauTriggerFlags.output_group,
             # triggers.GenerateSingleLeadingTauTriggerFlags.output_group,
             # q.taujet_pt_1,
@@ -3004,7 +3005,7 @@ def build_config(
             [
                 q.trg_wgt_double_tau_1,
                 q.trg_wgt_double_tau_2,
-                q.trg_wgt_fatjet,
+                #q.trg_wgt_fatjet,  TODO rework trigger setup before enabling this
             ],
         )
 
