@@ -110,6 +110,7 @@ Tau_pt_corrected = Quantity("Tau_pt_corrected")
 Tau_mass_corrected = Quantity("Tau_mass_corrected")
 Jet_pt_corrected = Quantity("Jet_pt_corrected")
 Jet_mass_corrected = Quantity("Jet_mass_corrected")
+Jet_ID_corrected = Quantity("Jet_ID_corrected")
 Jet_pt_corrected_bReg = Quantity("Jet_pt_corrected_bReg")
 Jet_mass_corrected_bReg = Quantity("Jet_mass_corrected_bReg")
 fatjet_id_mask = Quantity("fatjet_id_mask")
@@ -133,6 +134,7 @@ good_fatjet_collection_boosted = Quantity("good_fatjet_collection_boosted")
 good_fatjet_collection_without_veto = Quantity("good_fatjet_collection_without_veto")
 good_jet_collection_boosted = Quantity("good_jet_collection_boosted")
 good_bjet_collection_boosted = Quantity("good_bjet_collection_boosted")
+Electron_smearing_seed = Quantity("Electron_smearing_seed")
 Electron_pt_corrected = Quantity("Electron_pt_corrected")
 
 # boosted Tau quantities
@@ -429,9 +431,11 @@ leading_fatjet_p4 = Quantity("leading_fatjet_p4")
 fj_leading_pt = Quantity("fj_leading_pt")
 fj_leading_msoftdrop = Quantity("fj_leading_msoftdrop")
 
+# event vetoes
 dielectron_veto = Quantity("dielectron_veto")
 dimuon_veto = Quantity("dimuon_veto")
 dilepton_veto = Quantity("dilepton_veto")
+jet_vetomap_veto = Quantity("jet_vetomap_veto")
 
 ## Gen Quantities
 gen_p4_1 = Quantity("gen_p4_1")

@@ -110,6 +110,30 @@ ROOT::RDF::RNode dimuon(
     const float &min_delta_r
 );
 
+// function xyh::vetoes::jet_vetomap
+ROOT::RDF::RNode jet_vetomap(
+    ROOT::RDF::RNode df,
+    correctionManager::CorrectionManager &correctionManager,
+    const std::string &output_mask,
+    const std::string &jet_pt,
+    const std::string &jet_eta,
+    const std::string &jet_phi,
+    const std::string &jet_id,
+    const std::string &jet_ch_em_ef,
+    const std::string &jet_n_em_ef,
+    const std::string &muon_eta,
+    const std::string &muon_phi,
+    const std::string &muon_is_pfcand,
+    const std::string &jet_vetomap_file,
+    const std::string &jet_vetomap_name,
+    const std::string &jet_vetomap_type,
+    const float &min_pt,
+    const int &id_wp,
+    const float &max_em_frac,
+    const float &min_delta_r_jet_muon
+);
+
+
 } // end namespace vetoes 
 
 } // end namespace xyh

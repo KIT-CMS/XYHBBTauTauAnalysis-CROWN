@@ -39,6 +39,7 @@ FatJetEnergyCorrection_data, FatJetEnergyCorrection, RenameFatJetsData = jerc_pr
     scopes=GLOBAL_SCOPES,
     producer_prefix="FatJet",
     config_parameter_prefix="ak8jet",
+    lhc_run=3,
 )
 
 

@@ -240,6 +240,38 @@ DiLeptonVeto = ProducerGroup(
     subproducers=[DiElectronVeto, DiMuonVeto],
 )
 
+JetVetoMapVeto = Producer(
+    name="JetVetoMapVeto",
+    call="""
+    xyh::vetoes::jet_vetomap(
+        {df},
+        correctionManager,
+        {output},
+        {input},
+        "{jet_veto_map_file}",
+        "{jet_veto_map_name}",
+        "{jet_veto_map_type}",
+        {jet_veto_min_pt},
+        {jet_veto_id_wp},
+        {jet_veto_max_em_frac},
+        {jet_veto_min_delta_r_jet_muon}
+    )
+    """,
+    input=[
+        q.Jet_pt_corrected,
+        nanoAOD.Jet_eta,
+        nanoAOD.Jet_phi,
+        q.Jet_ID_corrected,
+        nanoAOD.Jet_chEmEF,
+        nanoAOD.Jet_neEmEF,
+        nanoAOD.Muon_eta,
+        nanoAOD.Muon_phi,
+        nanoAOD.Muon_isPFcand,
+    ],
+    output=[q.jet_vetomap_veto],
+    scopes=["global"],
+)
+
 GGH_NNLO_Reweighting = Producer(
     name="GGH_NNLO_Reweighting",
     call='htxs::ggHNNLOWeights({df}, {output}, "{ggHNNLOweightsRootfile}", "{ggH_generator}", {input})',

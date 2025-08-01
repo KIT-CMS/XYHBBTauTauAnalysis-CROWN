@@ -36,6 +36,7 @@ JetEnergyCorrection_data, JetEnergyCorrection, RenameJetsData = jerc_producer_fa
     scopes=GLOBAL_SCOPES,
     producer_prefix="Jet",
     config_parameter_prefix="ak4jet",
+    lhc_run=3,  # TODO also add producer for Run 2
 )
 
 
@@ -43,6 +44,31 @@ JetEnergyCorrection_data, JetEnergyCorrection, RenameJetsData = jerc_producer_fa
 # AK4 JET SELECTION
 #
 
+# correct the jet ID value for Run3 samples
+JetIDRun3NanoV12Corrected = Producer(
+    name="JetIDRun3NanoV12Corrected",
+    call="physicsobject::jet::quantities::CorrectJetIDRun3NanoV12({df}, {output}, {input})",
+    input=[
+        nanoAOD.Jet_pt,
+        nanoAOD.Jet_eta,
+        nanoAOD.Jet_ID,
+        nanoAOD.Jet_neHEF,
+        nanoAOD.Jet_neEmEF,
+        nanoAOD.Jet_muEF,
+        nanoAOD.Jet_chEmEF,
+    ],
+    output=[q.Jet_ID_corrected],
+    scopes=GLOBAL_SCOPES,
+)
+
+# for Run 2, the Jet ID implementation is correct, just rename the column
+JetIDRun2 = Producer(
+    name="JetIDRun2",
+    call="event::quantity::Rename<UChar_t>({df}, {output}, {input})",
+    input=[nanoAOD.Jet_ID],
+    output=[q.Jet_ID_corrected],
+    scopes=GLOBAL_SCOPES,
+)
 
 # jet selection including the pileup ID (for CHS jets)
 GoodJetsWithPUID = Producer(
@@ -51,7 +77,7 @@ GoodJetsWithPUID = Producer(
     input=[
         q.Jet_pt_corrected,
         nanoAOD.Jet_eta,
-        nanoAOD.Jet_ID,
+        q.Jet_ID_corrected,
         nanoAOD.Jet_PUID,
     ],
     output=[q.good_jets_mask],
@@ -65,14 +91,11 @@ GoodJetsWithoutPUID = Producer(
     input=[
         q.Jet_pt_corrected,
         nanoAOD.Jet_eta,
-        nanoAOD.Jet_ID,
+        q.Jet_ID_corrected,
     ],
     output=[q.good_jets_mask],
     scopes=GLOBAL_SCOPES,
 )
-
-# use the selection with pileup ID as default 
-GoodJets = GoodJetsWithoutPUID
 
 # base jet selection for b jets including the pileup ID (for CHS jets)
 GoodBJetsBaseWithPUID = Producer(
@@ -81,7 +104,8 @@ GoodBJetsBaseWithPUID = Producer(
     input=[
         q.Jet_pt_corrected,
         nanoAOD.Jet_eta,
-        nanoAOD.Jet_ID,
+        q.Jet_ID_corrected,
+        nanoAOD.Jet_PUID,
     ],
     output=[],
     scopes=GLOBAL_SCOPES,
@@ -100,9 +124,6 @@ GoodBJetsBaseWithoutPUID = Producer(
     scopes=GLOBAL_SCOPES,
 )
 
-# use the selection with pileup ID as default
-GoodBJetsBase = GoodBJetsBaseWithoutPUID
-
 # requirement on b tagging score
 BTagCut = Producer(
     name="BTagCut",
@@ -112,14 +133,27 @@ BTagCut = Producer(
     scopes=GLOBAL_SCOPES,
 )
 
-# b jet selection combining the base b jet selection and the b tagging requirement
-GoodBJets = ProducerGroup(
-    name="GoodBJets",
+# b jet selection combining the base b jet selection and the b tagging requirement not applying the pileup ID (for PUPPI jets)
+GoodBJetsWithoutPUID = ProducerGroup(
+    name="GoodBJetsWithoutPUID",
     call='physicsobject::CombineMasks({df}, {output}, {input}, "all_of")',
-    input=GoodJets.output,
+    input=[],
     output=[q.good_bjets_mask],
     subproducers=[
-        GoodBJetsBase,
+        GoodBJetsBaseWithoutPUID,
+        BTagCut,
+    ],
+    scopes=GLOBAL_SCOPES,
+)
+
+# b jet selection combining the base b jet selection and the b tagging requirement including the pileup ID (for CHS jets)
+GoodBJetsWithPUID = ProducerGroup(
+    name="GoodBJetsWithPUID",
+    call='physicsobject::CombineMasks({df}, {output}, {input}, "all_of")',
+    input=[],
+    output=[q.good_bjets_mask],
+    subproducers=[
+        GoodBJetsBaseWithPUID,
         BTagCut,
     ],
     scopes=GLOBAL_SCOPES,
@@ -132,8 +166,8 @@ GoodBJets = ProducerGroup(
 
 
 # pt correction from energy scale corrections
-BJetPtCorrection = Producer(
-    name="BJetPtCorrection",
+BJetPtCorrectionRun2 = Producer(
+    name="BJetPtCorrectionRun2",
     call="physicsobject::jet::BJetPtCorrection({df}, {output}, {input})",
     input=[
         q.Jet_pt_corrected,
@@ -145,8 +179,8 @@ BJetPtCorrection = Producer(
 )
 
 # mass correction from energy scale corrections
-BJetMassCorrection = Producer(
-    name="BJetMassCorrection",
+BJetMassCorrectionRun2 = Producer(
+    name="BJetMassCorrectionRun2",
     call="physicsobject::MassCorrectionWithPt({df}, {output}, {input})",
     input=[
         q.Jet_mass_corrected,
@@ -158,14 +192,45 @@ BJetMassCorrection = Producer(
 )
 
 # producer group for b jet energy corrections to apply
-BJetEnergyCorrection = ProducerGroup(
-    name="BJetEnergyCorrection",
+BJetEnergyCorrectionRun2 = ProducerGroup(
+    name="BJetEnergyCorrectionRun2",
     call=None,
     input=None,
     output=None,
     subproducers=[
-        BJetPtCorrection,
-        BJetMassCorrection,
+        BJetPtCorrectionRun2,
+        BJetMassCorrectionRun2,
+    ],
+    scopes=GLOBAL_SCOPES,
+)
+
+# rename original pt as b jet regression does not exist in Run 3
+RenameBJetPtCorrection = Producer(
+    name="RenameBJetPtCorrection",
+    call="event::quantity::Rename<ROOT::RVec<float>>({df}, {output}, {input})",
+    input=[q.Jet_pt_corrected],
+    output=[q.Jet_pt_corrected_bReg],
+    scopes=GLOBAL_SCOPES,
+)
+
+# rename original mass as b jet regression does not exist in Run 3
+RenameBJetMassCorrection = Producer(
+    name="RenameBJetMassCorrection",
+    call="event::quantity::Rename<ROOT::RVec<float>>({df}, {output}, {input})",
+    input=[q.Jet_mass_corrected],
+    output=[q.Jet_mass_corrected_bReg],
+    scopes=GLOBAL_SCOPES,
+)
+
+# producer group for b jet energy corrections to apply
+RenameBJetEnergyCorrection = ProducerGroup(
+    name="RenameBJetEnergyCorrection",
+    call=None,
+    input=None,
+    output=None,
+    subproducers=[
+        RenameBJetPtCorrection,
+        RenameBJetMassCorrection,
     ],
     scopes=GLOBAL_SCOPES,
 )
