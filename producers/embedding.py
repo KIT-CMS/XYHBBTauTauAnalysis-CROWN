@@ -2,7 +2,7 @@ from code_generation.producer import Producer, ProducerGroup, ExtendedVectorProd
 from ..quantities import output as q
 from ..quantities import nanoAOD as nanoAOD
 
-
+"""
 EmbeddingGenWeight = Producer(
     name="EmbeddingGenWeight",
     call="event::quantity::Rename<Float_t>({df}, {output}, {input})",
@@ -110,6 +110,8 @@ EmbeddingQuantities = ProducerGroup(
         TauEmbeddingSelectionNewMass,
     ],
 )
+"""
+
 
 # Selection scalefactor
 

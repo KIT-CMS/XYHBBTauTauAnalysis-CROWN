@@ -406,7 +406,7 @@ namespace xyh {
                 const ROOT::RVec<float> &pt,
                 const ROOT::RVec<float> &eta,
                 const ROOT::RVec<UChar_t> &id,
-                const ROOT::RVec<int> &puid
+                const ROOT::RVec<UChar_t> &puid
             ) {
                 // debug output for selection criteria and jet observables
                 Logger::get("xyh::object_selection::jet")->debug("Create selection masks for jets");

@@ -1149,8 +1149,8 @@ btagging_SF = Producer(
     input=[
         q.Jet_pt_corrected_bReg,
         nanoAOD.Jet_eta,
-        nanoAOD.BJet_discriminator,
-        nanoAOD.Jet_flavour,
+        nanoAOD.Jet_btagDeepFlavB,
+        nanoAOD.Jet_hadronFlavour,
         q.good_jets_mask,
         q.good_bjets_mask,
         q.jet_overlap_veto_mask,
@@ -1172,8 +1172,8 @@ btagging_SF_boosted = Producer(
     input=[
         q.Jet_pt_corrected_bReg,
         nanoAOD.Jet_eta,
-        nanoAOD.BJet_discriminator,
-        nanoAOD.Jet_flavour,
+        nanoAOD.Jet_btagDeepFlavB,
+        nanoAOD.Jet_hadronFlavour,
         q.good_jets_mask,
         q.good_bjets_mask,
         q.jet_overlap_veto_mask_boosted,

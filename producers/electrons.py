@@ -3,7 +3,7 @@ Producers for electron energy scale corrections, object selections, and vetoes.
 """
 
 from ..quantities import output as q
-from ..quantities import nanoAOD as nanoAOD
+from ..quantities import nanoAOD, nanoAOD_run2
 from code_generation.producer import Producer, ProducerGroup
 
 from ..constants import EE_SCOPES, ET_SCOPES, ELECTRON_SCOPES, SCOPES, GLOBAL_SCOPES
@@ -34,8 +34,8 @@ ElectronPtCorrectionMCRun2 = Producer(
         nanoAOD.Electron_pt,
         nanoAOD.Electron_eta,
         nanoAOD.Electron_seedGain,
-        nanoAOD.Electron_dEsigmaUp,
-        nanoAOD.Electron_dEsigmaDown,
+        nanoAOD_run2.Electron_dEsigmaUp,
+        nanoAOD_run2.Electron_dEsigmaDown,
     ],
     output=[q.Electron_pt_corrected],
     scopes=GLOBAL_SCOPES,
@@ -109,7 +109,7 @@ BaseElectrons = Producer(
         nanoAOD.Electron_eta,
         nanoAOD.Electron_dxy,
         nanoAOD.Electron_dz,
-        nanoAOD.Electron_iso,
+        nanoAOD.Electron_pfRelIso03_all,
     ],
     output=[q.base_electrons_mask],
     scopes=GLOBAL_SCOPES,
@@ -124,7 +124,7 @@ GoodElectrons = Producer(
         nanoAOD.Electron_eta,
         nanoAOD.Electron_dxy,
         nanoAOD.Electron_dz,
-        nanoAOD.Electron_iso,
+        nanoAOD.Electron_pfRelIso03_all,
     ],
     output=[q.good_electrons_mask],
     scopes=ELECTRON_SCOPES,
@@ -212,7 +212,7 @@ DiElectronVeto = Producer(
         q.Electron_pt_corrected,
         nanoAOD.Electron_eta,
         nanoAOD.Electron_phi,
-        nanoAOD.Electron_iso,
+        nanoAOD.Electron_pfRelIso03_all,
         nanoAOD.Electron_dxy,
         nanoAOD.Electron_dz,
         nanoAOD.Electron_cutBased,

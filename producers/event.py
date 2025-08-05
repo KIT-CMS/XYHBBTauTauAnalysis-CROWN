@@ -1,5 +1,5 @@
 from ..quantities import output as q
-from ..quantities import nanoAOD as nanoAOD
+from ..quantities import nanoAOD, nanoAOD_run2
 from code_generation.producer import BaseFilter, Producer, ProducerGroup, VectorProducer
 from .electrons import DiElectronVeto
 from .muons import DiMuonVeto
@@ -31,7 +31,7 @@ JSONFilter = BaseFilter(
 PrefireWeight = Producer(
     name="PrefireWeight",
     call="event::quantity::Rename<Float_t>({df}, {output}, {input})",
-    input=[nanoAOD.prefireWeight],
+    input=[nanoAOD_run2.L1PreFiringWeight_Nom],
     output=[q.prefireweight],
     scopes=["global"],
 )
@@ -223,9 +223,9 @@ TopPtReweighting = Producer(
     name="TopPtReweighting",
     call="event::reweighting::TopPt({df}, {output}, {input})",
     input=[
-        nanoAOD.GenParticle_pdgId,
-        nanoAOD.GenParticle_statusFlags,
-        nanoAOD.GenParticle_pt,
+        nanoAOD.GenPart_pdgId,
+        nanoAOD.GenPart_statusFlags,
+        nanoAOD.GenPart_pt,
     ],
     output=[q.topPtReweightWeight],
     scopes=["global", "em", "et", "mt", "tt", "mm", "ee"],

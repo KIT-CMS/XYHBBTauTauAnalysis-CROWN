@@ -3,7 +3,7 @@ Producers for AK4 jet energy scale and resolution corrections, object selections
 """
 
 from ..quantities import output as q
-from ..quantities import nanoAOD as nanoAOD
+from ..quantities import nanoAOD, nanoAOD_run2 
 from code_generation.producer import Producer, ProducerGroup
 
 from ._helpers import jerc_producer_factory
@@ -14,6 +14,31 @@ from ..constants import GLOBAL_SCOPES, SCOPES
 # JET ENERGY SCALE AND RESOLUTION CORRECTIONS
 #
 
+# create jet energy correction producers for AK4 jets for Run 2
+JetEnergyCorrection_data_Run2, JetEnergyCorrectionRun2, RenameJetsDataRun2 = jerc_producer_factory(
+    input={
+        "jet_pt": nanoAOD.Jet_pt,
+        "jet_eta": nanoAOD.Jet_eta,
+        "jet_phi": nanoAOD.Jet_phi,
+        "jet_mass": nanoAOD.Jet_mass,
+        "jet_area": nanoAOD.Jet_area,
+        "jet_raw_factor": nanoAOD.Jet_rawFactor,
+        "jet_id": nanoAOD.Jet_jetId,
+        "gen_jet_pt": nanoAOD.GenJet_pt,
+        "gen_jet_eta": nanoAOD.GenJet_eta,
+        "gen_jet_phi": nanoAOD.GenJet_phi,
+        "rho": nanoAOD.Rho_fixedGridRhoFastjetAll,
+    },
+    output={
+        "jet_pt_corrected": q.Jet_pt_corrected,
+        "jet_mass_corrected": q.Jet_mass_corrected,
+    },
+    scopes=GLOBAL_SCOPES,
+    producer_prefix="Jet",
+    config_parameter_prefix="ak4jet",
+    lhc_run=2,
+)
+
 # create jet energy correction producers for AK4 jets
 JetEnergyCorrection_data, JetEnergyCorrection, RenameJetsData = jerc_producer_factory(
     input={
@@ -23,11 +48,11 @@ JetEnergyCorrection_data, JetEnergyCorrection, RenameJetsData = jerc_producer_fa
         "jet_mass": nanoAOD.Jet_mass,
         "jet_area": nanoAOD.Jet_area,
         "jet_raw_factor": nanoAOD.Jet_rawFactor,
-        "jet_id": nanoAOD.Jet_ID,
+        "jet_id": nanoAOD.Jet_jetId,
         "gen_jet_pt": nanoAOD.GenJet_pt,
         "gen_jet_eta": nanoAOD.GenJet_eta,
         "gen_jet_phi": nanoAOD.GenJet_phi,
-        "rho": nanoAOD.rho_v12,
+        "rho": nanoAOD.Rho_fixedGridRhoFastjetAll,
     },
     output={
         "jet_pt_corrected": q.Jet_pt_corrected,
@@ -51,7 +76,7 @@ JetIDRun3NanoV12Corrected = Producer(
     input=[
         nanoAOD.Jet_pt,
         nanoAOD.Jet_eta,
-        nanoAOD.Jet_ID,
+        nanoAOD.Jet_jetId,
         nanoAOD.Jet_neHEF,
         nanoAOD.Jet_neEmEF,
         nanoAOD.Jet_muEF,
@@ -64,8 +89,8 @@ JetIDRun3NanoV12Corrected = Producer(
 # for Run 2, the Jet ID implementation is correct, just rename the column
 JetIDRun2 = Producer(
     name="JetIDRun2",
-    call="event::quantity::Rename<UChar_t>({df}, {output}, {input})",
-    input=[nanoAOD.Jet_ID],
+    call="event::quantity::Rename<ROOT::RVec<UChar_t>>({df}, {output}, {input})",
+    input=[nanoAOD.Jet_jetId],
     output=[q.Jet_ID_corrected],
     scopes=GLOBAL_SCOPES,
 )
@@ -78,7 +103,7 @@ GoodJetsWithPUID = Producer(
         q.Jet_pt_corrected,
         nanoAOD.Jet_eta,
         q.Jet_ID_corrected,
-        nanoAOD.Jet_PUID,
+        nanoAOD_run2.Jet_puId,
     ],
     output=[q.good_jets_mask],
     scopes=GLOBAL_SCOPES,
@@ -105,7 +130,7 @@ GoodBJetsBaseWithPUID = Producer(
         q.Jet_pt_corrected,
         nanoAOD.Jet_eta,
         q.Jet_ID_corrected,
-        nanoAOD.Jet_PUID,
+        nanoAOD_run2.Jet_puId,
     ],
     output=[],
     scopes=GLOBAL_SCOPES,
@@ -118,7 +143,7 @@ GoodBJetsBaseWithoutPUID = Producer(
     input=[
         q.Jet_pt_corrected,
         nanoAOD.Jet_eta,
-        nanoAOD.Jet_ID,
+        nanoAOD.Jet_jetId,
     ],
     output=[],
     scopes=GLOBAL_SCOPES,
@@ -128,7 +153,7 @@ GoodBJetsBaseWithoutPUID = Producer(
 BTagCut = Producer(
     name="BTagCut",
     call="physicsobject::CutMin<float>({df}, {output}, {input}, {bjet_min_deepjet_score})",
-    input=[nanoAOD.BJet_discriminator],
+    input=[nanoAOD_run2.Jet_btagDeepFlavB],
     output=[],
     scopes=GLOBAL_SCOPES,
 )
@@ -172,7 +197,7 @@ BJetPtCorrectionRun2 = Producer(
     input=[
         q.Jet_pt_corrected,
         q.good_bjets_mask,
-        nanoAOD.BJet_bRegCorr,
+        nanoAOD_run2.Jet_bRegCorr,
     ],
     output=[q.Jet_pt_corrected_bReg],
     scopes=GLOBAL_SCOPES,
@@ -435,14 +460,14 @@ jphi_2 = Producer(
 jtag_value_1 = Producer(
     name="jtag_value_1",
     call="event::quantity::Get<float>({df}, {output}, {input}, 0)",
-    input=[nanoAOD.BJet_discriminator, q.good_jet_collection],
+    input=[nanoAOD_run2.Jet_btagDeepFlavB, q.good_jet_collection],
     output=[q.jtag_value_1],
     scopes=SCOPES,
 )
 jtag_value_2 = Producer(
     name="jtag_value_2",
     call="event::quantity::Get<float>({df}, {output}, {input}, 1)",
-    input=[nanoAOD.BJet_discriminator, q.good_jet_collection],
+    input=[nanoAOD_run2.Jet_btagDeepFlavB, q.good_jet_collection],
     output=[q.jtag_value_2],
     scopes=SCOPES,
 )
@@ -566,14 +591,14 @@ bphi_2 = Producer(
 btag_value_1 = Producer(
     name="btag_value_1",
     call="event::quantity::Get<float>({df}, {output}, {input}, 0)",
-    input=[nanoAOD.BJet_discriminator, q.good_bjet_collection],
+    input=[nanoAOD_run2.Jet_btagDeepFlavB, q.good_bjet_collection],
     output=[q.btag_value_1],
     scopes=SCOPES,
 )
 btag_value_2 = Producer(
     name="btag_value_2",
     call="event::quantity::Get<float>({df}, {output}, {input}, 1)",
-    input=[nanoAOD.BJet_discriminator, q.good_bjet_collection],
+    input=[nanoAOD_run2.Jet_btagDeepFlavB, q.good_bjet_collection],
     output=[q.btag_value_2],
     scopes=SCOPES,
 )

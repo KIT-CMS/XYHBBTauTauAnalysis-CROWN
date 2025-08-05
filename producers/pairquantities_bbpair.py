@@ -1,5 +1,5 @@
 from ..quantities import output as q
-from ..quantities import nanoAOD as nanoAOD
+from ..quantities import nanoAOD, nanoAOD_run2
 from code_generation.producer import Producer, ProducerGroup
 
 ####################
@@ -65,28 +65,28 @@ bpair_mass_2 = Producer(
 bpair_btag_value_1 = Producer(
     name="bpair_btag_value_1",
     call="event::quantity::Get<float>({df}, {output}, {input}, 0)",
-    input=[nanoAOD.BJet_discriminator, q.dibjetpair],
+    input=[nanoAOD.Jet_btagDeepFlavB, q.dibjetpair],
     output=[q.bpair_btag_value_1],
     scopes=["mt", "et", "tt", "em", "mm", "ee"],
 )
 bpair_btag_value_2 = Producer(
     name="bpair_btag_value_2",
     call="event::quantity::Get<float>({df}, {output}, {input}, 1)",
-    input=[nanoAOD.BJet_discriminator, q.dibjetpair],
+    input=[nanoAOD.Jet_btagDeepFlavB, q.dibjetpair],
     output=[q.bpair_btag_value_2],
     scopes=["mt", "et", "tt", "em", "mm", "ee"],
 )
 bpair_bRegRes_1 = Producer(
     name="bpair_bRegRes_1",
     call="event::quantity::Get<float>({df}, {output}, {input}, 0)",
-    input=[nanoAOD.BJet_bRegRes, q.dibjetpair],
+    input=[nanoAOD_run2.Jet_bRegRes, q.dibjetpair],
     output=[q.bpair_reg_res_1],
     scopes=["mt", "et", "tt", "em", "mm", "ee"],
 )
 bpair_bRegRes_2 = Producer(
     name="bpair_bRegRes_2",
     call="event::quantity::Get<float>({df}, {output}, {input}, 1)",
-    input=[nanoAOD.BJet_bRegRes, q.dibjetpair],
+    input=[nanoAOD_run2.Jet_bRegRes, q.dibjetpair],
     output=[q.bpair_reg_res_2],
     scopes=["mt", "et", "tt", "em", "mm", "ee"],
 )
@@ -271,28 +271,28 @@ bpair_mass_2_boosted = Producer(
 bpair_btag_value_1_boosted = Producer(
     name="bpair_btag_value_1_boosted",
     call="event::quantity::Get<float>({df}, {output}, {input}, 0)",
-    input=[nanoAOD.BJet_discriminator, q.dibjetpair_boosted],
+    input=[nanoAOD.Jet_btagDeepFlavB, q.dibjetpair_boosted],
     output=[q.bpair_btag_value_1_boosted],
     scopes=["mt", "et", "tt", "em", "mm", "ee"],
 )
 bpair_btag_value_2_boosted = Producer(
     name="bpair_btag_value_2_boosted",
     call="event::quantity::Get<float>({df}, {output}, {input}, 1)",
-    input=[nanoAOD.BJet_discriminator, q.dibjetpair_boosted],
+    input=[nanoAOD.Jet_btagDeepFlavB, q.dibjetpair_boosted],
     output=[q.bpair_btag_value_2_boosted],
     scopes=["mt", "et", "tt", "em", "mm", "ee"],
 )
 bpair_bRegRes_1_boosted = Producer(
     name="bpair_bRegRes_1_boosted",
     call="event::quantity::Get<float>({df}, {output}, {input}, 0)",
-    input=[nanoAOD.BJet_bRegRes, q.dibjetpair_boosted],
+    input=[nanoAOD_run2.Jet_bRegRes, q.dibjetpair_boosted],
     output=[q.bpair_reg_res_1_boosted],
     scopes=["mt", "et", "tt", "em", "mm", "ee"],
 )
 bpair_bRegRes_2_boosted = Producer(
     name="bpair_bRegRes_2_boosted",
     call="event::quantity::Get<float>({df}, {output}, {input}, 1)",
-    input=[nanoAOD.BJet_bRegRes, q.dibjetpair_boosted],
+    input=[nanoAOD_run2.Jet_bRegRes, q.dibjetpair_boosted],
     output=[q.bpair_reg_res_2_boosted],
     scopes=["mt", "et", "tt", "em", "mm", "ee"],
 )

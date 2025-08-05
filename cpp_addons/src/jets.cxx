@@ -117,8 +117,8 @@ ROOT::RDF::RNode CorrectJetIDRun3NanoV12(
 
             // return value of the working point that is passed
             // - 0 == fail
-            // - 2 == pass tight & fail tightLepVeto
-            // - 6 == pass tight & pass tightLepVeto
+            // - 2 == pass tight & fail tightlepveto
+            // - 6 == pass tight & pass tightlepveto
             if (pass_tight && !pass_tight_lep_veto) {
                 jet_id_corrected[i] = 2;
             } else if (pass_tight && pass_tight_lep_veto) {

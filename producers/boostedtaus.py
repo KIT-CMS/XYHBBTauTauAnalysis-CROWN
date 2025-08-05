@@ -1,5 +1,5 @@
 from ..quantities import output as q
-from ..quantities import nanoAOD as nanoAOD
+from ..quantities import nanoAOD
 from code_generation.producer import Producer, ProducerGroup, ExtendedVectorProducer
 
 
@@ -14,7 +14,7 @@ boostedTauPtCorrection = Producer(
         nanoAOD.boostedTau_pt,
         nanoAOD.boostedTau_eta,
         nanoAOD.boostedTau_decayMode,
-        nanoAOD.boostedTau_genMatch,
+        nanoAOD.boostedTau_genPartFlav,
     ],
     output=[q.boostedTau_pt_corrected],
     scopes=["et", "mt", "tt"],
@@ -91,21 +91,21 @@ boostedTauDMCut = Producer(
 MVAisoBoostedTauIDCut = Producer(
     name="MVAisoBoostedTauIDCut",
     call="physicsobject::CutMin<UChar_t>({df}, {output}, {input}, {iso_boostedtau_id_bit})",
-    input=[nanoAOD.boostedTau_iso_ID],
+    input=[nanoAOD.boostedTau_idMVAoldDM2017v2],
     output=[],
     scopes=["et", "mt", "tt"],
 )
 AntiEleBoostedTauIDCut = Producer(
     name="AntiEleBoostedTauIDCut",
     call="physicsobject::CutMin<UChar_t>({df}, {output}, {input}, {antiele_boostedtau_id_bit})",
-    input=[nanoAOD.boostedTau_antiEle_ID],
+    input=[nanoAOD.boostedTau_idAntiEle2018],
     output=[],
     scopes=["et", "mt", "tt"],
 )
 AntiMuBoostedTauIDCut = Producer(
     name="AntiMuBoostedTauIDCut",
     call="physicsobject::CutMin<UChar_t>({df}, {output}, {input}, {antimu_boostedtau_id_bit})",
-    input=[nanoAOD.boostedTau_antiMu_ID],
+    input=[nanoAOD.boostedTau_idAntiMu],
     output=[],
     scopes=["et", "mt", "tt"],
 )
@@ -323,7 +323,7 @@ boosted_muon_q_1 = Producer(
 boosted_muon_iso_1 = Producer(
     name="boosted_muon_iso_1",
     call="event::quantity::Get<float>({df}, {output}, {input}, 0)",
-    input=[nanoAOD.Muon_iso, q.boosteddileptonpair],
+    input=[nanoAOD.Muon_pfRelIso04_all, q.boosteddileptonpair],
     output=[q.boosted_iso_1],
     scopes=["mt", "mm"],
 )
@@ -366,7 +366,7 @@ boosted_electron_q_1 = Producer(
 boosted_electron_iso_1 = Producer(
     name="boosted_electron_iso_1",
     call="event::quantity::Get<float>({df}, {output}, {input}, 0)",
-    input=[nanoAOD.Electron_iso, q.boosteddileptonpair],
+    input=[nanoAOD.Electron_pfRelIso03_all, q.boosteddileptonpair],
     output=[q.boosted_iso_1],
     scopes=["et", "ee"],
 )
@@ -381,7 +381,7 @@ boosted_tau_q_1 = Producer(
 boosted_tau_iso_1 = Producer(
     name="boosted_tau_iso_1",
     call="event::quantity::Get<float>({df}, {output}, {input}, 0)",
-    input=[nanoAOD.boostedTau_iso_IDraw, q.boosteddileptonpair],
+    input=[nanoAOD.boostedTau_rawMVAoldDM2017v2, q.boosteddileptonpair],
     output=[q.boosted_iso_1],
     scopes=["tt"],
 )
@@ -401,7 +401,7 @@ isoTauIDFlag_1 = ExtendedVectorProducer(
         0,
         {iso_boostedtau_id_WPbit})
         """,
-    input=[nanoAOD.boostedTau_iso_ID, q.boosteddileptonpair],
+    input=[nanoAOD.boostedTau_idMVAoldDM2017v2, q.boosteddileptonpair],
     output="boostedtau_1_iso_id_outputname",
     scope=["tt"],
     vec_config="iso_boostedtau_id",
@@ -415,7 +415,7 @@ antiEleTauIDFlag_1 = ExtendedVectorProducer(
         0,
         {antiele_boostedtau_id_WPbit})
         """,
-    input=[nanoAOD.boostedTau_antiEle_ID, q.boosteddileptonpair],
+    input=[nanoAOD.boostedTau_idAntiEle2018, q.boosteddileptonpair],
     output="boostedtau_1_antiele_id_outputname",
     scope=["tt"],
     vec_config="antiele_boostedtau_id",
@@ -429,7 +429,7 @@ antiMuTauIDFlag_1 = ExtendedVectorProducer(
         0,
         {antimu_boostedtau_id_WPbit})
         """,
-    input=[nanoAOD.boostedTau_antiMu_ID, q.boosteddileptonpair],
+    input=[nanoAOD.boostedTau_idAntiMu, q.boosteddileptonpair],
     output="boostedtau_1_antimu_id_outputname",
     scope=["tt"],
     vec_config="antimu_boostedtau_id",
@@ -444,7 +444,7 @@ boosted_tau_q_2 = Producer(
 boosted_tau_iso_2 = Producer(
     name="boosted_tau_iso_2",
     call="event::quantity::Get<float>({df}, {output}, {input}, 1)",
-    input=[nanoAOD.boostedTau_iso_IDraw, q.boosteddileptonpair],
+    input=[nanoAOD.boostedTau_rawMVAoldDM2017v2, q.boosteddileptonpair],
     output=[q.boosted_iso_2],
     scopes=["mt", "et", "tt"],
 )
@@ -464,7 +464,7 @@ isoTauIDFlag_2 = ExtendedVectorProducer(
         1,
         {iso_boostedtau_id_WPbit})
         """,
-    input=[nanoAOD.boostedTau_iso_ID, q.boosteddileptonpair],
+    input=[nanoAOD.boostedTau_idMVAoldDM2017v2, q.boosteddileptonpair],
     output="boostedtau_2_iso_id_outputname",
     scope=["et", "mt", "tt"],
     vec_config="iso_boostedtau_id",
@@ -478,7 +478,7 @@ antiEleTauIDFlag_2 = ExtendedVectorProducer(
         1,
         {antiele_boostedtau_id_WPbit})
         """,
-    input=[nanoAOD.boostedTau_antiEle_ID, q.boosteddileptonpair],
+    input=[nanoAOD.boostedTau_idAntiEle2018, q.boosteddileptonpair],
     output="boostedtau_2_antiele_id_outputname",
     scope=["et", "mt", "tt"],
     vec_config="antiele_boostedtau_id",
@@ -492,7 +492,7 @@ antiMuTauIDFlag_2 = ExtendedVectorProducer(
         1,
         {antimu_boostedtau_id_WPbit})
         """,
-    input=[nanoAOD.boostedTau_antiMu_ID, q.boosteddileptonpair],
+    input=[nanoAOD.boostedTau_idAntiMu, q.boosteddileptonpair],
     output="boostedtau_2_antimu_id_outputname",
     scope=["et", "mt", "tt"],
     vec_config="antimu_boostedtau_id",

@@ -374,7 +374,10 @@ namespace xyh {
                 }
 
                 // check if any jet has been vetoed
-                bool event_veto = (!jet_index_vetoed.empty()) ? true : false;
+                bool event_veto = false;
+                if (!jet_index_vetoed.empty()) {
+                    event_veto = true;
+                }
 
                 // debug output for vetoes
                 Logger::get("xyh::vetoes::jet_vetomap")->debug("Vetoes");

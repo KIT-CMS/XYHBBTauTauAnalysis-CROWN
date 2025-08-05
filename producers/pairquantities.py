@@ -280,42 +280,42 @@ tau_q_2 = Producer(
 muon_iso_1 = Producer(
     name="muon_iso_1",
     call="event::quantity::Get<float>({df}, {output}, {input}, 0)",
-    input=[nanoAOD.Muon_iso, q.dileptonpair],
+    input=[nanoAOD.Muon_pfRelIso04_all, q.dileptonpair],
     output=[q.iso_1],
     scopes=["mt", "mm"],
 )
 muon_iso_2 = Producer(
     name="muon_iso_2",
     call="event::quantity::Get<float>({df}, {output}, {input}, 1)",
-    input=[nanoAOD.Muon_iso, q.dileptonpair],
+    input=[nanoAOD.Muon_pfRelIso04_all, q.dileptonpair],
     output=[q.iso_2],
     scopes=["em", "mm"],
 )
 electron_iso_1 = Producer(
     name="electron_iso_1",
     call="event::quantity::Get<float>({df}, {output}, {input}, 0)",
-    input=[nanoAOD.Electron_iso, q.dileptonpair],
+    input=[nanoAOD.Electron_pfRelIso03_all, q.dileptonpair],
     output=[q.iso_1],
     scopes=["et", "ee", "em"],
 )
 electron_iso_2 = Producer(
     name="electron_iso_2",
     call="event::quantity::Get<float>({df}, {output}, {input}, 1)",
-    input=[nanoAOD.Electron_iso, q.dileptonpair],
+    input=[nanoAOD.Electron_pfRelIso03_all, q.dileptonpair],
     output=[q.iso_2],
     scopes=["ee"],
 )
 tau_iso_1 = Producer(
     name="tau_iso_1",
     call="event::quantity::Get<Float_t>({df}, {output}, {input}, 0)",
-    input=[nanoAOD.Tau_IDraw, q.dileptonpair],
+    input=[nanoAOD.Tau_rawDeepTau2018v2p5VSjet, q.dileptonpair],
     output=[q.iso_1],
     scopes=["tt"],
 )
 tau_iso_2 = Producer(
     name="tau_iso_2",
     call="event::quantity::Get<Float_t>({df}, {output}, {input}, 1)",
-    input=[nanoAOD.Tau_IDraw, q.dileptonpair],
+    input=[nanoAOD.Tau_rawDeepTau2018v2p5VSjet, q.dileptonpair],
     output=[q.iso_2],
     scopes=["mt", "et", "tt"],
 )
@@ -336,7 +336,7 @@ tau_decaymode_1_notau = Producer(
 taujet_pt_1 = Producer(
     name="taujet_pt_1",
     call="quantities::JetMatching({df}, {output}, {input}, 0)",
-    input=[nanoAOD.Jet_pt, nanoAOD.Tau_associatedJet, q.dileptonpair],
+    input=[nanoAOD.Jet_pt, nanoAOD.Tau_jetIdx, q.dileptonpair],
     output=[q.taujet_pt_1],
     scopes=["tt"],
 )
@@ -349,7 +349,7 @@ VsJetTauIDFlag_1 = ExtendedVectorProducer(
         0,
         {vsjet_tau_id_WPbit})
         """,
-    input=[nanoAOD.Tau_ID_vsJet, q.dileptonpair],
+    input=[nanoAOD.Tau_idDeepTau2018v2p5VSjet, q.dileptonpair],
     output="tau_1_vsjet_id_outputname",
     scope=["et", "mt", "tt"],
     vec_config="vsjet_tau_id",
@@ -363,7 +363,7 @@ VsEleTauIDFlag_1 = ExtendedVectorProducer(
         0,
         {vsele_tau_id_WPbit})
         """,
-    input=[nanoAOD.Tau_ID_vsEle, q.dileptonpair],
+    input=[nanoAOD.Tau_idDeepTau2018v2p5VSe, q.dileptonpair],
     output="tau_1_vsele_id_outputname",
     scope=["et", "mt", "tt"],
     vec_config="vsele_tau_id",
@@ -377,7 +377,7 @@ VsMuTauIDFlag_1 = ExtendedVectorProducer(
         0,
         {vsmu_tau_id_WPbit})
         """,
-    input=[nanoAOD.Tau_ID_vsMu, q.dileptonpair],
+    input=[nanoAOD.Tau_idDeepTau2018v2p5VSmu, q.dileptonpair],
     output="tau_1_vsmu_id_outputname",
     scope=["et", "mt", "tt"],
     vec_config="vsmu_tau_id",
@@ -399,7 +399,7 @@ tau_decaymode_2_notau = Producer(
 taujet_pt_2 = Producer(
     name="taujet_pt_2",
     call="quantities::JetMatching({df}, {output}, {input}, 1)",
-    input=[nanoAOD.Jet_pt, nanoAOD.Tau_associatedJet, q.dileptonpair],
+    input=[nanoAOD.Jet_pt, nanoAOD.Tau_jetIdx, q.dileptonpair],
     output=[q.taujet_pt_2],
     scopes=["mt", "et", "tt"],
 )
@@ -412,7 +412,7 @@ VsJetTauIDFlag_2 = ExtendedVectorProducer(
         1,
         {vsjet_tau_id_WPbit})
         """,
-    input=[nanoAOD.Tau_ID_vsJet, q.dileptonpair],
+    input=[nanoAOD.Tau_idDeepTau2018v2p5VSjet, q.dileptonpair],
     output="tau_2_vsjet_id_outputname",
     scope=["et", "mt", "tt"],
     vec_config="vsjet_tau_id",
@@ -426,7 +426,7 @@ VsEleTauIDFlag_2 = ExtendedVectorProducer(
         1,
         {vsele_tau_id_WPbit})
         """,
-    input=[nanoAOD.Tau_ID_vsEle, q.dileptonpair],
+    input=[nanoAOD.Tau_idDeepTau2018v2p5VSe, q.dileptonpair],
     output="tau_2_vsele_id_outputname",
     scope=["et", "mt", "tt"],
     vec_config="vsele_tau_id",
@@ -440,7 +440,7 @@ VsMuTauIDFlag_2 = ExtendedVectorProducer(
         1,
         {vsmu_tau_id_WPbit})
         """,
-    input=[nanoAOD.Tau_ID_vsMu, q.dileptonpair],
+    input=[nanoAOD.Tau_idDeepTau2018v2p5VSmu, q.dileptonpair],
     output="tau_2_vsmu_id_outputname",
     scope=["et", "mt", "tt"],
     vec_config="vsmu_tau_id",

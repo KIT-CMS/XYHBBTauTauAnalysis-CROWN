@@ -17,6 +17,33 @@ from ..constants import GLOBAL_SCOPES
 #
 
 
+# create jet energy correction producers for AK8 jets (Run 2)
+FatJetEnergyCorrection_data_Run2, FatJetEnergyCorrectionRun2, RenameFatJetsDataRun2 = jerc_producer_factory(
+    input={
+        "jet_pt": nanoAOD.FatJet_pt,
+        "jet_eta": nanoAOD.FatJet_eta,
+        "jet_phi": nanoAOD.FatJet_phi,
+        "jet_mass": nanoAOD.FatJet_mass,
+        "jet_area": nanoAOD.FatJet_area,
+        "jet_raw_factor": nanoAOD.FatJet_rawFactor,
+        "jet_id": nanoAOD.FatJet_jetId,
+        "gen_jet_pt": nanoAOD.GenJetAK8_pt,
+        "gen_jet_eta": nanoAOD.GenJetAK8_eta,
+        "gen_jet_phi": nanoAOD.GenJetAK8_phi,
+        "rho": nanoAOD.Rho_fixedGridRhoFastjetAll,
+    },
+    output={
+        "jet_pt_corrected": q.FatJet_pt_corrected,
+        "jet_mass_corrected": q.FatJet_mass_corrected,
+    },
+    scopes=GLOBAL_SCOPES,
+    producer_prefix="FatJet",
+    config_parameter_prefix="ak8jet",
+    lhc_run=2,
+)
+
+
+
 # create jet energy correction producers for AK8 jets
 FatJetEnergyCorrection_data, FatJetEnergyCorrection, RenameFatJetsData = jerc_producer_factory(
     input={
@@ -26,11 +53,11 @@ FatJetEnergyCorrection_data, FatJetEnergyCorrection, RenameFatJetsData = jerc_pr
         "jet_mass": nanoAOD.FatJet_mass,
         "jet_area": nanoAOD.FatJet_area,
         "jet_raw_factor": nanoAOD.FatJet_rawFactor,
-        "jet_id": nanoAOD.FatJet_ID,
+        "jet_id": nanoAOD.FatJet_jetId,
         "gen_jet_pt": nanoAOD.GenJetAK8_pt,
         "gen_jet_eta": nanoAOD.GenJetAK8_eta,
         "gen_jet_phi": nanoAOD.GenJetAK8_phi,
-        "rho": nanoAOD.rho_v12,
+        "rho": nanoAOD.Rho_fixedGridRhoFastjetAll,
     },
     output={
         "jet_pt_corrected": q.FatJet_pt_corrected,
@@ -55,7 +82,7 @@ GoodFatJetsWithoutPUID = Producer(
     input=[
         q.FatJet_pt_corrected,
         nanoAOD.FatJet_eta,
-        nanoAOD.FatJet_ID,
+        nanoAOD.FatJet_jetId,
     ],
     output=[q.good_fatjets_mask],
     scopes=GLOBAL_SCOPES,
@@ -224,7 +251,7 @@ fj_msoftdrop_1 = Producer(
 fj_particleNet_XbbvsQCD_1 = Producer(
     name="particleNet_XbbvsQCD_1",
     call="quantities::fatjet::particleNet_XbbvsQCD({df}, {output}, {input}, 0)",
-    input=[nanoAOD.FatJet_PNet_Xbb_v12, nanoAOD.FatJet_PNet_QCD_v12, q.good_fatjet_collection],
+    input=[nanoAOD.FatJet_particleNet_XbbVsQCD, nanoAOD.FatJet_particleNet_QCD, q.good_fatjet_collection],
     output=[q.fj_particleNet_XbbvsQCD_1],
     scopes=["mt", "et", "tt", "em", "mm", "ee"],
 )
@@ -280,7 +307,7 @@ fj_msoftdrop_2 = Producer(
 fj_particleNet_XbbvsQCD_2 = Producer(
     name="particleNet_XbbvsQCD_2",
     call="quantities::fatjet::particleNet_XbbvsQCD({df}, {output}, {input}, 1)",
-    input=[nanoAOD.FatJet_PNet_Xbb_v12, nanoAOD.FatJet_PNet_QCD_v12, q.good_fatjet_collection],
+    input=[nanoAOD.FatJet_particleNet_XbbVsQCD, nanoAOD.FatJet_particleNet_QCD, q.good_fatjet_collection],
     output=[q.fj_particleNet_XbbvsQCD_2],
     scopes=["mt", "et", "tt", "em", "mm", "ee"],
 )
@@ -398,7 +425,7 @@ fj_matched_msoftdrop = Producer(
 fj_matched_particleNet_XbbvsQCD = Producer(
     name="fj_matched_particleNet_XbbvsQCD",
     call="quantities::fatjet::particleNet_XbbvsQCD({df}, {output}, {input}, 0)",
-    input=[nanoAOD.FatJet_PNet_Xbb_v12, nanoAOD.FatJet_PNet_QCD_v12, q.bpair_fatjet],
+    input=[nanoAOD.FatJet_particleNet_XbbVsQCD, nanoAOD.FatJet_particleNet_QCD, q.bpair_fatjet],
     output=[q.fj_matched_particleNet_XbbvsQCD],
     scopes=["mt", "et", "tt", "em", "mm", "ee"],
 )
@@ -441,8 +468,8 @@ FindXbbFatjet = Producer(
     call="fatjet::FindXbbFatjet({df}, {output}, {input})",
     input=[
         q.good_fatjet_collection,
-        nanoAOD.FatJet_PNet_Xbb_v12, 
-        nanoAOD.FatJet_PNet_QCD_v12,
+        nanoAOD.FatJet_particleNet_XbbVsQCD, 
+        nanoAOD.FatJet_particleNet_QCD,
     ],
     output=[q.Xbb_fatjet],
     scopes=["et", "mt", "tt", "em", "mm", "ee"],
@@ -498,7 +525,7 @@ fj_Xbb_msoftdrop = Producer(
 fj_Xbb_particleNet_XbbvsQCD = Producer(
     name="fj_Xbb_particleNet_XbbvsQCD",
     call="quantities::fatjet::particleNet_XbbvsQCD({df}, {output}, {input}, 0)",
-    input=[nanoAOD.FatJet_PNet_Xbb_v12, nanoAOD.FatJet_PNet_QCD_v12, q.Xbb_fatjet],
+    input=[nanoAOD.FatJet_particleNet_XbbVsQCD, nanoAOD.FatJet_particleNet_QCD, q.Xbb_fatjet],
     output=[q.fj_Xbb_particleNet_XbbvsQCD],
     scopes=["mt", "et", "tt", "em", "mm", "ee"],
 )
@@ -518,8 +545,8 @@ fj_Xbb_nsubjettiness_3over2 = Producer(
 )
 fj_Xbb_hadflavor = Producer(
     name="fj_Xbb_hadflavor",
-    call="event::quantity::Get<Int_t>({df}, {output}, {input}, 0)",
-    input=[nanoAOD.FatJet_hadronFlavor, q.Xbb_fatjet],
+    call="event::quantity::Get<UChar_t>({df}, {output}, {input}, 0)",
+    input=[nanoAOD.FatJet_hadronFlavour, q.Xbb_fatjet],
     output=[q.fj_Xbb_hadflavor],
     scopes=["mt", "et", "tt", "em", "mm", "ee"],
 )
@@ -564,8 +591,8 @@ FindXbbFatjet_boosted = Producer(
     call="fatjet::FindXbbFatjet({df}, {output}, {input})",
     input=[
         q.good_fatjet_collection_boosted,
-        nanoAOD.FatJet_PNet_Xbb_v12, 
-        nanoAOD.FatJet_PNet_QCD_v12,
+        nanoAOD.FatJet_particleNet_XbbVsQCD, 
+        nanoAOD.FatJet_particleNet_QCD,
     ],
     output=[q.Xbb_fatjet_boosted],
     scopes=["et", "mt", "tt", "em", "mm", "ee"],
@@ -621,7 +648,7 @@ fj_Xbb_msoftdrop_boosted = Producer(
 fj_Xbb_particleNet_XbbvsQCD_boosted = Producer(
     name="fj_Xbb_particleNet_XbbvsQCD_boosted",
     call="quantities::fatjet::particleNet_XbbvsQCD({df}, {output}, {input}, 0)",
-    input=[nanoAOD.FatJet_PNet_Xbb_v12, nanoAOD.FatJet_PNet_QCD_v12, q.Xbb_fatjet_boosted],
+    input=[nanoAOD.FatJet_particleNet_XbbVsQCD, nanoAOD.FatJet_particleNet_QCD, q.Xbb_fatjet_boosted],
     output=[q.fj_Xbb_particleNet_XbbvsQCD_boosted],
     scopes=["mt", "et", "tt", "em", "mm", "ee"],
 )
@@ -641,8 +668,8 @@ fj_Xbb_nsubjettiness_3over2_boosted = Producer(
 )
 fj_Xbb_hadflavor_boosted = Producer(
     name="fj_Xbb_hadflavor_boosted",
-    call="event::quantity::Get<Int_t>({df}, {output}, {input}, 0)",
-    input=[nanoAOD.FatJet_hadronFlavor, q.Xbb_fatjet_boosted],
+    call="event::quantity::Get<UChar_t>({df}, {output}, {input}, 0)",
+    input=[nanoAOD.FatJet_hadronFlavour, q.Xbb_fatjet_boosted],
     output=[q.fj_Xbb_hadflavor_boosted],
     scopes=["mt", "et", "tt", "em", "mm", "ee"],
 )
