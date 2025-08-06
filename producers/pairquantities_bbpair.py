@@ -76,20 +76,6 @@ bpair_btag_value_2 = Producer(
     output=[q.bpair_btag_value_2],
     scopes=["mt", "et", "tt", "em", "mm", "ee"],
 )
-bpair_bRegRes_1 = Producer(
-    name="bpair_bRegRes_1",
-    call="event::quantity::Get<float>({df}, {output}, {input}, 0)",
-    input=[nanoAOD_run2.Jet_bRegRes, q.dibjetpair],
-    output=[q.bpair_reg_res_1],
-    scopes=["mt", "et", "tt", "em", "mm", "ee"],
-)
-bpair_bRegRes_2 = Producer(
-    name="bpair_bRegRes_2",
-    call="event::quantity::Get<float>({df}, {output}, {input}, 1)",
-    input=[nanoAOD_run2.Jet_bRegRes, q.dibjetpair],
-    output=[q.bpair_reg_res_2],
-    scopes=["mt", "et", "tt", "em", "mm", "ee"],
-)
 p4_bpair = Producer(
     name="p4_bpair",
     call="lorentzvector::Sum({df}, {output}, {input})",
@@ -131,7 +117,6 @@ UnrollBjetLV1Run2 = ProducerGroup(
         bpair_phi_1,
         bpair_mass_1,
         bpair_btag_value_1,
-        bpair_bRegRes_1,
     ],
 )
 UnrollBjetLV2Run2 = ProducerGroup(
@@ -146,7 +131,6 @@ UnrollBjetLV2Run2 = ProducerGroup(
         bpair_phi_2,
         bpair_mass_2,
         bpair_btag_value_2,
-        bpair_bRegRes_2,
     ],
 )
 UnrollBjetLV1Run3 = ProducerGroup(
@@ -282,20 +266,6 @@ bpair_btag_value_2_boosted = Producer(
     output=[q.bpair_btag_value_2_boosted],
     scopes=["mt", "et", "tt", "em", "mm", "ee"],
 )
-bpair_bRegRes_1_boosted = Producer(
-    name="bpair_bRegRes_1_boosted",
-    call="event::quantity::Get<float>({df}, {output}, {input}, 0)",
-    input=[nanoAOD_run2.Jet_bRegRes, q.dibjetpair_boosted],
-    output=[q.bpair_reg_res_1_boosted],
-    scopes=["mt", "et", "tt", "em", "mm", "ee"],
-)
-bpair_bRegRes_2_boosted = Producer(
-    name="bpair_bRegRes_2_boosted",
-    call="event::quantity::Get<float>({df}, {output}, {input}, 1)",
-    input=[nanoAOD_run2.Jet_bRegRes, q.dibjetpair_boosted],
-    output=[q.bpair_reg_res_2_boosted],
-    scopes=["mt", "et", "tt", "em", "mm", "ee"],
-)
 p4_bpair_boosted = Producer(
     name="p4_bpair_boosted",
     call="lorentzvector::Sum({df}, {output}, {input})",
@@ -337,7 +307,6 @@ UnrollBjetLV1Run2_boosted = ProducerGroup(
         bpair_phi_1_boosted,
         bpair_mass_1_boosted,
         bpair_btag_value_1_boosted,
-        bpair_bRegRes_1_boosted,
     ],
 )
 UnrollBjetLV2Run2_boosted = ProducerGroup(
@@ -352,7 +321,6 @@ UnrollBjetLV2Run2_boosted = ProducerGroup(
         bpair_phi_2_boosted,
         bpair_mass_2_boosted,
         bpair_btag_value_2_boosted,
-        bpair_bRegRes_2_boosted,
     ],
 )
 UnrollBjetLV1Run3_boosted = ProducerGroup(

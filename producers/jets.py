@@ -186,82 +186,6 @@ GoodBJetsWithPUID = ProducerGroup(
 
 
 #
-# B JET ENERGY SCALE CORRECTIONS
-#
-
-
-# pt correction from energy scale corrections
-BJetPtCorrectionRun2 = Producer(
-    name="BJetPtCorrectionRun2",
-    call="physicsobject::jet::BJetPtCorrection({df}, {output}, {input})",
-    input=[
-        q.Jet_pt_corrected,
-        q.good_bjets_mask,
-        nanoAOD_run2.Jet_bRegCorr,
-    ],
-    output=[q.Jet_pt_corrected_bReg],
-    scopes=GLOBAL_SCOPES,
-)
-
-# mass correction from energy scale corrections
-BJetMassCorrectionRun2 = Producer(
-    name="BJetMassCorrectionRun2",
-    call="physicsobject::MassCorrectionWithPt({df}, {output}, {input})",
-    input=[
-        q.Jet_mass_corrected,
-        q.Jet_pt_corrected,
-        q.Jet_pt_corrected_bReg,
-    ],
-    output=[q.Jet_mass_corrected_bReg],
-    scopes=GLOBAL_SCOPES,
-)
-
-# producer group for b jet energy corrections to apply
-BJetEnergyCorrectionRun2 = ProducerGroup(
-    name="BJetEnergyCorrectionRun2",
-    call=None,
-    input=None,
-    output=None,
-    subproducers=[
-        BJetPtCorrectionRun2,
-        BJetMassCorrectionRun2,
-    ],
-    scopes=GLOBAL_SCOPES,
-)
-
-# rename original pt as b jet regression does not exist in Run 3
-RenameBJetPtCorrection = Producer(
-    name="RenameBJetPtCorrection",
-    call="event::quantity::Rename<ROOT::RVec<float>>({df}, {output}, {input})",
-    input=[q.Jet_pt_corrected],
-    output=[q.Jet_pt_corrected_bReg],
-    scopes=GLOBAL_SCOPES,
-)
-
-# rename original mass as b jet regression does not exist in Run 3
-RenameBJetMassCorrection = Producer(
-    name="RenameBJetMassCorrection",
-    call="event::quantity::Rename<ROOT::RVec<float>>({df}, {output}, {input})",
-    input=[q.Jet_mass_corrected],
-    output=[q.Jet_mass_corrected_bReg],
-    scopes=GLOBAL_SCOPES,
-)
-
-# producer group for b jet energy corrections to apply
-RenameBJetEnergyCorrection = ProducerGroup(
-    name="RenameBJetEnergyCorrection",
-    call=None,
-    input=None,
-    output=None,
-    subproducers=[
-        RenameBJetPtCorrection,
-        RenameBJetMassCorrection,
-    ],
-    scopes=GLOBAL_SCOPES,
-)
-
-
-#
 # OVERLAP VETOES
 # TODO could be simplified by designing a generic function
 #
@@ -332,7 +256,7 @@ GoodBJetsWithVeto_boosted = Producer(
 JetCollection = ProducerGroup(
     name="JetCollection",
     call="physicsobject::OrderByPt({df}, {output}, {input})",
-    input=[q.Jet_pt_corrected_bReg],
+    input=[q.Jet_pt_corrected],
     output=[q.good_jet_collection],
     scopes=SCOPES,
     subproducers=[GoodJetsWithVeto],
@@ -342,7 +266,7 @@ JetCollection = ProducerGroup(
 JetCollection_boosted = ProducerGroup(
     name="JetCollection_boosted",
     call="physicsobject::OrderByPt({df}, {output}, {input})",
-    input=[q.Jet_pt_corrected_bReg],
+    input=[q.Jet_pt_corrected],
     output=[q.good_jet_collection_boosted],
     scopes=SCOPES,
     subproducers=[GoodJetsWithVeto_boosted],
@@ -352,7 +276,7 @@ JetCollection_boosted = ProducerGroup(
 BJetCollection = ProducerGroup(
     name="BJetCollection",
     call="physicsobject::OrderByPt({df}, {output}, {input})",
-    input=[q.Jet_pt_corrected_bReg],
+    input=[q.Jet_pt_corrected],
     output=[q.good_bjet_collection],
     scopes=SCOPES,
     subproducers=[GoodBJetsWithVeto],
@@ -362,7 +286,7 @@ BJetCollection = ProducerGroup(
 BJetCollection_boosted = ProducerGroup(
     name="BJetCollection_boosted",
     call="physicsobject::OrderByPt({df}, {output}, {input})",
-    input=[q.Jet_pt_corrected_bReg],
+    input=[q.Jet_pt_corrected],
     output=[q.good_bjet_collection_boosted],
     scopes=SCOPES,
     subproducers=[GoodBJetsWithVeto_boosted],
@@ -379,10 +303,10 @@ LVJet1 = Producer(
     name="LVJet1",
     call="lorentzvector::Build({df}, {output}, {input}, 0)",
     input=[
-        q.Jet_pt_corrected_bReg,
+        q.Jet_pt_corrected,
         nanoAOD.Jet_eta,
         nanoAOD.Jet_phi,
-        q.Jet_mass_corrected_bReg,
+        q.Jet_mass_corrected,
         q.good_jet_collection,
     ],
     output=[q.jet_p4_1],
@@ -392,10 +316,10 @@ LVJet2 = Producer(
     name="LVJet2",
     call="lorentzvector::Build({df}, {output}, {input}, 1)",
     input=[
-        q.Jet_pt_corrected_bReg,
+        q.Jet_pt_corrected,
         nanoAOD.Jet_eta,
         nanoAOD.Jet_phi,
-        q.Jet_mass_corrected_bReg,
+        q.Jet_mass_corrected,
         q.good_jet_collection,
     ],
     output=[q.jet_p4_2],
@@ -510,10 +434,10 @@ LVBJet1 = Producer(
     name="LVBJet1",
     call="lorentzvector::Build({df}, {output}, {input}, 0)",
     input=[
-        q.Jet_pt_corrected_bReg,
+        q.Jet_pt_corrected,
         nanoAOD.Jet_eta,
         nanoAOD.Jet_phi,
-        q.Jet_mass_corrected_bReg,
+        q.Jet_mass_corrected,
         q.good_bjet_collection,
     ],
     output=[q.bjet_p4_1],
@@ -523,10 +447,10 @@ LVBJet2 = Producer(
     name="LVBJet2",
     call="lorentzvector::Build({df}, {output}, {input}, 1)",
     input=[
-        q.Jet_pt_corrected_bReg,
+        q.Jet_pt_corrected,
         nanoAOD.Jet_eta,
         nanoAOD.Jet_phi,
-        q.Jet_mass_corrected_bReg,
+        q.Jet_mass_corrected,
         q.good_bjet_collection,
     ],
     output=[q.bjet_p4_2],

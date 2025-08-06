@@ -3135,18 +3135,6 @@ def build_config(
             ],
         )
 
-        # remove Run 2-specific variables
-        if era in ERAS_RUN2:
-            configuration.add_outputs(
-                ["mt", "et", "tt"],
-                [
-                    q.bpair_reg_res_1,  # removed in Run 3  
-                    q.bpair_reg_res_2,  # removed in Run 3
-                    q.bpair_reg_res_1_boosted,  # removed in Run 3
-                    q.bpair_reg_res_2_boosted,  # removed in Run 3
-                ]
-            )
-
     #########################
     # LHE Scale Weight variations
     # up is muR=2.0, muF=2.0

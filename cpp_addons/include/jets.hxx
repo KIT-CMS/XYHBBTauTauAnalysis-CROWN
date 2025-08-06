@@ -36,21 +36,5 @@ CorrectJetIDRun3NanoV12(
 
 } // end physicsobject
 
-namespace quantities {
-
-namespace jet {
-
-ROOT::RDF::RNode
-bRegRes(
-    ROOT::RDF::RNode df,
-    const std::string &outputname,
-    const std::string &resolution_column,
-    const std::string &jetcollection,
-    const int &position
-);
-
-} // end jet
-
-} // end quantities
 
 #endif

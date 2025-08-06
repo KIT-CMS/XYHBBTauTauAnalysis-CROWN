@@ -156,49 +156,5 @@ ROOT::RDF::RNode CorrectJetIDRun3NanoV12(
 
 } // end physicsobject
 
-namespace quantities {
-
-namespace jet {
-
-/** @brief Function to writeout the value of the resolution of a b-jet. The resolution was estimated as a part of a DNN based energy regresion task.
- *
- * @param df the input dataframe
- * @param outputname the name of the produced quantity
- * @param resolution_column name of the column that contains resolution values of
- * the jets
- * @param jetcollection name of the vector that contains jet indices of the
- * jets belonging to the collection, its length constitutes the output quantity
- * @param position The position in the jet collection vector, which is used to
- * store the index of the particle in the particle quantity vectors.
- *
- * @return a dataframe with the new column
- */
-ROOT::RDF::RNode
-bRegRes(
-    ROOT::RDF::RNode df,
-    const std::string &outputname,
-    const std::string &resolution_column,
-    const std::string &jetcollection,
-    const int &position
-) {
-    return df.Define(outputname,
-                     [position](const ROOT::RVec<float> &resolution,
-                                const ROOT::RVec<int> &jetcollection) {
-                         float reso = default_float;
-                         if (position >= 0) {
-                             const int index = jetcollection.at(position);
-                             if (index >= 0) {
-                                reso = resolution.at(index);
-                             }
-                         }
-                         return reso;
-                     },
-                     {resolution_column, jetcollection});
-}
-
-} // end jet
-
-} // end quantities
-
 
 #endif
