@@ -154,7 +154,7 @@ BTagCut = Producer(
     name="BTagCut",
     call="physicsobject::CutMin<float>({df}, {output}, {input}, {bjet_min_deepjet_score})",
     input=[nanoAOD_run2.Jet_btagDeepFlavB],
-    output=[],
+    output=[q.Jet_deepjet_b_tagged_medium],
     scopes=GLOBAL_SCOPES,
 )
 
@@ -184,6 +184,15 @@ GoodBJetsWithPUID = ProducerGroup(
     scopes=GLOBAL_SCOPES,
 )
 
+# combined jet-bjet mask (OR)
+GoodJetsCombinedWithoutPUID = Producer(
+    name="GoodJetsWithoutPUID",
+    call='physicsobject::CombineMasks({df}, {output}, {input}, "any_of")',
+    input=[q.good_jets_mask, q.good_bjets_mask],
+    output=[q.good_jets_combined_mask],
+    scopes=GLOBAL_SCOPES,
+)
+
 
 #
 # OVERLAP VETOES
@@ -194,7 +203,7 @@ GoodBJetsWithPUID = ProducerGroup(
 # check whether a jet is overlapping with the tight lepton candidates from resolved selection
 VetoOverlappingJets = Producer(
     name="VetoOverlappingJets",
-    call="physicsobject::jet::VetoOverlappingJets({df}, {output}, {input}, {deltaR_jet_veto})",
+    call="physicsobject::jet::VetoOverlappingJets({df}, {output}, {input}, {ak4jet_veto_min_delta_r})",
     input=[
         nanoAOD.Jet_eta,
         nanoAOD.Jet_phi,
@@ -208,7 +217,7 @@ VetoOverlappingJets = Producer(
 # check whether a jet is overlapping with the tight lepton candidates from boosted selection
 VetoOverlappingJets_boosted = Producer(
     name="VetoOverlappingJets_boosted",
-    call="physicsobject::jet::VetoOverlappingJets({df}, {output}, {input}, {deltaR_jet_veto})",
+    call="physicsobject::jet::VetoOverlappingJets({df}, {output}, {input}, {ak4jet_veto_min_delta_r})",
     input=[nanoAOD.Jet_eta, nanoAOD.Jet_phi, q.boosted_p4_1, q.boosted_p4_2],
     output=[q.jet_overlap_veto_mask_boosted],
     scopes=SCOPES,
@@ -232,6 +241,15 @@ GoodJetsWithVeto_boosted = ProducerGroup(
     output=[],
     scopes=SCOPES,
     subproducers=[VetoOverlappingJets_boosted],
+)
+
+# create a mask that includes selected jets + b jets that do not overlap with the lepton candidates from the resolved selection
+GoodJetsCombinedWithVeto = Producer(
+    name="GoodCombinedJetsWithVeto",
+    call='physicsobject::CombineMasks({df}, {output}, {input}, "all_of")',
+    input=[q.good_jets_combined_mask, q.jet_overlap_veto_mask],
+    output=[],
+    scopes=SCOPES,
 )
 
 # create a mask that includes selected b-jets that do not overlap with the lepton candidates from the resolved selection
@@ -292,11 +310,51 @@ BJetCollection_boosted = ProducerGroup(
     subproducers=[GoodBJetsWithVeto_boosted],
 )
 
+# final combined jet collection as list of indices of selected jets, ordered by pt for the resolved selection
+JetCombinedCollection = ProducerGroup(
+    name="JetCombinedCollection",
+    call="physicsobject::OrderByPt({df}, {output}, {input})",
+    input=[q.Jet_pt_corrected],
+    output=[q.good_jet_combined_collection],
+    scopes=SCOPES,
+    subproducers=[GoodJetsCombinedWithVeto],
+)
 
 #
 # JET QUANTITIES
 # TODO simplify this by designing a generic function
 #
+
+
+jet_column_producers = []
+for q_input, q_output, data_type in [
+    (q.Jet_pt_corrected, q.jet_pt, "float"),
+    (nanoAOD.Jet_eta, q.jet_eta, "float"),
+    (nanoAOD.Jet_phi, q.jet_phi, "float"),
+    (q.Jet_mass_corrected, q.jet_mass, "float"),
+    (q.Jet_ID_corrected, q.jet_id, "UChar_t"),
+    (nanoAOD.Jet_btagDeepFlavB, q.jet_deepjet_b_score, "float"),
+    (q.Jet_deepjet_b_tagged_medium, q.jet_deepjet_b_tagged_medium, "int"),
+]:
+    jet_column_producers.append(
+        Producer(
+            name=f"JetColumn_{q_output.name}",
+            call=f"event::quantity::Take<{data_type}>({{df}}, {{output}}, {{input}})",
+            input=[q_input, q.good_jet_combined_collection],
+            output=[q_output],
+            scopes=SCOPES,
+        )
+    )
+
+
+JetColumns = ProducerGroup(
+    name="JetColumns",
+    call=None,
+    input=None,
+    output=None,
+    scopes=SCOPES,
+    subproducers=jet_column_producers,
+)
 
 
 LVJet1 = Producer(
