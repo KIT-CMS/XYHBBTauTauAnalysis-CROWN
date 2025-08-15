@@ -30,7 +30,7 @@ from code_generation.modifiers import EraModifier, SampleModifier
 from code_generation.rules import AppendProducer, RemoveProducer, ReplaceProducer
 from code_generation.systematics import SystematicShift, SystematicShiftByQuantity
 
-from .constants import ERAS_RUN2, ERAS_RUN3, CORRECTIONLIB_CAMPAIGNS, ET_SCOPES, MT_SCOPES, SL_SCOPES, FH_SCOPES, HAD_TAU_SCOPES, SCOPES, GLOBAL_SCOPES
+from .constants import ERAS_RUN2, ERAS_RUN3, CORRECTIONLIB_CAMPAIGNS, ET_SCOPES, MT_SCOPES, TT_SCOPES, SL_SCOPES, FH_SCOPES, HAD_TAU_SCOPES, SCOPES, GLOBAL_SCOPES
 
 
 def add_noise_filters_config(configuration: Configuration):
@@ -328,7 +328,7 @@ def add_electron_config(configuration: Configuration):
             "diele_electron_max_abs_eta": 2.5,
             "diele_electron_max_abs_dxy": 0.045,
             "diele_electron_max_abs_dz": 0.2,
-            "diele_electron_max_iso": 0.3,
+            "diele_electron_max_iso": 0.25,
             "diele_electron_id_wp": 1,  # cut-based electron ID, 'veto' working point
             "diele_electron_min_delta_r": 0.15,  # cut-based electron ID, 'veto' working point
         },
@@ -805,7 +805,41 @@ def add_hadronic_tau_config(configuration: Configuration):
 
     # hadronic tau identification corrections (tagging vs jets)
     configuration.add_config_parameters(
-        HAD_TAU_SCOPES,
+        MT_SCOPES + TT_SCOPES,
+        {
+            "vsjet_tau_id_sf": [
+                {
+                    "tau_id_discriminator": EraModifier(
+                        {
+                            _era: f"{_tau_id}VSjet"
+                            for _era, _tau_id in tau_id.modifier_dict.items()
+                        }
+                    ),
+                    "tau_1_vsjet_sf_outputname": "id_wgt_tau_vsJet_{wp}_1".format(
+                        wp=wp
+                    ),
+                    "tau_2_vsjet_sf_outputname": "id_wgt_tau_vsJet_{wp}_2".format(
+                        wp=wp
+                    ),
+                    "vsjet_tau_id_WP": "{wp}".format(wp=wp),
+                    "tau_vsjet_vseleWP": "VVLoose",
+                }
+                for wp, bit in {
+                    # "VVVLoose": 1,
+                    # "VVLoose": 2,
+                    # "VLoose": 3,
+                    # "Loose": 4,
+                    "Medium": 5,
+                    "Tight": 6,
+                    # "VTight": 7,
+                    # "VVTight": 8,
+                }.items()
+            ],
+        },
+    )
+
+    configuration.add_config_parameters(
+        ET_SCOPES,
         {
             "vsjet_tau_id_sf": [
                 {
@@ -1562,8 +1596,9 @@ def build_config(
                     },
                     **{
                         _era: f"EGMScale_Compound_Ele_{_era}"
-                        for _era in ERAS_RUN3
-                    }
+                        for _era in ERAS_RUN3 if _era != "2023preBPix"
+                    },
+                    "2023preBPix": "EGMScale_Compound_Ele_2023preBPIX",
                 }
             ),
             "ele_es_sf_mc_name": EraModifier(
@@ -1574,8 +1609,9 @@ def build_config(
                     },
                     **{
                         _era: f"EGMSmearAndSyst_ElePTsplit_{_era}"
-                        for _era in ERAS_RUN3
-                    }
+                        for _era in ERAS_RUN3 if _era != "2023preBPix"
+                    },
+                    "2023preBPix": "EGMSmearAndSyst_ElePTsplit_2023preBPIX",
                 }
             ),
         },
