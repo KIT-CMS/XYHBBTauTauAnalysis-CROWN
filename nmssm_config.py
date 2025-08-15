@@ -1125,7 +1125,7 @@ def add_ak4jet_config(configuration: Configuration):
         {
             "ak4jet_min_pt": 30.0,
             "ak4jet_max_abs_eta": 4.7,
-            "ak4jet_id_wp": 6,  # 0 == fail, 2 == pass(tight) & fail(tightLepVeto), 6 == pass(tight) & pass(tightLepVeto)
+            "ak4jet_id_wp": 2,  # 0 == fail, 2 == pass(tight) & fail(tightLepVeto), 6 == pass(tight) & pass(tightLepVeto)
             "ak4jet_puid_wp": EraModifier(
                 {
                     "2016preVFP": 1,  # 0 == fail, 1 == pass(loose), 3 == pass(loose,medium), 7 == pass(loose,medium,tight)
@@ -1212,7 +1212,7 @@ def add_ak4jet_config(configuration: Configuration):
     configuration.add_config_parameters(
         SCOPES,
         {
-            "deltaR_jet_veto": 0.4,
+            "ak4jet_veto_min_delta_r": 0.4,
         },
     )
 
@@ -1847,7 +1847,6 @@ def build_config(
             "global",
             [
                 electrons.ElectronPtCorrectionMCRun2,
-                jets.BJetEnergyCorrectionRun2,
                 jets.JetIDRun2,
                 jets.GoodJetsWithPUID,
                 jets.GoodBJetsWithPUID,
@@ -1858,10 +1857,10 @@ def build_config(
             "global",
             [
                 electrons.ElectronPtCorrectionMCRun3,
-                jets.RenameBJetEnergyCorrection,
                 jets.JetIDRun3NanoV12Corrected,
                 jets.GoodJetsWithoutPUID,
                 jets.GoodBJetsWithoutPUID,
+                jets.GoodJetsCombinedWithoutPUID,
             ]
         )
 
@@ -1894,6 +1893,8 @@ def build_config(
             fatjets.FatJetCollectionWithoutVeto,
             fatjets.BasicFatJetQuantities,
             jets.JetCollection,
+            jets.JetCombinedCollection,
+            jets.JetColumns,
             jets.BasicJetQuantities,
             jets.BJetCollection,
             jets.BasicBJetQuantities,
@@ -2750,6 +2751,13 @@ def build_config(
             q.genjet_m_inv,
             q.njets,
             q.njets_boosted,
+            q.jet_pt,
+            q.jet_eta,
+            q.jet_phi,
+            q.jet_mass,
+            q.jet_id,
+            q.jet_deepjet_b_score,
+            q.jet_deepjet_b_tagged_medium,
             q.jpt_1,
             q.jpt_2,
             q.jeta_1,
@@ -3192,18 +3200,6 @@ def build_config(
                 q.gen_boostedtaupair_match_flag,
             ],
         )
-
-        # remove Run 2-specific variables
-        if era in ERAS_RUN2:
-            configuration.add_outputs(
-                ["mt", "et", "tt"],
-                [
-                    q.bpair_reg_res_1,  # removed in Run 3  
-                    q.bpair_reg_res_2,  # removed in Run 3
-                    q.bpair_reg_res_1_boosted,  # removed in Run 3
-                    q.bpair_reg_res_2_boosted,  # removed in Run 3
-                ]
-            )
 
     #########################
     # LHE Scale Weight variations

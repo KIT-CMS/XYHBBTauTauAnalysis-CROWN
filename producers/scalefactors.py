@@ -1147,7 +1147,7 @@ btagging_SF = Producer(
         "{btag_sf_variation}")
         """,
     input=[
-        q.Jet_pt_corrected_bReg,
+        q.Jet_pt_corrected,
         nanoAOD.Jet_eta,
         nanoAOD.Jet_btagDeepFlavB,
         nanoAOD.Jet_hadronFlavour,
@@ -1170,7 +1170,7 @@ btagging_SF_boosted = Producer(
         "{btag_sf_variation}")
         """,
     input=[
-        q.Jet_pt_corrected_bReg,
+        q.Jet_pt_corrected,
         nanoAOD.Jet_eta,
         nanoAOD.Jet_btagDeepFlavB,
         nanoAOD.Jet_hadronFlavour,

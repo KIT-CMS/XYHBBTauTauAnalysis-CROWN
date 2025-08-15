@@ -179,7 +179,7 @@ PropagateJetsToMet = Producer(
     call="met::propagateJetsToMet({df}, {input}, {output}, {propagateJets}, {min_jetpt_met_propagation})",
     input=[
         q.met_p4_leptoncorrected,
-        q.Jet_pt_corrected_bReg,
+        q.Jet_pt_corrected,
         nanoAOD.Jet_eta,
         nanoAOD.Jet_phi,
         q.Jet_mass_corrected,
@@ -196,7 +196,7 @@ PropagateJetsToPFMet = Producer(
     call="met::propagateJetsToMet({df}, {input}, {output}, {propagateJets}, {min_jetpt_met_propagation})",
     input=[
         q.pfmet_p4_leptoncorrected,
-        q.Jet_pt_corrected_bReg,
+        q.Jet_pt_corrected,
         nanoAOD.Jet_eta,
         nanoAOD.Jet_phi,
         q.Jet_mass_corrected,
@@ -214,7 +214,7 @@ PropagateJetsToMet_boosted = Producer(
     call="met::propagateJetsToMet({df}, {input}, {output}, {propagateJets}, {min_jetpt_met_propagation})",
     input=[
         q.met_p4_boosted_leptoncorrected,
-        q.Jet_pt_corrected_bReg,
+        q.Jet_pt_corrected,
         nanoAOD.Jet_eta,
         nanoAOD.Jet_phi,
         q.Jet_mass_corrected,
@@ -231,7 +231,7 @@ PropagateJetsToPFMet_boosted = Producer(
     call="met::propagateJetsToMet({df}, {input}, {output}, {propagateJets}, {min_jetpt_met_propagation})",
     input=[
         q.pfmet_p4_boosted_leptoncorrected,
-        q.Jet_pt_corrected_bReg,
+        q.Jet_pt_corrected,
         nanoAOD.Jet_eta,
         nanoAOD.Jet_phi,
         q.Jet_mass_corrected,
@@ -250,7 +250,7 @@ ApplyRecoilCorrections = Producer(
     input=[
         q.met_p4_jetcorrected,
         q.recoil_genboson_p4_vec,
-        q.Jet_pt_corrected_bReg,
+        q.Jet_pt_corrected,
     ],
     output=[q.met_p4_recoilcorrected],
     scopes=["et", "mt", "tt", "em", "mm", "ee"],
@@ -261,7 +261,7 @@ ApplyRecoilCorrectionsPFMet = Producer(
     input=[
         q.pfmet_p4_jetcorrected,
         q.recoil_genboson_p4_vec,
-        q.Jet_pt_corrected_bReg,
+        q.Jet_pt_corrected,
     ],
     output=[q.pfmet_p4_recoilcorrected],
     scopes=["et", "mt", "tt", "em", "mm", "ee"],
@@ -273,7 +273,7 @@ ApplyRecoilCorrections_boosted = Producer(
     input=[
         q.met_p4_boosted_jetcorrected,
         q.recoil_genboson_p4_vec,
-        q.Jet_pt_corrected_bReg,
+        q.Jet_pt_corrected,
     ],
     output=[q.met_p4_boosted_recoilcorrected],
     scopes=["et", "mt", "tt", "em", "mm", "ee"],
@@ -284,7 +284,7 @@ ApplyRecoilCorrectionsPFMet_boosted = Producer(
     input=[
         q.pfmet_p4_boosted_jetcorrected,
         q.recoil_genboson_p4_vec,
-        q.Jet_pt_corrected_bReg,
+        q.Jet_pt_corrected,
     ],
     output=[q.pfmet_p4_boosted_recoilcorrected],
     scopes=["et", "mt", "tt", "em", "mm", "ee"],

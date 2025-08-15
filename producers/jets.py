@@ -154,7 +154,7 @@ BTagCut = Producer(
     name="BTagCut",
     call="physicsobject::CutMin<float>({df}, {output}, {input}, {bjet_min_deepjet_score})",
     input=[nanoAOD_run2.Jet_btagDeepFlavB],
-    output=[],
+    output=[q.Jet_deepjet_b_tagged_medium],
     scopes=GLOBAL_SCOPES,
 )
 
@@ -184,79 +184,12 @@ GoodBJetsWithPUID = ProducerGroup(
     scopes=GLOBAL_SCOPES,
 )
 
-
-#
-# B JET ENERGY SCALE CORRECTIONS
-#
-
-
-# pt correction from energy scale corrections
-BJetPtCorrectionRun2 = Producer(
-    name="BJetPtCorrectionRun2",
-    call="physicsobject::jet::BJetPtCorrection({df}, {output}, {input})",
-    input=[
-        q.Jet_pt_corrected,
-        q.good_bjets_mask,
-        nanoAOD_run2.Jet_bRegCorr,
-    ],
-    output=[q.Jet_pt_corrected_bReg],
-    scopes=GLOBAL_SCOPES,
-)
-
-# mass correction from energy scale corrections
-BJetMassCorrectionRun2 = Producer(
-    name="BJetMassCorrectionRun2",
-    call="physicsobject::MassCorrectionWithPt({df}, {output}, {input})",
-    input=[
-        q.Jet_mass_corrected,
-        q.Jet_pt_corrected,
-        q.Jet_pt_corrected_bReg,
-    ],
-    output=[q.Jet_mass_corrected_bReg],
-    scopes=GLOBAL_SCOPES,
-)
-
-# producer group for b jet energy corrections to apply
-BJetEnergyCorrectionRun2 = ProducerGroup(
-    name="BJetEnergyCorrectionRun2",
-    call=None,
-    input=None,
-    output=None,
-    subproducers=[
-        BJetPtCorrectionRun2,
-        BJetMassCorrectionRun2,
-    ],
-    scopes=GLOBAL_SCOPES,
-)
-
-# rename original pt as b jet regression does not exist in Run 3
-RenameBJetPtCorrection = Producer(
-    name="RenameBJetPtCorrection",
-    call="event::quantity::Rename<ROOT::RVec<float>>({df}, {output}, {input})",
-    input=[q.Jet_pt_corrected],
-    output=[q.Jet_pt_corrected_bReg],
-    scopes=GLOBAL_SCOPES,
-)
-
-# rename original mass as b jet regression does not exist in Run 3
-RenameBJetMassCorrection = Producer(
-    name="RenameBJetMassCorrection",
-    call="event::quantity::Rename<ROOT::RVec<float>>({df}, {output}, {input})",
-    input=[q.Jet_mass_corrected],
-    output=[q.Jet_mass_corrected_bReg],
-    scopes=GLOBAL_SCOPES,
-)
-
-# producer group for b jet energy corrections to apply
-RenameBJetEnergyCorrection = ProducerGroup(
-    name="RenameBJetEnergyCorrection",
-    call=None,
-    input=None,
-    output=None,
-    subproducers=[
-        RenameBJetPtCorrection,
-        RenameBJetMassCorrection,
-    ],
+# combined jet-bjet mask (OR)
+GoodJetsCombinedWithoutPUID = Producer(
+    name="GoodJetsWithoutPUID",
+    call='physicsobject::CombineMasks({df}, {output}, {input}, "any_of")',
+    input=[q.good_jets_mask, q.good_bjets_mask],
+    output=[q.good_jets_combined_mask],
     scopes=GLOBAL_SCOPES,
 )
 
@@ -270,7 +203,7 @@ RenameBJetEnergyCorrection = ProducerGroup(
 # check whether a jet is overlapping with the tight lepton candidates from resolved selection
 VetoOverlappingJets = Producer(
     name="VetoOverlappingJets",
-    call="physicsobject::jet::VetoOverlappingJets({df}, {output}, {input}, {deltaR_jet_veto})",
+    call="physicsobject::jet::VetoOverlappingJets({df}, {output}, {input}, {ak4jet_veto_min_delta_r})",
     input=[
         nanoAOD.Jet_eta,
         nanoAOD.Jet_phi,
@@ -284,7 +217,7 @@ VetoOverlappingJets = Producer(
 # check whether a jet is overlapping with the tight lepton candidates from boosted selection
 VetoOverlappingJets_boosted = Producer(
     name="VetoOverlappingJets_boosted",
-    call="physicsobject::jet::VetoOverlappingJets({df}, {output}, {input}, {deltaR_jet_veto})",
+    call="physicsobject::jet::VetoOverlappingJets({df}, {output}, {input}, {ak4jet_veto_min_delta_r})",
     input=[nanoAOD.Jet_eta, nanoAOD.Jet_phi, q.boosted_p4_1, q.boosted_p4_2],
     output=[q.jet_overlap_veto_mask_boosted],
     scopes=SCOPES,
@@ -310,6 +243,15 @@ GoodJetsWithVeto_boosted = ProducerGroup(
     subproducers=[VetoOverlappingJets_boosted],
 )
 
+# create a mask that includes selected jets + b jets that do not overlap with the lepton candidates from the resolved selection
+GoodJetsCombinedWithVeto = Producer(
+    name="GoodCombinedJetsWithVeto",
+    call='physicsobject::CombineMasks({df}, {output}, {input}, "all_of")',
+    input=[q.good_jets_combined_mask, q.jet_overlap_veto_mask],
+    output=[],
+    scopes=SCOPES,
+)
+
 # create a mask that includes selected b-jets that do not overlap with the lepton candidates from the resolved selection
 GoodBJetsWithVeto = Producer(
     name="GoodBJetsWithVeto",
@@ -332,7 +274,7 @@ GoodBJetsWithVeto_boosted = Producer(
 JetCollection = ProducerGroup(
     name="JetCollection",
     call="physicsobject::OrderByPt({df}, {output}, {input})",
-    input=[q.Jet_pt_corrected_bReg],
+    input=[q.Jet_pt_corrected],
     output=[q.good_jet_collection],
     scopes=SCOPES,
     subproducers=[GoodJetsWithVeto],
@@ -342,7 +284,7 @@ JetCollection = ProducerGroup(
 JetCollection_boosted = ProducerGroup(
     name="JetCollection_boosted",
     call="physicsobject::OrderByPt({df}, {output}, {input})",
-    input=[q.Jet_pt_corrected_bReg],
+    input=[q.Jet_pt_corrected],
     output=[q.good_jet_collection_boosted],
     scopes=SCOPES,
     subproducers=[GoodJetsWithVeto_boosted],
@@ -352,7 +294,7 @@ JetCollection_boosted = ProducerGroup(
 BJetCollection = ProducerGroup(
     name="BJetCollection",
     call="physicsobject::OrderByPt({df}, {output}, {input})",
-    input=[q.Jet_pt_corrected_bReg],
+    input=[q.Jet_pt_corrected],
     output=[q.good_bjet_collection],
     scopes=SCOPES,
     subproducers=[GoodBJetsWithVeto],
@@ -362,12 +304,21 @@ BJetCollection = ProducerGroup(
 BJetCollection_boosted = ProducerGroup(
     name="BJetCollection_boosted",
     call="physicsobject::OrderByPt({df}, {output}, {input})",
-    input=[q.Jet_pt_corrected_bReg],
+    input=[q.Jet_pt_corrected],
     output=[q.good_bjet_collection_boosted],
     scopes=SCOPES,
     subproducers=[GoodBJetsWithVeto_boosted],
 )
 
+# final combined jet collection as list of indices of selected jets, ordered by pt for the resolved selection
+JetCombinedCollection = ProducerGroup(
+    name="JetCombinedCollection",
+    call="physicsobject::OrderByPt({df}, {output}, {input})",
+    input=[q.Jet_pt_corrected],
+    output=[q.good_jet_combined_collection],
+    scopes=SCOPES,
+    subproducers=[GoodJetsCombinedWithVeto],
+)
 
 #
 # JET QUANTITIES
@@ -375,14 +326,45 @@ BJetCollection_boosted = ProducerGroup(
 #
 
 
+jet_column_producers = []
+for q_input, q_output, data_type in [
+    (q.Jet_pt_corrected, q.jet_pt, "float"),
+    (nanoAOD.Jet_eta, q.jet_eta, "float"),
+    (nanoAOD.Jet_phi, q.jet_phi, "float"),
+    (q.Jet_mass_corrected, q.jet_mass, "float"),
+    (q.Jet_ID_corrected, q.jet_id, "UChar_t"),
+    (nanoAOD.Jet_btagDeepFlavB, q.jet_deepjet_b_score, "float"),
+    (q.Jet_deepjet_b_tagged_medium, q.jet_deepjet_b_tagged_medium, "int"),
+]:
+    jet_column_producers.append(
+        Producer(
+            name=f"JetColumn_{q_output.name}",
+            call=f"event::quantity::Take<{data_type}>({{df}}, {{output}}, {{input}})",
+            input=[q_input, q.good_jet_combined_collection],
+            output=[q_output],
+            scopes=SCOPES,
+        )
+    )
+
+
+JetColumns = ProducerGroup(
+    name="JetColumns",
+    call=None,
+    input=None,
+    output=None,
+    scopes=SCOPES,
+    subproducers=jet_column_producers,
+)
+
+
 LVJet1 = Producer(
     name="LVJet1",
     call="lorentzvector::Build({df}, {output}, {input}, 0)",
     input=[
-        q.Jet_pt_corrected_bReg,
+        q.Jet_pt_corrected,
         nanoAOD.Jet_eta,
         nanoAOD.Jet_phi,
-        q.Jet_mass_corrected_bReg,
+        q.Jet_mass_corrected,
         q.good_jet_collection,
     ],
     output=[q.jet_p4_1],
@@ -392,10 +374,10 @@ LVJet2 = Producer(
     name="LVJet2",
     call="lorentzvector::Build({df}, {output}, {input}, 1)",
     input=[
-        q.Jet_pt_corrected_bReg,
+        q.Jet_pt_corrected,
         nanoAOD.Jet_eta,
         nanoAOD.Jet_phi,
-        q.Jet_mass_corrected_bReg,
+        q.Jet_mass_corrected,
         q.good_jet_collection,
     ],
     output=[q.jet_p4_2],
@@ -510,10 +492,10 @@ LVBJet1 = Producer(
     name="LVBJet1",
     call="lorentzvector::Build({df}, {output}, {input}, 0)",
     input=[
-        q.Jet_pt_corrected_bReg,
+        q.Jet_pt_corrected,
         nanoAOD.Jet_eta,
         nanoAOD.Jet_phi,
-        q.Jet_mass_corrected_bReg,
+        q.Jet_mass_corrected,
         q.good_bjet_collection,
     ],
     output=[q.bjet_p4_1],
@@ -523,10 +505,10 @@ LVBJet2 = Producer(
     name="LVBJet2",
     call="lorentzvector::Build({df}, {output}, {input}, 1)",
     input=[
-        q.Jet_pt_corrected_bReg,
+        q.Jet_pt_corrected,
         nanoAOD.Jet_eta,
         nanoAOD.Jet_phi,
-        q.Jet_mass_corrected_bReg,
+        q.Jet_mass_corrected,
         q.good_bjet_collection,
     ],
     output=[q.bjet_p4_2],
