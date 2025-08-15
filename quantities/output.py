@@ -670,3 +670,5 @@ transformed_kinfit_mX_boosted = Quantity("transformed_kinfit_mX_boosted")
 transformed_kinfit_mY_boosted = Quantity("transformed_kinfit_mY_boosted")
 transformed_kinfit_chi2_boosted = Quantity("transformed_kinfit_chi2_boosted")
 transformed_boosted_mt_1 = Quantity("transformed_boosted_mt_1")
+
+lhe_drell_yan_decay_flavor = Quantity("lhe_drell_yan_decay_flavor")
