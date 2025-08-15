@@ -329,9 +329,16 @@ LHE_Scale_weight = Producer(
     output=[q.lhe_scale_weight],
     scopes=["global", "em", "et", "mt", "tt", "mm", "ee"],
 )
+LHEDrellYanDecayFlavor = Producer(
+    name="LHEDrellYanDecayFlavor",
+    call="event::lhe::DrellYanDecayFlavor({df}, {output}, {input})",
+    input=[nanoAOD.LHEPart_pdgId, nanoAOD.LHEPart_status],
+    output=[q.lhe_drell_yan_decay_flavor],
+    scopes=["global"],
+)
 NMSSM_LHE_Scale_weight = Producer(
     name="NMSSM_LHE_Scale_weight",
-    call="reweighting::nmssm_lhe_scale_weights({df}, {output}, {input}, {muR}, {muF})",
+    call="event::reweighting::NMSSMLHEScaleWeights({df}, {output}, {input}, {muR}, {muF})",
     input=[nanoAOD.LHEScaleWeight],
     output=[q.lhe_scale_weight],
     scopes=["global", "em", "et", "mt", "tt", "mm", "ee"],

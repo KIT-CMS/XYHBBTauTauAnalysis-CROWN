@@ -1837,6 +1837,18 @@ def build_config(
                 event.PrefireWeight,
             ],
         )
+
+    # DY decay flavor
+    configuration.add_modification_rule(
+        GLOBAL_SCOPES,
+        AppendProducer(
+            [
+                event.LHEDrellYanDecayFlavor,
+            ],
+            samples=["dyjets", "dyjets_madgraph", "dyjets_amcatnlo", "dyjets_powheg"],
+        )
+    )
+
     # common
     configuration.add_producers(
         HAD_TAU_SCOPES,
@@ -2801,11 +2813,21 @@ def build_config(
             ],
         )
  
+    if sample in ["dyjets", "dyjets_madgraph", "dyjets_powheg", "dyjets_amcatnlo"]:
+        configuration.add_outputs(
+            HAD_TAU_SCOPES,
+            [
+                q.lhe_drell_yan_decay_flavor,
+            ]
+        )
+
     # add genWeight for everything but data
     if sample != "data":
         configuration.add_outputs(
             HAD_TAU_SCOPES,
-            nanoAOD.genWeight,
+            [
+                nanoAOD.genWeight,
+            ],
         )
     configuration.add_outputs(
         "mt",
