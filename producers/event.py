@@ -196,12 +196,12 @@ npartons = Producer(
 PUweights = Producer(
     name="PUweights",
     call="""event::reweighting::Pileup(
-        {df}, 
-        correctionManager, 
-        {output}, 
-        {input}, 
-        "{PU_reweighting_file}", 
-        "{PU_reweighting_era}", 
+        {df},
+        correctionManager,
+        {output},
+        {input},
+        "{PU_reweighting_file}",
+        "{PU_reweighting_era}",
         "{PU_reweighting_variation}")
         """,
     input=[nanoAOD.Pileup_nTrueInt],
@@ -331,7 +331,7 @@ LHE_Scale_weight = Producer(
 )
 LHEDrellYanDecayFlavor = Producer(
     name="LHEDrellYanDecayFlavor",
-    call="event::lhe::DrellYanDecayFlavor({df}, {output}, {input})",
+    call="genparticles::drell_yan::DecayFlavor({df}, {output}, {input})",
     input=[nanoAOD.LHEPart_pdgId, nanoAOD.LHEPart_status],
     output=[q.lhe_drell_yan_decay_flavor],
     scopes=["global"],
