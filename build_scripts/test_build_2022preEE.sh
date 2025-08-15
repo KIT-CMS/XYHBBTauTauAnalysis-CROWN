@@ -4,8 +4,13 @@
 
 main () {
     # get paths of the script and its directory
-    local this_file="$( echo "${BASH_SOURCE[0]}" )"
+    local this_file="$( echo "${BASH_SOURCE[0]:-${0}}" )"
     local this_dir="$( cd "$( dirname "${this_file}" )" && pwd )"
+
+    # get input parameters from the command line
+    local samples="${1:-all}"
+    local channels="${2:-all}"
+    local debug="${2:-false}"
 
     # get the CROWN directories
     local crown_dir="$( cd "${this_dir}/../.." && pwd )"
