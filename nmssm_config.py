@@ -42,7 +42,7 @@ def add_noise_filters_config(configuration: Configuration):
     - Run 2 UltraLegacy: https://twiki.cern.ch/twiki/bin/viewauth/CMS/MissingETOptionalFiltersRun2#UL_data
 
     - 2022: https://twiki.cern.ch/twiki/bin/viewauth/CMS/MissingETOptionalFiltersRun2#Run_3_2022_and_2023_data_and_MC
-    
+
     - 2023: https://twiki.cern.ch/twiki/bin/viewauth/CMS/MissingETOptionalFiltersRun2#Run_3_2022_and_2023_data_and_MC
 
     :todo add 2022 and 2023:
@@ -137,7 +137,7 @@ def add_noise_filters_config(configuration: Configuration):
                         "Flag_hfNoisyHitsFilter",
                         "Flag_eeBadScFilter",
                         "Flag_ecalBadCalibFilter",  # marked as "yellow" in TWiki
-                    ],                   
+                    ],
                 },
             ),
         },
@@ -355,7 +355,7 @@ def add_electron_config(configuration: Configuration):
             "ele_sf_file": EraModifier(
                 {
                     _era: f"data/jsonpog-integration/POG/EGM/{_campaign}/electron.json.gz"
-                    for _era, _campaign in CORRECTIONLIB_CAMPAIGNS.items() 
+                    for _era, _campaign in CORRECTIONLIB_CAMPAIGNS.items()
                 }
             ),
             "ele_sf_cset_name": EraModifier(
@@ -444,7 +444,7 @@ def add_muon_config(configuration: Configuration):
     | ``PFIsoTight``         | 0.15 | use for tight muons |
     | ``PFIsoVeryTight``     | 0.10 |                     |
     | ``PFIsoVeryVeryTight`` | 0.05 |                     |
-    
+
     Correction factors are obtained from the
     [nanoaod-tools/jsonpog-integration](gitlab.cern.ch/nanoaod-tools/jsonpog-integration) repository.
 
@@ -512,7 +512,7 @@ def add_muon_config(configuration: Configuration):
             "muon_sf_file": EraModifier(
                 {
                     _era: f"data/jsonpog-integration/POG/MUO/{_campaign}/muon_Z.json.gz"
-                    for _era, _campaign in CORRECTIONLIB_CAMPAIGNS.items() 
+                    for _era, _campaign in CORRECTIONLIB_CAMPAIGNS.items()
                 }
             ),
             "muon_reco_sf_name": EraModifier(
@@ -607,7 +607,7 @@ def add_hadronic_tau_config(configuration: Configuration):
     :param muon_id_loose_corrlib: name of the muon ID for the loose muon collection in the MUO correctionlib file; default: `""`.
     :type muon_id_loose: str
     """
-    
+
     # define the tau identification algorithm to use
     tau_id = EraModifier(
         {
@@ -630,9 +630,9 @@ def add_hadronic_tau_config(configuration: Configuration):
             "tight_tau_max_abs_eta": 2.5,
             "tight_tau_max_abs_dz": 0.2,
             "tight_tau_decay_modes": "0, 1, 10, 11",  # needs to be converted in a C++ vector in the code, so set it as string here
-            "tight_tau_id_vs_jet_wp": 1,              # VVVLoose working point, looser taus needed for tau misidentification estimate 
-            "tight_tau_id_vs_electron_wp": 1,         # VVVLoose working point, looser taus needed for tau misidentification estimate 
-            "tight_tau_id_vs_muon_wp": 1,             # VLoose working point, looser taus needed for tau misidentification estimate 
+            "tight_tau_id_vs_jet_wp": 1,              # VVVLoose working point, looser taus needed for tau misidentification estimate
+            "tight_tau_id_vs_electron_wp": 1,         # VVVLoose working point, looser taus needed for tau misidentification estimate
+            "tight_tau_id_vs_muon_wp": 1,             # VLoose working point, looser taus needed for tau misidentification estimate
         },
     )
     # hadronic tau selection in fullhadronic channels
@@ -643,9 +643,9 @@ def add_hadronic_tau_config(configuration: Configuration):
             "tight_tau_max_abs_eta": 2.5,
             "tight_tau_max_abs_dz": 0.2,
             "tight_tau_decay_modes": "0, 1, 10, 11",  # needs to be converted in a C++ vector in the code, so set it as string here
-            "tight_tau_id_vs_jet_wp": 1,              # VVVLoose working point, looser taus needed for tau misidentification estimate 
-            "tight_tau_id_vs_electron_wp": 1,         # VVVLoose working point, looser taus needed for tau misidentification estimate 
-            "tight_tau_id_vs_muon_wp": 1,             # VLoose working point, looser taus needed for tau misidentification estimate 
+            "tight_tau_id_vs_jet_wp": 1,              # VVVLoose working point, looser taus needed for tau misidentification estimate
+            "tight_tau_id_vs_electron_wp": 1,         # VVVLoose working point, looser taus needed for tau misidentification estimate
+            "tight_tau_id_vs_muon_wp": 1,             # VLoose working point, looser taus needed for tau misidentification estimate
         },
     )
 
@@ -1275,7 +1275,7 @@ def add_ak8jet_config(configuration: Configuration):
             "ak8jet_reapplyJES": False,
             "ak8jet_jes_sources": '{""}',
             "ak8jet_jes_shift": 0,
-            "ak8jet_jer_master_seed": 24,
+            "ak8jet_jer_master_seed": 43,
             "ak8jet_jer_shift": '"nom"',  # or '"up"', '"down"'
             "ak8jet_jec_file": EraModifier(  # TODO use AK4 file for fatjets because it either was is just copied and the fatjet file has no merged uncertainty scheme?
                 {
@@ -1324,7 +1324,7 @@ def add_ak8jet_config(configuration: Configuration):
 def add_bjet_config(configuration: Configuration):
     """
     B jet identification and corrections.
- 
+
     The documentation of the `correctionlib` files for the b jet identification corrections can be found here:
 
     | Era          | Documentation                                                                                           |
@@ -1551,7 +1551,7 @@ def build_config(
     configuration.add_config_parameters(
         "global",
         {
-            "ele_es_master_seed": 42,  # TODO choose value different from jet smearing seed
+            "ele_es_master_seed": 44,
             "ele_es_era": EraModifier(
                 {
                     "2016preVFP": "2016preVFP",
@@ -1958,7 +1958,7 @@ def build_config(
             [
                 pairquantities_bbpair.DiBjetPairQuantitiesRun3,
                 pairquantities_bbpair.DiBjetPairQuantitiesRun3_boosted,
-                
+
                 # TODO apply "data" correction (renaming) also on MC as scale factors are incorrect
                 # taus.TauEnergyCorrectionMCRun3,
                 taus.TauEnergyCorrection_data,
@@ -2493,7 +2493,7 @@ def build_config(
             samples=["nmssm_Ybb", "nmssm_Ytautau"],
         ),
     )
- 
+
     configuration.add_modification_rule(
         HAD_TAU_SCOPES,
         RemoveProducer(
@@ -2858,7 +2858,7 @@ def build_config(
                 q.pNet_Xbb_weight_boosted,
             ],
         )
- 
+
     if sample in ["dyjets", "dyjets_madgraph", "dyjets_powheg", "dyjets_amcatnlo"]:
         configuration.add_outputs(
             HAD_TAU_SCOPES,
@@ -4426,7 +4426,7 @@ def build_config(
             scalefactors.Tau_2_VsEleTauID_SF_Run3,
             sample,
         )
-    
+
     # include boosted tau variations only for Run 2 as correction files do not exist for Run 3
     if era in ERAS_RUN2:
         add_boostedtauVariations(configuration, sample)
