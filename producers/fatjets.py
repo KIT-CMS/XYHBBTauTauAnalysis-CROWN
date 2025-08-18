@@ -16,17 +16,6 @@ from ..constants import GLOBAL_SCOPES
 # JET ENERGY SCALE AND RESOLUTION CORRECTIONS
 #
 
-FatJetPtSmearingSeed = Producer(
-    name="FatJetPtSmearingSeed",
-    call="event::quantity::GenerateSeed({df}, {output}, {input}, {ak8jet_jer_master_seed})",
-    input=[
-        nanoAOD.luminosityBlock,
-        nanoAOD.run,
-        nanoAOD.event,
-    ],
-    output=[],
-    scopes=["global"],
-)
 
 # create jet energy correction producers for AK8 jets (Run 2)
 FatJetEnergyCorrection_data_Run2, FatJetEnergyCorrectionRun2, RenameFatJetsDataRun2 = jerc_producer_factory(
@@ -51,7 +40,6 @@ FatJetEnergyCorrection_data_Run2, FatJetEnergyCorrectionRun2, RenameFatJetsDataR
     producer_prefix="FatJet",
     config_parameter_prefix="ak8jet",
     lhc_run=2,
-    subproducers=[FatJetPtSmearingSeed],
 )
 
 
@@ -79,7 +67,6 @@ FatJetEnergyCorrection_data, FatJetEnergyCorrection, RenameFatJetsData = jerc_pr
     producer_prefix="FatJet",
     config_parameter_prefix="ak8jet",
     lhc_run=3,
-    subproducers=[FatJetPtSmearingSeed],
 )
 
 
@@ -101,7 +88,7 @@ GoodFatJetsWithoutPUID = Producer(
     scopes=GLOBAL_SCOPES,
 )
 
-# use the selection with pileup ID as default 
+# use the selection with pileup ID as default
 GoodFatJets = GoodFatJetsWithoutPUID
 
 
@@ -481,7 +468,7 @@ FindXbbFatjet = Producer(
     call="fatjet::FindXbbFatjet({df}, {output}, {input})",
     input=[
         q.good_fatjet_collection,
-        nanoAOD.FatJet_particleNet_XbbVsQCD, 
+        nanoAOD.FatJet_particleNet_XbbVsQCD,
         nanoAOD.FatJet_particleNet_QCD,
     ],
     output=[q.Xbb_fatjet],
@@ -604,7 +591,7 @@ FindXbbFatjet_boosted = Producer(
     call="fatjet::FindXbbFatjet({df}, {output}, {input})",
     input=[
         q.good_fatjet_collection_boosted,
-        nanoAOD.FatJet_particleNet_XbbVsQCD, 
+        nanoAOD.FatJet_particleNet_XbbVsQCD,
         nanoAOD.FatJet_particleNet_QCD,
     ],
     output=[q.Xbb_fatjet_boosted],

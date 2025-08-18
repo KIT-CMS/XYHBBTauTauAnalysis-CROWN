@@ -10,7 +10,6 @@ def jerc_producer_factory(
     producer_prefix: str = "Jet",
     config_parameter_prefix: str = "jet",
     lhc_run: int = 2,
-    subproducers: list[Producer] = [],
 ) -> Tuple[ProducerGroup, ProducerGroup, ProducerGroup]:
     """
     Factory function to create producers needed for jet energy corrections.
@@ -19,14 +18,14 @@ def jerc_producer_factory(
     ----------
 
     input: Dict[str, Quantity]
-    
+
         A dictionary with the input quantities.
-        
+
         The `input` dictionary must have the following keys with the values being the corresponding :py:class:`~code_generation.quantity.Quantity` objects:
-        
+
         -  `jet_pt`: The transverse momentum of the jets with the nominal JEC applied in the `NanoAOD` production.
         -  `jet_eta`: The pseudorapidity of the jets.
-        -  `jet_phi`: The azimuthal angle of the jets. 
+        -  `jet_phi`: The azimuthal angle of the jets.
         -  `jet_mass`: The mass of the jets with the nominal JEC applied in the `NanoAOD` production.
         -  `jet_area`: The effective jet area.
         -  `jet_raw_factor`: The factor to get the uncorrected jet energy from the jet energy with the nominal JEC applied in the `NanoAOD` production.
@@ -37,7 +36,7 @@ def jerc_producer_factory(
         -  `rho`: The average energy density in the event.
 
     output: Dict[str, Quantity]:
-            
+
         A dictionary with the output quantities that will be produced by the producers.
 
         The `output` dictionary must have the following keys with the values being corresponding :py:class:`~code_generation.quantity.Quantity` objects:
@@ -46,7 +45,7 @@ def jerc_producer_factory(
         - `jet_mass_corrected`: The corrected mass of the jets.
 
     scopes: List[str]:
-    
+
         List of analysis scopes, in which the JEC and JER are processed.
 
     producer_prefix: str, default: "Jet"
@@ -58,19 +57,20 @@ def jerc_producer_factory(
         Prefix used for the configuration parameter keys, to which producers in this function refer. The values of these parameters must be specified in the main configuration of the analysis.
 
         The following configuration parameters must be defined in order to use the producers in this function:
-        
+
         - `{config_parameter_prefix}_jec_file`: The path to the file containing the JEC/JER corrections (in `data/` or `payloads/`).
         - `{config_parameter_prefix}_jes_tag`: The tag in the correction file that should be used for JEC of the simulation.
         - `{config_parameter_prefix}_jes_tag_data`: The tag in the correction file that should be used for JEC of the data.
-        - `{config_parameter_prefix}_jer_tag`: The tag in the correction file that should be used for JER of the simulation. 
+        - `{config_parameter_prefix}_jer_tag`: The tag in the correction file that should be used for JER of the simulation.
         - `{config_parameter_prefix}_jec_algo`: The pileup mitigation algorithm that has been used for the jets (e.g. `AK4chs`, `AK8PFPuppi`).
         - `{config_parameter_prefix}_reapplyJES`: Flag whether to reapply the nominal JEC. The nominal JEC has already been performed in the `NanoAOD` production.
         - `{config_parameter_prefix}_jes_sources`: Uncertainty sources to be considered for a JEC/JER shift.
         - `{config_parameter_prefix}_jes_shift`: Name of the systematic shift that should be applied to the JEC.
         - `{config_parameter_prefix}_jer_shift`: Name of the systematic shift that should be applied to the JER.
+        - `{config_parameter_prefix}_jer_master_seed`: Master seed for generating the seeds for JER smearing.
 
     lhc_run: int, default: 2
-    
+
         LHC run number for which the JEC/JER corrections should be applied. Must be either `2` or `3`.
 
     Returns
@@ -79,7 +79,7 @@ def jerc_producer_factory(
     Tuple[ProducerGroup, ProducerGroup, ProducerGroup]:
 
         A tuple containing three :py:class:`~code_generation.producer.ProducerGroup` objects with the following names:
-        
+
         - `{producer_prefix}EnergyCorrectionData`: The first element is the producer group for the jet energy corrections on data.
         - `{producer_prefix}EnergyCorrectionMC`: The second element is the producer group for the jet energy corrections on simulation.
         - `{producer_prefix}EnergyCorrectionEmb`: The third element is the producer group for the jet energy corrections on embedded events.
@@ -127,6 +127,19 @@ def jerc_producer_factory(
         scopes=scopes,
     )
 
+    # initialize seed for jet energy resolution smearing
+    jer_smearing_seed = Producer(
+        name=f"{producer_prefix}SmearingSeed",
+        call=f"event::quantity::GenerateSeed({{df}}, {{output}}, {{input}}, {{{config_parameter_prefix}_jer_master_seed}})",
+        input=[
+            nanoAOD.luminosityBlock,
+            nanoAOD.run,
+            nanoAOD.event,
+        ],
+        output=[],
+        scopes=["global"],
+    )
+
     # jet pt correction for MC jets
     jet_pt_correction_mc = ProducerGroup(
         name=f"{producer_prefix}PtCorrectionMCRun{lhc_run}",
@@ -161,7 +174,7 @@ def jerc_producer_factory(
         ],
         output=[jet_pt_corrected],
         scopes=scopes,
-        subproducers=subproducers,
+        subproducers=jer_smearing_seed,
     )
 
     # jet pt correction for jets in embedded events (just rename column)
