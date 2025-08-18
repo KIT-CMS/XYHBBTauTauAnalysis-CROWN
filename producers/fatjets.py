@@ -79,6 +79,7 @@ FatJetEnergyCorrection_data, FatJetEnergyCorrection, RenameFatJetsData = jerc_pr
     producer_prefix="FatJet",
     config_parameter_prefix="ak8jet",
     lhc_run=3,
+    subproducers=[FatJetPtSmearingSeed],
 )
 
 

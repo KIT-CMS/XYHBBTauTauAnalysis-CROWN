@@ -75,6 +75,7 @@ JetEnergyCorrection_data, JetEnergyCorrection, RenameJetsData = jerc_producer_fa
     producer_prefix="Jet",
     config_parameter_prefix="ak4jet",
     lhc_run=3,  # TODO also add producer for Run 2
+    subproducers=[JetPtSmearingSeed],
 )
 
 
