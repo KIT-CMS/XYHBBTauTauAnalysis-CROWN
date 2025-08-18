@@ -1161,6 +1161,7 @@ def add_ak4jet_config(configuration: Configuration):
             "ak4jet_reapplyJES": False,
             "ak4jet_jes_sources": '{""}',
             "ak4jet_jes_shift": 0,
+            "ak4jet_jer_master_seed": 42,
             "ak4jet_jer_shift": '"nom"',  # or '"up"', '"down"'
             "ak4jet_jec_file": EraModifier(
                 {
@@ -1274,6 +1275,7 @@ def add_ak8jet_config(configuration: Configuration):
             "ak8jet_reapplyJES": False,
             "ak8jet_jes_sources": '{""}',
             "ak8jet_jes_shift": 0,
+            "ak8jet_jer_master_seed": 24,
             "ak8jet_jer_shift": '"nom"',  # or '"up"', '"down"'
             "ak8jet_jec_file": EraModifier(  # TODO use AK4 file for fatjets because it either was is just copied and the fatjet file has no merged uncertainty scheme?
                 {

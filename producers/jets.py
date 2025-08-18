@@ -14,6 +14,18 @@ from ..constants import GLOBAL_SCOPES, SCOPES
 # JET ENERGY SCALE AND RESOLUTION CORRECTIONS
 #
 
+JetPtSmearingSeed = Producer(
+    name="JetPtSmearingSeed",
+    call="event::quantity::GenerateSeed({df}, {output}, {input}, {ak4jet_jer_master_seed})",
+    input=[
+        nanoAOD.luminosityBlock,
+        nanoAOD.run,
+        nanoAOD.event,
+    ],
+    output=[],
+    scopes=["global"],
+)
+
 # create jet energy correction producers for AK4 jets for Run 2
 JetEnergyCorrection_data_Run2, JetEnergyCorrectionRun2, RenameJetsDataRun2 = jerc_producer_factory(
     input={
@@ -37,6 +49,7 @@ JetEnergyCorrection_data_Run2, JetEnergyCorrectionRun2, RenameJetsDataRun2 = jer
     producer_prefix="Jet",
     config_parameter_prefix="ak4jet",
     lhc_run=2,
+    subproducers=[JetPtSmearingSeed],
 )
 
 # create jet energy correction producers for AK4 jets

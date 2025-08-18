@@ -10,6 +10,7 @@ def jerc_producer_factory(
     producer_prefix: str = "Jet",
     config_parameter_prefix: str = "jet",
     lhc_run: int = 2,
+    subproducers: list[Producer] = [],
 ) -> Tuple[ProducerGroup, ProducerGroup, ProducerGroup]:
     """
     Factory function to create producers needed for jet energy corrections.
@@ -127,7 +128,7 @@ def jerc_producer_factory(
     )
 
     # jet pt correction for MC jets
-    jet_pt_correction_mc = Producer(
+    jet_pt_correction_mc = ProducerGroup(
         name=f"{producer_prefix}PtCorrectionMCRun{lhc_run}",
         call=(
             "physicsobject::jet::PtCorrectionMC("
@@ -143,7 +144,6 @@ def jerc_producer_factory(
                 f"{{{config_parameter_prefix}_reapplyJES}}, "
                 f"{{{config_parameter_prefix}_jes_shift}}, "
                 f"{{{config_parameter_prefix}_jer_shift}}, "
-                "42, "
                 f"{lhc_run}"
             ")"
         ),
@@ -161,6 +161,7 @@ def jerc_producer_factory(
         ],
         output=[jet_pt_corrected],
         scopes=scopes,
+        subproducers=subproducers,
     )
 
     # jet pt correction for jets in embedded events (just rename column)
