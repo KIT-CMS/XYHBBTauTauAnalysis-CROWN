@@ -37,6 +37,11 @@ main () {
     declare -a samples_list
     IFS="," read -ra samples_list <<< "${samples}"
 
+    # set scopes if 'all' is specified
+    if [[ "${channels}" == "all" ]]; then
+        channels="et,mt,tt"
+    fi
+
     # build associative array of test files for different sample types
     declare -A test_files_list
     test_files_list[ttbar]="root://xrootd-cms.infn.it///store/mc/Run3Summer22NanoAODv12/TTto2L2Nu_TuneCP5_13p6TeV_powheg-pythia8/NANOAODSIM/130X_mcRun3_2022_realistic_v5-v2/2520000/66b834d6-61f7-4109-b5ae-54a150d4814b.root"
