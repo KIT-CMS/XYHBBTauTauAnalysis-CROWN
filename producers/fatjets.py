@@ -31,6 +31,9 @@ FatJetEnergyCorrection_data_Run2, FatJetEnergyCorrectionRun2, RenameFatJetsDataR
         "gen_jet_eta": nanoAOD.GenJetAK8_eta,
         "gen_jet_phi": nanoAOD.GenJetAK8_phi,
         "rho": nanoAOD.Rho_fixedGridRhoFastjetAll,
+        "luminosity_block": nanoAOD.luminosityBlock,
+        "run": nanoAOD.run,
+        "event": nanoAOD.event,
     },
     output={
         "jet_pt_corrected": q.FatJet_pt_corrected,
@@ -58,6 +61,9 @@ FatJetEnergyCorrection_data, FatJetEnergyCorrection, RenameFatJetsData = jerc_pr
         "gen_jet_eta": nanoAOD.GenJetAK8_eta,
         "gen_jet_phi": nanoAOD.GenJetAK8_phi,
         "rho": nanoAOD.Rho_fixedGridRhoFastjetAll,
+        "luminosity_block": nanoAOD.luminosityBlock,
+        "run": nanoAOD.run,
+        "event": nanoAOD.event,
     },
     output={
         "jet_pt_corrected": q.FatJet_pt_corrected,

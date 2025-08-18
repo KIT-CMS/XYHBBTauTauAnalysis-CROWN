@@ -34,6 +34,9 @@ def jerc_producer_factory(
         -  `gen_jet_eta`: The pseudorapidity of particle-level jets.
         -  `gen_jet_phi`: The azimuthal angle of particle-level jet.
         -  `rho`: The average energy density in the event.
+        -  `luminosity_block`: The luminosity block number.
+        -  `run`: The run number.
+        -  `event`: The event number.
 
     output: Dict[str, Quantity]:
 
@@ -97,6 +100,9 @@ def jerc_producer_factory(
     gen_jet_eta = input["gen_jet_eta"]
     gen_jet_phi = input["gen_jet_phi"]
     rho = input["rho"]
+    luminosity_block = input["luminosity_block"]
+    run = input["run"]
+    event = input["event"]
 
     # get outputs
     jet_pt_corrected = output["jet_pt_corrected"]
@@ -132,9 +138,9 @@ def jerc_producer_factory(
         name=f"{producer_prefix}SmearingSeed",
         call=f"event::quantity::GenerateSeed({{df}}, {{output}}, {{input}}, {{{config_parameter_prefix}_jer_master_seed}})",
         input=[
-            nanoAOD.luminosityBlock,
-            nanoAOD.run,
-            nanoAOD.event,
+            luminosity_block,
+            run,
+            event,
         ],
         output=[],
         scopes=["global"],
@@ -174,7 +180,7 @@ def jerc_producer_factory(
         ],
         output=[jet_pt_corrected],
         scopes=scopes,
-        subproducers=jer_smearing_seed,
+        subproducers=[jer_smearing_seed],
     )
 
     # jet pt correction for jets in embedded events (just rename column)
