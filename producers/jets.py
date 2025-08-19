@@ -118,7 +118,7 @@ GoodJetsWithPUID = Producer(
 
 # jet selection not applying the pileup ID (for PUPPI jets)
 GoodJetsWithoutPUID = Producer(
-    name="GoodJetsWithPUID",
+    name="GoodJetsWithoutPUID",
     call="xyh::object_selection::jet({df}, {output}, {input}, {ak4jet_min_pt}, {ak4jet_max_abs_eta}, {ak4jet_id_wp})",
     input=[
         q.Jet_pt_corrected,
@@ -193,7 +193,7 @@ GoodBJetsWithPUID = ProducerGroup(
 
 # combined jet-bjet mask (OR)
 GoodJetsCombinedWithoutPUID = Producer(
-    name="GoodJetsWithoutPUID",
+    name="GoodJetsCombinedWithoutPUID",
     call='physicsobject::CombineMasks({df}, {output}, {input}, "any_of")',
     input=[q.good_jets_mask, q.good_bjets_mask],
     output=[q.good_jets_combined_mask],
