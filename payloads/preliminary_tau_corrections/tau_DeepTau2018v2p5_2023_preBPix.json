@@ -1,0 +1,2595 @@
+{
+  "schema_version": 2,
+  "description": "Correction for simulated tau object, as recommended by the TauPOG for 2023_preBPix; tau identification efficiency and fake rate scale factors (DeepTau2018v2p5VSe, DeepTau2018v2p5VSjet, DeepTau2018v2p5VSmu), tau energy scale, and tau trigger scale factors. For more info, please visit https://twiki.cern.ch/twiki/bin/viewauth/CMS/TauIDRecommendationForRun2 (This file was created on 14/08/2025)",
+  "corrections": [
+    { "name": "DeepTau2018v2p5VSe",
+      "description": "e -> tau_h fake rate SFs for DeepTau2018v2p5",
+      "version": 1,
+      "inputs": [
+        { "name": "eta",
+          "type": "real",
+          "description": "Reconstructed tau eta"
+        },
+        { "name": "dm",
+          "type": "int",
+          "description": "Reconstructed tau decay mode: 0, 1, 10, 11"
+        },
+        { "name": "genmatch",
+          "type": "int",
+          "description": "genmatch: 0 or 6 = unmatched or jet, 1 or 3 = electron, 2 or 4 = muon, 5 = real tau"
+        },
+        { "name": "wp",
+          "type": "string",
+          "description": "DeepTau2018v2p5 working point: VVLoose-Tight"
+        },
+        { "name": "syst",
+          "type": "string",
+          "description": "Systematic variations: 'nom', 'up', 'down'"
+        }
+      ],
+      "output": {
+        "name": "sf",
+        "type": "real",
+        "description": "DeepTau2018v2p5 scale factor"
+      },
+      "data": {
+        "nodetype": "transform",
+        "input": "genmatch",
+        "rule": {
+          "nodetype": "category",
+          "input": "genmatch",
+          "content": [
+            { "key": 0, "value": 0.0 },
+            { "key": 1, "value": 1.0 },
+            { "key": 2, "value": 0.0 },
+            { "key": 3, "value": 1.0 },
+            { "key": 4, "value": 0.0 },
+            { "key": 5, "value": 0.0 },
+            { "key": 6, "value": 0.0 }
+          ]
+        },
+        "content": {
+          "nodetype": "category",
+          "input": "genmatch",
+          "content": [
+            { "key": 0, "value": 1.0 },
+            { "key": 1,
+              "value": {
+                "nodetype": "transform",
+                "input": "eta",
+                "rule": {
+                  "nodetype": "formula",
+                  "expression": "abs(x)",
+                  "parser": "TFormula",
+                  "variables": [ "eta" ]
+                },
+                "content": {
+                  "nodetype": "category",
+                  "input": "dm",
+                  "content": [
+                    { "key": 0,
+                      "value": {
+                        "nodetype": "category",
+                        "input": "wp",
+                        "content": [
+                          { "key": "VVLoose",
+                            "value": {
+                              "nodetype": "binning",
+                              "input": "eta",
+                              "edges": [ 0.0, 1.46, 1.56, 2.5 ],
+                              "content": [
+                                { "nodetype": "category",
+                                  "input": "syst",
+                                  "content": [
+                                    { "key": "nom", "value": 0.90165 },
+                                    { "key": "up", "value": 1.08005 },
+                                    { "key": "down", "value": 0.72326 }
+                                  ]
+                                },
+                                { "nodetype": "category",
+                                  "input": "syst",
+                                  "content": [
+                                    { "key": "nom", "value": 1.0 },
+                                    { "key": "up", "value": 2.0 },
+                                    { "key": "down", "value": 0.0 }
+                                  ]
+                                },
+                                { "nodetype": "category",
+                                  "input": "syst",
+                                  "content": [
+                                    { "key": "nom", "value": 1.16147 },
+                                    { "key": "up", "value": 1.28501 },
+                                    { "key": "down", "value": 1.03793 }
+                                  ]
+                                }
+                              ],
+                              "flow": "clamp"
+                            }
+                          },
+                          { "key": "Tight",
+                            "value": {
+                              "nodetype": "binning",
+                              "input": "eta",
+                              "edges": [ 0.0, 1.46, 1.56, 2.5 ],
+                              "content": [
+                                { "nodetype": "category",
+                                  "input": "syst",
+                                  "content": [
+                                    { "key": "nom", "value": 1.10958 },
+                                    { "key": "up", "value": 1.25796 },
+                                    { "key": "down", "value": 0.9612 }
+                                  ]
+                                },
+                                { "nodetype": "category",
+                                  "input": "syst",
+                                  "content": [
+                                    { "key": "nom", "value": 1.0 },
+                                    { "key": "up", "value": 2.0 },
+                                    { "key": "down", "value": 0.0 }
+                                  ]
+                                },
+                                { "nodetype": "category",
+                                  "input": "syst",
+                                  "content": [
+                                    { "key": "nom", "value": 2.17043 },
+                                    { "key": "up", "value": 2.87104 },
+                                    { "key": "down", "value": 1.46982 }
+                                  ]
+                                }
+                              ],
+                              "flow": "clamp"
+                            }
+                          }
+                        ]
+                      }
+                    },
+                    { "key": 1,
+                      "value": {
+                        "nodetype": "category",
+                        "input": "wp",
+                        "content": [
+                          { "key": "VVLoose",
+                            "value": {
+                              "nodetype": "binning",
+                              "input": "eta",
+                              "edges": [ 0.0, 1.46, 1.56, 2.5 ],
+                              "content": [
+                                { "nodetype": "category",
+                                  "input": "syst",
+                                  "content": [
+                                    { "key": "nom", "value": 1.3907 },
+                                    { "key": "up", "value": 1.43678 },
+                                    { "key": "down", "value": 1.34463 }
+                                  ]
+                                },
+                                { "nodetype": "category",
+                                  "input": "syst",
+                                  "content": [
+                                    { "key": "nom", "value": 1.0 },
+                                    { "key": "up", "value": 2.0 },
+                                    { "key": "down", "value": 0.0 }
+                                  ]
+                                },
+                                { "nodetype": "category",
+                                  "input": "syst",
+                                  "content": [
+                                    { "key": "nom", "value": 0.93264 },
+                                    { "key": "up", "value": 1.05772 },
+                                    { "key": "down", "value": 0.80756 }
+                                  ]
+                                }
+                              ],
+                              "flow": "clamp"
+                            }
+                          },
+                          { "key": "Tight",
+                            "value": {
+                              "nodetype": "binning",
+                              "input": "eta",
+                              "edges": [ 0.0, 1.46, 1.56, 2.5 ],
+                              "content": [
+                                { "nodetype": "category",
+                                  "input": "syst",
+                                  "content": [
+                                    { "key": "nom", "value": 1.39713 },
+                                    { "key": "up", "value": 1.50133 },
+                                    { "key": "down", "value": 1.29293 }
+                                  ]
+                                },
+                                { "nodetype": "category",
+                                  "input": "syst",
+                                  "content": [
+                                    { "key": "nom", "value": 1.0 },
+                                    { "key": "up", "value": 2.0 },
+                                    { "key": "down", "value": 0.0 }
+                                  ]
+                                },
+                                { "nodetype": "category",
+                                  "input": "syst",
+                                  "content": [
+                                    { "key": "nom", "value": 0.99779 },
+                                    { "key": "up", "value": 1.32446 },
+                                    { "key": "down", "value": 0.67111 }
+                                  ]
+                                }
+                              ],
+                              "flow": "clamp"
+                            }
+                          }
+                        ]
+                      }
+                    },
+                    { "key": 10,
+                      "value": {
+                        "nodetype": "category",
+                        "input": "wp",
+                        "content": [
+                          { "key": "VVLoose",
+                            "value": {
+                              "nodetype": "binning",
+                              "input": "eta",
+                              "edges": [ 0.0, 1.46, 1.56, 2.5 ],
+                              "content": [
+                                { "nodetype": "category",
+                                  "input": "syst",
+                                  "content": [
+                                    { "key": "nom", "value": 0.70259 },
+                                    { "key": "up", "value": 0.93443 },
+                                    { "key": "down", "value": 0.47074 }
+                                  ]
+                                },
+                                { "nodetype": "category",
+                                  "input": "syst",
+                                  "content": [
+                                    { "key": "nom", "value": 1.0 },
+                                    { "key": "up", "value": 2.0 },
+                                    { "key": "down", "value": 0.0 }
+                                  ]
+                                },
+                                { "nodetype": "category",
+                                  "input": "syst",
+                                  "content": [
+                                    { "key": "nom", "value": 0.91732 },
+                                    { "key": "up", "value": 1.13698 },
+                                    { "key": "down", "value": 0.69767 }
+                                  ]
+                                }
+                              ],
+                              "flow": "clamp"
+                            }
+                          },
+                          { "key": "Tight",
+                            "value": {
+                              "nodetype": "binning",
+                              "input": "eta",
+                              "edges": [ 0.0, 1.46, 1.56, 2.5 ],
+                              "content": [
+                                { "nodetype": "category",
+                                  "input": "syst",
+                                  "content": [
+                                    { "key": "nom", "value": 0.70259 },
+                                    { "key": "up", "value": 1.16627 },
+                                    { "key": "down", "value": 0.2389 }
+                                  ]
+                                },
+                                { "nodetype": "category",
+                                  "input": "syst",
+                                  "content": [
+                                    { "key": "nom", "value": 1.0 },
+                                    { "key": "up", "value": 2.0 },
+                                    { "key": "down", "value": 0.0 }
+                                  ]
+                                },
+                                { "nodetype": "category",
+                                  "input": "syst",
+                                  "content": [
+                                    { "key": "nom", "value": 0.91732 },
+                                    { "key": "up", "value": 1.35663 },
+                                    { "key": "down", "value": 0.47802 }
+                                  ]
+                                }
+                              ],
+                              "flow": "clamp"
+                            }
+                          }
+                        ]
+                      }
+                    },
+                    { "key": 11,
+                      "value": {
+                        "nodetype": "category",
+                        "input": "wp",
+                        "content": [
+                          { "key": "VVLoose",
+                            "value": {
+                              "nodetype": "binning",
+                              "input": "eta",
+                              "edges": [ 0.0, 1.46, 1.56, 2.5 ],
+                              "content": [
+                                { "nodetype": "category",
+                                  "input": "syst",
+                                  "content": [
+                                    { "key": "nom", "value": 1.03979 },
+                                    { "key": "up", "value": 1.29728 },
+                                    { "key": "down", "value": 0.7823 }
+                                  ]
+                                },
+                                { "nodetype": "category",
+                                  "input": "syst",
+                                  "content": [
+                                    { "key": "nom", "value": 1.0 },
+                                    { "key": "up", "value": 2.0 },
+                                    { "key": "down", "value": 0.0 }
+                                  ]
+                                },
+                                { "nodetype": "category",
+                                  "input": "syst",
+                                  "content": [
+                                    { "key": "nom", "value": 0.90896 },
+                                    { "key": "up", "value": 1.10176 },
+                                    { "key": "down", "value": 0.71617 }
+                                  ]
+                                }
+                              ],
+                              "flow": "clamp"
+                            }
+                          },
+                          { "key": "Tight",
+                            "value": {
+                              "nodetype": "binning",
+                              "input": "eta",
+                              "edges": [ 0.0, 1.46, 1.56, 2.5 ],
+                              "content": [
+                                { "nodetype": "category",
+                                  "input": "syst",
+                                  "content": [
+                                    { "key": "nom", "value": 1.03979 },
+                                    { "key": "up", "value": 1.55476 },
+                                    { "key": "down", "value": 0.52481 }
+                                  ]
+                                },
+                                { "nodetype": "category",
+                                  "input": "syst",
+                                  "content": [
+                                    { "key": "nom", "value": 1.0 },
+                                    { "key": "up", "value": 2.0 },
+                                    { "key": "down", "value": 0.0 }
+                                  ]
+                                },
+                                { "nodetype": "category",
+                                  "input": "syst",
+                                  "content": [
+                                    { "key": "nom", "value": 0.90896 },
+                                    { "key": "up", "value": 1.29455 },
+                                    { "key": "down", "value": 0.52337 }
+                                  ]
+                                }
+                              ],
+                              "flow": "clamp"
+                            }
+                          }
+                        ]
+                      }
+                    }
+                  ]
+                }
+              }
+            }
+          ]
+        }
+      }
+    },
+    { "name": "DeepTau2018v2p5VSmu",
+      "description": "mu -> tau_h fake rate SFs for DeepTau2018v2p5",
+      "version": 1,
+      "inputs": [
+        { "name": "eta",
+          "type": "real",
+          "description": "Reconstructed tau eta"
+        },
+        { "name": "genmatch",
+          "type": "int",
+          "description": "genmatch: 0 or 6 = unmatched or jet, 1 or 3 = electron, 2 or 4 = muon, 5 = real tau"
+        },
+        { "name": "wp",
+          "type": "string",
+          "description": "DeepTau2018v2p5 working point: VLoose-Tight"
+        },
+        { "name": "syst",
+          "type": "string",
+          "description": "Systematic variations: 'nom', 'up', 'down'"
+        }
+      ],
+      "output": {
+        "name": "sf",
+        "type": "real",
+        "description": "DeepTau2018v2p5 scale factor"
+      },
+      "data": {
+        "nodetype": "transform",
+        "input": "genmatch",
+        "rule": {
+          "nodetype": "category",
+          "input": "genmatch",
+          "content": [
+            { "key": 0, "value": 0.0 },
+            { "key": 1, "value": 0.0 },
+            { "key": 2, "value": 2.0 },
+            { "key": 3, "value": 0.0 },
+            { "key": 4, "value": 2.0 },
+            { "key": 5, "value": 0.0 },
+            { "key": 6, "value": 0.0 }
+          ]
+        },
+        "content": {
+          "nodetype": "category",
+          "input": "genmatch",
+          "content": [
+            { "key": 0, "value": 1.0 },
+            { "key": 2,
+              "value": {
+                "nodetype": "transform",
+                "input": "eta",
+                "rule": {
+                  "nodetype": "formula",
+                  "expression": "abs(x)",
+                  "parser": "TFormula",
+                  "variables": [ "eta" ]
+                },
+                "content": {
+                  "nodetype": "category",
+                  "input": "wp",
+                  "content": [
+                    { "key": "VLoose",
+                      "value": {
+                        "nodetype": "binning",
+                        "input": "eta",
+                        "edges": [ 0.0, 0.4, 0.8, 1.2, 1.7, 2.4 ],
+                        "content": [
+                          { "nodetype": "category",
+                            "input": "syst",
+                            "content": [
+                              { "key": "nom", "value": 1.17837 },
+                              { "key": "up", "value": 1.27427 },
+                              { "key": "down", "value": 1.08247 }
+                            ]
+                          },
+                          { "nodetype": "category",
+                            "input": "syst",
+                            "content": [
+                              { "key": "nom", "value": 1.02684 },
+                              { "key": "up", "value": 1.16471 },
+                              { "key": "down", "value": 0.88897 }
+                            ]
+                          },
+                          { "nodetype": "category",
+                            "input": "syst",
+                            "content": [
+                              { "key": "nom", "value": 1.2286 },
+                              { "key": "up", "value": 1.3316 },
+                              { "key": "down", "value": 1.12559 }
+                            ]
+                          },
+                          { "nodetype": "category",
+                            "input": "syst",
+                            "content": [
+                              { "key": "nom", "value": 1.35744 },
+                              { "key": "up", "value": 1.50517 },
+                              { "key": "down", "value": 1.20971 }
+                            ]
+                          },
+                          { "nodetype": "category",
+                            "input": "syst",
+                            "content": [
+                              { "key": "nom", "value": 2.38223 },
+                              { "key": "up", "value": 2.5114 },
+                              { "key": "down", "value": 2.25305 }
+                            ]
+                          }
+                        ],
+                        "flow": "clamp"
+                      }
+                    },
+                    { "key": "Loose",
+                      "value": {
+                        "nodetype": "binning",
+                        "input": "eta",
+                        "edges": [ 0.0, 0.4, 0.8, 1.2, 1.7, 2.4 ],
+                        "content": [
+                          { "nodetype": "category",
+                            "input": "syst",
+                            "content": [
+                              { "key": "nom", "value": 1.11085 },
+                              { "key": "up", "value": 1.20475 },
+                              { "key": "down", "value": 1.01696 }
+                            ]
+                          },
+                          { "nodetype": "category",
+                            "input": "syst",
+                            "content": [
+                              { "key": "nom", "value": 1.1608 },
+                              { "key": "up", "value": 1.39613 },
+                              { "key": "down", "value": 0.92548 }
+                            ]
+                          },
+                          { "nodetype": "category",
+                            "input": "syst",
+                            "content": [
+                              { "key": "nom", "value": 1.19212 },
+                              { "key": "up", "value": 1.35341 },
+                              { "key": "down", "value": 1.03083 }
+                            ]
+                          },
+                          { "nodetype": "category",
+                            "input": "syst",
+                            "content": [
+                              { "key": "nom", "value": 1.52181 },
+                              { "key": "up", "value": 1.73703 },
+                              { "key": "down", "value": 1.30659 }
+                            ]
+                          },
+                          { "nodetype": "category",
+                            "input": "syst",
+                            "content": [
+                              { "key": "nom", "value": 3.83001 },
+                              { "key": "up", "value": 4.09366 },
+                              { "key": "down", "value": 3.56636 }
+                            ]
+                          }
+                        ],
+                        "flow": "clamp"
+                      }
+                    },
+                    { "key": "Medium",
+                      "value": {
+                        "nodetype": "binning",
+                        "input": "eta",
+                        "edges": [ 0.0, 0.4, 0.8, 1.2, 1.7, 2.4 ],
+                        "content": [
+                          { "nodetype": "category",
+                            "input": "syst",
+                            "content": [
+                              { "key": "nom", "value": 1.10399 },
+                              { "key": "up", "value": 1.20722 },
+                              { "key": "down", "value": 1.00077 }
+                            ]
+                          },
+                          { "nodetype": "category",
+                            "input": "syst",
+                            "content": [
+                              { "key": "nom", "value": 1.22678 },
+                              { "key": "up", "value": 1.50679 },
+                              { "key": "down", "value": 0.94677 }
+                            ]
+                          },
+                          { "nodetype": "category",
+                            "input": "syst",
+                            "content": [
+                              { "key": "nom", "value": 1.05709 },
+                              { "key": "up", "value": 1.20709 },
+                              { "key": "down", "value": 0.9071 }
+                            ]
+                          },
+                          { "nodetype": "category",
+                            "input": "syst",
+                            "content": [
+                              { "key": "nom", "value": 1.60066 },
+                              { "key": "up", "value": 1.8776 },
+                              { "key": "down", "value": 1.32372 }
+                            ]
+                          },
+                          { "nodetype": "category",
+                            "input": "syst",
+                            "content": [
+                              { "key": "nom", "value": 3.9071 },
+                              { "key": "up", "value": 4.2097 },
+                              { "key": "down", "value": 3.60449 }
+                            ]
+                          }
+                        ],
+                        "flow": "clamp"
+                      }
+                    },
+                    { "key": "Tight",
+                      "value": {
+                        "nodetype": "binning",
+                        "input": "eta",
+                        "edges": [ 0.0, 0.4, 0.8, 1.2, 1.7, 2.4 ],
+                        "content": [
+                          { "nodetype": "category",
+                            "input": "syst",
+                            "content": [
+                              { "key": "nom", "value": 1.08631 },
+                              { "key": "up", "value": 1.23774 },
+                              { "key": "down", "value": 0.93489 }
+                            ]
+                          },
+                          { "nodetype": "category",
+                            "input": "syst",
+                            "content": [
+                              { "key": "nom", "value": 1.38368 },
+                              { "key": "up", "value": 1.73212 },
+                              { "key": "down", "value": 1.03524 }
+                            ]
+                          },
+                          { "nodetype": "category",
+                            "input": "syst",
+                            "content": [
+                              { "key": "nom", "value": 0.98249 },
+                              { "key": "up", "value": 1.09891 },
+                              { "key": "down", "value": 0.86607 }
+                            ]
+                          },
+                          { "nodetype": "category",
+                            "input": "syst",
+                            "content": [
+                              { "key": "nom", "value": 1.73274 },
+                              { "key": "up", "value": 2.05315 },
+                              { "key": "down", "value": 1.41233 }
+                            ]
+                          },
+                          { "nodetype": "category",
+                            "input": "syst",
+                            "content": [
+                              { "key": "nom", "value": 3.50032 },
+                              { "key": "up", "value": 3.87888 },
+                              { "key": "down", "value": 3.12176 }
+                            ]
+                          }
+                        ],
+                        "flow": "clamp"
+                      }
+                    }
+                  ]
+                }
+              }
+            }
+          ]
+        }
+      }
+    },
+    { "name": "DeepTau2018v2p5VSjet",
+      "description": "DeepTau2018v2p5VSjet SFs: By default, use the DM-dependent SFs with the 'dm' flag. For analyses sensitive to high pT taus (pT>140 GeV), use the DM-dependent SFs for pT<140 and pT-binned SF for pT>140 GeV with flag 'pt'. The nominal values of the SFs are stored in the 'default' field.",
+      "version": 3,
+      "inputs": [
+        { "name": "pt",
+          "type": "real",
+          "description": "Reconstructed tau pT"
+        },
+        { "name": "dm",
+          "type": "int",
+          "description": "Reconstructed tau decay mode: 0, 1, 2, 10, 11"
+        },
+        { "name": "genmatch",
+          "type": "int",
+          "description": "genmatch: 0 or 6 = unmatched or jet, 1 or 3 = electron, 2 or 4 = muon, 5 = real tau"
+        },
+        { "name": "wp",
+          "type": "string",
+          "description": "DeepTau2018v2p5VSjet working point: Medium"
+        },
+        { "name": "wp_VSe",
+          "type": "string",
+          "description": "DeepTau2018v2p5VSe working point: VVLoose-Tight"
+        },
+        { "name": "syst",
+          "type": "string",
+          "description": "Systematic variations for the DM-binned SF: 'stat$i_dm$DM_up'/'stat$i_dm$DM_up' (stat. uncertainty for dm bin from ith eigenvector $i=1,2 $DM=0,1,10,11) , 'syst_alleras_up'/'syst_alleras_down' (syst. uncertainty for low pT bins correlated by eras and DM-bins) , 'syst_$ERA_up'/'syst_$ERA_down' (syst. uncertainty for low pT bins uncorrelated by eras $ERA=2016_preVFP,2016_postVFP,2017,2018) , 'syst_TES_$ERA_dm$DM_up'/'syst_TES_$ERA_$DM_down' (syst. uncertainty for low pT bins due to the tau energy scale uncorrelated by eras and DM $ERA=2016_preVFP,2016_postVFP,2017,2018) $DM=0,1,10,11 , "
+        },
+        { "name": "flag",
+          "type": "string",
+          "description": "Flag: 'pt' = pT-dependent SFs, 'dm' = DM-dependent SFs"
+        }
+      ],
+      "output": {
+        "name": "sf",
+        "type": "real",
+        "description": "DeepTau2018v2p5VSjet scale factor"
+      },
+      "data": {
+        "nodetype": "category",
+        "input": "flag",
+        "content": [
+          { "key": "pt",
+            "value": {
+              "nodetype": "category",
+              "input": "genmatch",
+              "content": [
+                { "key": 0, "value": 1.0 },
+                { "key": 1, "value": 1.0 },
+                { "key": 2, "value": 1.0 },
+                { "key": 3, "value": 1.0 },
+                { "key": 4, "value": 1.0 },
+                { "key": 5,
+                  "value": {
+                    "nodetype": "category",
+                    "input": "wp",
+                    "content": [
+                      { "key": "Medium",
+                        "value": {
+                          "nodetype": "category",
+                          "input": "wp_VSe",
+                          "content": [
+                            { "key": "VVLoose",
+                              "value": {
+                                "nodetype": "binning",
+                                "input": "pt",
+                                "edges": [ 140.0, 200.0, 10000.0 ],
+                                "content": [
+                                  { "nodetype": "category",
+                                    "input": "syst",
+                                    "content": [
+                                      { "key": "up", "value": 1.0361713427630632 },
+                                      { "key": "down", "value": 0.8999571543606552 },
+                                      { "key": "syst_highpT_up", "value": 0.9680642485618591 },
+                                      { "key": "syst_highpT_down", "value": 0.9680642485618591 },
+                                      { "key": "stat_highpT_bin1_up", "value": 0.9680642485618591 },
+                                      { "key": "stat_highpT_bin1_down", "value": 0.9680642485618591 },
+                                      { "key": "syst_highpT_extrap_up", "value": 0.9680642485618591 },
+                                      { "key": "syst_highpT_extrap_down", "value": 0.9680642485618591 }
+                                    ],
+                                    "default": 0.9680642485618591
+                                  },
+                                  { "nodetype": "category",
+                                    "input": "syst",
+                                    "content": [
+                                      { "key": "up", "value": -1.0 },
+                                      { "key": "down", "value": 1.0 },
+                                      { "key": "syst_highpT_up", "value": 0.0 },
+                                      { "key": "syst_highpT_down", "value": 0.0 },
+                                      { "key": "stat_highpT_bin2_up", "value": 0.0 },
+                                      { "key": "stat_highpT_bin2_down", "value": 0.0 },
+                                      { "key": "syst_highpT_extrap_up", "value": 0.0 },
+                                      { "key": "syst_highpT_extrap_down", "value": 0.0 }
+                                    ],
+                                    "default": 0.0
+                                  }
+                                ],
+                                "flow": "clamp"
+                              }
+                            },
+                            { "key": "Tight",
+                              "value": {
+                                "nodetype": "binning",
+                                "input": "pt",
+                                "edges": [ 140.0, 200.0, 10000.0 ],
+                                "content": [
+                                  { "nodetype": "category",
+                                    "input": "syst",
+                                    "content": [
+                                      { "key": "up", "value": 0.9349612105856464 },
+                                      { "key": "down", "value": 0.8140019070138409 },
+                                      { "key": "syst_highpT_up", "value": 0.8744815587997437 },
+                                      { "key": "syst_highpT_down", "value": 0.8744815587997437 },
+                                      { "key": "stat_highpT_bin1_up", "value": 0.8744815587997437 },
+                                      { "key": "stat_highpT_bin1_down", "value": 0.8744815587997437 },
+                                      { "key": "syst_highpT_extrap_up", "value": 0.8744815587997437 },
+                                      { "key": "syst_highpT_extrap_down", "value": 0.8744815587997437 }
+                                    ],
+                                    "default": 0.8744815587997437
+                                  },
+                                  { "nodetype": "category",
+                                    "input": "syst",
+                                    "content": [
+                                      { "key": "up", "value": -1.0 },
+                                      { "key": "down", "value": 1.0 },
+                                      { "key": "syst_highpT_up", "value": 0.0 },
+                                      { "key": "syst_highpT_down", "value": 0.0 },
+                                      { "key": "stat_highpT_bin2_up", "value": 0.0 },
+                                      { "key": "stat_highpT_bin2_down", "value": 0.0 },
+                                      { "key": "syst_highpT_extrap_up", "value": 0.0 },
+                                      { "key": "syst_highpT_extrap_down", "value": 0.0 }
+                                    ],
+                                    "default": 0.0
+                                  }
+                                ],
+                                "flow": "clamp"
+                              }
+                            }
+                          ]
+                        }
+                      }
+                    ]
+                  }
+                },
+                { "key": 6, "value": 1.0 }
+              ]
+            }
+          },
+          { "key": "dm",
+            "value": {
+              "nodetype": "category",
+              "input": "genmatch",
+              "content": [
+                { "key": 1, "value": 1.0 },
+                { "key": 2, "value": 1.0 },
+                { "key": 3, "value": 1.0 },
+                { "key": 4, "value": 1.0 },
+                { "key": 5,
+                  "value": {
+                    "nodetype": "category",
+                    "input": "wp",
+                    "content": [
+                      { "key": "Medium",
+                        "value": {
+                          "nodetype": "category",
+                          "input": "wp_VSe",
+                          "content": [
+                            { "key": "VVLoose",
+                              "value": {
+                                "nodetype": "category",
+                                "input": "dm",
+                                "content": [
+                                  { "key": 0,
+                                    "value": {
+                                      "nodetype": "category",
+                                      "input": "syst",
+                                      "content": [
+                                        { "key": "stat1_dm0_up",
+                                          "value": {
+                                            "nodetype": "formula",
+                                            "expression": "0.920274+-0.146052*pow(min(max(x,25.),140.),-2)",
+                                            "parser": "TFormula",
+                                            "variables": [ "pt" ]
+                                          }
+                                        },
+                                        { "key": "stat2_dm0_up",
+                                          "value": {
+                                            "nodetype": "formula",
+                                            "expression": "0.88014+28.3526*pow(min(max(x,25.),140.),-2)",
+                                            "parser": "TFormula",
+                                            "variables": [ "pt" ]
+                                          }
+                                        },
+                                        { "key": "stat1_dm0_down",
+                                          "value": {
+                                            "nodetype": "formula",
+                                            "expression": "0.868474+56.8513*pow(min(max(x,25.),140.),-2)",
+                                            "parser": "TFormula",
+                                            "variables": [ "pt" ]
+                                          }
+                                        },
+                                        { "key": "stat2_dm0_down",
+                                          "value": {
+                                            "nodetype": "formula",
+                                            "expression": "0.908608+28.3526*pow(min(max(x,25.),140.),-2)",
+                                            "parser": "TFormula",
+                                            "variables": [ "pt" ]
+                                          }
+                                        },
+                                        { "key": "syst_alleras_up",
+                                          "value": {
+                                            "nodetype": "formula",
+                                            "expression": "0.915203+27.0065*pow(min(max(x,25.),140.),-2)",
+                                            "parser": "TFormula",
+                                            "variables": [ "pt" ]
+                                          }
+                                        },
+                                        { "key": "syst_alleras_down",
+                                          "value": {
+                                            "nodetype": "formula",
+                                            "expression": "0.8747+29.146*pow(min(max(x,25.),140.),-2)",
+                                            "parser": "TFormula",
+                                            "variables": [ "pt" ]
+                                          }
+                                        },
+                                        { "key": "syst_2023_preBPix_up",
+                                          "value": {
+                                            "nodetype": "formula",
+                                            "expression": "0.897095+28.0034*pow(min(max(x,25.),140.),-2)",
+                                            "parser": "TFormula",
+                                            "variables": [ "pt" ]
+                                          }
+                                        },
+                                        { "key": "syst_2023_preBPix_down",
+                                          "value": {
+                                            "nodetype": "formula",
+                                            "expression": "0.891811+28.4865*pow(min(max(x,25.),140.),-2)",
+                                            "parser": "TFormula",
+                                            "variables": [ "pt" ]
+                                          }
+                                        },
+                                        { "key": "syst_TES_2023_preBPix_dm0_up",
+                                          "value": {
+                                            "nodetype": "formula",
+                                            "expression": "(0.884734+86.8122*pow(min(max(x,25.),140.),-2))*(0.894374+28.3526*pow(min(max(x,25.),140.),-2))",
+                                            "parser": "TFormula",
+                                            "variables": [ "pt" ]
+                                          }
+                                        },
+                                        { "key": "syst_TES_2023_preBPix_dm0_down",
+                                          "value": {
+                                            "nodetype": "formula",
+                                            "expression": "(1.1238+-94.4634*pow(min(max(x,25.),140.),-2))*(0.894374+28.3526*pow(min(max(x,25.),140.),-2))",
+                                            "parser": "TFormula",
+                                            "variables": [ "pt" ]
+                                          }
+                                        }
+                                      ],
+                                      "default": {
+                                        "nodetype": "formula",
+                                        "expression": "0.894374+28.3526*pow(min(max(x,25.),140.),-2)",
+                                        "parser": "TFormula",
+                                        "variables": [ "pt" ]
+                                      }
+                                    }
+                                  },
+                                  { "key": 1,
+                                    "value": {
+                                      "nodetype": "category",
+                                      "input": "syst",
+                                      "content": [
+                                        { "key": "stat1_dm1_up",
+                                          "value": {
+                                            "nodetype": "formula",
+                                            "expression": "0.958912+12.6118*pow(min(max(x,20.),140.),-2)",
+                                            "parser": "TFormula",
+                                            "variables": [ "pt" ]
+                                          }
+                                        },
+                                        { "key": "stat2_dm1_up",
+                                          "value": {
+                                            "nodetype": "formula",
+                                            "expression": "0.929529+35.0649*pow(min(max(x,20.),140.),-2)",
+                                            "parser": "TFormula",
+                                            "variables": [ "pt" ]
+                                          }
+                                        },
+                                        { "key": "stat1_dm1_down",
+                                          "value": {
+                                            "nodetype": "formula",
+                                            "expression": "0.92273+57.5179*pow(min(max(x,20.),140.),-2)",
+                                            "parser": "TFormula",
+                                            "variables": [ "pt" ]
+                                          }
+                                        },
+                                        { "key": "stat2_dm1_down",
+                                          "value": {
+                                            "nodetype": "formula",
+                                            "expression": "0.952113+35.0649*pow(min(max(x,20.),140.),-2)",
+                                            "parser": "TFormula",
+                                            "variables": [ "pt" ]
+                                          }
+                                        },
+                                        { "key": "syst_alleras_up",
+                                          "value": {
+                                            "nodetype": "formula",
+                                            "expression": "0.962031+34.911*pow(min(max(x,20.),140.),-2)",
+                                            "parser": "TFormula",
+                                            "variables": [ "pt" ]
+                                          }
+                                        },
+                                        { "key": "syst_alleras_down",
+                                          "value": {
+                                            "nodetype": "formula",
+                                            "expression": "0.920481+34.2529*pow(min(max(x,20.),140.),-2)",
+                                            "parser": "TFormula",
+                                            "variables": [ "pt" ]
+                                          }
+                                        },
+                                        { "key": "syst_2023_preBPix_up",
+                                          "value": {
+                                            "nodetype": "formula",
+                                            "expression": "0.942921+36.3651*pow(min(max(x,20.),140.),-2)",
+                                            "parser": "TFormula",
+                                            "variables": [ "pt" ]
+                                          }
+                                        },
+                                        { "key": "syst_2023_preBPix_down",
+                                          "value": {
+                                            "nodetype": "formula",
+                                            "expression": "0.939117+33.4951*pow(min(max(x,20.),140.),-2)",
+                                            "parser": "TFormula",
+                                            "variables": [ "pt" ]
+                                          }
+                                        },
+                                        { "key": "syst_TES_2023_preBPix_dm1_up",
+                                          "value": {
+                                            "nodetype": "formula",
+                                            "expression": "(0.891101+88.2265*pow(min(max(x,20.),140.),-2))*(0.940821+35.0649*pow(min(max(x,20.),140.),-2))",
+                                            "parser": "TFormula",
+                                            "variables": [ "pt" ]
+                                          }
+                                        },
+                                        { "key": "syst_TES_2023_preBPix_dm1_down",
+                                          "value": {
+                                            "nodetype": "formula",
+                                            "expression": "(1.11653+-95.0683*pow(min(max(x,20.),140.),-2))*(0.940821+35.0649*pow(min(max(x,20.),140.),-2))",
+                                            "parser": "TFormula",
+                                            "variables": [ "pt" ]
+                                          }
+                                        }
+                                      ],
+                                      "default": {
+                                        "nodetype": "formula",
+                                        "expression": "0.940821+35.0649*pow(min(max(x,20.),140.),-2)",
+                                        "parser": "TFormula",
+                                        "variables": [ "pt" ]
+                                      }
+                                    }
+                                  },
+                                  { "key": 2,
+                                    "value": {
+                                      "nodetype": "category",
+                                      "input": "syst",
+                                      "content": [
+                                        { "key": "stat1_dm1_up",
+                                          "value": {
+                                            "nodetype": "formula",
+                                            "expression": "0.958912+12.6118*pow(min(max(x,20.),140.),-2)",
+                                            "parser": "TFormula",
+                                            "variables": [ "pt" ]
+                                          }
+                                        },
+                                        { "key": "stat2_dm1_up",
+                                          "value": {
+                                            "nodetype": "formula",
+                                            "expression": "0.929529+35.0649*pow(min(max(x,20.),140.),-2)",
+                                            "parser": "TFormula",
+                                            "variables": [ "pt" ]
+                                          }
+                                        },
+                                        { "key": "stat1_dm1_down",
+                                          "value": {
+                                            "nodetype": "formula",
+                                            "expression": "0.92273+57.5179*pow(min(max(x,20.),140.),-2)",
+                                            "parser": "TFormula",
+                                            "variables": [ "pt" ]
+                                          }
+                                        },
+                                        { "key": "stat2_dm1_down",
+                                          "value": {
+                                            "nodetype": "formula",
+                                            "expression": "0.952113+35.0649*pow(min(max(x,20.),140.),-2)",
+                                            "parser": "TFormula",
+                                            "variables": [ "pt" ]
+                                          }
+                                        },
+                                        { "key": "syst_alleras_up",
+                                          "value": {
+                                            "nodetype": "formula",
+                                            "expression": "0.962031+34.911*pow(min(max(x,20.),140.),-2)",
+                                            "parser": "TFormula",
+                                            "variables": [ "pt" ]
+                                          }
+                                        },
+                                        { "key": "syst_alleras_down",
+                                          "value": {
+                                            "nodetype": "formula",
+                                            "expression": "0.920481+34.2529*pow(min(max(x,20.),140.),-2)",
+                                            "parser": "TFormula",
+                                            "variables": [ "pt" ]
+                                          }
+                                        },
+                                        { "key": "syst_2023_preBPix_up",
+                                          "value": {
+                                            "nodetype": "formula",
+                                            "expression": "0.942921+36.3651*pow(min(max(x,20.),140.),-2)",
+                                            "parser": "TFormula",
+                                            "variables": [ "pt" ]
+                                          }
+                                        },
+                                        { "key": "syst_2023_preBPix_down",
+                                          "value": {
+                                            "nodetype": "formula",
+                                            "expression": "0.939117+33.4951*pow(min(max(x,20.),140.),-2)",
+                                            "parser": "TFormula",
+                                            "variables": [ "pt" ]
+                                          }
+                                        },
+                                        { "key": "syst_TES_2023_preBPix_dm1_up",
+                                          "value": {
+                                            "nodetype": "formula",
+                                            "expression": "(0.891101+88.2265*pow(min(max(x,20.),140.),-2))*(0.940821+35.0649*pow(min(max(x,20.),140.),-2))",
+                                            "parser": "TFormula",
+                                            "variables": [ "pt" ]
+                                          }
+                                        },
+                                        { "key": "syst_TES_2023_preBPix_dm1_down",
+                                          "value": {
+                                            "nodetype": "formula",
+                                            "expression": "(1.11653+-95.0683*pow(min(max(x,20.),140.),-2))*(0.940821+35.0649*pow(min(max(x,20.),140.),-2))",
+                                            "parser": "TFormula",
+                                            "variables": [ "pt" ]
+                                          }
+                                        }
+                                      ],
+                                      "default": {
+                                        "nodetype": "formula",
+                                        "expression": "0.940821+35.0649*pow(min(max(x,20.),140.),-2)",
+                                        "parser": "TFormula",
+                                        "variables": [ "pt" ]
+                                      }
+                                    }
+                                  },
+                                  { "key": 10,
+                                    "value": {
+                                      "nodetype": "category",
+                                      "input": "syst",
+                                      "content": [
+                                        { "key": "stat1_dm10_up",
+                                          "value": {
+                                            "nodetype": "formula",
+                                            "expression": "0.978506+-42.2742*pow(min(max(x,20.),140.),-2)",
+                                            "parser": "TFormula",
+                                            "variables": [ "pt" ]
+                                          }
+                                        },
+                                        { "key": "stat2_dm10_up",
+                                          "value": {
+                                            "nodetype": "formula",
+                                            "expression": "0.940058+-13.3819*pow(min(max(x,20.),140.),-2)",
+                                            "parser": "TFormula",
+                                            "variables": [ "pt" ]
+                                          }
+                                        },
+                                        { "key": "stat1_dm10_down",
+                                          "value": {
+                                            "nodetype": "formula",
+                                            "expression": "0.929377+15.5105*pow(min(max(x,20.),140.),-2)",
+                                            "parser": "TFormula",
+                                            "variables": [ "pt" ]
+                                          }
+                                        },
+                                        { "key": "stat2_dm10_down",
+                                          "value": {
+                                            "nodetype": "formula",
+                                            "expression": "0.967825+-13.3819*pow(min(max(x,20.),140.),-2)",
+                                            "parser": "TFormula",
+                                            "variables": [ "pt" ]
+                                          }
+                                        },
+                                        { "key": "syst_alleras_up",
+                                          "value": {
+                                            "nodetype": "formula",
+                                            "expression": "0.975948+-15.5312*pow(min(max(x,20.),140.),-2)",
+                                            "parser": "TFormula",
+                                            "variables": [ "pt" ]
+                                          }
+                                        },
+                                        { "key": "syst_alleras_down",
+                                          "value": {
+                                            "nodetype": "formula",
+                                            "expression": "0.932694+-11.7372*pow(min(max(x,20.),140.),-2)",
+                                            "parser": "TFormula",
+                                            "variables": [ "pt" ]
+                                          }
+                                        },
+                                        { "key": "syst_2023_preBPix_up",
+                                          "value": {
+                                            "nodetype": "formula",
+                                            "expression": "0.957687+-15.3819*pow(min(max(x,20.),140.),-2)",
+                                            "parser": "TFormula",
+                                            "variables": [ "pt" ]
+                                          }
+                                        },
+                                        { "key": "syst_2023_preBPix_down",
+                                          "value": {
+                                            "nodetype": "formula",
+                                            "expression": "0.950597+-11.8937*pow(min(max(x,20.),140.),-2)",
+                                            "parser": "TFormula",
+                                            "variables": [ "pt" ]
+                                          }
+                                        },
+                                        { "key": "syst_TES_2023_preBPix_dm10_up",
+                                          "value": {
+                                            "nodetype": "formula",
+                                            "expression": "(0.886555+105.198*pow(min(max(x,20.),140.),-2))*(0.953942+-13.3819*pow(min(max(x,20.),140.),-2))",
+                                            "parser": "TFormula",
+                                            "variables": [ "pt" ]
+                                          }
+                                        },
+                                        { "key": "syst_TES_2023_preBPix_dm10_down",
+                                          "value": {
+                                            "nodetype": "formula",
+                                            "expression": "(1.12006+-112.842*pow(min(max(x,20.),140.),-2))*(0.953942+-13.3819*pow(min(max(x,20.),140.),-2))",
+                                            "parser": "TFormula",
+                                            "variables": [ "pt" ]
+                                          }
+                                        }
+                                      ],
+                                      "default": {
+                                        "nodetype": "formula",
+                                        "expression": "0.953942+-13.3819*pow(min(max(x,20.),140.),-2)",
+                                        "parser": "TFormula",
+                                        "variables": [ "pt" ]
+                                      }
+                                    }
+                                  },
+                                  { "key": 11,
+                                    "value": {
+                                      "nodetype": "category",
+                                      "input": "syst",
+                                      "content": [
+                                        { "key": "stat1_dm11_up",
+                                          "value": {
+                                            "nodetype": "formula",
+                                            "expression": "1.06324+-132.302*pow(min(max(x,20.),140.),-2)",
+                                            "parser": "TFormula",
+                                            "variables": [ "pt" ]
+                                          }
+                                        },
+                                        { "key": "stat2_dm11_up",
+                                          "value": {
+                                            "nodetype": "formula",
+                                            "expression": "0.985361+-62.6845*pow(min(max(x,20.),140.),-2)",
+                                            "parser": "TFormula",
+                                            "variables": [ "pt" ]
+                                          }
+                                        },
+                                        { "key": "stat1_dm11_down",
+                                          "value": {
+                                            "nodetype": "formula",
+                                            "expression": "0.957612+6.93286*pow(min(max(x,20.),140.),-2)",
+                                            "parser": "TFormula",
+                                            "variables": [ "pt" ]
+                                          }
+                                        },
+                                        { "key": "stat2_dm11_down",
+                                          "value": {
+                                            "nodetype": "formula",
+                                            "expression": "1.03549+-62.6845*pow(min(max(x,20.),140.),-2)",
+                                            "parser": "TFormula",
+                                            "variables": [ "pt" ]
+                                          }
+                                        },
+                                        { "key": "syst_alleras_up",
+                                          "value": {
+                                            "nodetype": "formula",
+                                            "expression": "1.03751+-69.367*pow(min(max(x,20.),140.),-2)",
+                                            "parser": "TFormula",
+                                            "variables": [ "pt" ]
+                                          }
+                                        },
+                                        { "key": "syst_alleras_down",
+                                          "value": {
+                                            "nodetype": "formula",
+                                            "expression": "0.985633+-57.9191*pow(min(max(x,20.),140.),-2)",
+                                            "parser": "TFormula",
+                                            "variables": [ "pt" ]
+                                          }
+                                        },
+                                        { "key": "syst_2023_preBPix_up",
+                                          "value": {
+                                            "nodetype": "formula",
+                                            "expression": "1.01818+-66.0227*pow(min(max(x,20.),140.),-2)",
+                                            "parser": "TFormula",
+                                            "variables": [ "pt" ]
+                                          }
+                                        },
+                                        { "key": "syst_2023_preBPix_down",
+                                          "value": {
+                                            "nodetype": "formula",
+                                            "expression": "1.00222+-58.8429*pow(min(max(x,20.),140.),-2)",
+                                            "parser": "TFormula",
+                                            "variables": [ "pt" ]
+                                          }
+                                        },
+                                        { "key": "syst_TES_2023_preBPix_dm11_up",
+                                          "value": {
+                                            "nodetype": "formula",
+                                            "expression": "(0.860829+145.727*pow(min(max(x,20.),140.),-2))*(1.01043+-62.6845*pow(min(max(x,20.),140.),-2))",
+                                            "parser": "TFormula",
+                                            "variables": [ "pt" ]
+                                          }
+                                        },
+                                        { "key": "syst_TES_2023_preBPix_dm11_down",
+                                          "value": {
+                                            "nodetype": "formula",
+                                            "expression": "(1.14853+-154.722*pow(min(max(x,20.),140.),-2))*(1.01043+-62.6845*pow(min(max(x,20.),140.),-2))",
+                                            "parser": "TFormula",
+                                            "variables": [ "pt" ]
+                                          }
+                                        }
+                                      ],
+                                      "default": {
+                                        "nodetype": "formula",
+                                        "expression": "1.01043+-62.6845*pow(min(max(x,20.),140.),-2)",
+                                        "parser": "TFormula",
+                                        "variables": [ "pt" ]
+                                      }
+                                    }
+                                  }
+                                ]
+                              }
+                            },
+                            { "key": "Tight",
+                              "value": {
+                                "nodetype": "category",
+                                "input": "dm",
+                                "content": [
+                                  { "key": 0,
+                                    "value": {
+                                      "nodetype": "category",
+                                      "input": "syst",
+                                      "content": [
+                                        { "key": "stat1_dm0_up",
+                                          "value": {
+                                            "nodetype": "formula",
+                                            "expression": "1.01628+-88.5167*pow(min(max(x,25.),140.),-2)",
+                                            "parser": "TFormula",
+                                            "variables": [ "pt" ]
+                                          }
+                                        },
+                                        { "key": "stat2_dm0_up",
+                                          "value": {
+                                            "nodetype": "formula",
+                                            "expression": "0.964874+-53.8457*pow(min(max(x,25.),140.),-2)",
+                                            "parser": "TFormula",
+                                            "variables": [ "pt" ]
+                                          }
+                                        },
+                                        { "key": "stat1_dm0_down",
+                                          "value": {
+                                            "nodetype": "formula",
+                                            "expression": "0.948833+-19.1746*pow(min(max(x,25.),140.),-2)",
+                                            "parser": "TFormula",
+                                            "variables": [ "pt" ]
+                                          }
+                                        },
+                                        { "key": "stat2_dm0_down",
+                                          "value": {
+                                            "nodetype": "formula",
+                                            "expression": "1.00024+-53.8456*pow(min(max(x,25.),140.),-2)",
+                                            "parser": "TFormula",
+                                            "variables": [ "pt" ]
+                                          }
+                                        },
+                                        { "key": "syst_alleras_up",
+                                          "value": {
+                                            "nodetype": "formula",
+                                            "expression": "1.00504+-56.2882*pow(min(max(x,25.),140.),-2)",
+                                            "parser": "TFormula",
+                                            "variables": [ "pt" ]
+                                          }
+                                        },
+                                        { "key": "syst_alleras_down",
+                                          "value": {
+                                            "nodetype": "formula",
+                                            "expression": "0.962812+-52.3326*pow(min(max(x,25.),140.),-2)",
+                                            "parser": "TFormula",
+                                            "variables": [ "pt" ]
+                                          }
+                                        },
+                                        { "key": "syst_2023_preBPix_up",
+                                          "value": {
+                                            "nodetype": "formula",
+                                            "expression": "0.985548+-54.1939*pow(min(max(x,25.),140.),-2)",
+                                            "parser": "TFormula",
+                                            "variables": [ "pt" ]
+                                          }
+                                        },
+                                        { "key": "syst_2023_preBPix_down",
+                                          "value": {
+                                            "nodetype": "formula",
+                                            "expression": "0.97976+-53.896*pow(min(max(x,25.),140.),-2)",
+                                            "parser": "TFormula",
+                                            "variables": [ "pt" ]
+                                          }
+                                        },
+                                        { "key": "syst_TES_2023_preBPix_dm0_up",
+                                          "value": {
+                                            "nodetype": "formula",
+                                            "expression": "(0.888087+83.2568*pow(min(max(x,25.),140.),-2))*(0.982558+-53.8456*pow(min(max(x,25.),140.),-2))",
+                                            "parser": "TFormula",
+                                            "variables": [ "pt" ]
+                                          }
+                                        },
+                                        { "key": "syst_TES_2023_preBPix_dm0_down",
+                                          "value": {
+                                            "nodetype": "formula",
+                                            "expression": "(1.12036+-89.5537*pow(min(max(x,25.),140.),-2))*(0.982558+-53.8456*pow(min(max(x,25.),140.),-2))",
+                                            "parser": "TFormula",
+                                            "variables": [ "pt" ]
+                                          }
+                                        }
+                                      ],
+                                      "default": {
+                                        "nodetype": "formula",
+                                        "expression": "0.982558+-53.8456*pow(min(max(x,25.),140.),-2)",
+                                        "parser": "TFormula",
+                                        "variables": [ "pt" ]
+                                      }
+                                    }
+                                  },
+                                  { "key": 1,
+                                    "value": {
+                                      "nodetype": "category",
+                                      "input": "syst",
+                                      "content": [
+                                        { "key": "stat1_dm1_up",
+                                          "value": {
+                                            "nodetype": "formula",
+                                            "expression": "0.943197+-2.24972*pow(min(max(x,20.),140.),-2)",
+                                            "parser": "TFormula",
+                                            "variables": [ "pt" ]
+                                          }
+                                        },
+                                        { "key": "stat2_dm1_up",
+                                          "value": {
+                                            "nodetype": "formula",
+                                            "expression": "0.913635+19.7061*pow(min(max(x,20.),140.),-2)",
+                                            "parser": "TFormula",
+                                            "variables": [ "pt" ]
+                                          }
+                                        },
+                                        { "key": "stat1_dm1_down",
+                                          "value": {
+                                            "nodetype": "formula",
+                                            "expression": "0.90656+41.6619*pow(min(max(x,20.),140.),-2)",
+                                            "parser": "TFormula",
+                                            "variables": [ "pt" ]
+                                          }
+                                        },
+                                        { "key": "stat2_dm1_down",
+                                          "value": {
+                                            "nodetype": "formula",
+                                            "expression": "0.936122+19.7061*pow(min(max(x,20.),140.),-2)",
+                                            "parser": "TFormula",
+                                            "variables": [ "pt" ]
+                                          }
+                                        },
+                                        { "key": "syst_alleras_up",
+                                          "value": {
+                                            "nodetype": "formula",
+                                            "expression": "0.945916+19.3017*pow(min(max(x,20.),140.),-2)",
+                                            "parser": "TFormula",
+                                            "variables": [ "pt" ]
+                                          }
+                                        },
+                                        { "key": "syst_alleras_down",
+                                          "value": {
+                                            "nodetype": "formula",
+                                            "expression": "0.905549+19.6226*pow(min(max(x,20.),140.),-2)",
+                                            "parser": "TFormula",
+                                            "variables": [ "pt" ]
+                                          }
+                                        },
+                                        { "key": "syst_2023_preBPix_up",
+                                          "value": {
+                                            "nodetype": "formula",
+                                            "expression": "0.927223+20.8859*pow(min(max(x,20.),140.),-2)",
+                                            "parser": "TFormula",
+                                            "variables": [ "pt" ]
+                                          }
+                                        },
+                                        { "key": "syst_2023_preBPix_down",
+                                          "value": {
+                                            "nodetype": "formula",
+                                            "expression": "0.923208+18.0085*pow(min(max(x,20.),140.),-2)",
+                                            "parser": "TFormula",
+                                            "variables": [ "pt" ]
+                                          }
+                                        },
+                                        { "key": "syst_TES_2023_preBPix_dm1_up",
+                                          "value": {
+                                            "nodetype": "formula",
+                                            "expression": "(0.891198+90.2824*pow(min(max(x,20.),140.),-2))*(0.924879+19.7061*pow(min(max(x,20.),140.),-2))",
+                                            "parser": "TFormula",
+                                            "variables": [ "pt" ]
+                                          }
+                                        },
+                                        { "key": "syst_TES_2023_preBPix_dm1_down",
+                                          "value": {
+                                            "nodetype": "formula",
+                                            "expression": "(1.11801+-97.1267*pow(min(max(x,20.),140.),-2))*(0.924879+19.7061*pow(min(max(x,20.),140.),-2))",
+                                            "parser": "TFormula",
+                                            "variables": [ "pt" ]
+                                          }
+                                        }
+                                      ],
+                                      "default": {
+                                        "nodetype": "formula",
+                                        "expression": "0.924879+19.7061*pow(min(max(x,20.),140.),-2)",
+                                        "parser": "TFormula",
+                                        "variables": [ "pt" ]
+                                      }
+                                    }
+                                  },
+                                  { "key": 2,
+                                    "value": {
+                                      "nodetype": "category",
+                                      "input": "syst",
+                                      "content": [
+                                        { "key": "stat1_dm1_up",
+                                          "value": {
+                                            "nodetype": "formula",
+                                            "expression": "0.943197+-2.24972*pow(min(max(x,20.),140.),-2)",
+                                            "parser": "TFormula",
+                                            "variables": [ "pt" ]
+                                          }
+                                        },
+                                        { "key": "stat2_dm1_up",
+                                          "value": {
+                                            "nodetype": "formula",
+                                            "expression": "0.913635+19.7061*pow(min(max(x,20.),140.),-2)",
+                                            "parser": "TFormula",
+                                            "variables": [ "pt" ]
+                                          }
+                                        },
+                                        { "key": "stat1_dm1_down",
+                                          "value": {
+                                            "nodetype": "formula",
+                                            "expression": "0.90656+41.6619*pow(min(max(x,20.),140.),-2)",
+                                            "parser": "TFormula",
+                                            "variables": [ "pt" ]
+                                          }
+                                        },
+                                        { "key": "stat2_dm1_down",
+                                          "value": {
+                                            "nodetype": "formula",
+                                            "expression": "0.936122+19.7061*pow(min(max(x,20.),140.),-2)",
+                                            "parser": "TFormula",
+                                            "variables": [ "pt" ]
+                                          }
+                                        },
+                                        { "key": "syst_alleras_up",
+                                          "value": {
+                                            "nodetype": "formula",
+                                            "expression": "0.945916+19.3017*pow(min(max(x,20.),140.),-2)",
+                                            "parser": "TFormula",
+                                            "variables": [ "pt" ]
+                                          }
+                                        },
+                                        { "key": "syst_alleras_down",
+                                          "value": {
+                                            "nodetype": "formula",
+                                            "expression": "0.905549+19.6226*pow(min(max(x,20.),140.),-2)",
+                                            "parser": "TFormula",
+                                            "variables": [ "pt" ]
+                                          }
+                                        },
+                                        { "key": "syst_2023_preBPix_up",
+                                          "value": {
+                                            "nodetype": "formula",
+                                            "expression": "0.927223+20.8859*pow(min(max(x,20.),140.),-2)",
+                                            "parser": "TFormula",
+                                            "variables": [ "pt" ]
+                                          }
+                                        },
+                                        { "key": "syst_2023_preBPix_down",
+                                          "value": {
+                                            "nodetype": "formula",
+                                            "expression": "0.923208+18.0085*pow(min(max(x,20.),140.),-2)",
+                                            "parser": "TFormula",
+                                            "variables": [ "pt" ]
+                                          }
+                                        },
+                                        { "key": "syst_TES_2023_preBPix_dm1_up",
+                                          "value": {
+                                            "nodetype": "formula",
+                                            "expression": "(0.891198+90.2824*pow(min(max(x,20.),140.),-2))*(0.924879+19.7061*pow(min(max(x,20.),140.),-2))",
+                                            "parser": "TFormula",
+                                            "variables": [ "pt" ]
+                                          }
+                                        },
+                                        { "key": "syst_TES_2023_preBPix_dm1_down",
+                                          "value": {
+                                            "nodetype": "formula",
+                                            "expression": "(1.11801+-97.1267*pow(min(max(x,20.),140.),-2))*(0.924879+19.7061*pow(min(max(x,20.),140.),-2))",
+                                            "parser": "TFormula",
+                                            "variables": [ "pt" ]
+                                          }
+                                        }
+                                      ],
+                                      "default": {
+                                        "nodetype": "formula",
+                                        "expression": "0.924879+19.7061*pow(min(max(x,20.),140.),-2)",
+                                        "parser": "TFormula",
+                                        "variables": [ "pt" ]
+                                      }
+                                    }
+                                  },
+                                  { "key": 10,
+                                    "value": {
+                                      "nodetype": "category",
+                                      "input": "syst",
+                                      "content": [
+                                        { "key": "stat1_dm10_up",
+                                          "value": {
+                                            "nodetype": "formula",
+                                            "expression": "0.993018+-63.7802*pow(min(max(x,20.),140.),-2)",
+                                            "parser": "TFormula",
+                                            "variables": [ "pt" ]
+                                          }
+                                        },
+                                        { "key": "stat2_dm10_up",
+                                          "value": {
+                                            "nodetype": "formula",
+                                            "expression": "0.954654+-34.9514*pow(min(max(x,20.),140.),-2)",
+                                            "parser": "TFormula",
+                                            "variables": [ "pt" ]
+                                          }
+                                        },
+                                        { "key": "stat1_dm10_down",
+                                          "value": {
+                                            "nodetype": "formula",
+                                            "expression": "0.944201+-6.12266*pow(min(max(x,20.),140.),-2)",
+                                            "parser": "TFormula",
+                                            "variables": [ "pt" ]
+                                          }
+                                        },
+                                        { "key": "stat2_dm10_down",
+                                          "value": {
+                                            "nodetype": "formula",
+                                            "expression": "0.982565+-34.9514*pow(min(max(x,20.),140.),-2)",
+                                            "parser": "TFormula",
+                                            "variables": [ "pt" ]
+                                          }
+                                        },
+                                        { "key": "syst_alleras_up",
+                                          "value": {
+                                            "nodetype": "formula",
+                                            "expression": "0.991244+-37.3495*pow(min(max(x,20.),140.),-2)",
+                                            "parser": "TFormula",
+                                            "variables": [ "pt" ]
+                                          }
+                                        },
+                                        { "key": "syst_alleras_down",
+                                          "value": {
+                                            "nodetype": "formula",
+                                            "expression": "0.948174+-33.2694*pow(min(max(x,20.),140.),-2)",
+                                            "parser": "TFormula",
+                                            "variables": [ "pt" ]
+                                          }
+                                        },
+                                        { "key": "syst_2023_preBPix_up",
+                                          "value": {
+                                            "nodetype": "formula",
+                                            "expression": "0.972587+-37.2836*pow(min(max(x,20.),140.),-2)",
+                                            "parser": "TFormula",
+                                            "variables": [ "pt" ]
+                                          }
+                                        },
+                                        { "key": "syst_2023_preBPix_down",
+                                          "value": {
+                                            "nodetype": "formula",
+                                            "expression": "0.965164+-32.8619*pow(min(max(x,20.),140.),-2)",
+                                            "parser": "TFormula",
+                                            "variables": [ "pt" ]
+                                          }
+                                        },
+                                        { "key": "syst_TES_2023_preBPix_dm10_up",
+                                          "value": {
+                                            "nodetype": "formula",
+                                            "expression": "(0.887195+105.143*pow(min(max(x,20.),140.),-2))*(0.96861+-34.9514*pow(min(max(x,20.),140.),-2))",
+                                            "parser": "TFormula",
+                                            "variables": [ "pt" ]
+                                          }
+                                        },
+                                        { "key": "syst_TES_2023_preBPix_dm10_down",
+                                          "value": {
+                                            "nodetype": "formula",
+                                            "expression": "(1.12031+-113.398*pow(min(max(x,20.),140.),-2))*(0.96861+-34.9514*pow(min(max(x,20.),140.),-2))",
+                                            "parser": "TFormula",
+                                            "variables": [ "pt" ]
+                                          }
+                                        }
+                                      ],
+                                      "default": {
+                                        "nodetype": "formula",
+                                        "expression": "0.96861+-34.9514*pow(min(max(x,20.),140.),-2)",
+                                        "parser": "TFormula",
+                                        "variables": [ "pt" ]
+                                      }
+                                    }
+                                  },
+                                  { "key": 11,
+                                    "value": {
+                                      "nodetype": "category",
+                                      "input": "syst",
+                                      "content": [
+                                        { "key": "stat1_dm11_up",
+                                          "value": {
+                                            "nodetype": "formula",
+                                            "expression": "1.04986+-129.664*pow(min(max(x,20.),140.),-2)",
+                                            "parser": "TFormula",
+                                            "variables": [ "pt" ]
+                                          }
+                                        },
+                                        { "key": "stat2_dm11_up",
+                                          "value": {
+                                            "nodetype": "formula",
+                                            "expression": "0.971526+-59.5609*pow(min(max(x,20.),140.),-2)",
+                                            "parser": "TFormula",
+                                            "variables": [ "pt" ]
+                                          }
+                                        },
+                                        { "key": "stat1_dm11_down",
+                                          "value": {
+                                            "nodetype": "formula",
+                                            "expression": "0.94358+10.5424*pow(min(max(x,20.),140.),-2)",
+                                            "parser": "TFormula",
+                                            "variables": [ "pt" ]
+                                          }
+                                        },
+                                        { "key": "stat2_dm11_down",
+                                          "value": {
+                                            "nodetype": "formula",
+                                            "expression": "1.02192+-59.5609*pow(min(max(x,20.),140.),-2)",
+                                            "parser": "TFormula",
+                                            "variables": [ "pt" ]
+                                          }
+                                        },
+                                        { "key": "syst_alleras_up",
+                                          "value": {
+                                            "nodetype": "formula",
+                                            "expression": "1.02329+-65.2171*pow(min(max(x,20.),140.),-2)",
+                                            "parser": "TFormula",
+                                            "variables": [ "pt" ]
+                                          }
+                                        },
+                                        { "key": "syst_alleras_down",
+                                          "value": {
+                                            "nodetype": "formula",
+                                            "expression": "0.973606+-54.7796*pow(min(max(x,20.),140.),-2)",
+                                            "parser": "TFormula",
+                                            "variables": [ "pt" ]
+                                          }
+                                        },
+                                        { "key": "syst_2023_preBPix_up",
+                                          "value": {
+                                            "nodetype": "formula",
+                                            "expression": "1.00229+-61.6651*pow(min(max(x,20.),140.),-2)",
+                                            "parser": "TFormula",
+                                            "variables": [ "pt" ]
+                                          }
+                                        },
+                                        { "key": "syst_2023_preBPix_down",
+                                          "value": {
+                                            "nodetype": "formula",
+                                            "expression": "0.991729+-58.1096*pow(min(max(x,20.),140.),-2)",
+                                            "parser": "TFormula",
+                                            "variables": [ "pt" ]
+                                          }
+                                        },
+                                        { "key": "syst_TES_2023_preBPix_dm11_up",
+                                          "value": {
+                                            "nodetype": "formula",
+                                            "expression": "(0.860932+147.526*pow(min(max(x,20.),140.),-2))*(0.996721+-59.5609*pow(min(max(x,20.),140.),-2))",
+                                            "parser": "TFormula",
+                                            "variables": [ "pt" ]
+                                          }
+                                        },
+                                        { "key": "syst_TES_2023_preBPix_dm11_down",
+                                          "value": {
+                                            "nodetype": "formula",
+                                            "expression": "(1.15485+-162.247*pow(min(max(x,20.),140.),-2))*(0.996721+-59.5609*pow(min(max(x,20.),140.),-2))",
+                                            "parser": "TFormula",
+                                            "variables": [ "pt" ]
+                                          }
+                                        }
+                                      ],
+                                      "default": {
+                                        "nodetype": "formula",
+                                        "expression": "0.996721+-59.5609*pow(min(max(x,20.),140.),-2)",
+                                        "parser": "TFormula",
+                                        "variables": [ "pt" ]
+                                      }
+                                    }
+                                  }
+                                ]
+                              }
+                            }
+                          ]
+                        }
+                      }
+                    ]
+                  }
+                },
+                { "key": 6, "value": 1.0 },
+                { "key": 0, "value": 1.0 }
+              ]
+            }
+          }
+        ]
+      }
+    },
+    { "name": "tau_energy_scale",
+      "description": "DM-dependent tau energy scale in 2023_preBPix, to be applied to reconstructed tau_h Lorentz vector (pT, mass and energy) in simulated data",
+      "version": 1,
+      "inputs": [
+        { "name": "pt",
+          "type": "real",
+          "description": "Reconstructed tau pT"
+        },
+        { "name": "eta",
+          "type": "real",
+          "description": "Reconstructed tau eta"
+        },
+        { "name": "dm",
+          "type": "int",
+          "description": "Reconstructed tau decay mode: 0, 1, 2, 10, 11"
+        },
+        { "name": "genmatch",
+          "type": "int",
+          "description": "genmatch: 0 or 6 = unmatched or jet, 1 or 3 = electron, 2 or 4 = muon, 5 = real tau"
+        },
+        { "name": "id",
+          "type": "string",
+          "description": "Tau ID: DeepTau2018v2p5"
+        },
+        { "name": "wp",
+          "type": "string",
+          "description": "DeepTau2018v2p5VSjet working point: Medium"
+        },
+        { "name": "wp_VSe",
+          "type": "string",
+          "description": "DeepTau2018v2p5VSe working point: VVLoose-Tight"
+        },
+        { "name": "syst",
+          "type": "string",
+          "description": "Systematic variations: 'nom', 'up', 'down'"
+        }
+      ],
+      "output": {
+        "name": "tes",
+        "type": "real",
+        "description": "tau energy scale"
+      },
+      "data": {
+        "nodetype": "category",
+        "input": "id",
+        "content": [
+          { "key": "DeepTau2018v2p5",
+            "value": {
+              "nodetype": "transform",
+              "input": "genmatch",
+              "rule": {
+                "nodetype": "category",
+                "input": "genmatch",
+                "content": [
+                  { "key": 0, "value": 6.0 },
+                  { "key": 1, "value": 1.0 },
+                  { "key": 2, "value": 2.0 },
+                  { "key": 3, "value": 1.0 },
+                  { "key": 4, "value": 2.0 },
+                  { "key": 5, "value": 5.0 },
+                  { "key": 6, "value": 6.0 }
+                ]
+              },
+              "content": {
+                "nodetype": "category",
+                "input": "genmatch",
+                "content": [
+                  { "key": 1,
+                    "value": {
+                      "nodetype": "category",
+                      "input": "dm",
+                      "content": [
+                        { "key": 0,
+                          "value": {
+                            "nodetype": "category",
+                            "input": "wp_VSe",
+                            "content": [
+                              { "key": "Tight",
+                                "value": {
+                                  "nodetype": "transform",
+                                  "input": "eta",
+                                  "rule": {
+                                    "nodetype": "formula",
+                                    "expression": "abs(x)",
+                                    "parser": "TFormula",
+                                    "variables": [ "eta" ]
+                                  },
+                                  "content": {
+                                    "nodetype": "binning",
+                                    "input": "eta",
+                                    "edges": [ 0.0, 1.5, 2.5 ],
+                                    "content": [
+                                      { "nodetype": "category",
+                                        "input": "syst",
+                                        "content": [
+                                          { "key": "nom", "value": 1.0000002 },
+                                          { "key": "up", "value": 1.0048793 },
+                                          { "key": "down", "value": 0.9975425 }
+                                        ]
+                                      },
+                                      { "nodetype": "category",
+                                        "input": "syst",
+                                        "content": [
+                                          { "key": "nom", "value": 1.0131533 },
+                                          { "key": "up", "value": 1.0851357 },
+                                          { "key": "down", "value": 0.9806844 }
+                                        ]
+                                      }
+                                    ],
+                                    "flow": "clamp"
+                                  }
+                                }
+                              },
+                              { "key": "VVLoose",
+                                "value": {
+                                  "nodetype": "transform",
+                                  "input": "eta",
+                                  "rule": {
+                                    "nodetype": "formula",
+                                    "expression": "abs(x)",
+                                    "parser": "TFormula",
+                                    "variables": [ "eta" ]
+                                  },
+                                  "content": {
+                                    "nodetype": "binning",
+                                    "input": "eta",
+                                    "edges": [ 0.0, 1.5, 2.5 ],
+                                    "content": [
+                                      { "nodetype": "category",
+                                        "input": "syst",
+                                        "content": [
+                                          { "key": "nom", "value": 1.0041147 },
+                                          { "key": "up", "value": 1.0048349 },
+                                          { "key": "down", "value": 1.0033833 }
+                                        ]
+                                      },
+                                      { "nodetype": "category",
+                                        "input": "syst",
+                                        "content": [
+                                          { "key": "nom", "value": 0.9640283 },
+                                          { "key": "up", "value": 0.9695673 },
+                                          { "key": "down", "value": 0.9606221 }
+                                        ]
+                                      }
+                                    ],
+                                    "flow": "clamp"
+                                  }
+                                }
+                              }
+                            ]
+                          }
+                        },
+                        { "key": 1,
+                          "value": {
+                            "nodetype": "category",
+                            "input": "wp_VSe",
+                            "content": [
+                              { "key": "Tight",
+                                "value": {
+                                  "nodetype": "transform",
+                                  "input": "eta",
+                                  "rule": {
+                                    "nodetype": "formula",
+                                    "expression": "abs(x)",
+                                    "parser": "TFormula",
+                                    "variables": [ "eta" ]
+                                  },
+                                  "content": {
+                                    "nodetype": "binning",
+                                    "input": "eta",
+                                    "edges": [ 0.0, 1.5, 2.5 ],
+                                    "content": [
+                                      { "nodetype": "category",
+                                        "input": "syst",
+                                        "content": [
+                                          { "key": "nom", "value": 0.997896 },
+                                          { "key": "up", "value": 1.008025 },
+                                          { "key": "down", "value": 0.9812497 }
+                                        ]
+                                      },
+                                      { "nodetype": "category",
+                                        "input": "syst",
+                                        "content": [
+                                          { "key": "nom", "value": 1.0 },
+                                          { "key": "up", "value": 1.0463328 },
+                                          { "key": "down", "value": 0.9515995 }
+                                        ]
+                                      }
+                                    ],
+                                    "flow": "clamp"
+                                  }
+                                }
+                              },
+                              { "key": "VVLoose",
+                                "value": {
+                                  "nodetype": "transform",
+                                  "input": "eta",
+                                  "rule": {
+                                    "nodetype": "formula",
+                                    "expression": "abs(x)",
+                                    "parser": "TFormula",
+                                    "variables": [ "eta" ]
+                                  },
+                                  "content": {
+                                    "nodetype": "binning",
+                                    "input": "eta",
+                                    "edges": [ 0.0, 1.5, 2.5 ],
+                                    "content": [
+                                      { "nodetype": "category",
+                                        "input": "syst",
+                                        "content": [
+                                          { "key": "nom", "value": 1.0434662 },
+                                          { "key": "up", "value": 1.0466728 },
+                                          { "key": "down", "value": 1.0400691 }
+                                        ]
+                                      },
+                                      { "nodetype": "category",
+                                        "input": "syst",
+                                        "content": [
+                                          { "key": "nom", "value": 0.9718777 },
+                                          { "key": "up", "value": 0.9800335 },
+                                          { "key": "down", "value": 0.9630911 }
+                                        ]
+                                      }
+                                    ],
+                                    "flow": "clamp"
+                                  }
+                                }
+                              }
+                            ]
+                          }
+                        },
+                        { "key": 2,
+                          "value": {
+                            "nodetype": "category",
+                            "input": "wp_VSe",
+                            "content": [
+                              { "key": "Tight",
+                                "value": {
+                                  "nodetype": "transform",
+                                  "input": "eta",
+                                  "rule": {
+                                    "nodetype": "formula",
+                                    "expression": "abs(x)",
+                                    "parser": "TFormula",
+                                    "variables": [ "eta" ]
+                                  },
+                                  "content": {
+                                    "nodetype": "binning",
+                                    "input": "eta",
+                                    "edges": [ 0.0, 1.5, 2.5 ],
+                                    "content": [
+                                      { "nodetype": "category",
+                                        "input": "syst",
+                                        "content": [
+                                          { "key": "nom", "value": 0.997896 },
+                                          { "key": "up", "value": 1.008025 },
+                                          { "key": "down", "value": 0.9812497 }
+                                        ]
+                                      },
+                                      { "nodetype": "category",
+                                        "input": "syst",
+                                        "content": [
+                                          { "key": "nom", "value": 1.0 },
+                                          { "key": "up", "value": 1.0463328 },
+                                          { "key": "down", "value": 0.9515995 }
+                                        ]
+                                      }
+                                    ],
+                                    "flow": "clamp"
+                                  }
+                                }
+                              },
+                              { "key": "VVLoose",
+                                "value": {
+                                  "nodetype": "transform",
+                                  "input": "eta",
+                                  "rule": {
+                                    "nodetype": "formula",
+                                    "expression": "abs(x)",
+                                    "parser": "TFormula",
+                                    "variables": [ "eta" ]
+                                  },
+                                  "content": {
+                                    "nodetype": "binning",
+                                    "input": "eta",
+                                    "edges": [ 0.0, 1.5, 2.5 ],
+                                    "content": [
+                                      { "nodetype": "category",
+                                        "input": "syst",
+                                        "content": [
+                                          { "key": "nom", "value": 1.0434662 },
+                                          { "key": "up", "value": 1.0466728 },
+                                          { "key": "down", "value": 1.0400691 }
+                                        ]
+                                      },
+                                      { "nodetype": "category",
+                                        "input": "syst",
+                                        "content": [
+                                          { "key": "nom", "value": 0.9718777 },
+                                          { "key": "up", "value": 0.9800335 },
+                                          { "key": "down", "value": 0.9630911 }
+                                        ]
+                                      }
+                                    ],
+                                    "flow": "clamp"
+                                  }
+                                }
+                              }
+                            ]
+                          }
+                        },
+                        { "key": 10,
+                          "value": {
+                            "nodetype": "category",
+                            "input": "wp_VSe",
+                            "content": [
+                              { "key": "Tight",
+                                "value": {
+                                  "nodetype": "transform",
+                                  "input": "eta",
+                                  "rule": {
+                                    "nodetype": "formula",
+                                    "expression": "abs(x)",
+                                    "parser": "TFormula",
+                                    "variables": [ "eta" ]
+                                  },
+                                  "content": {
+                                    "nodetype": "binning",
+                                    "input": "eta",
+                                    "edges": [ 0.0, 1.5, 2.5 ],
+                                    "content": [
+                                      { "nodetype": "category",
+                                        "input": "syst",
+                                        "content": [
+                                          { "key": "nom", "value": 1.0257778 },
+                                          { "key": "up", "value": 1.1006088 },
+                                          { "key": "down", "value": 0.943135 }
+                                        ]
+                                      },
+                                      { "nodetype": "category",
+                                        "input": "syst",
+                                        "content": [
+                                          { "key": "nom", "value": 0.9848626 },
+                                          { "key": "up", "value": 1.1244497 },
+                                          { "key": "down", "value": 0.9526811 }
+                                        ]
+                                      }
+                                    ],
+                                    "flow": "clamp"
+                                  }
+                                }
+                              },
+                              { "key": "VVLoose",
+                                "value": {
+                                  "nodetype": "transform",
+                                  "input": "eta",
+                                  "rule": {
+                                    "nodetype": "formula",
+                                    "expression": "abs(x)",
+                                    "parser": "TFormula",
+                                    "variables": [ "eta" ]
+                                  },
+                                  "content": {
+                                    "nodetype": "binning",
+                                    "input": "eta",
+                                    "edges": [ 0.0, 1.5, 2.5 ],
+                                    "content": [
+                                      { "nodetype": "category",
+                                        "input": "syst",
+                                        "content": [
+                                          { "key": "nom", "value": 1.0257778 },
+                                          { "key": "up", "value": 1.0631933 },
+                                          { "key": "down", "value": 0.9844564 }
+                                        ]
+                                      },
+                                      { "nodetype": "category",
+                                        "input": "syst",
+                                        "content": [
+                                          { "key": "nom", "value": 0.9848626 },
+                                          { "key": "up", "value": 1.0546562 },
+                                          { "key": "down", "value": 0.9687719 }
+                                        ]
+                                      }
+                                    ],
+                                    "flow": "clamp"
+                                  }
+                                }
+                              }
+                            ]
+                          }
+                        },
+                        { "key": 11,
+                          "value": {
+                            "nodetype": "category",
+                            "input": "wp_VSe",
+                            "content": [
+                              { "key": "Tight",
+                                "value": {
+                                  "nodetype": "transform",
+                                  "input": "eta",
+                                  "rule": {
+                                    "nodetype": "formula",
+                                    "expression": "abs(x)",
+                                    "parser": "TFormula",
+                                    "variables": [ "eta" ]
+                                  },
+                                  "content": {
+                                    "nodetype": "binning",
+                                    "input": "eta",
+                                    "edges": [ 0.0, 1.5, 2.5 ],
+                                    "content": [
+                                      { "nodetype": "category",
+                                        "input": "syst",
+                                        "content": [
+                                          { "key": "nom", "value": 0.9512231 },
+                                          { "key": "up", "value": 0.9828722 },
+                                          { "key": "down", "value": 0.8333424 }
+                                        ]
+                                      },
+                                      { "nodetype": "category",
+                                        "input": "syst",
+                                        "content": [
+                                          { "key": "nom", "value": 0.9624788 },
+                                          { "key": "up", "value": 0.9996769 },
+                                          { "key": "down", "value": 0.9081734 }
+                                        ]
+                                      }
+                                    ],
+                                    "flow": "clamp"
+                                  }
+                                }
+                              },
+                              { "key": "VVLoose",
+                                "value": {
+                                  "nodetype": "transform",
+                                  "input": "eta",
+                                  "rule": {
+                                    "nodetype": "formula",
+                                    "expression": "abs(x)",
+                                    "parser": "TFormula",
+                                    "variables": [ "eta" ]
+                                  },
+                                  "content": {
+                                    "nodetype": "binning",
+                                    "input": "eta",
+                                    "edges": [ 0.0, 1.5, 2.5 ],
+                                    "content": [
+                                      { "nodetype": "category",
+                                        "input": "syst",
+                                        "content": [
+                                          { "key": "nom", "value": 0.9512231 },
+                                          { "key": "up", "value": 0.9670476 },
+                                          { "key": "down", "value": 0.8922827 }
+                                        ]
+                                      },
+                                      { "nodetype": "category",
+                                        "input": "syst",
+                                        "content": [
+                                          { "key": "nom", "value": 0.9624788 },
+                                          { "key": "up", "value": 0.9810779 },
+                                          { "key": "down", "value": 0.9353261 }
+                                        ]
+                                      }
+                                    ],
+                                    "flow": "clamp"
+                                  }
+                                }
+                              }
+                            ]
+                          }
+                        }
+                      ]
+                    }
+                  },
+                  { "key": 2,
+                    "value": {
+                      "nodetype": "category",
+                      "input": "syst",
+                      "content": [
+                        { "key": "nom", "value": 1.0 },
+                        { "key": "up", "value": 1.01 },
+                        { "key": "down", "value": 0.99 }
+                      ]
+                    }
+                  },
+                  { "key": 5,
+                    "value": {
+                      "nodetype": "category",
+                      "input": "wp",
+                      "content": [
+                        { "key": "Medium",
+                          "value": {
+                            "nodetype": "category",
+                            "input": "wp_VSe",
+                            "content": [
+                              { "key": "VVLoose",
+                                "value": {
+                                  "nodetype": "category",
+                                  "input": "dm",
+                                  "content": [
+                                    { "key": 0,
+                                      "value": {
+                                        "nodetype": "category",
+                                        "input": "syst",
+                                        "content": [
+                                          { "key": "nom",
+                                            "value": {
+                                              "nodetype": "binning",
+                                              "input": "pt",
+                                              "edges": [ 0.0, 140.0, 1000.0 ],
+                                              "content": [ 1.01, 1.0 ],
+                                              "flow": "clamp"
+                                            }
+                                          },
+                                          { "key": "up",
+                                            "value": {
+                                              "nodetype": "binning",
+                                              "input": "pt",
+                                              "edges": [ 0.0, 140.0, 1000.0 ],
+                                              "content": [ 1.025, 1.03 ],
+                                              "flow": "clamp"
+                                            }
+                                          },
+                                          { "key": "down",
+                                            "value": {
+                                              "nodetype": "binning",
+                                              "input": "pt",
+                                              "edges": [ 0.0, 140.0, 1000.0 ],
+                                              "content": [ 0.995, 0.97 ],
+                                              "flow": "clamp"
+                                            }
+                                          }
+                                        ]
+                                      }
+                                    },
+                                    { "key": 1,
+                                      "value": {
+                                        "nodetype": "category",
+                                        "input": "syst",
+                                        "content": [
+                                          { "key": "nom",
+                                            "value": {
+                                              "nodetype": "binning",
+                                              "input": "pt",
+                                              "edges": [ 0.0, 140.0, 1000.0 ],
+                                              "content": [ 1.007, 1.0 ],
+                                              "flow": "clamp"
+                                            }
+                                          },
+                                          { "key": "up",
+                                            "value": {
+                                              "nodetype": "binning",
+                                              "input": "pt",
+                                              "edges": [ 0.0, 140.0, 1000.0 ],
+                                              "content": [ 1.022, 1.03 ],
+                                              "flow": "clamp"
+                                            }
+                                          },
+                                          { "key": "down",
+                                            "value": {
+                                              "nodetype": "binning",
+                                              "input": "pt",
+                                              "edges": [ 0.0, 140.0, 1000.0 ],
+                                              "content": [ 0.992, 0.97 ],
+                                              "flow": "clamp"
+                                            }
+                                          }
+                                        ]
+                                      }
+                                    },
+                                    { "key": 10,
+                                      "value": {
+                                        "nodetype": "category",
+                                        "input": "syst",
+                                        "content": [
+                                          { "key": "nom",
+                                            "value": {
+                                              "nodetype": "binning",
+                                              "input": "pt",
+                                              "edges": [ 0.0, 140.0, 1000.0 ],
+                                              "content": [ 0.991, 1.0 ],
+                                              "flow": "clamp"
+                                            }
+                                          },
+                                          { "key": "up",
+                                            "value": {
+                                              "nodetype": "binning",
+                                              "input": "pt",
+                                              "edges": [ 0.0, 140.0, 1000.0 ],
+                                              "content": [ 1.006, 1.03 ],
+                                              "flow": "clamp"
+                                            }
+                                          },
+                                          { "key": "down",
+                                            "value": {
+                                              "nodetype": "binning",
+                                              "input": "pt",
+                                              "edges": [ 0.0, 140.0, 1000.0 ],
+                                              "content": [ 0.976, 0.97 ],
+                                              "flow": "clamp"
+                                            }
+                                          }
+                                        ]
+                                      }
+                                    },
+                                    { "key": 11,
+                                      "value": {
+                                        "nodetype": "category",
+                                        "input": "syst",
+                                        "content": [
+                                          { "key": "nom",
+                                            "value": {
+                                              "nodetype": "binning",
+                                              "input": "pt",
+                                              "edges": [ 0.0, 140.0, 1000.0 ],
+                                              "content": [ 1.0, 1.0 ],
+                                              "flow": "clamp"
+                                            }
+                                          },
+                                          { "key": "up",
+                                            "value": {
+                                              "nodetype": "binning",
+                                              "input": "pt",
+                                              "edges": [ 0.0, 140.0, 1000.0 ],
+                                              "content": [ 1.02, 1.03 ],
+                                              "flow": "clamp"
+                                            }
+                                          },
+                                          { "key": "down",
+                                            "value": {
+                                              "nodetype": "binning",
+                                              "input": "pt",
+                                              "edges": [ 0.0, 140.0, 1000.0 ],
+                                              "content": [ 0.98, 0.97 ],
+                                              "flow": "clamp"
+                                            }
+                                          }
+                                        ]
+                                      }
+                                    }
+                                  ]
+                                }
+                              },
+                              { "key": "Tight",
+                                "value": {
+                                  "nodetype": "category",
+                                  "input": "dm",
+                                  "content": [
+                                    { "key": 0,
+                                      "value": {
+                                        "nodetype": "category",
+                                        "input": "syst",
+                                        "content": [
+                                          { "key": "nom",
+                                            "value": {
+                                              "nodetype": "binning",
+                                              "input": "pt",
+                                              "edges": [ 0.0, 140.0, 1000.0 ],
+                                              "content": [ 0.989, 1.0 ],
+                                              "flow": "clamp"
+                                            }
+                                          },
+                                          { "key": "up",
+                                            "value": {
+                                              "nodetype": "binning",
+                                              "input": "pt",
+                                              "edges": [ 0.0, 140.0, 1000.0 ],
+                                              "content": [ 1.004, 1.03 ],
+                                              "flow": "clamp"
+                                            }
+                                          },
+                                          { "key": "down",
+                                            "value": {
+                                              "nodetype": "binning",
+                                              "input": "pt",
+                                              "edges": [ 0.0, 140.0, 1000.0 ],
+                                              "content": [ 0.974, 0.97 ],
+                                              "flow": "clamp"
+                                            }
+                                          }
+                                        ]
+                                      }
+                                    },
+                                    { "key": 1,
+                                      "value": {
+                                        "nodetype": "category",
+                                        "input": "syst",
+                                        "content": [
+                                          { "key": "nom",
+                                            "value": {
+                                              "nodetype": "binning",
+                                              "input": "pt",
+                                              "edges": [ 0.0, 140.0, 1000.0 ],
+                                              "content": [ 1.006, 1.0 ],
+                                              "flow": "clamp"
+                                            }
+                                          },
+                                          { "key": "up",
+                                            "value": {
+                                              "nodetype": "binning",
+                                              "input": "pt",
+                                              "edges": [ 0.0, 140.0, 1000.0 ],
+                                              "content": [ 1.021, 1.03 ],
+                                              "flow": "clamp"
+                                            }
+                                          },
+                                          { "key": "down",
+                                            "value": {
+                                              "nodetype": "binning",
+                                              "input": "pt",
+                                              "edges": [ 0.0, 140.0, 1000.0 ],
+                                              "content": [ 0.991, 0.97 ],
+                                              "flow": "clamp"
+                                            }
+                                          }
+                                        ]
+                                      }
+                                    },
+                                    { "key": 10,
+                                      "value": {
+                                        "nodetype": "category",
+                                        "input": "syst",
+                                        "content": [
+                                          { "key": "nom",
+                                            "value": {
+                                              "nodetype": "binning",
+                                              "input": "pt",
+                                              "edges": [ 0.0, 140.0, 1000.0 ],
+                                              "content": [ 0.989, 1.0 ],
+                                              "flow": "clamp"
+                                            }
+                                          },
+                                          { "key": "up",
+                                            "value": {
+                                              "nodetype": "binning",
+                                              "input": "pt",
+                                              "edges": [ 0.0, 140.0, 1000.0 ],
+                                              "content": [ 1.004, 1.03 ],
+                                              "flow": "clamp"
+                                            }
+                                          },
+                                          { "key": "down",
+                                            "value": {
+                                              "nodetype": "binning",
+                                              "input": "pt",
+                                              "edges": [ 0.0, 140.0, 1000.0 ],
+                                              "content": [ 0.974, 0.97 ],
+                                              "flow": "clamp"
+                                            }
+                                          }
+                                        ]
+                                      }
+                                    },
+                                    { "key": 11,
+                                      "value": {
+                                        "nodetype": "category",
+                                        "input": "syst",
+                                        "content": [
+                                          { "key": "nom",
+                                            "value": {
+                                              "nodetype": "binning",
+                                              "input": "pt",
+                                              "edges": [ 0.0, 140.0, 1000.0 ],
+                                              "content": [ 1.001, 1.0 ],
+                                              "flow": "clamp"
+                                            }
+                                          },
+                                          { "key": "up",
+                                            "value": {
+                                              "nodetype": "binning",
+                                              "input": "pt",
+                                              "edges": [ 0.0, 140.0, 1000.0 ],
+                                              "content": [ 1.021, 1.03 ],
+                                              "flow": "clamp"
+                                            }
+                                          },
+                                          { "key": "down",
+                                            "value": {
+                                              "nodetype": "binning",
+                                              "input": "pt",
+                                              "edges": [ 0.0, 140.0, 1000.0 ],
+                                              "content": [ 0.981, 0.97 ],
+                                              "flow": "clamp"
+                                            }
+                                          }
+                                        ]
+                                      }
+                                    }
+                                  ]
+                                }
+                              }
+                            ]
+                          }
+                        }
+                      ]
+                    }
+                  },
+                  { "key": 6, "value": 1.0 }
+                ]
+              }
+            }
+          }
+        ]
+      }
+    }
+  ]
+}
