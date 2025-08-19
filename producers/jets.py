@@ -3,7 +3,7 @@ Producers for AK4 jet energy scale and resolution corrections, object selections
 """
 
 from ..quantities import output as q
-from ..quantities import nanoAOD, nanoAOD_run2 
+from ..quantities import nanoAOD, nanoAOD_run2
 from code_generation.producer import Producer, ProducerGroup
 
 from ._helpers import jerc_producer_factory
@@ -13,6 +13,7 @@ from ..constants import GLOBAL_SCOPES, SCOPES
 #
 # JET ENERGY SCALE AND RESOLUTION CORRECTIONS
 #
+
 
 # create jet energy correction producers for AK4 jets for Run 2
 JetEnergyCorrection_data_Run2, JetEnergyCorrectionRun2, RenameJetsDataRun2 = jerc_producer_factory(
@@ -28,6 +29,9 @@ JetEnergyCorrection_data_Run2, JetEnergyCorrectionRun2, RenameJetsDataRun2 = jer
         "gen_jet_eta": nanoAOD.GenJet_eta,
         "gen_jet_phi": nanoAOD.GenJet_phi,
         "rho": nanoAOD.Rho_fixedGridRhoFastjetAll,
+        "luminosity_block": nanoAOD.luminosityBlock,
+        "run": nanoAOD.run,
+        "event": nanoAOD.event,
     },
     output={
         "jet_pt_corrected": q.Jet_pt_corrected,
@@ -53,6 +57,9 @@ JetEnergyCorrection_data, JetEnergyCorrection, RenameJetsData = jerc_producer_fa
         "gen_jet_eta": nanoAOD.GenJet_eta,
         "gen_jet_phi": nanoAOD.GenJet_phi,
         "rho": nanoAOD.Rho_fixedGridRhoFastjetAll,
+        "luminosity_block": nanoAOD.luminosityBlock,
+        "run": nanoAOD.run,
+        "event": nanoAOD.event,
     },
     output={
         "jet_pt_corrected": q.Jet_pt_corrected,

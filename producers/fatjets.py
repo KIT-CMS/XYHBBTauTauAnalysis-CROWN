@@ -31,6 +31,9 @@ FatJetEnergyCorrection_data_Run2, FatJetEnergyCorrectionRun2, RenameFatJetsDataR
         "gen_jet_eta": nanoAOD.GenJetAK8_eta,
         "gen_jet_phi": nanoAOD.GenJetAK8_phi,
         "rho": nanoAOD.Rho_fixedGridRhoFastjetAll,
+        "luminosity_block": nanoAOD.luminosityBlock,
+        "run": nanoAOD.run,
+        "event": nanoAOD.event,
     },
     output={
         "jet_pt_corrected": q.FatJet_pt_corrected,
@@ -58,6 +61,9 @@ FatJetEnergyCorrection_data, FatJetEnergyCorrection, RenameFatJetsData = jerc_pr
         "gen_jet_eta": nanoAOD.GenJetAK8_eta,
         "gen_jet_phi": nanoAOD.GenJetAK8_phi,
         "rho": nanoAOD.Rho_fixedGridRhoFastjetAll,
+        "luminosity_block": nanoAOD.luminosityBlock,
+        "run": nanoAOD.run,
+        "event": nanoAOD.event,
     },
     output={
         "jet_pt_corrected": q.FatJet_pt_corrected,
@@ -88,7 +94,7 @@ GoodFatJetsWithoutPUID = Producer(
     scopes=GLOBAL_SCOPES,
 )
 
-# use the selection with pileup ID as default 
+# use the selection with pileup ID as default
 GoodFatJets = GoodFatJetsWithoutPUID
 
 
@@ -468,7 +474,7 @@ FindXbbFatjet = Producer(
     call="fatjet::FindXbbFatjet({df}, {output}, {input})",
     input=[
         q.good_fatjet_collection,
-        nanoAOD.FatJet_particleNet_XbbVsQCD, 
+        nanoAOD.FatJet_particleNet_XbbVsQCD,
         nanoAOD.FatJet_particleNet_QCD,
     ],
     output=[q.Xbb_fatjet],
@@ -591,7 +597,7 @@ FindXbbFatjet_boosted = Producer(
     call="fatjet::FindXbbFatjet({df}, {output}, {input})",
     input=[
         q.good_fatjet_collection_boosted,
-        nanoAOD.FatJet_particleNet_XbbVsQCD, 
+        nanoAOD.FatJet_particleNet_XbbVsQCD,
         nanoAOD.FatJet_particleNet_QCD,
     ],
     output=[q.Xbb_fatjet_boosted],
