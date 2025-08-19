@@ -1956,10 +1956,7 @@ def build_config(
             [
                 pairquantities_bbpair.DiBjetPairQuantitiesRun3,
                 pairquantities_bbpair.DiBjetPairQuantitiesRun3_boosted,
-                
-                # TODO apply "data" correction (renaming) also on MC as scale factors are incorrect
-                # taus.TauEnergyCorrectionMCRun3,
-                taus.TauEnergyCorrection_data,
+                taus.TauEnergyCorrectionMCRun3,
             ]
         )
 
@@ -2376,15 +2373,14 @@ def build_config(
                 samples="data",
             ),
         )
-    #elif era in ERAS_RUN3:
-        # TODO currently not needed as the tau energy correction for Run 3 is just a renaming operation due to incorrect scale factors
-        #configuration.add_modification_rule(
-        #    HAD_TAU_SCOPES,
-        #    ReplaceProducer(
-        #        producers=[taus.TauEnergyCorrectionMCRun3, taus.TauEnergyCorrection_data],
-        #        samples="data",
-        #    ),
-        #)
+    elif era in ERAS_RUN3:
+        configuration.add_modification_rule(
+            HAD_TAU_SCOPES,
+            ReplaceProducer(
+                producers=[taus.TauEnergyCorrectionMCRun3, taus.TauEnergyCorrection_data],
+                samples="data",
+            ),
+        )
 
     # for Run 2, just rename energy value in data is just renamed
     # for Run 3, apply the "data correction" for boosted tau energies, which is just a renaming operation
