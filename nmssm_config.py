@@ -683,7 +683,6 @@ def add_hadronic_tau_config(configuration: Configuration):
             "tau_ES_json_name": "tau_energy_scale",
             "tau_id_algorithm": tau_id,
             "tau_es_vs_jet_wp": "Medium",
-            "tau_es_vs_ele_wp": "VVLoose",
             "tau_ES_shift_DM0": "nom",
             "tau_ES_shift_DM1": "nom",
             "tau_ES_shift_DM10": "nom",
@@ -696,7 +695,21 @@ def add_hadronic_tau_config(configuration: Configuration):
         },
     )
 
-    # hadronic tau identification
+    # the vsEle working point is different for the mt/tt and tt
+    configuration.add_config_parameters(
+        MT_SCOPES + TT_SCOPES,
+        {
+            "tau_es_vs_ele_wp": "VVLoose",
+        }
+    )
+    configuration.add_config_parameters(
+        ET_SCOPES,
+        {
+            "tau_es_vs_ele_wp": "Tight",
+        }
+    )
+
+    # hadronic tau identification against jets
     # recommendations: https://twiki.cern.ch/twiki/bin/viewauth/CMS/TauIDRecommendationForRun2
     configuration.add_config_parameters(
         HAD_TAU_SCOPES,
