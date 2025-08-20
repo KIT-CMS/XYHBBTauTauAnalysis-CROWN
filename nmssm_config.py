@@ -698,7 +698,7 @@ def add_hadronic_tau_config(configuration: Configuration):
                         for _era, _campaign in CORRECTIONLIB_CAMPAIGNS.items()
                         if _era in ERAS_RUN2
                     },
-                    "2022preEE": "data/jsonpog-integration/POG/TAU/2022_Summer22/tau_DeepTau2018v2p5_2022_preEE.json.gz",
+                    "2022preEE": "payloads/preliminary_tau_corrections/tau_DeepTau2018v2p5_2022_preEE.json.gz",
                     "2022postEE": "data/jsonpog-integration/POG/TAU/2022_Summer22EE/tau_DeepTau2018v2p5_2022_postEE.json.gz",
                     "2023preBPix": "data/jsonpog-integration/POG/TAU/2023_Summer23/tau_DeepTau2018v2p5_2023_preBPix.json.gz",
                     "2023postBPix": "data/jsonpog-integration/POG/TAU/2023_Summer23BPix/tau_DeepTau2018v2p5_2023_postBPix.json.gz",
