@@ -207,14 +207,14 @@ LVFatJet2 = Producer(
 
 NumberOfFatJets = Producer(
     name="NumberOfFatJets",
-    call="physicsobject::Count({df}, {output}, {input})",
+    call="physicsobject::Size<Int_t>({df}, {output}, {input})",
     input=[q.good_fatjet_collection],
     output=[q.nfatjets],
     scopes=["mt", "et", "tt", "em", "mm", "ee"],
 )
 NumberOfFatJets_boosted = Producer(
     name="NumberOfFatJets_boosted",
-    call="physicsobject::Count({df}, {output}, {input})",
+    call="physicsobject::Size<Int_t>({df}, {output}, {input})",
     input=[q.good_fatjet_collection_boosted],
     output=[q.nfatjets_boosted],
     scopes=["mt", "et", "tt", "em", "mm", "ee"],
