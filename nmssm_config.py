@@ -4127,7 +4127,7 @@ def build_config(
                 SystematicShift(
                     name=f"singleEleTriggerSF{_variation.upper()}",
                     shift_config={
-                        ("et"): {
+                        ("mt"): {
                             "single_ele_trigger_sf": [
                                 {
                                     "e_trigger_flagname": "trg_wgt_single_ele30",
