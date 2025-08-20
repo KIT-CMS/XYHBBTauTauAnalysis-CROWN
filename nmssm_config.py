@@ -794,6 +794,7 @@ def add_hadronic_tau_config(configuration: Configuration):
     )
 
     # hadronic tau identification corrections (tagging vs jets)
+    # the vsEle working point is different for the mt/tt and tt
     configuration.add_config_parameters(
         MT_SCOPES + TT_SCOPES,
         {
@@ -820,7 +821,7 @@ def add_hadronic_tau_config(configuration: Configuration):
                     # "VLoose": 3,
                     # "Loose": 4,
                     "Medium": 5,
-                    "Tight": 6,
+                    # "Tight": 6,
                     # "VTight": 7,
                     # "VVTight": 8,
                 }.items()
@@ -828,6 +829,8 @@ def add_hadronic_tau_config(configuration: Configuration):
         },
     )
 
+    # hadronic tau identification corrections (tagging vs jets)
+    # the vsEle working point is different for the mt/tt and tt
     configuration.add_config_parameters(
         ET_SCOPES,
         {
@@ -854,7 +857,7 @@ def add_hadronic_tau_config(configuration: Configuration):
                     # "VLoose": 3,
                     # "Loose": 4,
                     "Medium": 5,
-                    "Tight": 6,
+                    # "Tight": 6,
                     # "VTight": 7,
                     # "VVTight": 8,
                 }.items()
