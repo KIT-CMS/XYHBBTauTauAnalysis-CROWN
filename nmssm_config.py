@@ -896,7 +896,7 @@ def add_hadronic_tau_config(configuration: Configuration):
             "tau_sf_vsjet_tau40to500": "nom",
             "tau_sf_vsjet_tau500to1000": "nom",
             "tau_sf_vsjet_tau1000toinf": "nom",
-            "tau_vsjet_sf_dependence": "pt",  # or "dm", "eta"
+            "tau_vsjet_sf_dependence": "dm",  # or "dm", "eta"
         },
     )
 
