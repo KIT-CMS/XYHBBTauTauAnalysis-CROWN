@@ -472,7 +472,7 @@ Tau_2_VsJetTauID_lt_SF = ExtendedVectorProducer(
         {input}, 
         "{tau_emb_sf_file}", 
         "{tau_emb_id_sf_correctionset}", 
-        {vec_open}{tau_dms}{vec_close}, 
+        {vec_open}{tight_tau_dms}{vec_close}, 
         "{vsjet_tau_id_WP}", 
         "{tau_emb_vsele_WP_for_vsjet_sf}", 
         "{tau_emb_vsjet_sf_dependence}", 

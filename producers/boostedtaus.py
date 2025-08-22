@@ -83,7 +83,7 @@ boostedTauEtaCut = Producer(
 )
 boostedTauDMCut = Producer(
     name="boostedTauDMCut",
-    call="physicsobject::CutQuantity<int>({df}, {output}, {input}, {vec_open}{tau_dms}{vec_close})",
+    call="physicsobject::CutQuantity<int>({df}, {output}, {input}, {vec_open}{boostedtau_dms}{vec_close})",
     input=[nanoAOD.boostedTau_decayMode],
     output=[],
     scopes=["et", "mt", "tt"],
