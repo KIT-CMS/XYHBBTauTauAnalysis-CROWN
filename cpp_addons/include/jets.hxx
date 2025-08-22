@@ -6,15 +6,6 @@ namespace physicsobject {
 
 namespace jet {
 
-ROOT::RDF::RNode
-BJetPtCorrection(
-    ROOT::RDF::RNode df,
-    const std::string &corrected_bjet_pt,
-    const std::string &jet_pt,
-    const std::string &good_bjet_mask,
-    const std::string &corr_factor
-);
-
 namespace quantities {
 
 ROOT::RDF::RNode

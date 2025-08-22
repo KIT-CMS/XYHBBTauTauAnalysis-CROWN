@@ -256,21 +256,21 @@ fj_msoftdrop_1 = Producer(
 )
 fj_particleNet_XbbvsQCD_1 = Producer(
     name="particleNet_XbbvsQCD_1",
-    call="quantities::fatjet::particleNet_XbbvsQCD({df}, {output}, {input}, 0)",
+    call="physicsobject::fatjet::quantity::ParticleNet_XvsQCD({df}, {output}, {input}, 0)",
     input=[nanoAOD.FatJet_particleNet_XbbVsQCD, nanoAOD.FatJet_particleNet_QCD, q.good_fatjet_collection],
     output=[q.fj_particleNet_XbbvsQCD_1],
     scopes=["mt", "et", "tt", "em", "mm", "ee"],
 )
 fj_nsubjettiness_2over1_1 = Producer(
     name="nsubjettiness_2over1_1",
-    call="quantities::fatjet::nsubjettiness_ratio({df}, {output}, {input}, 0)",
+    call="physicsobject::fatjet::quantity::NsubjettinessRatio({df}, {output}, {input}, 0)",
     input=[nanoAOD.FatJet_tau2, nanoAOD.FatJet_tau1, q.good_fatjet_collection],
     output=[q.fj_nsubjettiness_2over1_1],
     scopes=["mt", "et", "tt", "em", "mm", "ee"],
 )
 fj_nsubjettiness_3over2_1 = Producer(
     name="nsubjettiness_3over2_1",
-    call="quantities::fatjet::nsubjettiness_ratio({df}, {output}, {input}, 0)",
+    call="physicsobject::fatjet::quantity::NsubjettinessRatio({df}, {output}, {input}, 0)",
     input=[nanoAOD.FatJet_tau3, nanoAOD.FatJet_tau2, q.good_fatjet_collection],
     output=[q.fj_nsubjettiness_3over2_1],
     scopes=["mt", "et", "tt", "em", "mm", "ee"],
@@ -312,21 +312,21 @@ fj_msoftdrop_2 = Producer(
 )
 fj_particleNet_XbbvsQCD_2 = Producer(
     name="particleNet_XbbvsQCD_2",
-    call="quantities::fatjet::particleNet_XbbvsQCD({df}, {output}, {input}, 1)",
+    call="physicsobject::fatjet::quantity::ParticleNet_XvsQCD({df}, {output}, {input}, 1)",
     input=[nanoAOD.FatJet_particleNet_XbbVsQCD, nanoAOD.FatJet_particleNet_QCD, q.good_fatjet_collection],
     output=[q.fj_particleNet_XbbvsQCD_2],
     scopes=["mt", "et", "tt", "em", "mm", "ee"],
 )
 fj_nsubjettiness_2over1_2 = Producer(
     name="nsubjettiness_2over1_2",
-    call="quantities::fatjet::nsubjettiness_ratio({df}, {output}, {input}, 1)",
+    call="physicsobject::fatjet::quantity::NsubjettinessRatio({df}, {output}, {input}, 1)",
     input=[nanoAOD.FatJet_tau2, nanoAOD.FatJet_tau1, q.good_fatjet_collection],
     output=[q.fj_nsubjettiness_2over1_2],
     scopes=["mt", "et", "tt", "em", "mm", "ee"],
 )
 fj_nsubjettiness_3over2_2 = Producer(
     name="nsubjettiness_3over2_2",
-    call="quantities::fatjet::nsubjettiness_ratio({df}, {output}, {input}, 1)",
+    call="physicsobject::fatjet::quantity::NsubjettinessRatio({df}, {output}, {input}, 1)",
     input=[nanoAOD.FatJet_tau3, nanoAOD.FatJet_tau2, q.good_fatjet_collection],
     output=[q.fj_nsubjettiness_3over2_2],
     scopes=["mt", "et", "tt", "em", "mm", "ee"],
@@ -430,21 +430,21 @@ fj_matched_msoftdrop = Producer(
 )
 fj_matched_particleNet_XbbvsQCD = Producer(
     name="fj_matched_particleNet_XbbvsQCD",
-    call="quantities::fatjet::particleNet_XbbvsQCD({df}, {output}, {input}, 0)",
+    call="physicsobject::fatjet::quantity::ParticleNet_XvsQCD({df}, {output}, {input}, 0)",
     input=[nanoAOD.FatJet_particleNet_XbbVsQCD, nanoAOD.FatJet_particleNet_QCD, q.bpair_fatjet],
     output=[q.fj_matched_particleNet_XbbvsQCD],
     scopes=["mt", "et", "tt", "em", "mm", "ee"],
 )
 fj_matched_nsubjettiness_2over1 = Producer(
     name="fj_matched_nsubjettiness_2over1",
-    call="quantities::fatjet::nsubjettiness_ratio({df}, {output}, {input}, 0)",
+    call="physicsobject::fatjet::quantity::NsubjettinessRatio({df}, {output}, {input}, 0)",
     input=[nanoAOD.FatJet_tau2, nanoAOD.FatJet_tau1, q.bpair_fatjet],
     output=[q.fj_matched_nsubjettiness_2over1],
     scopes=["mt", "et", "tt", "em", "mm", "ee"],
 )
 fj_matched_nsubjettiness_3over2 = Producer(
     name="fj_matched_nsubjettiness_3over2",
-    call="quantities::fatjet::nsubjettiness_ratio({df}, {output}, {input}, 0)",
+    call="physicsobject::fatjet::quantity::NsubjettinessRatio({df}, {output}, {input}, 0)",
     input=[nanoAOD.FatJet_tau3, nanoAOD.FatJet_tau2, q.bpair_fatjet],
     output=[q.fj_matched_nsubjettiness_3over2],
     scopes=["mt", "et", "tt", "em", "mm", "ee"],
@@ -530,21 +530,21 @@ fj_Xbb_msoftdrop = Producer(
 )
 fj_Xbb_particleNet_XbbvsQCD = Producer(
     name="fj_Xbb_particleNet_XbbvsQCD",
-    call="quantities::fatjet::particleNet_XbbvsQCD({df}, {output}, {input}, 0)",
+    call="physicsobject::fatjet::quantity::ParticleNet_XvsQCD({df}, {output}, {input}, 0)",
     input=[nanoAOD.FatJet_particleNet_XbbVsQCD, nanoAOD.FatJet_particleNet_QCD, q.Xbb_fatjet],
     output=[q.fj_Xbb_particleNet_XbbvsQCD],
     scopes=["mt", "et", "tt", "em", "mm", "ee"],
 )
 fj_Xbb_nsubjettiness_2over1 = Producer(
     name="fj_Xbb_nsubjettiness_2over1",
-    call="quantities::fatjet::nsubjettiness_ratio({df}, {output}, {input}, 0)",
+    call="physicsobject::fatjet::quantity::NsubjettinessRatio({df}, {output}, {input}, 0)",
     input=[nanoAOD.FatJet_tau2, nanoAOD.FatJet_tau1, q.Xbb_fatjet],
     output=[q.fj_Xbb_nsubjettiness_2over1],
     scopes=["mt", "et", "tt", "em", "mm", "ee"],
 )
 fj_Xbb_nsubjettiness_3over2 = Producer(
     name="fj_Xbb_nsubjettiness_3over2",
-    call="quantities::fatjet::nsubjettiness_ratio({df}, {output}, {input}, 0)",
+    call="physicsobject::fatjet::quantity::NsubjettinessRatio({df}, {output}, {input}, 0)",
     input=[nanoAOD.FatJet_tau3, nanoAOD.FatJet_tau2, q.Xbb_fatjet],
     output=[q.fj_Xbb_nsubjettiness_3over2],
     scopes=["mt", "et", "tt", "em", "mm", "ee"],
@@ -653,21 +653,21 @@ fj_Xbb_msoftdrop_boosted = Producer(
 )
 fj_Xbb_particleNet_XbbvsQCD_boosted = Producer(
     name="fj_Xbb_particleNet_XbbvsQCD_boosted",
-    call="quantities::fatjet::particleNet_XbbvsQCD({df}, {output}, {input}, 0)",
+    call="physicsobject::fatjet::quantity::ParticleNet_XvsQCD({df}, {output}, {input}, 0)",
     input=[nanoAOD.FatJet_particleNet_XbbVsQCD, nanoAOD.FatJet_particleNet_QCD, q.Xbb_fatjet_boosted],
     output=[q.fj_Xbb_particleNet_XbbvsQCD_boosted],
     scopes=["mt", "et", "tt", "em", "mm", "ee"],
 )
 fj_Xbb_nsubjettiness_2over1_boosted = Producer(
     name="fj_Xbb_nsubjettiness_2over1_boosted",
-    call="quantities::fatjet::nsubjettiness_ratio({df}, {output}, {input}, 0)",
+    call="physicsobject::fatjet::quantity::NsubjettinessRatio({df}, {output}, {input}, 0)",
     input=[nanoAOD.FatJet_tau2, nanoAOD.FatJet_tau1, q.Xbb_fatjet_boosted],
     output=[q.fj_Xbb_nsubjettiness_2over1_boosted],
     scopes=["mt", "et", "tt", "em", "mm", "ee"],
 )
 fj_Xbb_nsubjettiness_3over2_boosted = Producer(
     name="fj_Xbb_nsubjettiness_3over2_boosted",
-    call="quantities::fatjet::nsubjettiness_ratio({df}, {output}, {input}, 0)",
+    call="physicsobject::fatjet::quantity::NsubjettinessRatio({df}, {output}, {input}, 0)",
     input=[nanoAOD.FatJet_tau3, nanoAOD.FatJet_tau2, q.Xbb_fatjet_boosted],
     output=[q.fj_Xbb_nsubjettiness_3over2_boosted],
     scopes=["mt", "et", "tt", "em", "mm", "ee"],
