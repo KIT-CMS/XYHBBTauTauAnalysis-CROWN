@@ -649,7 +649,7 @@ def add_hadronic_tau_config(configuration: Configuration):
         },
     )
 
-    # identification and energy scale corrections for hadronic taus
+    # for 2022 and 2023, preliminary DeepTau scale factors are used
     configuration.add_config_parameters(
         HAD_TAU_SCOPES,
         {
@@ -661,37 +661,13 @@ def add_hadronic_tau_config(configuration: Configuration):
                         for _era, _campaign in CORRECTIONLIB_CAMPAIGNS.items()
                         if _era in ERAS_RUN2
                     },
-                    #"2022preEE": "data/jsonpog-integration/POG/TAU/2022_Summer22/tau_DeepTau2018v2p5_2022_preEE.json.gz",
                     "2022preEE": "payloads/preliminary_tau_corrections/tau_DeepTau2018v2p5_2022_preEE.json.gz",
-                    "2022postEE": "data/jsonpog-integration/POG/TAU/2022_Summer22EE/tau_DeepTau2018v2p5_2022_postEE.json.gz",
-                    "2023preBPix": "data/jsonpog-integration/POG/TAU/2023_Summer23/tau_DeepTau2018v2p5_2023_preBPix.json.gz",
-                    "2023postBPix": "data/jsonpog-integration/POG/TAU/2023_Summer23BPix/tau_DeepTau2018v2p5_2023_postBPix.json.gz",
+                    "2022postEE": "payloads/preliminary_tau_corrections/tau_DeepTau2018v2p5_2022_postEE.json.gz",
+                    "2023preBPix": "payloads/preliminary_tau_corrections/tau_DeepTau2018v2p5_2023_preBPix.json.gz",
+                    "2023postBPix": "payloads/preliminary_tau_corrections/tau_DeepTau2018v2p5_2023_postBPix.json.gz",
                 }
             ),
-            "tau_ES_json_name": "tau_energy_scale",
-            "tau_id_algorithm": tau_id,
-            "tau_ES_shift_DM0": "nom",
-            "tau_ES_shift_DM1": "nom",
-            "tau_ES_shift_DM10": "nom",
-            "tau_ES_shift_DM11": "nom",
-            "tau_elefake_es_DM0_barrel": "nom",
-            "tau_elefake_es_DM0_endcap": "nom",
-            "tau_elefake_es_DM1_barrel": "nom",
-            "tau_elefake_es_DM1_endcap": "nom",
-            "tau_mufake_es": "nom",
-        },
-    )
-
-    # for 2022 and 2023, we produce invalid DeepTau vs jets scale factors
-    # TODO fix when new samples are available
-    # TODO temporary recipe for Tau ID SF: https://twiki.cern.ch/twiki/bin/view/CMS/TauIDRecommendationForRun3#IMPORTANT_Temporary_recommendati
-    configuration.add_config_parameters(
-        HAD_TAU_SCOPES,
-        {
-            "tau_dms": "0,1,10,11",
-            "tau_es_norm_shift": 1.0,  # temorary fix
-            "tau_id_vs_jet_norm_shift": 1.0,  # temporary fix
-            "tau_sf_file": EraModifier(
+            "tau_trigger_sf_file": EraModifier(
                 {
                     **{
                         _era: f"data/jsonpog-integration/POG/TAU/{_campaign}/tau.json.gz"
@@ -707,7 +683,6 @@ def add_hadronic_tau_config(configuration: Configuration):
             "tau_ES_json_name": "tau_energy_scale",
             "tau_id_algorithm": tau_id,
             "tau_es_vs_jet_wp": "Medium",
-            "tau_es_vs_ele_wp": "VVLoose",
             "tau_ES_shift_DM0": "nom",
             "tau_ES_shift_DM1": "nom",
             "tau_ES_shift_DM10": "nom",
@@ -720,7 +695,21 @@ def add_hadronic_tau_config(configuration: Configuration):
         },
     )
 
-    # hadronic tau identification
+    # the vsEle working point is different for the mt/tt and tt
+    configuration.add_config_parameters(
+        MT_SCOPES + TT_SCOPES,
+        {
+            "tau_es_vs_ele_wp": "VVLoose",
+        }
+    )
+    configuration.add_config_parameters(
+        ET_SCOPES,
+        {
+            "tau_es_vs_ele_wp": "Tight",
+        }
+    )
+
+    # hadronic tau identification against jets
     # recommendations: https://twiki.cern.ch/twiki/bin/viewauth/CMS/TauIDRecommendationForRun2
     configuration.add_config_parameters(
         HAD_TAU_SCOPES,
@@ -805,6 +794,7 @@ def add_hadronic_tau_config(configuration: Configuration):
     )
 
     # hadronic tau identification corrections (tagging vs jets)
+    # the vsEle working point is different for the mt/tt and tt
     configuration.add_config_parameters(
         MT_SCOPES + TT_SCOPES,
         {
@@ -831,7 +821,7 @@ def add_hadronic_tau_config(configuration: Configuration):
                     # "VLoose": 3,
                     # "Loose": 4,
                     "Medium": 5,
-                    "Tight": 6,
+                    # "Tight": 6,
                     # "VTight": 7,
                     # "VVTight": 8,
                 }.items()
@@ -839,6 +829,8 @@ def add_hadronic_tau_config(configuration: Configuration):
         },
     )
 
+    # hadronic tau identification corrections (tagging vs jets)
+    # the vsEle working point is different for the mt/tt and tt
     configuration.add_config_parameters(
         ET_SCOPES,
         {
@@ -865,7 +857,7 @@ def add_hadronic_tau_config(configuration: Configuration):
                     # "VLoose": 3,
                     # "Loose": 4,
                     "Medium": 5,
-                    "Tight": 6,
+                    # "Tight": 6,
                     # "VTight": 7,
                     # "VVTight": 8,
                 }.items()
@@ -896,7 +888,7 @@ def add_hadronic_tau_config(configuration: Configuration):
             "tau_sf_vsjet_tau40to500": "nom",
             "tau_sf_vsjet_tau500to1000": "nom",
             "tau_sf_vsjet_tau1000toinf": "nom",
-            "tau_vsjet_sf_dependence": "pt",  # or "dm", "eta"
+            "tau_vsjet_sf_dependence": "dm",  # or "dm", "eta"
         },
     )
 
@@ -4135,7 +4127,7 @@ def build_config(
                 SystematicShift(
                     name=f"singleEleTriggerSF{_variation.upper()}",
                     shift_config={
-                        ("mt"): {
+                        ("et"): {
                             "single_ele_trigger_sf": [
                                 {
                                     "e_trigger_flagname": "trg_wgt_single_ele30",
@@ -4145,7 +4137,7 @@ def build_config(
                             ],
                         }
                     },
-                    producers={("mt"): scalefactors.SingleEleTriggerSF},
+                    producers={("et"): scalefactors.SingleEleTriggerSF},
                 ),
                 exclude_samples=["data", "embedding", "embedding_mc"],
             )
