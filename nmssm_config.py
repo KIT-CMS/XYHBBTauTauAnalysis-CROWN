@@ -2060,7 +2060,6 @@ def build_config(
             pairquantities.MTDiTauPairQuantities,
             boostedtaus.boostedMTDiTauPairQuantities,
             genparticles.MTGenDiTauPairQuantities,
-            scalefactors.Tau_2_VsJetTauID_lt_SF,
             scalefactors.Tau_2_VsMuTauID_SF,
             triggers.SingleMuTriggerFlags,
             triggers.DoubleMuTauTriggerFlags,
@@ -2078,6 +2077,7 @@ def build_config(
             [
                 scalefactors.TauEmbeddingMuonIDSF_1_MC,
                 scalefactors.TauEmbeddingMuonIsoSF_1_MC,
+                scalefactors.Tau_2_VsJetTauID_lt_SF,
                 scalefactors.Tau_2_VsEleTauID_SF_Run2,
             ],
         )
@@ -2086,6 +2086,7 @@ def build_config(
             ["mt"],
             [
                 scalefactors.MuonIDIso_SF,
+                scalefactors.Tau_2_VsJetTauID_SF,
                 scalefactors.Tau_2_VsEleTauID_SF_Run3,
                 scalefactors.SingleMuTriggerSF,
                 scalefactors.DoubleMuTauTriggerSF,
@@ -2135,7 +2136,6 @@ def build_config(
             pairquantities.ETDiTauPairQuantities,
             boostedtaus.boostedETDiTauPairQuantities,
             genparticles.ETGenDiTauPairQuantities,
-            scalefactors.Tau_2_VsJetTauID_lt_SF,
             scalefactors.Tau_2_VsMuTauID_SF,
             triggers.SingleEleTriggerFlags,
             triggers.DoubleEleTauTriggerFlags,
@@ -2156,6 +2156,7 @@ def build_config(
             [
                 scalefactors.TauEmbeddingElectronIDSF_1_MC,
                 scalefactors.TauEmbeddingElectronIsoSF_1_MC,
+                scalefactors.Tau_2_VsJetTauID_lt_SF,
                 scalefactors.Tau_2_VsEleTauID_SF_Run2,
             ],
         )
@@ -2164,6 +2165,7 @@ def build_config(
             ["et"],
             [
                 scalefactors.EleID_SF,
+                scalefactors.Tau_2_VsJetTauID_SF,
                 scalefactors.Tau_2_VsEleTauID_SF_Run3,
             ]
         )
@@ -2204,9 +2206,7 @@ def build_config(
             pairquantities.TTDiTauPairQuantities,
             boostedtaus.boostedTTDiTauPairQuantities,
             genparticles.TTGenDiTauPairQuantities,
-            scalefactors.Tau_1_VsJetTauID_SF,
             scalefactors.Tau_1_VsMuTauID_SF,
-            scalefactors.Tau_2_VsJetTauID_tt_SF,
             scalefactors.Tau_2_VsMuTauID_SF,
             triggers.DoubleTauTauTriggerFlags,
             #triggers.BoostedTTGenerateDoubleTriggerFlags,  TODO rework trigger setup before enabling this
@@ -2222,6 +2222,8 @@ def build_config(
         configuration.add_producers(
             "tt",
             [
+                scalefactors.Tau_1_VsJetTauID_tt_SF,
+                scalefactors.Tau_2_VsJetTauID_tt_SF,
                 scalefactors.Tau_1_VsEleTauID_SF_Run2,
                 scalefactors.Tau_2_VsEleTauID_SF_Run2,
                 scalefactors.Tau_1_oldIsoTauID_tt_SF,
@@ -2237,6 +2239,8 @@ def build_config(
         configuration.add_producers(
             "tt",
             [
+                scalefactors.Tau_1_VsJetTauID_SF,
+                scalefactors.Tau_2_VsJetTauID_SF,
                 scalefactors.Tau_1_VsEleTauID_SF_Run3,
                 scalefactors.Tau_2_VsEleTauID_SF_Run3,
                 scalefactors.DoubleTauTauTriggerSF,
@@ -2248,7 +2252,6 @@ def build_config(
         RemoveProducer(
             producers=[
                 scalefactors.Tau_2_VsMuTauID_SF,
-                scalefactors.Tau_2_VsJetTauID_lt_SF,
             ],
             samples="data",
         ),
@@ -2258,6 +2261,7 @@ def build_config(
             ["et", "mt"],
             RemoveProducer(
                 producers=[
+                    scalefactors.Tau_2_VsJetTauID_lt_SF,
                     scalefactors.Tau_2_VsEleTauID_SF_Run2,
                 ],
                 samples="data",
@@ -2268,6 +2272,7 @@ def build_config(
             ["et", "mt"],
             RemoveProducer(
                 producers=[
+                    scalefactors.Tau_2_VsJetTauID_SF,
                     scalefactors.Tau_2_VsEleTauID_SF_Run3,
                 ],
                 samples="data",
@@ -2314,9 +2319,7 @@ def build_config(
         ["tt"],
         RemoveProducer(
             producers=[
-                scalefactors.Tau_1_VsJetTauID_SF,
                 scalefactors.Tau_1_VsMuTauID_SF,
-                scalefactors.Tau_2_VsJetTauID_tt_SF,
                 scalefactors.Tau_2_VsMuTauID_SF,
             ],
             samples="data",
@@ -2327,6 +2330,8 @@ def build_config(
             ["tt"],
             RemoveProducer(
                 producers=[
+                    scalefactors.Tau_1_VsJetTauID_tt_SF,
+                    scalefactors.Tau_2_VsJetTauID_tt_SF,
                     scalefactors.Tau_1_VsEleTauID_SF_Run2,
                     scalefactors.Tau_2_VsEleTauID_SF_Run2,
                 ],
@@ -2338,6 +2343,8 @@ def build_config(
             ["tt"],
             RemoveProducer(
                 producers=[
+                    scalefactors.Tau_1_VsJetTauID_SF,
+                    scalefactors.Tau_2_VsJetTauID_SF,
                     scalefactors.Tau_1_VsEleTauID_SF_Run3,
                     scalefactors.Tau_2_VsEleTauID_SF_Run3,
                 ],
@@ -2923,7 +2930,6 @@ def build_config(
             q.nmuons,
             q.ntaus,
             q.nboostedtaus,
-            scalefactors.Tau_2_VsJetTauID_lt_SF.output_group,
             scalefactors.Tau_2_VsMuTauID_SF.output_group,
             pairquantities.VsJetTauIDFlag_2.output_group,
             pairquantities.VsEleTauIDFlag_2.output_group,
@@ -2982,6 +2988,7 @@ def build_config(
         configuration.add_outputs(
             "mt",
             [
+                scalefactors.Tau_2_VsJetTauID_lt_SF.output_group,
                 scalefactors.Tau_2_VsEleTauID_SF_Run2.output_group,
                 scalefactors.Tau_2_oldIsoTauID_lt_SF.output_group,
                 scalefactors.Tau_2_antiEleTauID_SF.output_group,
@@ -2996,6 +3003,7 @@ def build_config(
                 for p in scalefactors.DoubleMuTauTriggerSF.get_outputs("mt")
             ] + [
                 scalefactors.SingleMuTriggerSF.output_group,
+                scalefactors.Tau_2_VsJetTauID_SF.output_group,
                 scalefactors.Tau_2_VsEleTauID_SF_Run3.output_group,
                 q.jet_vetomap_veto,
             ],
@@ -3116,9 +3124,7 @@ def build_config(
         "tt",
         [
             q.ntaus,
-            scalefactors.Tau_1_VsJetTauID_SF.output_group,
             scalefactors.Tau_1_VsMuTauID_SF.output_group,
-            scalefactors.Tau_2_VsJetTauID_tt_SF.output_group,
             scalefactors.Tau_2_VsMuTauID_SF.output_group,
             pairquantities.VsJetTauIDFlag_1.output_group,
             pairquantities.VsEleTauIDFlag_1.output_group,
@@ -3177,6 +3183,8 @@ def build_config(
         configuration.add_outputs(
             "tt",
             [
+                scalefactors.Tau_1_VsJetTauID_tt_SF.output_group,
+                scalefactors.Tau_2_VsJetTauID_tt_SF.output_group,
                 scalefactors.Tau_1_VsEleTauID_SF_Run2.output_group,
                 scalefactors.Tau_2_VsEleTauID_SF_Run2.output_group,
                 scalefactors.Tau_1_oldIsoTauID_tt_SF.output_group,
@@ -3194,6 +3202,8 @@ def build_config(
                 p
                 for p in scalefactors.DoubleTauTauTriggerSF.get_outputs("tt")
             ] + [
+                scalefactors.Tau_1_VsJetTauID_SF.output_group,
+                scalefactors.Tau_2_VsJetTauID_SF.output_group,
                 scalefactors.Tau_1_VsEleTauID_SF_Run3.output_group,
                 scalefactors.Tau_2_VsEleTauID_SF_Run3.output_group,
             ],
