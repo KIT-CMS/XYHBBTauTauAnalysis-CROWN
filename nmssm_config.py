@@ -2924,6 +2924,17 @@ def build_config(
                 nanoAOD.genWeight,
             ],
         )
+
+    # jet vetomap selection only applies to Run 3 analyses
+    if era in ERAS_RUN3:
+        configuration.add_outputs(
+            HAD_TAU_SCOPES,
+            [
+                q.jet_vetomap_veto,
+
+            ],
+        )
+    
     configuration.add_outputs(
         "mt",
         [
@@ -3005,7 +3016,6 @@ def build_config(
                 scalefactors.SingleMuTriggerSF.output_group,
                 scalefactors.Tau_2_VsJetTauID_SF.output_group,
                 scalefactors.Tau_2_VsEleTauID_SF_Run3.output_group,
-                q.jet_vetomap_veto,
             ],
         )
 
@@ -3019,7 +3029,6 @@ def build_config(
             q.nelectrons,
             q.ntaus,
             q.nboostedtaus,
-            scalefactors.Tau_2_VsJetTauID_lt_SF.output_group,
             scalefactors.Tau_2_VsMuTauID_SF.output_group,
             pairquantities.VsJetTauIDFlag_2.output_group,
             pairquantities.VsEleTauIDFlag_2.output_group,
@@ -3077,30 +3086,9 @@ def build_config(
     # add the old MVA ID scale factor producers only for Run 2 eras (not available for Run 3)
     if era in ERAS_RUN2:
         configuration.add_outputs(
-            "mt",
-            [
-                scalefactors.Tau_2_VsEleTauID_SF_Run2.output_group,
-                scalefactors.Tau_2_oldIsoTauID_lt_SF.output_group,
-                scalefactors.Tau_2_antiEleTauID_SF.output_group,
-                scalefactors.Tau_2_antiMuTauID_SF.output_group,
-            ],
-        )
-    elif era in ERAS_RUN3:
-        configuration.add_outputs(
-            "mt",
-            [
-                p
-                for p in scalefactors.MuonIDIso_SF.get_outputs("mt")
-            ] + [
-                scalefactors.Tau_2_VsEleTauID_SF_Run3.output_group,
-            ],
-        )
-
-    # add the old MVA ID scale factor producers only for Run 2 eras (not available for Run 3)
-    if era in ERAS_RUN2:
-        configuration.add_outputs(
             "et",
             [
+                scalefactors.Tau_2_VsJetTauID_lt_SF.output_group,
                 scalefactors.Tau_2_VsEleTauID_SF_Run2.output_group,
                 scalefactors.Tau_2_oldIsoTauID_lt_SF.output_group,
                 scalefactors.Tau_2_antiEleTauID_SF.output_group,
@@ -3115,6 +3103,7 @@ def build_config(
                 for p in scalefactors.EleID_SF.get_outputs("et")
             ]
             + [
+                scalefactors.Tau_2_VsJetTauID_SF.output_group,
                 scalefactors.Tau_2_VsEleTauID_SF_Run3.output_group,
             ],
         )
