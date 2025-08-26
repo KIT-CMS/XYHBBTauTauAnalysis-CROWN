@@ -559,7 +559,7 @@ def add_muon_config(configuration: Configuration):
     )
 
 
-def add_hadronic_tau_config(configuration: Configuration):
+def add_hadronic_tau_config(configuration: Configuration, era: str):
     """
     Selection requirements and corrections for hadronic taus.
 
@@ -1484,7 +1484,7 @@ def build_config(
     add_muon_config(configuration)
 
     # hadronic tau selection and corrections for identification and energy scale
-    add_hadronic_tau_config(configuration)
+    add_hadronic_tau_config(configuration, era)
 
     # boosted hadronic tau selection and corrections for identification and energy scale
     # TODO add boosted hadronic tau _corrections_ for Run 3
