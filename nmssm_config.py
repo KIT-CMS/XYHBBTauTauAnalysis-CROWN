@@ -662,8 +662,8 @@ def add_hadronic_tau_config(configuration: Configuration, era: str):
                             for _era, _tau_id in tau_id.modifier_dict.items()
                         }
                     ),
-                    "vsjet_tau_id_WP": "{wp}".format(wp=wp),
                     "vsjet_tau_id_WPbit": bit,
+                    "vsjet_tau_id_WP": "{wp}".format(wp=wp),
                     "tau_1_vsjet_id_outputname": "id_tau_vsJet_{wp}_1".format(wp=wp),
                     "tau_2_vsjet_id_outputname": "id_tau_vsJet_{wp}_2".format(wp=wp),
                 }
@@ -687,12 +687,6 @@ def add_hadronic_tau_config(configuration: Configuration, era: str):
                         }
                     ),
                     "vsele_tau_id_WPbit": bit,
-                    "tau_1_vsele_sf_outputname": "id_wgt_tau_vsEle_{wp}_1".format(
-                        wp=wp
-                    ),
-                    "tau_2_vsele_sf_outputname": "id_wgt_tau_vsEle_{wp}_2".format(
-                        wp=wp
-                    ),
                     "vsele_tau_id_WP": "{wp}".format(wp=wp),
                     "tau_1_vsele_id_outputname": "id_tau_vsEle_{wp}_1".format(wp=wp),
                     "tau_2_vsele_id_outputname": "id_tau_vsEle_{wp}_2".format(wp=wp),
@@ -717,8 +711,6 @@ def add_hadronic_tau_config(configuration: Configuration, era: str):
                         }
                     ),
                     "vsmu_tau_id_WPbit": bit,
-                    "tau_1_vsmu_sf_outputname": "id_wgt_tau_vsMu_{wp}_1".format(wp=wp),
-                    "tau_2_vsmu_sf_outputname": "id_wgt_tau_vsMu_{wp}_2".format(wp=wp),
                     "vsmu_tau_id_WP": "{wp}".format(wp=wp),
                     "tau_1_vsmu_id_outputname": "id_tau_vsMu_{wp}_1".format(wp=wp),
                     "tau_2_vsmu_id_outputname": "id_tau_vsMu_{wp}_2".format(wp=wp),
@@ -779,42 +771,48 @@ def add_hadronic_tau_config(configuration: Configuration, era: str):
         },
     )
 
-
-    # the vsEle working point is different for the mt/tt and tt
+    # configure the DeepTau working points for vs jets and vs electrons ID to use for ID and ES
+    # corrections
+    # the vs electrons WP is different for mt/tt and et channels
+    configuration.add_config_parameters(
+        HAD_TAU_SCOPES,
+        {
+            "tau_ides_sf_vsjet_wp": "Medium",
+        }
+    )
     configuration.add_config_parameters(
         MT_SCOPES + TT_SCOPES,
         {
-            "tau_es_vs_ele_wp": "VVLoose",
+            "tau_ides_sf_vsele_wp": "VVLoose",
         }
     )
     configuration.add_config_parameters(
         ET_SCOPES,
         {
-            "tau_es_vs_ele_wp": "Tight",
+            "tau_ides_sf_vsele_wp": "Tight",
         }
     )
 
-    # hadronic tau identification corrections (tagging vs jets)
-    # the vsEle working point is different for the mt/tt and tt
+    # hadronic tau identification corrections for DeepTau discriminator vs jets
     configuration.add_config_parameters(
-        ET_SCOPES,
+        HAD_TAU_SCOPES,
         {
+            # scale factors
             "vsjet_tau_id_sf": [
                 {
-                    "tau_id_discriminator": EraModifier(
+                    "discriminator": EraModifier(
                         {
                             _era: f"{_tau_id}VSjet"
                             for _era, _tau_id in tau_id.modifier_dict.items()
                         }
                     ),
-                    "tau_1_vsjet_sf_outputname": "id_wgt_tau_vsJet_{wp}_1".format(
+                    "tau1_output_name": "id_wgt_tau_vsJet_{wp}_1".format(
                         wp=wp
                     ),
-                    "tau_2_vsjet_sf_outputname": "id_wgt_tau_vsJet_{wp}_2".format(
+                    "tau2_output_name": "id_wgt_tau_vsJet_{wp}_2".format(
                         wp=wp
                     ),
-                    "vsjet_tau_id_WP": "{wp}".format(wp=wp),
-                    "tau_vsjet_vseleWP": "Tight",
+                    "vsjet_wp": "{wp}".format(wp=wp),
                 }
                 for wp, bit in {
                     # "VVVLoose": 1,
@@ -830,42 +828,132 @@ def add_hadronic_tau_config(configuration: Configuration, era: str):
         },
     )
 
-    # hadronic tau identification variations in all channels
+    # the SF dependence and the SF variations for the DeepTau discriminator vs jets are different
+    # for Run2 and Run3
+    if era in ERAS_RUN2:
+
+        # hadronic tau identification variations in semileptonic channels
+        configuration.add_config_parameters(
+            SL_SCOPES,
+            {
+                "tau_id_sf_vsjet_tau30to35_shift": "nom",
+                "tau_id_sf_vsjet_tau35to40_shift": "nom",
+                "tau_id_sf_vsjet_tau40to500_shift": "nom",
+                "tau_id_sf_vsjet_tau500to1000_shift": "nom",
+                "tau_id_sf_vsjet_tau1000toinf_shift": "nom",
+                "tau_id_sf_vsjet_shift": "nom",
+                "tau_id_sf_vsjet_sf_dependence": "dm",  # or "dm", "eta"
+            },
+        )
+
+        # hadronic tau identification variations in fullhadronic channels
+        configuration.add_config_parameters(
+            FH_SCOPES,
+            {
+                "tau_id_sf_vsjet_tau_dm0_shift": "nom",
+                "tau_id_sf_vsjet_tau_dm1_shift": "nom",
+                "tau_id_sf_vsjet_tau_dm10_shift": "nom",
+                "tau_id_sf_vsjet_tau_dm11_shift": "nom",
+                "tau_id_sf_vsjet_sf_dependence": "dm",  # or "dm", "eta"
+            },
+        )
+    
+    elif era in ERAS_RUN3:
+        # hadronic tau identification variations in all channels
+        configuration.add_config_parameters(
+            HAD_TAU_SCOPES,
+            {
+                "tau_id_sf_vsjet_shift": "nom",
+                "tau_id_sf_vsjet_sf_dependence": "dm",  # or "dm", "eta"
+            },
+        )
+
+    # hadronic tau identification corrections for DeepTau discriminator vs electrons
     configuration.add_config_parameters(
         HAD_TAU_SCOPES,
         {
-            "tau_sf_vsele_barrel": "nom",  # or "up"/"down" for up/down variation
-            "tau_sf_vsele_endcap": "nom",  # or "up"/"down" for up/down variation
-            "tau_sf_vsmu_wheel1": "nom",
-            "tau_sf_vsmu_wheel2": "nom",
-            "tau_sf_vsmu_wheel3": "nom",
-            "tau_sf_vsmu_wheel4": "nom",
-            "tau_sf_vsmu_wheel5": "nom",
+            # scale factors
+            "vsele_tau_id_sf": [
+                {
+                    "discriminator": EraModifier(
+                        {
+                            _era: f"{_tau_id}VSe"
+                            for _era, _tau_id in tau_id.modifier_dict.items()
+                        }
+                    ),
+                    "tau1_output_name": "id_wgt_tau_vsEle_{wp}_1".format(
+                        wp=wp
+                    ),
+                    "tau2_output_name": "id_wgt_tau_vsEle_{wp}_2".format(
+                        wp=wp
+                    ),
+                    "vsele_wp": "{wp}".format(wp=wp),
+                }
+                for wp, bit in {
+                    # "VVVLoose": 1,
+                    "VVLoose": 2,
+                    # "VLoose": 3,
+                    # "Loose": 4,
+                    # "Medium": 5,
+                    "Tight": 6,
+                    # "VTight": 7,
+                    # "VVTight": 8,
+                }.items()
+            ],
+
+            # systematic variations
+            "tau_id_sf_vsele_barrel_shift": "nom",  # or "up"/"down" for up/down variation
+            "tau_id_sf_vsele_endcap_shift": "nom",  # or "up"/"down" for up/down variation
         },
     )
 
-    # hadronic tau identification variations in semileptonic channels
+    # hadronic tau identification corrections for DeepTau discriminator vs muons
     configuration.add_config_parameters(
-        SL_SCOPES,
+        HAD_TAU_SCOPES,
         {
-            "tau_sf_vsjet_tau30to35": "nom",
-            "tau_sf_vsjet_tau35to40": "nom",
-            "tau_sf_vsjet_tau40to500": "nom",
-            "tau_sf_vsjet_tau500to1000": "nom",
-            "tau_sf_vsjet_tau1000toinf": "nom",
-            "tau_vsjet_sf_dependence": "dm",  # or "dm", "eta"
-        },
-    )
+            # scale factors
+            "vsmu_tau_id_sf": [
+                {
+                    "discriminator": EraModifier(
+                        {
+                            _era: f"{_tau_id}VSmu"
+                            for _era, _tau_id in tau_id.modifier_dict.items()
+                        }
+                    ),
+                    "tau1_output_name": "id_wgt_tau_vsMu_{wp}_1".format(
+                        wp=wp
+                    ),
+                    "tau2_output_name": "id_wgt_tau_vsMu_{wp}_2".format(
+                        wp=wp
+                    ),
+                    "vsmu_wp": "{wp}".format(wp=wp),
+                    "max_abs_eta": EraModifier(
+                        {
+                            **{
+                                _era: 2.3
+                                for _era in ERAS_RUN2
+                            },
+                            **{
+                                _era: 2.4
+                                for _era in ERAS_RUN3
+                            }
+                        }
+                    )
+                }
+                for wp, bit in {
+                    "VLoose": 1,
+                    # "Loose": 2,
+                    # "Medium": 3,
+                    "Tight": 4,
+                }.items()
+            ],
 
-    # hadronic tau identification variations in fullhadronic channels
-    configuration.add_config_parameters(
-        FH_SCOPES,
-        {
-            "tau_sf_vsjet_tauDM0": "nom",
-            "tau_sf_vsjet_tauDM1": "nom",
-            "tau_sf_vsjet_tauDM10": "nom",
-            "tau_sf_vsjet_tauDM11": "nom",
-            "tau_vsjet_sf_dependence": "dm",  # or "dm", "eta"
+            # systematic variations
+            "tau_id_sf_vsmu_wheel1_shift": "nom",  # or "up"/"down" for up/down variation
+            "tau_id_sf_vsmu_wheel2_shift": "nom",  # or "up"/"down" for up/down variation
+            "tau_id_sf_vsmu_wheel3_shift": "nom",  # or "up"/"down" for up/down variation
+            "tau_id_sf_vsmu_wheel4_shift": "nom",  # or "up"/"down" for up/down variation
+            "tau_id_sf_vsmu_wheel5_shift": "nom",  # or "up"/"down" for up/down variation
         },
     )
 
