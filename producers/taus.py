@@ -66,8 +66,8 @@ TauPtCorrectionRun3 = Producer(
             "{tau_ES_shift_DM1}",
             "{tau_ES_shift_DM10}",
             "{tau_ES_shift_DM11}",
-            "{tau_es_vs_jet_wp}",
-            "{tau_es_vs_ele_wp}"
+            "{tau_ides_sf_vsjet_wp}",
+            "{tau_ides_sf_vsele_wp}"
         )
     """,
     input=[
