@@ -857,7 +857,7 @@ def add_hadronic_tau_config(configuration: Configuration, era: str):
                 "tau_id_sf_vsjet_sf_dependence": "dm",  # or "dm", "eta"
             },
         )
-    
+
     elif era in ERAS_RUN3:
         # hadronic tau identification variations in all channels
         configuration.add_config_parameters(
@@ -2024,7 +2024,7 @@ def build_config(
             pairselection.LVMu2Uncorrected,
             pairquantities.MuMuPairQuantities,
             genparticles.MuMuGenPairQuantities,
-            # scalefactors.MuonIDIso_SF,
+            scalefactors.MuonIDIso_SF,
             triggers.SingleMuTriggerFlags,
         ],
     )
@@ -2302,18 +2302,19 @@ def build_config(
         ),
     )
 
-    configuration.add_modification_rule(
-        ["et", "mt", "tt"],
-        AppendProducer(
-            producers=[
-                genparticles.GenBPairQuantities,
-                genparticles.GenMatchingBPairFlag,
-                genparticles.GenTauPairQuantities,
-                genparticles.GenMatchingBoostedTauPairFlag,
-            ],
-            samples=["nmssm_Ybb", "nmssm_Ytautau"],
-        ),
-    )
+    # TODO re-include
+    #configuration.add_modification_rule(
+    #    ["et", "mt", "tt"],
+    #    AppendProducer(
+    #        producers=[
+    #            genparticles.GenBPairQuantities,
+    #            genparticles.GenMatchingBPairFlag,
+    #            genparticles.GenTauPairQuantities,
+    #            genparticles.GenMatchingBoostedTauPairFlag,
+    #        ],
+    #        samples=["nmssm_Ybb", "nmssm_Ytautau"],
+    #    ),
+    #)
 
     configuration.add_modification_rule(
         ["tt"],
@@ -2934,7 +2935,7 @@ def build_config(
 
             ],
         )
-    
+
     configuration.add_outputs(
         "mt",
         [
@@ -2962,8 +2963,8 @@ def build_config(
             q.electron_veto_flag,
             q.dimuon_veto,
             q.dilepton_veto,
-            # q.id_wgt_mu_1,
-            # q.iso_wgt_mu_1,
+            q.id_wgt_mu_1,
+            q.iso_wgt_mu_1,
             q.boosted_dxy_1,
             q.boosted_dz_1,
             q.boosted_tau_decaymode_1,
@@ -3012,6 +3013,10 @@ def build_config(
             [
                 p
                 for p in scalefactors.DoubleMuTauTriggerSF.get_outputs("mt")
+            ] + [
+                p
+                for p in scalefactors.MuonIDIso_SF.get_outputs("mt")
+
             ] + [
                 scalefactors.SingleMuTriggerSF.output_group,
                 scalefactors.Tau_2_VsJetTauID_SF.output_group,
@@ -3215,34 +3220,35 @@ def build_config(
             ],
         )
 
-    if sample in ["nmssm_Ybb", "nmssm_Ytautau"]:
-        configuration.add_outputs(
-            HAD_TAU_SCOPES,
-            [
-                q.gen_b_pt_1,
-                q.gen_b_eta_1,
-                q.gen_b_phi_1,
-                q.gen_b_mass_1,
-                q.gen_b_pt_2,
-                q.gen_b_eta_2,
-                q.gen_b_phi_2,
-                q.gen_b_mass_2,
-                q.gen_b_m_inv,
-                q.gen_b_deltaR,
-                q.gen_bpair_match_flag,
-                q.gen_tau_pt_1,
-                q.gen_tau_eta_1,
-                q.gen_tau_phi_1,
-                q.gen_tau_mass_1,
-                q.gen_tau_pt_2,
-                q.gen_tau_eta_2,
-                q.gen_tau_phi_2,
-                q.gen_tau_mass_2,
-                q.gen_tau_m_inv,
-                q.gen_tau_deltaR,
-                q.gen_boostedtaupair_match_flag,
-            ],
-        )
+    # TODO re-include
+    #if sample in ["nmssm_Ybb", "nmssm_Ytautau"]:
+    #    configuration.add_outputs(
+    #        HAD_TAU_SCOPES,
+    #        [
+    #            q.gen_b_pt_1,
+    #            q.gen_b_eta_1,
+    #            q.gen_b_phi_1,
+    #            q.gen_b_mass_1,
+    #            q.gen_b_pt_2,
+    #            q.gen_b_eta_2,
+    #            q.gen_b_phi_2,
+    #            q.gen_b_mass_2,
+    #            q.gen_b_m_inv,
+    #            q.gen_b_deltaR,
+    #            q.gen_bpair_match_flag,
+    #            q.gen_tau_pt_1,
+    #            q.gen_tau_eta_1,
+    #            q.gen_tau_phi_1,
+    #            q.gen_tau_mass_1,
+    #            q.gen_tau_pt_2,
+    #            q.gen_tau_eta_2,
+    #            q.gen_tau_phi_2,
+    #            q.gen_tau_mass_2,
+    #            q.gen_tau_m_inv,
+    #            q.gen_tau_deltaR,
+    #            q.gen_boostedtaupair_match_flag,
+    #        ],
+    #    )
 
     #########################
     # LHE Scale Weight variations

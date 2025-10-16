@@ -49,7 +49,7 @@ ElElGenPair = Producer(
 )
 MuMuTrueGenPair = Producer(
     name="GenPair",
-    call="pairselection::buildtruegenpair({df}, {input}, {output}, {truegen_mother_pdgid}, {truegen_daughter_1_pdgid}, {truegen_daughter_2_pdgid})",
+    call="ditau_pairselection::buildtruegenpair({df}, {input}, {output}, {truegen_mother_pdgid}, {truegen_daughter_1_pdgid}, {truegen_daughter_2_pdgid})",
     input=[
         nanoAOD.GenPart_statusFlags,
         nanoAOD.GenPart_status,
@@ -69,7 +69,7 @@ BBGenPair = Producer(
 )
 YbbTrueGenPair = Producer(
     name="YbbTrueGenPair",
-    call="pairselection::buildtruegenpair({df}, {input}, {output}, {bb_truegen_mother_pdgid}, {bb_truegen_daughter_1_pdgid}, {bb_truegen_daughter_2_pdgid})",
+    call="ditau_pairselection::buildtruegenpair({df}, {input}, {output}, {bb_truegen_mother_pdgid}, {bb_truegen_daughter_1_pdgid}, {bb_truegen_daughter_2_pdgid})",
     input=[
         nanoAOD.GenPart_statusFlags,
         nanoAOD.GenPart_status,
@@ -82,7 +82,7 @@ YbbTrueGenPair = Producer(
 )
 YtautauTrueGenPair = Producer(
     name="YtautauTrueGenPair",
-    call="pairselection::buildtruegenpair({df}, {input}, {output}, {tautau_truegen_mother_pdgid}, {tautau_truegen_daughter_1_pdgid}, {tautau_truegen_daughter_2_pdgid})",
+    call="ditau_pairselection::buildtruegenpair({df}, {input}, {output}, {tautau_truegen_mother_pdgid}, {tautau_truegen_daughter_1_pdgid}, {tautau_truegen_daughter_2_pdgid})",
     input=[
         nanoAOD.GenPart_statusFlags,
         nanoAOD.GenPart_status,
@@ -95,7 +95,7 @@ YtautauTrueGenPair = Producer(
 )
 EmbeddingGenPair = Producer(
     name="EmbeddingGenPair",
-    call="pairselection::buildtruegenpair({df}, {input}, {output}, {truegen_mother_pdgid}, {truegen_daughter_1_pdgid}, {truegen_daugher_2_pdgid})",
+    call="ditau_pairselection::buildtruegenpair({df}, {input}, {output}, {truegen_mother_pdgid}, {truegen_daughter_1_pdgid}, {truegen_daugher_2_pdgid})",
     input=[
         nanoAOD.GenPart_statusFlags,
         nanoAOD.GenPart_status,

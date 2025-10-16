@@ -274,8 +274,7 @@ def _create_tau_id_vsmu_sf_producer(
             "{tau_id_sf_vsmu_wheel2_shift}", 
             "{tau_id_sf_vsmu_wheel3_shift}", 
             "{tau_id_sf_vsmu_wheel4_shift}", 
-            "{tau_id_sf_vsmu_wheel5_shift}",
-            {max_abs_eta}
+            "{tau_id_sf_vsmu_wheel5_shift}"
         )
         """,
         input=input,
