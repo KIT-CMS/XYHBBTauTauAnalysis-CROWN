@@ -15,19 +15,29 @@ def run(args):
         "vbf_hbb",
         "rem_htautau",
         "rem_hbb",
+        "rem_higgs",
+        "hh4b",
+        "hh2b2tau",
         "embedding",
         "embedding_mc",
         "singletop",
         "ttbar",
+        "rem_ttbar",
         "diboson",
         "dyjets",
+        "dyjets_madgraph",
+        "dyjets_amcatnlo",
+        "dyjets_powheg",
         "wjets",
+        "wjets_madgraph",
+        "wjets_amcatnlo",
         "data",
         "electroweak_boson",
         "nmssm_Ybb",
         "nmssm_Ytautau",
     ]
-    available_eras = ["2016preVFP", "2016postVFP", "2017", "2018"]
+
+    available_eras = ["2016preVFP", "2016postVFP", "2017", "2018", "2022preEE", "2022postEE", "2023preBPix", "2023postBPix"]
     available_scopes = ["et", "mt", "tt", "mm"]
 
     ## setup variables
