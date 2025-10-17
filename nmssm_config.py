@@ -1336,7 +1336,7 @@ def add_ak8jet_config(configuration: Configuration):
                     "2017": '"Summer19UL17_JRV2_MC"',
                     "2018": '"Summer19UL18_JRV2_MC"',
                     "2022preEE": '"Summer22_22Sep2023_JRV1_MC"',
-                    "2022postEE": '"Summer22EE_22Sep2023_JRV1"',
+                    "2022postEE": '"Summer22EE_22Sep2023_JRV1_MC"',
                     "2023preBPix": '"Summer23Prompt23_RunCv1234_JRV1_MC"',
                     "2023postBPix": '"Summer23BPixPrompt23_RunD_JRV1_MC"',
                 }
