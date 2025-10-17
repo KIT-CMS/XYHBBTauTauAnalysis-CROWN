@@ -13,6 +13,8 @@ def run(args):
         "vbf_hbb",
         "rem_htautau",
         "rem_hbb",
+        "rem_hww",
+        "rem_hzz",
         "rem_higgs",
         "hh4b",
         "hh2b2tau",
