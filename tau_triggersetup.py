@@ -1025,7 +1025,7 @@ def add_diTauTriggerSetup(configuration: Configuration):
                                 for _era in ERAS_RUN2
                             },
                             "2022preEE": "2022Re-recoBCD",
-                            "2022postEE": "2022Re-recoE+PromptFG ",
+                            "2022postEE": "2022Re-recoE+PromptFG",
                             "2023preBPix": "2023PromptC",
                             "2023postBPix": "2023PromptD",
                         }
