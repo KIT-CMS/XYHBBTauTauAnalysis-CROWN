@@ -121,16 +121,12 @@ ROOT::RDF::RNode jet_vetomap(
     const std::string &jet_id,
     const std::string &jet_ch_em_ef,
     const std::string &jet_n_em_ef,
-    const std::string &muon_eta,
-    const std::string &muon_phi,
-    const std::string &muon_is_pfcand,
     const std::string &jet_vetomap_file,
     const std::string &jet_vetomap_name,
     const std::string &jet_vetomap_type,
     const float &min_pt,
     const int &id_wp,
-    const float &max_em_frac,
-    const float &min_delta_r_jet_muon
+    const float &max_em_frac
 );
 
 
