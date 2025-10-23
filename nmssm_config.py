@@ -559,7 +559,7 @@ def add_muon_config(configuration: Configuration):
     )
 
 
-def add_hadronic_tau_config(configuration: Configuration):
+def add_hadronic_tau_config(configuration: Configuration, era: str):
     """
     Selection requirements and corrections for hadronic taus.
 
@@ -649,78 +649,7 @@ def add_hadronic_tau_config(configuration: Configuration):
         },
     )
 
-    # identification and energy scale corrections for hadronic taus
-    configuration.add_config_parameters(
-        HAD_TAU_SCOPES,
-        {
-            "tau_dms": "0,1,10,11",
-            "tau_sf_file": EraModifier(
-                {
-                    **{
-                        _era: f"data/jsonpog-integration/POG/TAU/{_campaign}/tau.json.gz"
-                        for _era, _campaign in CORRECTIONLIB_CAMPAIGNS.items()
-                        if _era in ERAS_RUN2
-                    },
-                    #"2022preEE": "data/jsonpog-integration/POG/TAU/2022_Summer22/tau_DeepTau2018v2p5_2022_preEE.json.gz",
-                    "2022preEE": "payloads/preliminary_tau_corrections/tau_DeepTau2018v2p5_2022_preEE.json.gz",
-                    "2022postEE": "data/jsonpog-integration/POG/TAU/2022_Summer22EE/tau_DeepTau2018v2p5_2022_postEE.json.gz",
-                    "2023preBPix": "data/jsonpog-integration/POG/TAU/2023_Summer23/tau_DeepTau2018v2p5_2023_preBPix.json.gz",
-                    "2023postBPix": "data/jsonpog-integration/POG/TAU/2023_Summer23BPix/tau_DeepTau2018v2p5_2023_postBPix.json.gz",
-                }
-            ),
-            "tau_ES_json_name": "tau_energy_scale",
-            "tau_id_algorithm": tau_id,
-            "tau_ES_shift_DM0": "nom",
-            "tau_ES_shift_DM1": "nom",
-            "tau_ES_shift_DM10": "nom",
-            "tau_ES_shift_DM11": "nom",
-            "tau_elefake_es_DM0_barrel": "nom",
-            "tau_elefake_es_DM0_endcap": "nom",
-            "tau_elefake_es_DM1_barrel": "nom",
-            "tau_elefake_es_DM1_endcap": "nom",
-            "tau_mufake_es": "nom",
-        },
-    )
-
-    # for 2022 and 2023, we produce invalid DeepTau vs jets scale factors
-    # TODO fix when new samples are available
-    # TODO temporary recipe for Tau ID SF: https://twiki.cern.ch/twiki/bin/view/CMS/TauIDRecommendationForRun3#IMPORTANT_Temporary_recommendati
-    configuration.add_config_parameters(
-        HAD_TAU_SCOPES,
-        {
-            "tau_dms": "0,1,10,11",
-            "tau_es_norm_shift": 1.0,  # temorary fix
-            "tau_id_vs_jet_norm_shift": 1.0,  # temporary fix
-            "tau_sf_file": EraModifier(
-                {
-                    **{
-                        _era: f"data/jsonpog-integration/POG/TAU/{_campaign}/tau.json.gz"
-                        for _era, _campaign in CORRECTIONLIB_CAMPAIGNS.items()
-                        if _era in ERAS_RUN2
-                    },
-                    "2022preEE": "data/jsonpog-integration/POG/TAU/2022_Summer22/tau_DeepTau2018v2p5_2022_preEE.json.gz",
-                    "2022postEE": "data/jsonpog-integration/POG/TAU/2022_Summer22EE/tau_DeepTau2018v2p5_2022_postEE.json.gz",
-                    "2023preBPix": "data/jsonpog-integration/POG/TAU/2023_Summer23/tau_DeepTau2018v2p5_2023_preBPix.json.gz",
-                    "2023postBPix": "data/jsonpog-integration/POG/TAU/2023_Summer23BPix/tau_DeepTau2018v2p5_2023_postBPix.json.gz",
-                }
-            ),
-            "tau_ES_json_name": "tau_energy_scale",
-            "tau_id_algorithm": tau_id,
-            "tau_es_vs_jet_wp": "Medium",
-            "tau_es_vs_ele_wp": "VVLoose",
-            "tau_ES_shift_DM0": "nom",
-            "tau_ES_shift_DM1": "nom",
-            "tau_ES_shift_DM10": "nom",
-            "tau_ES_shift_DM11": "nom",
-            "tau_elefake_es_DM0_barrel": "nom",
-            "tau_elefake_es_DM0_endcap": "nom",
-            "tau_elefake_es_DM1_barrel": "nom",
-            "tau_elefake_es_DM1_endcap": "nom",
-            "tau_mufake_es": "nom",
-        },
-    )
-
-    # hadronic tau identification
+    # hadronic tau identification against jets, electrons, and muons
     # recommendations: https://twiki.cern.ch/twiki/bin/viewauth/CMS/TauIDRecommendationForRun2
     configuration.add_config_parameters(
         HAD_TAU_SCOPES,
@@ -733,8 +662,8 @@ def add_hadronic_tau_config(configuration: Configuration):
                             for _era, _tau_id in tau_id.modifier_dict.items()
                         }
                     ),
-                    "vsjet_tau_id_WP": "{wp}".format(wp=wp),
                     "vsjet_tau_id_WPbit": bit,
+                    "vsjet_tau_id_WP": "{wp}".format(wp=wp),
                     "tau_1_vsjet_id_outputname": "id_tau_vsJet_{wp}_1".format(wp=wp),
                     "tau_2_vsjet_id_outputname": "id_tau_vsJet_{wp}_2".format(wp=wp),
                 }
@@ -758,12 +687,6 @@ def add_hadronic_tau_config(configuration: Configuration):
                         }
                     ),
                     "vsele_tau_id_WPbit": bit,
-                    "tau_1_vsele_sf_outputname": "id_wgt_tau_vsEle_{wp}_1".format(
-                        wp=wp
-                    ),
-                    "tau_2_vsele_sf_outputname": "id_wgt_tau_vsEle_{wp}_2".format(
-                        wp=wp
-                    ),
                     "vsele_tau_id_WP": "{wp}".format(wp=wp),
                     "tau_1_vsele_id_outputname": "id_tau_vsEle_{wp}_1".format(wp=wp),
                     "tau_2_vsele_id_outputname": "id_tau_vsEle_{wp}_2".format(wp=wp),
@@ -788,8 +711,6 @@ def add_hadronic_tau_config(configuration: Configuration):
                         }
                     ),
                     "vsmu_tau_id_WPbit": bit,
-                    "tau_1_vsmu_sf_outputname": "id_wgt_tau_vsMu_{wp}_1".format(wp=wp),
-                    "tau_2_vsmu_sf_outputname": "id_wgt_tau_vsMu_{wp}_2".format(wp=wp),
                     "vsmu_tau_id_WP": "{wp}".format(wp=wp),
                     "tau_1_vsmu_id_outputname": "id_tau_vsMu_{wp}_1".format(wp=wp),
                     "tau_2_vsmu_id_outputname": "id_tau_vsMu_{wp}_2".format(wp=wp),
@@ -804,111 +725,235 @@ def add_hadronic_tau_config(configuration: Configuration):
         },
     )
 
-    # hadronic tau identification corrections (tagging vs jets)
-    configuration.add_config_parameters(
-        MT_SCOPES + TT_SCOPES,
-        {
-            "vsjet_tau_id_sf": [
-                {
-                    "tau_id_discriminator": EraModifier(
-                        {
-                            _era: f"{_tau_id}VSjet"
-                            for _era, _tau_id in tau_id.modifier_dict.items()
-                        }
-                    ),
-                    "tau_1_vsjet_sf_outputname": "id_wgt_tau_vsJet_{wp}_1".format(
-                        wp=wp
-                    ),
-                    "tau_2_vsjet_sf_outputname": "id_wgt_tau_vsJet_{wp}_2".format(
-                        wp=wp
-                    ),
-                    "vsjet_tau_id_WP": "{wp}".format(wp=wp),
-                    "tau_vsjet_vseleWP": "VVLoose",
-                }
-                for wp, bit in {
-                    # "VVVLoose": 1,
-                    # "VVLoose": 2,
-                    # "VLoose": 3,
-                    # "Loose": 4,
-                    "Medium": 5,
-                    "Tight": 6,
-                    # "VTight": 7,
-                    # "VVTight": 8,
-                }.items()
-            ],
-        },
-    )
-
-    configuration.add_config_parameters(
-        ET_SCOPES,
-        {
-            "vsjet_tau_id_sf": [
-                {
-                    "tau_id_discriminator": EraModifier(
-                        {
-                            _era: f"{_tau_id}VSjet"
-                            for _era, _tau_id in tau_id.modifier_dict.items()
-                        }
-                    ),
-                    "tau_1_vsjet_sf_outputname": "id_wgt_tau_vsJet_{wp}_1".format(
-                        wp=wp
-                    ),
-                    "tau_2_vsjet_sf_outputname": "id_wgt_tau_vsJet_{wp}_2".format(
-                        wp=wp
-                    ),
-                    "vsjet_tau_id_WP": "{wp}".format(wp=wp),
-                    "tau_vsjet_vseleWP": "Tight",
-                }
-                for wp, bit in {
-                    # "VVVLoose": 1,
-                    # "VVLoose": 2,
-                    # "VLoose": 3,
-                    # "Loose": 4,
-                    "Medium": 5,
-                    "Tight": 6,
-                    # "VTight": 7,
-                    # "VVTight": 8,
-                }.items()
-            ],
-        },
-    )
-
-    # hadronic tau identification variations in all channels
+    # correction files for tau identification/energy scale corrections and tau trigger scale factors
+    # TODO for now, preliminary corrections are used for 2022 and 2023, update them as soon as the official corrections are available
     configuration.add_config_parameters(
         HAD_TAU_SCOPES,
         {
-            "tau_sf_vsele_barrel": "nom",  # or "up"/"down" for up/down variation
-            "tau_sf_vsele_endcap": "nom",  # or "up"/"down" for up/down variation
-            "tau_sf_vsmu_wheel1": "nom",
-            "tau_sf_vsmu_wheel2": "nom",
-            "tau_sf_vsmu_wheel3": "nom",
-            "tau_sf_vsmu_wheel4": "nom",
-            "tau_sf_vsmu_wheel5": "nom",
+            "tau_ides_sf_file": EraModifier(
+                {
+                    **{
+                        _era: f"data/jsonpog-integration/POG/TAU/{_campaign}/tau.json.gz"
+                        for _era, _campaign in CORRECTIONLIB_CAMPAIGNS.items()
+                        if _era in ERAS_RUN2
+                    },
+                    "2022preEE": "payloads/preliminary_tau_corrections/tau_DeepTau2018v2p5_2022_preEE.json.gz",
+                    "2022postEE": "payloads/preliminary_tau_corrections/tau_DeepTau2018v2p5_2022_postEE.json.gz",
+                    "2023preBPix": "payloads/preliminary_tau_corrections/tau_DeepTau2018v2p5_2023_preBPix.json.gz",
+                    "2023postBPix": "payloads/preliminary_tau_corrections/tau_DeepTau2018v2p5_2023_postBPix.json.gz",
+                }
+            ),
+            "tau_trigger_sf_file": EraModifier(
+                {
+                    **{
+                        _era: f"data/jsonpog-integration/POG/TAU/{_campaign}/tau.json.gz"
+                        for _era, _campaign in CORRECTIONLIB_CAMPAIGNS.items()
+                        if _era in ERAS_RUN2
+                    },
+                    "2022preEE": "data/jsonpog-integration/POG/TAU/2022_Summer22/tau_DeepTau2018v2p5_2022_preEE.json.gz",
+                    "2022postEE": "data/jsonpog-integration/POG/TAU/2022_Summer22EE/tau_DeepTau2018v2p5_2022_postEE.json.gz",
+                    "2023preBPix": "data/jsonpog-integration/POG/TAU/2023_Summer23/tau_DeepTau2018v2p5_2023_preBPix.json.gz",
+                    "2023postBPix": "data/jsonpog-integration/POG/TAU/2023_Summer23BPix/tau_DeepTau2018v2p5_2023_postBPix.json.gz",
+                }
+            ),
+            "tau_ES_json_name": "tau_energy_scale",
+            "tau_id_algorithm": tau_id,
+            "tau_es_vs_jet_wp": "Medium",
+            "tau_ES_shift_DM0": "nom",
+            "tau_ES_shift_DM1": "nom",
+            "tau_ES_shift_DM10": "nom",
+            "tau_ES_shift_DM11": "nom",
+            "tau_elefake_es_DM0_barrel": "nom",
+            "tau_elefake_es_DM0_endcap": "nom",
+            "tau_elefake_es_DM1_barrel": "nom",
+            "tau_elefake_es_DM1_endcap": "nom",
+            "tau_mufake_es": "nom",
         },
     )
 
-    # hadronic tau identification variations in semileptonic channels
+    # configure the DeepTau working points for vs jets and vs electrons ID to use for ID and ES
+    # corrections
+    # the vs electrons WP is different for mt/tt and et channels
     configuration.add_config_parameters(
-        SL_SCOPES,
+        HAD_TAU_SCOPES,
         {
-            "tau_sf_vsjet_tau30to35": "nom",
-            "tau_sf_vsjet_tau35to40": "nom",
-            "tau_sf_vsjet_tau40to500": "nom",
-            "tau_sf_vsjet_tau500to1000": "nom",
-            "tau_sf_vsjet_tau1000toinf": "nom",
-            "tau_vsjet_sf_dependence": "pt",  # or "dm", "eta"
+            "tau_ides_sf_vsjet_wp": "Medium",
+        }
+    )
+    configuration.add_config_parameters(
+        MT_SCOPES + TT_SCOPES,
+        {
+            "tau_ides_sf_vsele_wp": "VVLoose",
+        }
+    )
+    configuration.add_config_parameters(
+        ET_SCOPES,
+        {
+            "tau_ides_sf_vsele_wp": "Tight",
+        }
+    )
+
+    # hadronic tau identification corrections for DeepTau discriminator vs jets
+    configuration.add_config_parameters(
+        HAD_TAU_SCOPES,
+        {
+            # scale factors
+            "vsjet_tau_id_sf": [
+                {
+                    "discriminator": EraModifier(
+                        {
+                            _era: f"{_tau_id}VSjet"
+                            for _era, _tau_id in tau_id.modifier_dict.items()
+                        }
+                    ),
+                    "tau1_output_name": "id_wgt_tau_vsJet_{wp}_1".format(
+                        wp=wp
+                    ),
+                    "tau2_output_name": "id_wgt_tau_vsJet_{wp}_2".format(
+                        wp=wp
+                    ),
+                    "vsjet_wp": "{wp}".format(wp=wp),
+                }
+                for wp, bit in {
+                    # "VVVLoose": 1,
+                    # "VVLoose": 2,
+                    # "VLoose": 3,
+                    # "Loose": 4,
+                    "Medium": 5,
+                    # "Tight": 6,
+                    # "VTight": 7,
+                    # "VVTight": 8,
+                }.items()
+            ],
         },
     )
 
-    # hadronic tau identification variations in fullhadronic channels
+    # the SF dependence and the SF variations for the DeepTau discriminator vs jets are different
+    # for Run2 and Run3
+    if era in ERAS_RUN2:
+
+        # hadronic tau identification variations in semileptonic channels
+        configuration.add_config_parameters(
+            SL_SCOPES,
+            {
+                "tau_id_sf_vsjet_tau30to35_shift": "nom",
+                "tau_id_sf_vsjet_tau35to40_shift": "nom",
+                "tau_id_sf_vsjet_tau40to500_shift": "nom",
+                "tau_id_sf_vsjet_tau500to1000_shift": "nom",
+                "tau_id_sf_vsjet_tau1000toinf_shift": "nom",
+                "tau_id_sf_vsjet_shift": "nom",
+                "tau_id_sf_vsjet_sf_dependence": "dm",  # or "dm", "eta"
+            },
+        )
+
+        # hadronic tau identification variations in fullhadronic channels
+        configuration.add_config_parameters(
+            FH_SCOPES,
+            {
+                "tau_id_sf_vsjet_tau_dm0_shift": "nom",
+                "tau_id_sf_vsjet_tau_dm1_shift": "nom",
+                "tau_id_sf_vsjet_tau_dm10_shift": "nom",
+                "tau_id_sf_vsjet_tau_dm11_shift": "nom",
+                "tau_id_sf_vsjet_sf_dependence": "dm",  # or "dm", "eta"
+            },
+        )
+
+    elif era in ERAS_RUN3:
+        # hadronic tau identification variations in all channels
+        configuration.add_config_parameters(
+            HAD_TAU_SCOPES,
+            {
+                "tau_id_sf_vsjet_shift": "nom",
+                "tau_id_sf_vsjet_sf_dependence": "dm",  # or "dm", "eta"
+            },
+        )
+
+    # hadronic tau identification corrections for DeepTau discriminator vs electrons
     configuration.add_config_parameters(
-        FH_SCOPES,
+        HAD_TAU_SCOPES,
         {
-            "tau_sf_vsjet_tauDM0": "nom",
-            "tau_sf_vsjet_tauDM1": "nom",
-            "tau_sf_vsjet_tauDM10": "nom",
-            "tau_sf_vsjet_tauDM11": "nom",
-            "tau_vsjet_sf_dependence": "dm",  # or "dm", "eta"
+            # scale factors
+            "vsele_tau_id_sf": [
+                {
+                    "discriminator": EraModifier(
+                        {
+                            _era: f"{_tau_id}VSe"
+                            for _era, _tau_id in tau_id.modifier_dict.items()
+                        }
+                    ),
+                    "tau1_output_name": "id_wgt_tau_vsEle_{wp}_1".format(
+                        wp=wp
+                    ),
+                    "tau2_output_name": "id_wgt_tau_vsEle_{wp}_2".format(
+                        wp=wp
+                    ),
+                    "vsele_wp": "{wp}".format(wp=wp),
+                }
+                for wp, bit in {
+                    # "VVVLoose": 1,
+                    "VVLoose": 2,
+                    # "VLoose": 3,
+                    # "Loose": 4,
+                    # "Medium": 5,
+                    "Tight": 6,
+                    # "VTight": 7,
+                    # "VVTight": 8,
+                }.items()
+            ],
+
+            # systematic variations
+            "tau_id_sf_vsele_barrel_shift": "nom",  # or "up"/"down" for up/down variation
+            "tau_id_sf_vsele_endcap_shift": "nom",  # or "up"/"down" for up/down variation
+        },
+    )
+
+    # hadronic tau identification corrections for DeepTau discriminator vs muons
+    configuration.add_config_parameters(
+        HAD_TAU_SCOPES,
+        {
+            # scale factors
+            "vsmu_tau_id_sf": [
+                {
+                    "discriminator": EraModifier(
+                        {
+                            _era: f"{_tau_id}VSmu"
+                            for _era, _tau_id in tau_id.modifier_dict.items()
+                        }
+                    ),
+                    "tau1_output_name": "id_wgt_tau_vsMu_{wp}_1".format(
+                        wp=wp
+                    ),
+                    "tau2_output_name": "id_wgt_tau_vsMu_{wp}_2".format(
+                        wp=wp
+                    ),
+                    "vsmu_wp": "{wp}".format(wp=wp),
+                    "max_abs_eta": EraModifier(
+                        {
+                            **{
+                                _era: 2.3
+                                for _era in ERAS_RUN2
+                            },
+                            **{
+                                _era: 2.4
+                                for _era in ERAS_RUN3
+                            }
+                        }
+                    )
+                }
+                for wp, bit in {
+                    "VLoose": 1,
+                    # "Loose": 2,
+                    # "Medium": 3,
+                    "Tight": 4,
+                }.items()
+            ],
+
+            # systematic variations
+            "tau_id_sf_vsmu_wheel1_shift": "nom",  # or "up"/"down" for up/down variation
+            "tau_id_sf_vsmu_wheel2_shift": "nom",  # or "up"/"down" for up/down variation
+            "tau_id_sf_vsmu_wheel3_shift": "nom",  # or "up"/"down" for up/down variation
+            "tau_id_sf_vsmu_wheel4_shift": "nom",  # or "up"/"down" for up/down variation
+            "tau_id_sf_vsmu_wheel5_shift": "nom",  # or "up"/"down" for up/down variation
         },
     )
 
@@ -1291,7 +1336,7 @@ def add_ak8jet_config(configuration: Configuration):
                     "2017": '"Summer19UL17_JRV2_MC"',
                     "2018": '"Summer19UL18_JRV2_MC"',
                     "2022preEE": '"Summer22_22Sep2023_JRV1_MC"',
-                    "2022postEE": '"Summer22EE_22Sep2023_JRV1"',
+                    "2022postEE": '"Summer22EE_22Sep2023_JRV1_MC"',
                     "2023preBPix": '"Summer23Prompt23_RunCv1234_JRV1_MC"',
                     "2023postBPix": '"Summer23BPixPrompt23_RunD_JRV1_MC"',
                 }
@@ -1527,7 +1572,7 @@ def build_config(
     add_muon_config(configuration)
 
     # hadronic tau selection and corrections for identification and energy scale
-    add_hadronic_tau_config(configuration)
+    add_hadronic_tau_config(configuration, era)
 
     # boosted hadronic tau selection and corrections for identification and energy scale
     # TODO add boosted hadronic tau _corrections_ for Run 3
@@ -1979,7 +2024,7 @@ def build_config(
             pairselection.LVMu2Uncorrected,
             pairquantities.MuMuPairQuantities,
             genparticles.MuMuGenPairQuantities,
-            # scalefactors.MuonIDIso_SF,
+            scalefactors.MuonIDIso_SF,
             triggers.SingleMuTriggerFlags,
         ],
     )
@@ -2015,7 +2060,6 @@ def build_config(
             pairquantities.MTDiTauPairQuantities,
             boostedtaus.boostedMTDiTauPairQuantities,
             genparticles.MTGenDiTauPairQuantities,
-            scalefactors.Tau_2_VsJetTauID_lt_SF,
             scalefactors.Tau_2_VsMuTauID_SF,
             triggers.SingleMuTriggerFlags,
             triggers.DoubleMuTauTriggerFlags,
@@ -2033,6 +2077,7 @@ def build_config(
             [
                 scalefactors.TauEmbeddingMuonIDSF_1_MC,
                 scalefactors.TauEmbeddingMuonIsoSF_1_MC,
+                scalefactors.Tau_2_VsJetTauID_lt_SF,
                 scalefactors.Tau_2_VsEleTauID_SF_Run2,
             ],
         )
@@ -2041,6 +2086,7 @@ def build_config(
             ["mt"],
             [
                 scalefactors.MuonIDIso_SF,
+                scalefactors.Tau_2_VsJetTauID_SF,
                 scalefactors.Tau_2_VsEleTauID_SF_Run3,
                 scalefactors.SingleMuTriggerSF,
                 scalefactors.DoubleMuTauTriggerSF,
@@ -2090,7 +2136,6 @@ def build_config(
             pairquantities.ETDiTauPairQuantities,
             boostedtaus.boostedETDiTauPairQuantities,
             genparticles.ETGenDiTauPairQuantities,
-            scalefactors.Tau_2_VsJetTauID_lt_SF,
             scalefactors.Tau_2_VsMuTauID_SF,
             triggers.SingleEleTriggerFlags,
             triggers.DoubleEleTauTriggerFlags,
@@ -2111,6 +2156,7 @@ def build_config(
             [
                 scalefactors.TauEmbeddingElectronIDSF_1_MC,
                 scalefactors.TauEmbeddingElectronIsoSF_1_MC,
+                scalefactors.Tau_2_VsJetTauID_lt_SF,
                 scalefactors.Tau_2_VsEleTauID_SF_Run2,
             ],
         )
@@ -2119,6 +2165,7 @@ def build_config(
             ["et"],
             [
                 scalefactors.EleID_SF,
+                scalefactors.Tau_2_VsJetTauID_SF,
                 scalefactors.Tau_2_VsEleTauID_SF_Run3,
             ]
         )
@@ -2159,9 +2206,7 @@ def build_config(
             pairquantities.TTDiTauPairQuantities,
             boostedtaus.boostedTTDiTauPairQuantities,
             genparticles.TTGenDiTauPairQuantities,
-            scalefactors.Tau_1_VsJetTauID_SF,
             scalefactors.Tau_1_VsMuTauID_SF,
-            scalefactors.Tau_2_VsJetTauID_tt_SF,
             scalefactors.Tau_2_VsMuTauID_SF,
             triggers.DoubleTauTauTriggerFlags,
             #triggers.BoostedTTGenerateDoubleTriggerFlags,  TODO rework trigger setup before enabling this
@@ -2177,6 +2222,8 @@ def build_config(
         configuration.add_producers(
             "tt",
             [
+                scalefactors.Tau_1_VsJetTauID_tt_SF,
+                scalefactors.Tau_2_VsJetTauID_tt_SF,
                 scalefactors.Tau_1_VsEleTauID_SF_Run2,
                 scalefactors.Tau_2_VsEleTauID_SF_Run2,
                 scalefactors.Tau_1_oldIsoTauID_tt_SF,
@@ -2192,6 +2239,8 @@ def build_config(
         configuration.add_producers(
             "tt",
             [
+                scalefactors.Tau_1_VsJetTauID_SF,
+                scalefactors.Tau_2_VsJetTauID_SF,
                 scalefactors.Tau_1_VsEleTauID_SF_Run3,
                 scalefactors.Tau_2_VsEleTauID_SF_Run3,
                 scalefactors.DoubleTauTauTriggerSF,
@@ -2203,7 +2252,6 @@ def build_config(
         RemoveProducer(
             producers=[
                 scalefactors.Tau_2_VsMuTauID_SF,
-                scalefactors.Tau_2_VsJetTauID_lt_SF,
             ],
             samples="data",
         ),
@@ -2213,6 +2261,7 @@ def build_config(
             ["et", "mt"],
             RemoveProducer(
                 producers=[
+                    scalefactors.Tau_2_VsJetTauID_lt_SF,
                     scalefactors.Tau_2_VsEleTauID_SF_Run2,
                 ],
                 samples="data",
@@ -2223,6 +2272,7 @@ def build_config(
             ["et", "mt"],
             RemoveProducer(
                 producers=[
+                    scalefactors.Tau_2_VsJetTauID_SF,
                     scalefactors.Tau_2_VsEleTauID_SF_Run3,
                 ],
                 samples="data",
@@ -2252,26 +2302,25 @@ def build_config(
         ),
     )
 
-    configuration.add_modification_rule(
-        ["et", "mt", "tt"],
-        AppendProducer(
-            producers=[
-                genparticles.GenBPairQuantities,
-                genparticles.GenMatchingBPairFlag,
-                genparticles.GenTauPairQuantities,
-                genparticles.GenMatchingBoostedTauPairFlag,
-            ],
-            samples=["nmssm_Ybb", "nmssm_Ytautau"],
-        ),
-    )
+    # TODO re-include
+    #configuration.add_modification_rule(
+    #    ["et", "mt", "tt"],
+    #    AppendProducer(
+    #        producers=[
+    #            genparticles.GenBPairQuantities,
+    #            genparticles.GenMatchingBPairFlag,
+    #            genparticles.GenTauPairQuantities,
+    #            genparticles.GenMatchingBoostedTauPairFlag,
+    #        ],
+    #        samples=["nmssm_Ybb", "nmssm_Ytautau"],
+    #    ),
+    #)
 
     configuration.add_modification_rule(
         ["tt"],
         RemoveProducer(
             producers=[
-                scalefactors.Tau_1_VsJetTauID_SF,
                 scalefactors.Tau_1_VsMuTauID_SF,
-                scalefactors.Tau_2_VsJetTauID_tt_SF,
                 scalefactors.Tau_2_VsMuTauID_SF,
             ],
             samples="data",
@@ -2282,6 +2331,8 @@ def build_config(
             ["tt"],
             RemoveProducer(
                 producers=[
+                    scalefactors.Tau_1_VsJetTauID_tt_SF,
+                    scalefactors.Tau_2_VsJetTauID_tt_SF,
                     scalefactors.Tau_1_VsEleTauID_SF_Run2,
                     scalefactors.Tau_2_VsEleTauID_SF_Run2,
                 ],
@@ -2293,6 +2344,8 @@ def build_config(
             ["tt"],
             RemoveProducer(
                 producers=[
+                    scalefactors.Tau_1_VsJetTauID_SF,
+                    scalefactors.Tau_2_VsJetTauID_SF,
                     scalefactors.Tau_1_VsEleTauID_SF_Run3,
                     scalefactors.Tau_2_VsEleTauID_SF_Run3,
                 ],
@@ -2872,13 +2925,23 @@ def build_config(
                 nanoAOD.genWeight,
             ],
         )
+
+    # jet vetomap selection only applies to Run 3 analyses
+    if era in ERAS_RUN3:
+        configuration.add_outputs(
+            HAD_TAU_SCOPES,
+            [
+                q.jet_vetomap_veto,
+
+            ],
+        )
+
     configuration.add_outputs(
         "mt",
         [
             q.nmuons,
             q.ntaus,
             q.nboostedtaus,
-            scalefactors.Tau_2_VsJetTauID_lt_SF.output_group,
             scalefactors.Tau_2_VsMuTauID_SF.output_group,
             pairquantities.VsJetTauIDFlag_2.output_group,
             pairquantities.VsEleTauIDFlag_2.output_group,
@@ -2900,8 +2963,8 @@ def build_config(
             q.electron_veto_flag,
             q.dimuon_veto,
             q.dilepton_veto,
-            # q.id_wgt_mu_1,
-            # q.iso_wgt_mu_1,
+            q.id_wgt_mu_1,
+            q.iso_wgt_mu_1,
             q.boosted_dxy_1,
             q.boosted_dz_1,
             q.boosted_tau_decaymode_1,
@@ -2937,6 +3000,7 @@ def build_config(
         configuration.add_outputs(
             "mt",
             [
+                scalefactors.Tau_2_VsJetTauID_lt_SF.output_group,
                 scalefactors.Tau_2_VsEleTauID_SF_Run2.output_group,
                 scalefactors.Tau_2_oldIsoTauID_lt_SF.output_group,
                 scalefactors.Tau_2_antiEleTauID_SF.output_group,
@@ -2950,9 +3014,13 @@ def build_config(
                 p
                 for p in scalefactors.DoubleMuTauTriggerSF.get_outputs("mt")
             ] + [
+                p
+                for p in scalefactors.MuonIDIso_SF.get_outputs("mt")
+
+            ] + [
                 scalefactors.SingleMuTriggerSF.output_group,
+                scalefactors.Tau_2_VsJetTauID_SF.output_group,
                 scalefactors.Tau_2_VsEleTauID_SF_Run3.output_group,
-                q.jet_vetomap_veto,
             ],
         )
 
@@ -2966,7 +3034,6 @@ def build_config(
             q.nelectrons,
             q.ntaus,
             q.nboostedtaus,
-            scalefactors.Tau_2_VsJetTauID_lt_SF.output_group,
             scalefactors.Tau_2_VsMuTauID_SF.output_group,
             pairquantities.VsJetTauIDFlag_2.output_group,
             pairquantities.VsEleTauIDFlag_2.output_group,
@@ -3024,30 +3091,9 @@ def build_config(
     # add the old MVA ID scale factor producers only for Run 2 eras (not available for Run 3)
     if era in ERAS_RUN2:
         configuration.add_outputs(
-            "mt",
-            [
-                scalefactors.Tau_2_VsEleTauID_SF_Run2.output_group,
-                scalefactors.Tau_2_oldIsoTauID_lt_SF.output_group,
-                scalefactors.Tau_2_antiEleTauID_SF.output_group,
-                scalefactors.Tau_2_antiMuTauID_SF.output_group,
-            ],
-        )
-    elif era in ERAS_RUN3:
-        configuration.add_outputs(
-            "mt",
-            [
-                p
-                for p in scalefactors.MuonIDIso_SF.get_outputs("mt")
-            ] + [
-                scalefactors.Tau_2_VsEleTauID_SF_Run3.output_group,
-            ],
-        )
-
-    # add the old MVA ID scale factor producers only for Run 2 eras (not available for Run 3)
-    if era in ERAS_RUN2:
-        configuration.add_outputs(
             "et",
             [
+                scalefactors.Tau_2_VsJetTauID_lt_SF.output_group,
                 scalefactors.Tau_2_VsEleTauID_SF_Run2.output_group,
                 scalefactors.Tau_2_oldIsoTauID_lt_SF.output_group,
                 scalefactors.Tau_2_antiEleTauID_SF.output_group,
@@ -3062,6 +3108,7 @@ def build_config(
                 for p in scalefactors.EleID_SF.get_outputs("et")
             ]
             + [
+                scalefactors.Tau_2_VsJetTauID_SF.output_group,
                 scalefactors.Tau_2_VsEleTauID_SF_Run3.output_group,
             ],
         )
@@ -3071,9 +3118,7 @@ def build_config(
         "tt",
         [
             q.ntaus,
-            scalefactors.Tau_1_VsJetTauID_SF.output_group,
             scalefactors.Tau_1_VsMuTauID_SF.output_group,
-            scalefactors.Tau_2_VsJetTauID_tt_SF.output_group,
             scalefactors.Tau_2_VsMuTauID_SF.output_group,
             pairquantities.VsJetTauIDFlag_1.output_group,
             pairquantities.VsEleTauIDFlag_1.output_group,
@@ -3132,6 +3177,8 @@ def build_config(
         configuration.add_outputs(
             "tt",
             [
+                scalefactors.Tau_1_VsJetTauID_tt_SF.output_group,
+                scalefactors.Tau_2_VsJetTauID_tt_SF.output_group,
                 scalefactors.Tau_1_VsEleTauID_SF_Run2.output_group,
                 scalefactors.Tau_2_VsEleTauID_SF_Run2.output_group,
                 scalefactors.Tau_1_oldIsoTauID_tt_SF.output_group,
@@ -3149,6 +3196,8 @@ def build_config(
                 p
                 for p in scalefactors.DoubleTauTauTriggerSF.get_outputs("tt")
             ] + [
+                scalefactors.Tau_1_VsJetTauID_SF.output_group,
+                scalefactors.Tau_2_VsJetTauID_SF.output_group,
                 scalefactors.Tau_1_VsEleTauID_SF_Run3.output_group,
                 scalefactors.Tau_2_VsEleTauID_SF_Run3.output_group,
             ],
@@ -3171,34 +3220,35 @@ def build_config(
             ],
         )
 
-    if sample in ["nmssm_Ybb", "nmssm_Ytautau"]:
-        configuration.add_outputs(
-            HAD_TAU_SCOPES,
-            [
-                q.gen_b_pt_1,
-                q.gen_b_eta_1,
-                q.gen_b_phi_1,
-                q.gen_b_mass_1,
-                q.gen_b_pt_2,
-                q.gen_b_eta_2,
-                q.gen_b_phi_2,
-                q.gen_b_mass_2,
-                q.gen_b_m_inv,
-                q.gen_b_deltaR,
-                q.gen_bpair_match_flag,
-                q.gen_tau_pt_1,
-                q.gen_tau_eta_1,
-                q.gen_tau_phi_1,
-                q.gen_tau_mass_1,
-                q.gen_tau_pt_2,
-                q.gen_tau_eta_2,
-                q.gen_tau_phi_2,
-                q.gen_tau_mass_2,
-                q.gen_tau_m_inv,
-                q.gen_tau_deltaR,
-                q.gen_boostedtaupair_match_flag,
-            ],
-        )
+    # TODO re-include
+    #if sample in ["nmssm_Ybb", "nmssm_Ytautau"]:
+    #    configuration.add_outputs(
+    #        HAD_TAU_SCOPES,
+    #        [
+    #            q.gen_b_pt_1,
+    #            q.gen_b_eta_1,
+    #            q.gen_b_phi_1,
+    #            q.gen_b_mass_1,
+    #            q.gen_b_pt_2,
+    #            q.gen_b_eta_2,
+    #            q.gen_b_phi_2,
+    #            q.gen_b_mass_2,
+    #            q.gen_b_m_inv,
+    #            q.gen_b_deltaR,
+    #            q.gen_bpair_match_flag,
+    #            q.gen_tau_pt_1,
+    #            q.gen_tau_eta_1,
+    #            q.gen_tau_phi_1,
+    #            q.gen_tau_mass_1,
+    #            q.gen_tau_pt_2,
+    #            q.gen_tau_eta_2,
+    #            q.gen_tau_phi_2,
+    #            q.gen_tau_mass_2,
+    #            q.gen_tau_m_inv,
+    #            q.gen_tau_deltaR,
+    #            q.gen_boostedtaupair_match_flag,
+    #        ],
+    #    )
 
     #########################
     # LHE Scale Weight variations
@@ -4135,7 +4185,7 @@ def build_config(
                 SystematicShift(
                     name=f"singleEleTriggerSF{_variation.upper()}",
                     shift_config={
-                        ("mt"): {
+                        ("et"): {
                             "single_ele_trigger_sf": [
                                 {
                                     "e_trigger_flagname": "trg_wgt_single_ele30",
@@ -4145,7 +4195,7 @@ def build_config(
                             ],
                         }
                     },
-                    producers={("mt"): scalefactors.SingleEleTriggerSF},
+                    producers={("et"): scalefactors.SingleEleTriggerSF},
                 ),
                 exclude_samples=["data", "embedding", "embedding_mc"],
             )
