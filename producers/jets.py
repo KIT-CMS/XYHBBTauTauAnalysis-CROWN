@@ -105,7 +105,7 @@ JetIDRun2 = Producer(
 # jet selection including the pileup ID (for CHS jets)
 GoodJetsWithPUID = Producer(
     name="GoodJetsWithPUID",
-    call="xyh::object_selection::jet({df}, {output}, {input}, {ak4jet_min_pt}, {ak4jet_max_abs_eta}, {ak4jet_id_wp}, {ak4jet_puid_wp}, {ak4jet_puid_max_pt})",
+    call="xyh::object_selection::jet({df}, {output}, {input}, {ak4jet_min_pt}, {ak4jet_max_abs_eta}, {ak4jet_id_wp}, {ak4jet_apply_jet_horn_veto}, {ak4jet_puid_wp}, {ak4jet_puid_max_pt})",
     input=[
         q.Jet_pt_corrected,
         nanoAOD.Jet_eta,
@@ -119,7 +119,7 @@ GoodJetsWithPUID = Producer(
 # jet selection not applying the pileup ID (for PUPPI jets)
 GoodJetsWithoutPUID = Producer(
     name="GoodJetsWithoutPUID",
-    call="xyh::object_selection::jet({df}, {output}, {input}, {ak4jet_min_pt}, {ak4jet_max_abs_eta}, {ak4jet_id_wp})",
+    call="xyh::object_selection::jet({df}, {output}, {input}, {ak4jet_min_pt}, {ak4jet_max_abs_eta}, {ak4jet_id_wp}, {ak4jet_apply_jet_horn_veto})",
     input=[
         q.Jet_pt_corrected,
         nanoAOD.Jet_eta,
@@ -132,7 +132,7 @@ GoodJetsWithoutPUID = Producer(
 # base jet selection for b jets including the pileup ID (for CHS jets)
 GoodBJetsBaseWithPUID = Producer(
     name="GoodBJetsBaseWithPUID",
-    call="xyh::object_selection::jet({df}, {output}, {input}, {bjet_min_pt}, {bjet_max_abs_eta}, {ak4jet_id_wp}, {ak4jet_puid_wp}, {ak4jet_puid_max_pt})",
+    call="xyh::object_selection::jet({df}, {output}, {input}, {bjet_min_pt}, {bjet_max_abs_eta}, {ak4jet_id_wp}, {ak4jet_apply_jet_horn_veto}, {ak4jet_puid_wp}, {ak4jet_puid_max_pt})",
     input=[
         q.Jet_pt_corrected,
         nanoAOD.Jet_eta,
@@ -146,7 +146,7 @@ GoodBJetsBaseWithPUID = Producer(
 # base jet selection for b jets not applying the pileup ID (for PUPPI jets)
 GoodBJetsBaseWithoutPUID = Producer(
     name="GoodBJetsBaseWithoutPUID",
-    call="xyh::object_selection::jet({df}, {output}, {input}, {bjet_min_pt}, {bjet_max_abs_eta}, {ak4jet_id_wp})",
+    call="xyh::object_selection::jet({df}, {output}, {input}, {bjet_min_pt}, {bjet_max_abs_eta}, {ak4jet_id_wp}, {ak4jet_apply_jet_horn_veto})",
     input=[
         q.Jet_pt_corrected,
         nanoAOD.Jet_eta,
