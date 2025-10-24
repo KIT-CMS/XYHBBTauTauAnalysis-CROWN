@@ -315,10 +315,14 @@ namespace xyh {
          * @param min_pt The minimum transverse momentum for selected jets.
          * @param abs_max_eta The maximum absolute pseudorapidity for selected jets.
          * @param id_wp The working point for the jet identification.
+         * @param apply_jet_horn_veto Whether to apply the jet horn veto.
          * @return A new data frame with the selection mask column.
          * 
          * @note The function does not apply pileup ID, as it is not present for PFPuppi jets.
- *       *       If it should be applied, use the overloaded function with pileup ID.
+         *       If it should be applied, use the overloaded function with pileup ID.
+         *
+         * @note The jet horn veto removes jets in the pseudorapidity range \(2.5 < |\eta| < 3.0\) with a
+         *       transverse momentum \(p_T < 50\) GeV.
          */
         ROOT::RDF::RNode jet(
             ROOT::RDF::RNode df,
@@ -328,10 +332,11 @@ namespace xyh {
             const std::string &jet_id,
             const float &min_pt,
             const float &abs_max_eta,
-            const int &id_wp
+            const int &id_wp,
+            const bool &apply_jet_horn_veto
         ) {
             auto select = [
-                min_pt, abs_max_eta, id_wp
+                min_pt, abs_max_eta, id_wp, apply_jet_horn_veto
             ] (
                 const ROOT::RVec<float> &pt,
                 const ROOT::RVec<float> &eta,
@@ -345,7 +350,7 @@ namespace xyh {
                 Logger::get("xyh::object_selection::jet")->debug("    id {}", id);
 
                 // create the selection mask
-                auto mask = xyh::object_selection::select_jet(pt, eta, id, min_pt, abs_max_eta, id_wp);
+                auto mask = xyh::object_selection::select_jet(pt, eta, id, min_pt, abs_max_eta, id_wp, apply_jet_horn_veto);
 
                 // debug output for the final selection mask
                 Logger::get("xyh::object_selection::jet")->debug("    selection mask {}", mask);
@@ -382,10 +387,16 @@ namespace xyh {
          * @param min_pt The minimum transverse momentum for selected jets.
          * @param abs_max_eta The maximum absolute pseudorapidity for selected jets.
          * @param id_wp The working point for the jet identification.
+         * @param apply_jet_horn_veto Whether to apply the jet horn veto.
+         * @param puid_wp The working point for the jet pileup identification.
+         * @param puid_max_pt The maximum transverse momentum for the pileup identification.
          * @return A new data frame with the selection mask column.
          * 
          * @note The function applies pileup ID.
          *       If it should not be applied, use the overloaded function with pileup ID.
+         *
+         * @note The jet horn veto removes jets in the pseudorapidity range \(2.5 < |\eta| < 3.0\) with a
+         *       transverse momentum \(p_T < 50\) GeV.
          */
         ROOT::RDF::RNode jet(
             ROOT::RDF::RNode df,
@@ -397,11 +408,12 @@ namespace xyh {
             const float &min_pt,
             const float &abs_max_eta,
             const int &id_wp,
+            const bool &apply_jet_horn_veto,
             const int &puid_wp,
             const float &puid_max_pt
         ) {
             auto select = [
-                min_pt, abs_max_eta, id_wp, puid_wp, puid_max_pt
+                min_pt, abs_max_eta, id_wp, puid_wp, puid_max_pt, apply_jet_horn_veto
             ] (
                 const ROOT::RVec<float> &pt,
                 const ROOT::RVec<float> &eta,
@@ -417,7 +429,7 @@ namespace xyh {
                 Logger::get("xyh::object_selection::jet")->debug("    puid {}", puid);
 
                 // create the selection mask
-                auto mask = xyh::object_selection::select_jet(pt, eta, id, puid, min_pt, abs_max_eta, id_wp, puid_wp, puid_max_pt);
+                auto mask = xyh::object_selection::select_jet(pt, eta, id, puid, min_pt, abs_max_eta, id_wp, apply_jet_horn_veto, puid_wp, puid_max_pt);
 
                 // debug output for the final selection mask
                 Logger::get("xyh::object_selection::jet")->debug("    selection mask {}", mask);

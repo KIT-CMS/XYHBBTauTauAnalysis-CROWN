@@ -171,7 +171,8 @@ ROOT::RDF::RNode jet(
     const std::string &jet_id,
     const float &min_pt,
     const float &abs_max_eta,
-    const int &id_wp
+    const int &id_wp,
+    const bool &apply_jet_horn_veto
 );
 
 // function xyh::object_selection::jet (overloaded version with pileup ID)
@@ -185,6 +186,7 @@ ROOT::RDF::RNode jet(
     const float &min_pt,
     const float &abs_max_eta,
     const int &id_wp,
+    const bool &apply_jet_horn_veto,
     const int &puid_wp,
     const float &puid_max_pt
 );
