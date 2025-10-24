@@ -27,9 +27,13 @@ namespace object_selection {
  * @param min_pt The minimum transverse momentum for selected jets.
  * @param abs_max_eta The maximum absolute pseudorapidity for selected jets.
  * @param id_wp The working point for the jet identification.
+ * @param apply_jet_horn_veto Whether to apply the jet horn veto.
  * 
  * @note The function does not apply pileup ID, as it is not present for PFPuppi jets.
  *       If it should be applied, use the overloaded function with pileup ID.
+ *
+ * @note The jet horn veto removes jets in the pseudorapidity range \(2.5 < |\eta| < 3.0\) with a
+ *       transverse momentum \(p_T < 50\) GeV.
  */
 inline auto select_jet(
     const ROOT::RVec<float> &pt,
@@ -37,13 +41,20 @@ inline auto select_jet(
     const ROOT::RVec<int> &id,
     const float &min_pt,
     const float &abs_max_eta,
-    const int &id_wp
+    const int &id_wp,
+    const bool &apply_jet_horn_veto
 ) {
+        // jet horn veto: veto jets in 2.5 < eta < 3.0 with a pt smaller than 50 GeV
+        // jets that have this flag set to "true" shall be ignored, i.e., selected jets should have
+        // !jet_horn_veto
+        auto jet_horn_veto = (abs(eta) > 2.5) && (abs(eta) < 3.0) && (pt < 50.0);
+
         // create the selection mask
         auto mask = (
             (pt > min_pt)
             && (abs(eta) < abs_max_eta)
             && (id >= id_wp)
+            && !(apply_jet_horn_veto && jet_horn_veto)
         );
         return mask;
 }
@@ -63,11 +74,15 @@ inline auto select_jet(
  * @param min_pt The minimum transverse momentum for selected jets.
  * @param abs_max_eta The maximum absolute pseudorapidity for selected jets.
  * @param id_wp The working point for the jet identification.
+ * @param apply_jet_horn_veto Whether to apply the jet horn veto.
  * @param puid_wp The working point for the jet pileup identification.
  * @param puid_max_pt The maximum transverse momentum for the pileup identification.
  * 
  * @note The function applies pileup ID.
  *       If it should not be applied, use the overloaded function with pileup ID.
+ *
+ * @note The jet horn veto removes jets in the pseudorapidity range \(2.5 < |\eta| < 3.0\) with a
+ *       transverse momentum \(p_T < 50\) GeV.
  */
 inline auto select_jet(
     const ROOT::RVec<float> &pt,
@@ -77,6 +92,7 @@ inline auto select_jet(
     const float &min_pt,
     const float &abs_max_eta,
     const int &id_wp,
+    const bool &apply_jet_horn_veto,
     const int &puid_wp,
     const float &puid_max_pt
 ) {
@@ -84,7 +100,10 @@ inline auto select_jet(
     auto puid_mask = (pt > puid_max_pt) || ( (pt <= puid_max_pt) && (puid >= puid_wp) );
 
     // evaluate jet selection with base function and add pileup ID mask
-    auto mask = select_jet(pt, eta, id, min_pt, abs_max_eta, id_wp) && puid_mask;
+    auto mask = (
+        select_jet(pt, eta, id, min_pt, abs_max_eta, id_wp, apply_jet_horn_veto)
+        && puid_mask
+    );
 
     return mask;
 }
