@@ -1172,6 +1172,7 @@ def add_ak4jet_config(configuration: Configuration):
             "ak4jet_min_pt": 30.0,
             "ak4jet_max_abs_eta": 4.7,
             "ak4jet_id_wp": 2,  # 0 == fail, 2 == pass(tight) & fail(tightLepVeto), 6 == pass(tight) & pass(tightLepVeto)
+            "ak4jet_apply_jet_horn_veto": "true",
             "ak4jet_puid_wp": EraModifier(
                 {
                     "2016preVFP": 1,  # 0 == fail, 1 == pass(loose), 3 == pass(loose,medium), 7 == pass(loose,medium,tight)
@@ -1318,6 +1319,7 @@ def add_ak8jet_config(configuration: Configuration):
             "ak8jet_min_pt": 200.,
             "ak8jet_max_abs_eta": 2.5,
             "ak8jet_id_wp": 2,  # tight & tightLepVeto
+            "ak8jet_apply_jet_horn_veto": "true",
             "ak8jet_reapplyJES": False,
             "ak8jet_jes_sources": '{""}',
             "ak8jet_jes_shift": 0,

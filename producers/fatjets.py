@@ -84,7 +84,7 @@ FatJetEnergyCorrection_data, FatJetEnergyCorrection, RenameFatJetsData = jerc_pr
 # jet selection not applying the pileup ID (for PUPPI jets)
 GoodFatJetsWithoutPUID = Producer(
     name="GoodFatJetsWithPUID",
-    call="xyh::object_selection::jet({df}, {output}, {input}, {ak8jet_min_pt}, {ak8jet_max_abs_eta}, {ak8jet_id_wp})",
+    call="xyh::object_selection::jet({df}, {output}, {input}, {ak8jet_min_pt}, {ak8jet_max_abs_eta}, {ak8jet_id_wp}, {ak8jet_apply_jet_horn_veto})",
     input=[
         q.FatJet_pt_corrected,
         nanoAOD.FatJet_eta,
