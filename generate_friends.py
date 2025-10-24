@@ -20,6 +20,7 @@ def run(args):
         "rem_higgs",
         "hh4b",
         "hh2b2tau",
+        "hh4v",
         "embedding",
         "embedding_mc",
         "singletop",
