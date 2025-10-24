@@ -163,7 +163,8 @@ def jerc_producer_factory(
                 f"{{{config_parameter_prefix}_reapplyJES}}, "
                 f"{{{config_parameter_prefix}_jes_shift}}, "
                 f"{{{config_parameter_prefix}_jer_shift}}, "
-                f"{lhc_run}"
+                f"{lhc_run}, "
+                f"{{{config_parameter_prefix}_apply_jet_horn_veto}}"
             ")"
         ),
         input=[
