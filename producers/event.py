@@ -253,8 +253,7 @@ JetVetoMapVeto = Producer(
         "{jet_veto_map_type}",
         {jet_veto_min_pt},
         {jet_veto_id_wp},
-        {jet_veto_max_em_frac},
-        {jet_veto_min_delta_r_jet_muon}
+        {jet_veto_max_em_frac}
     )
     """,
     input=[
@@ -264,9 +263,6 @@ JetVetoMapVeto = Producer(
         q.Jet_ID_corrected,
         nanoAOD.Jet_chEmEF,
         nanoAOD.Jet_neEmEF,
-        nanoAOD.Muon_eta,
-        nanoAOD.Muon_phi,
-        nanoAOD.Muon_isPFcand,
     ],
     output=[q.jet_vetomap_veto],
     scopes=["global"],
