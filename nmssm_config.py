@@ -1993,6 +1993,38 @@ def build_config(
         default=[],
     )
 
+    # AK8 X -> bb tagging scale factors
+    # The X -> bb tagging scale factors only exist for 2018 for now.
+    # TODO provide these scale factors for all eras
+    xbb_sf_producers = get_for_era(
+        {
+            "2018": [
+                scalefactors.Xbb_tagging_SF,
+                scalefactors.Xbb_tagging_SF_boosted,
+            ],
+        },
+        era,
+        default=[]
+    )
+
+    # B jet pair quantities
+    # Run 3 does not include b jet regression variables, so the producers for the b jet pair
+    # quantities differ for both eras.
+    bb_jet_pair_quantity_producers = get_for_era(
+        {
+            tuple(ERAS_RUN2): [
+                pairquantities_bbpair.DiBjetPairQuantitiesRun2,
+                pairquantities_bbpair.DiBjetPairQuantitiesRun2_boosted,
+                taus.TauEnergyCorrectionMCRun2,
+            ],
+            tuple(ERAS_RUN3): [
+                pairquantities_bbpair.DiBjetPairQuantitiesRun3,
+                pairquantities_bbpair.DiBjetPairQuantitiesRun3_boosted,
+                taus.TauEnergyCorrectionMCRun3,
+            ]
+        },
+        era,
+    )
 
     #
     # PRODUCER DEFINITIONS
@@ -2025,7 +2057,7 @@ def build_config(
         + jet_veto_map_producers
     )
 
-    # common
+    # Producers common to all scopes with at least one hadronic tau
     configuration.add_producers(
         HAD_TAU_SCOPES,
         [
@@ -2067,39 +2099,11 @@ def build_config(
             pairquantities.DiTauPairMETQuantities,
             genparticles.GenMatching,
             genparticles.GenMatchingBoosted,
-        ],
+        ]
+        + xbb_sf_producers
+        + bb_jet_pair_quantity_producers,
     )
 
-    # the Xbb tagging scale factors only exist for 2018
-    # TODO provide these scale factors for all eras
-    if era in ["2018"]:
-        configuration.add_producers(
-            HAD_TAU_SCOPES,
-            [
-                scalefactors.Xbb_tagging_SF,
-                scalefactors.Xbb_tagging_SF_boosted,
-            ]
-        )
-
-    # load different b jet pair quantities producers for Run 2 and Run 3
-    if era in ERAS_RUN2:
-        configuration.add_producers(
-            HAD_TAU_SCOPES,
-            [
-                pairquantities_bbpair.DiBjetPairQuantitiesRun2,
-                pairquantities_bbpair.DiBjetPairQuantitiesRun2_boosted,
-                taus.TauEnergyCorrectionMCRun2,
-            ]
-        )
-    elif era in ERAS_RUN3:
-        configuration.add_producers(
-            HAD_TAU_SCOPES,
-            [
-                pairquantities_bbpair.DiBjetPairQuantitiesRun3,
-                pairquantities_bbpair.DiBjetPairQuantitiesRun3_boosted,
-                taus.TauEnergyCorrectionMCRun3,
-            ]
-        )
 
     configuration.add_producers(
         "mm",
