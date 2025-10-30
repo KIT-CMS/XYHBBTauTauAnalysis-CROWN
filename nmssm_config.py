@@ -2026,6 +2026,73 @@ def build_config(
         era,
     )
 
+    # Muon ID and isolation scale factors in the mt channel
+    # - In Run 2, the scale factors are provided from own measurements with the same methods as for
+    #   embedding.
+    # - In Run 3, the official measurements from the MUO POG are taken.
+    mt_muon_sf_producers = get_for_era(
+        {
+            tuple(ERAS_RUN2): [
+                scalefactors.TauEmbeddingMuonIDSF_1_MC,
+                scalefactors.TauEmbeddingMuonIsoSF_1_MC,
+            ],
+            tuple(ERAS_RUN3): [
+                scalefactors.MuonIDIso_SF,
+            ],
+        },
+        era,
+    )
+
+    # Tau ID scale factors in the mt channel
+    # - In Run 2, the scale factors are provided from own measurements with the same methods as for
+    #   embedding.
+    # - In Run 3, the official measurements from the MUO POG are taken.
+    mt_tau_sf_producers = get_for_era(
+        {
+            tuple(ERAS_RUN2): [
+                scalefactors.Tau_2_VsJetTauID_lt_SF,
+                scalefactors.Tau_2_VsEleTauID_SF_Run2,
+            ],
+            tuple(ERAS_RUN3): [
+                scalefactors.Tau_2_VsJetTauID_SF,
+                scalefactors.Tau_2_VsEleTauID_SF_Run3,
+            ],
+        },
+        era,
+    )
+
+    # Trigger scale factors in the mt channel
+    # - In Run 2, no trigger scale factors are applied for now (to be reworked).
+    # - In Run 3, the official MUO POG / TAU POG / HIG PAG SFs are used.
+    mt_trigger_sf_producers = get_for_era(
+        {
+            tuple(ERAS_RUN2): [
+                # TODO For Run 2, trigger producers need to be reworked.
+            ],
+            tuple(ERAS_RUN3): [
+                scalefactors.SingleMuTriggerSF,
+                scalefactors.DoubleMuTauTriggerSF,
+            ],
+        },
+        era,
+    )
+
+    # Old tau MVA ID scale factors in the mt channel
+    # For Run 2, add the old MVA ID scale factor producers. They are used for the boosted tau
+    # reconstruction in this case.
+    mt_old_tau_mva_sf_producers = get_for_era(
+        {
+            tuple(ERAS_RUN2): [
+                scalefactors.Tau_2_oldIsoTauID_lt_SF,
+                scalefactors.Tau_2_antiEleTauID_SF,
+                scalefactors.Tau_2_antiMuTauID_SF,
+            ],
+        },
+        era,
+        default=[],
+    )
+
+
     #
     # PRODUCER DEFINITIONS
     #
@@ -2125,6 +2192,8 @@ def build_config(
             triggers.SingleMuTriggerFlags,
         ],
     )
+
+    # Producers for quantities in the mt scope
     configuration.add_producers(
         "mt",
         [
@@ -2134,7 +2203,6 @@ def build_config(
             muons.ExtraMuonsVeto,
             muons.VetoMuons_boosted,
             muons.BoostedExtraMuonsVeto,
-            # taus.BaseTaus,
             taus.GoodTaus,
             taus.NumberOfGoodTaus,
             boostedtaus.boostedTauEnergyCorrection,
@@ -2160,35 +2228,15 @@ def build_config(
             scalefactors.Tau_2_VsMuTauID_SF,
             triggers.SingleMuTriggerFlags,
             triggers.DoubleMuTauTriggerFlags,
-            #triggers.BoostedMTGenerateSingleMuonTriggerFlags,  TODO rework trigger setup before enabling this
+            # TODO rework trigger setup before enabling this
+            # triggers.BoostedMTGenerateSingleMuonTriggerFlags,
             # triggers.GenerateSingleTrailingTauTriggerFlags,
-        ],
+        ]
+        + mt_muon_sf_producers
+        + mt_tau_sf_producers
+        + mt_trigger_sf_producers
+        + mt_old_tau_mva_sf_producers,
     )
-
-    # some producers need to be different for Run 2 and Run 3 eras
-    # - muon scale factors are taken from own measurements in Run 2 and from POG in Run 3
-    if era in ERAS_RUN2:
-        # run 2 producers
-        configuration.add_producers(
-            ["mt"],
-            [
-                scalefactors.TauEmbeddingMuonIDSF_1_MC,
-                scalefactors.TauEmbeddingMuonIsoSF_1_MC,
-                scalefactors.Tau_2_VsJetTauID_lt_SF,
-                scalefactors.Tau_2_VsEleTauID_SF_Run2,
-            ],
-        )
-    elif era in ERAS_RUN3:
-        configuration.add_producers(
-            ["mt"],
-            [
-                scalefactors.MuonIDIso_SF,
-                scalefactors.Tau_2_VsJetTauID_SF,
-                scalefactors.Tau_2_VsEleTauID_SF_Run3,
-                scalefactors.SingleMuTriggerSF,
-                scalefactors.DoubleMuTauTriggerSF,
-            ]
-        )
 
     # add the old MVA ID scale factor producers only for Run 2 eras (not available for Run 3)
     if era in ERAS_RUN2:
