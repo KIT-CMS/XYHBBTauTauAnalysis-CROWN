@@ -1937,10 +1937,30 @@ def build_config(
     # - In Run 2, a fix must be applied to the already corrected electron pt.
     # - In Run 3, the electon pt is not corrected at NanoAOD level, the full correction is applied
     #   based on correctionlib files.
-    electron_pt_correction_producers = get_for_era(
+    electron_pt_correction_mc_producer = get_for_era(
         {
-            tuple(ERAS_RUN2): [electrons.ElectronPtCorrectionMCRun2],
-            tuple(ERAS_RUN3): [electrons.ElectronPtCorrectionMCRun3],
+            tuple(ERAS_RUN2): electrons.ElectronPtCorrectionMCRun2,
+            tuple(ERAS_RUN3): electrons.ElectronPtCorrectionMCRun3,
+        },
+        era,
+    )
+
+    # Electron pt correction for data
+    # - In Run 2, the pt is already corrected, so this is just 
+    electron_pt_correction_data_producer = get_for_era(
+        {
+            tuple(ERAS_RUN2): electrons.RenameElectronPt,
+            tuple(ERAS_RUN3): electrons.ElectronptCorrectionDataRun3,
+        }
+    )
+
+    # Tau energy correction on MC
+    # The parameters of the correction changed between Run 2 and Run 3, that's why we need two
+    # different types of producers here.
+    tau_energy_correction_mc_producer = get_for_era(
+        {
+            tuple(ERAS_RUN2): taus.TauEnergyCorrectionMCRun2,
+            tuple(ERAS_RUN3): taus.TauEnergyCorrectionMCRun3,
         },
         era,
     )
@@ -1966,19 +1986,44 @@ def build_config(
         era,
     )
 
-    # Jet energy corrections for AK4 and AK8 jets
+    # Jet energy corrections for AK4 jets
     # Different producers are used for Run 2 and Run 3 due to minor differences in the parameters
     # that the corrections depend on.
-    jerc_producers = get_for_era(
+    jet_energy_correction_producer = get_for_era(
         {
-            tuple(ERAS_RUN2): [
-                jets.JetEnergyCorrectionRun2,
-                fatjets.FatJetEnergyCorrectionRun2,
-            ],
-            tuple(ERAS_RUN3): [
-                jets.JetEnergyCorrection,
-                fatjets.FatJetEnergyCorrection,
-            ]
+            tuple(ERAS_RUN2): jets.JetEnergyCorrectionRun2,
+            tuple(ERAS_RUN3): jets.JetEnergyCorrection,
+        },
+        era,
+    )
+
+    # Jet energy corrections for AK8 jets
+    # Different producers are used for Run 2 and Run 3 due to minor differences in the parameters
+    # that the corrections depend on.
+    fat_jet_energy_correction_producer = get_for_era(
+        {
+            tuple(ERAS_RUN2): fatjets.FatJetEnergyCorrectionRun2,
+            tuple(ERAS_RUN3): fatjets.FatJetEnergyCorrection,
+        },
+        era,
+    )
+
+    # Jet rename for embedding
+    # In embedding, the full JEC has already been applied, so no further correction is needed.
+    rename_jets_data_producer = get_for_era(
+        {
+            tuple(ERAS_RUN2): jets.RenameJetsDataRun2,
+            tuple(ERAS_RUN3): jets.RenameJetsDataRun3,
+        },
+        era,
+    )
+
+    # Fat jet rename for embedding
+    # In embedding, the full JEC has already been applied, so no further correction is needed.
+    rename_fatjets_data_producer = get_for_era(
+        {
+            tuple(ERAS_RUN2): jets.RenameFatJetsDataRun2,
+            tuple(ERAS_RUN3): jets.RenameFatJetsDataRun3,
         },
         era,
     )
@@ -2211,7 +2256,6 @@ def build_config(
     # Add producers to the configuration.
     #
 
-
     # global producers, to be executed before any channel selection
     configuration.add_producers(
         "global",
@@ -2230,10 +2274,13 @@ def build_config(
             met.MetBasics,
         ]
         + prefire_weight_producers
-        + electron_pt_correction_producers
         + jet_selection_producers
-        + jerc_producers
         + jet_veto_map_producers
+        + [
+            electron_pt_correction_mc_producer,
+            jet_energy_correction_producer,
+            fat_jet_energy_correction_producer,
+        ]
     )
 
     # Producers common to all scopes with at least one hadronic tau
@@ -2500,6 +2547,14 @@ def build_config(
         )
     )
 
+    # Remove trigger scale factor producers from data and embedding samples in tt scope
+    configuration.add_modification_rule(
+        ["mt"],
+        RemoveProducer(
+            producers=tt_trigger_sf_producers,
+            samples=["data", "embedding", "embedding_mc"],
+        )
+    )
 
     # TODO re-include
     #configuration.add_modification_rule(
@@ -2579,25 +2634,80 @@ def build_config(
         ),
     )
 
-    if era in ERAS_RUN2:
-        configuration.add_modification_rule(
-            HAD_TAU_SCOPES,
-            ReplaceProducer(
-                producers=[taus.TauEnergyCorrectionMCRun2, taus.TauEnergyCorrection_data],
-                samples="data",
-            ),
-        )
-    elif era in ERAS_RUN3:
-        configuration.add_modification_rule(
-            HAD_TAU_SCOPES,
-            ReplaceProducer(
-                producers=[taus.TauEnergyCorrectionMCRun3, taus.TauEnergyCorrection_data],
-                samples="data",
-            ),
-        )
+    # Remove the pileup weights from data and embedding samples
+    configuration.add_modification_rule(
+        "global",
+        RemoveProducer(
+            producers=[event.PUweights],
+            samples=["data", "embedding", "embedding_mc"],
+        ),
+    )
 
-    # for Run 2, just rename energy value in data is just renamed
-    # for Run 3, apply the "data correction" for boosted tau energies, which is just a renaming operation
+    # Replace jet energy correction for data
+    configuration.add_modification_rule(
+        "global",
+        ReplaceProducer(
+            producers=[jet_energy_correction_producer, jets.JetEnergyCorrection_data_Run2],
+            samples=["data"],
+        ),
+    )
+
+    # Replace fat jet energy correction for data
+    configuration.add_modification_rule(
+        "global",
+        ReplaceProducer(
+            producers=[
+                fat_jet_energy_correction_producer,
+                fatjets.FatJetEnergyCorrection_data_Run2,
+            ],
+            samples=["data"],
+        ),
+    )
+
+    # Replace jet energy correction for embedding with dummy rename operation
+    configuration.add_modification_rule(
+        "global",
+        ReplaceProducer(
+            producers=[jet_energy_correction_producer, rename_jets_data_producer],
+            samples=["embedding", "embedding_mc"],
+        ),
+    )
+
+    # Replace fat jet energy correction for embedding with dummy rename operation
+    configuration.add_modification_rule(
+        "global",
+        ReplaceProducer(
+            producers=[fat_jet_energy_correction_producer, rename_fatjets_data_producer],
+            samples=["embedding", "embedding_mc"],
+        ),
+    )
+
+    # Replace electron pt correction for data, as the correction is computed differently in data and
+    # MC
+    configuration.add_modification_rule(
+        "global",
+        ReplaceProducer(
+            producers=[
+                electron_pt_correction_mc_producer,
+                electron_pt_correction_data_producer,
+            ],
+            samples=["data"],
+        ),
+    )
+
+    # Replace the tau energy correction producer for data samples
+    configuration.add_modification_rule(
+        HAD_TAU_SCOPES,
+        ReplaceProducer(
+            producers=[tau_energy_correction_mc_producer, taus.TauEnergyCorrection_data],
+            samples=["data"],
+        ),
+    )
+
+    # Replace the boosted tau energy correction producer for data samples
+    # In Run 2, the replace operation is only done for data, while in Run 3 it is done for all
+    # samples. The boosted tau energy correction does not exist for Run 3 for now, so we just
+    # perform a dummy rename operation there. 
     configuration.add_modification_rule(
         HAD_TAU_SCOPES,
         ReplaceProducer(
@@ -2609,82 +2719,25 @@ def build_config(
         ),
     )
 
-    if era in ERAS_RUN2:
-        configuration.add_modification_rule(
-            "global",
-            ReplaceProducer(
-                producers=[jets.JetEnergyCorrectionRun2, jets.JetEnergyCorrection_data_Run2],
-                samples="data",
-            ),
-        )
-        configuration.add_modification_rule(
-            "global",
-            ReplaceProducer(
-                producers=[
-                    fatjets.FatJetEnergyCorrectionRun2,
-                    fatjets.FatJetEnergyCorrection_data_Run2,
-                ],
-                samples=["data"],
-            ),
-        )
-
-    elif era in ERAS_RUN3:
-        configuration.add_modification_rule(
-            "global",
-            ReplaceProducer(
-                producers=[jets.JetEnergyCorrection, jets.JetEnergyCorrection_data],
-                samples="data",
-            ),
-        )
-        configuration.add_modification_rule(
-            "global",
-            ReplaceProducer(
-                producers=[
-                    fatjets.FatJetEnergyCorrection,
-                    fatjets.FatJetEnergyCorrection_data,
-                ],
-                samples=["data"],
-            ),
-        )
-
-    # replace electron pt correction for data, different producers need to be replaced in Run2 and Run3
-    if era in ERAS_RUN2:
-        configuration.add_modification_rule(
-            "global",
-            ReplaceProducer(
-                producers=[
-                    electrons.ElectronPtCorrectionMCRun2,
-                    electrons.RenameElectronPt,
-                ],
-                samples=["data"],
-            ),
-        )
-    elif era in ERAS_RUN3:
-        configuration.add_modification_rule(
-            "global",
-            ReplaceProducer(
-                producers=[
-                    electrons.ElectronPtCorrectionMCRun3,
-                    electrons.ElectronPtCorrectionDataRun3,
-                ],
-                samples=["data"],
-            ),
-        )
-
+    # The number of partons is only defined for MC samples and only important to know for EW
+    # process samples
     configuration.add_modification_rule(
         "global",
         RemoveProducer(
             producers=[event.npartons],
-            exclude_samples=["dyjets", "dyjets_madgraph", "dyjets_powheg", "dyjets_amcatnlo", "wjets", "wjets_madgraph", "wjets_amcatnlo", "electroweak_boson"],
+            exclude_samples=[
+                "dyjets",
+                "dyjets_madgraph",
+                "dyjets_powheg",
+                "dyjets_amcatnlo",
+                "wjets",
+                "wjets_madgraph",
+                "wjets_amcatnlo",
+                "electroweak_boson",
+            ],
         ),
     )
-    configuration.add_modification_rule(
-        "global",
-        RemoveProducer(
-            producers=[event.PUweights],
-            samples=["data", "embedding", "embedding_mc"],
-        ),
-    )
+
     # for whatever reason, the diboson samples do not have these weights in the ntuple....
     configuration.add_modification_rule(
         "global",
@@ -2693,7 +2746,9 @@ def build_config(
             samples=["data", "embedding", "embedding_mc", "diboson"],
         ),
     )
-    # for whatever reason, the nmssm samples have one less entry of the weights and therefore need special treatment
+
+    # for whatever reason, the nmssm samples have one less entry of the weights and therefore need
+    # special treatment
     configuration.add_modification_rule(
         "global",
         ReplaceProducer(
@@ -2702,6 +2757,7 @@ def build_config(
         ),
     )
 
+    # Remove the generator-level tau matching producers from data samples
     configuration.add_modification_rule(
         HAD_TAU_SCOPES,
         RemoveProducer(
@@ -2709,9 +2765,11 @@ def build_config(
                 genparticles.GenMatching,
                 genparticles.GenMatchingBoosted,
             ],
-            samples="data",
+            samples=["data"],
         ),
     )
+
+    # Remove the generator-level b jet pair quantities from data and embedding samples
     configuration.add_modification_rule(
         HAD_TAU_SCOPES,
         RemoveProducer(
@@ -2722,9 +2780,13 @@ def build_config(
         ),
     )
 
+    # For ttbar samples, top pt weights should be produced
     configuration.add_modification_rule(
         HAD_TAU_SCOPES,
-        AppendProducer(producers=event.TopPtReweighting, samples="ttbar"),
+        AppendProducer(
+            producers=[event.TopPtReweighting],
+            samples=["ttbar"],
+        ),
     )
 
     # TODO needs to be refined for run 3, not considered at the moment
@@ -2735,52 +2797,16 @@ def build_config(
     #    ),
     #)
 
-    # changes needed for data
-    # global scope
-    if era in ERAS_RUN2:
-        configuration.add_modification_rule(
-            "global",
-            ReplaceProducer(
-                producers=[jets.JetEnergyCorrectionRun2, jets.RenameJetsDataRun2],
-                samples=["embedding", "embedding_mc"],
-            ),
-        )
-        configuration.add_modification_rule(
-            "global",
-            ReplaceProducer(
-                producers=[fatjets.FatJetEnergyCorrectionRun2, fatjets.RenameFatJetsDataRun2],
-                samples=["embedding", "embedding_mc"],
-            ),
-        )
-    elif era in ERAS_RUN3:
-        configuration.add_modification_rule(
-            "global",
-            ReplaceProducer(
-                producers=[jets.JetEnergyCorrection, jets.RenameJetsData],
-                samples=["embedding", "embedding_mc"],
-            ),
-        )
-        configuration.add_modification_rule(
-            "global",
-            ReplaceProducer(
-                producers=[fatjets.FatJetEnergyCorrection, fatjets.RenameFatJetsData],
-                samples=["embedding", "embedding_mc"],
-            ),
-        )
-
+    # Add Golden JSON filter for data and embedding samples
     configuration.add_modification_rule(
         "global",
-        AppendProducer(producers=event.JSONFilter, samples=["data", "embedding"]),
-    )
-
-    # scope specific
-    configuration.add_modification_rule(
-        "mt",
-        RemoveProducer(
-            producers=[genparticles.MTGenDiTauPairQuantities],
-            samples=["data"],
+        AppendProducer(
+            producers=[event.JSONFilter],
+            samples=["data", "embedding"],
         ),
     )
+
+    # Remove generator-level tau quantities in et scope
     configuration.add_modification_rule(
         "et",
         RemoveProducer(
@@ -2788,6 +2814,17 @@ def build_config(
             samples=["data"],
         ),
     )
+
+    # Remove generator-level tau quantities in mt scope
+    configuration.add_modification_rule(
+        "mt",
+        RemoveProducer(
+            producers=[genparticles.MTGenDiTauPairQuantities],
+            samples=["data"],
+        ),
+    )
+
+    # Remove generator-level tau quantities in tt scope
     configuration.add_modification_rule(
         "tt",
         RemoveProducer(
@@ -2795,6 +2832,8 @@ def build_config(
             samples=["data"],
         ),
     )
+
+    # Remove generator-level tau quantities in mm scope
     configuration.add_modification_rule(
         "mm",
         RemoveProducer(
@@ -2802,17 +2841,6 @@ def build_config(
             samples=["data"],
         ),
     )
-    if era in ERAS_RUN3:
-        configuration.add_modification_rule(
-            "tt",
-            RemoveProducer(
-                producers=[
-                    scalefactors.DoubleTauTauTriggerSF,
-                    #scalefactors.BoostedTTGenerateFatjetTriggerSF_MC,  TODO rework trigger setup before enabling this
-                ],
-                samples=["data"],
-            ),
-        )
 
     # lepton scalefactors from our measurement
     configuration.add_modification_rule(
