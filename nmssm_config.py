@@ -2052,10 +2052,12 @@ def build_config(
             tuple(ERAS_RUN2): [
                 scalefactors.Tau_2_VsJetTauID_lt_SF,
                 scalefactors.Tau_2_VsEleTauID_SF_Run2,
+                scalefactors.Tau_2_VsMuTauID_SF,
             ],
             tuple(ERAS_RUN3): [
                 scalefactors.Tau_2_VsJetTauID_SF,
                 scalefactors.Tau_2_VsEleTauID_SF_Run3,
+                scalefactors.Tau_2_VsMuTauID_SF,
             ],
         },
         era,
@@ -2118,10 +2120,12 @@ def build_config(
             tuple(ERAS_RUN2): [
                 scalefactors.Tau_2_VsJetTauID_lt_SF,
                 scalefactors.Tau_2_VsEleTauID_SF_Run2,
+                scalefactors.Tau_2_VsMuTauID_SF,
             ],
             tuple(ERAS_RUN3): [
                 scalefactors.Tau_2_VsJetTauID_SF,
                 scalefactors.Tau_2_VsEleTauID_SF_Run3,
+                scalefactors.Tau_2_VsMuTauID_SF,
             ],
         },
         era,
@@ -2153,12 +2157,16 @@ def build_config(
                 scalefactors.Tau_2_VsJetTauID_tt_SF,
                 scalefactors.Tau_1_VsEleTauID_SF_Run2,
                 scalefactors.Tau_2_VsEleTauID_SF_Run2,
+                scalefactors.Tau_1_VsMuTauID_SF,
+                scalefactors.Tau_2_VsMuTauID_SF,
             ],
             tuple(ERAS_RUN3): [
                 scalefactors.Tau_1_VsJetTauID_SF,
                 scalefactors.Tau_2_VsJetTauID_SF,
                 scalefactors.Tau_1_VsEleTauID_SF_Run3,
                 scalefactors.Tau_2_VsEleTauID_SF_Run3,
+                scalefactors.Tau_1_VsMuTauID_SF,
+                scalefactors.Tau_2_VsMuTauID_SF,
             ],
         },
         era,
@@ -2307,7 +2315,6 @@ def build_config(
             pairquantities.ETDiTauPairQuantities,
             boostedtaus.boostedETDiTauPairQuantities,
             genparticles.ETGenDiTauPairQuantities,
-            scalefactors.Tau_2_VsMuTauID_SF,
             triggers.SingleEleTriggerFlags,
             triggers.DoubleEleTauTriggerFlags,
             scalefactors.SingleEleTriggerSF,
@@ -2392,8 +2399,6 @@ def build_config(
             pairquantities.TTDiTauPairQuantities,
             boostedtaus.boostedTTDiTauPairQuantities,
             genparticles.TTGenDiTauPairQuantities,
-            scalefactors.Tau_1_VsMuTauID_SF,
-            scalefactors.Tau_2_VsMuTauID_SF,
             triggers.DoubleTauTauTriggerFlags,
             # TODO rework trigger setup before enabling this
             # triggers.BoostedTTGenerateDoubleTriggerFlags,
@@ -2436,8 +2441,7 @@ def build_config(
     # Remove, append, or modify producers in specific cases.
     #
 
-
-    # Flag for the DY decay flavor is only relevant for DY samples
+    # For DY samples, add producer for flag indicating the flavor of the decay products
     configuration.add_modification_rule(
         GLOBAL_SCOPES,
         AppendProducer(
@@ -2448,52 +2452,34 @@ def build_config(
         )
     )
 
-
-
+    # Remove tau ID scale factor producers from data samples in et scope
     configuration.add_modification_rule(
-        ["et", "mt"],
+        ["et"],
         RemoveProducer(
-            producers=[
-                scalefactors.Tau_2_VsMuTauID_SF,
-            ],
+            producers=et_tau_sf_producers,
             samples="data",
         ),
     )
-    if era in ERAS_RUN2:
-        configuration.add_modification_rule(
-            ["et", "mt"],
-            RemoveProducer(
-                producers=[
-                    scalefactors.Tau_2_VsJetTauID_lt_SF,
-                    scalefactors.Tau_2_VsEleTauID_SF_Run2,
-                ],
-                samples="data",
-            ),
-        )
-    elif era in ERAS_RUN3:
-        configuration.add_modification_rule(
-            ["et", "mt"],
-            RemoveProducer(
-                producers=[
-                    scalefactors.Tau_2_VsJetTauID_SF,
-                    scalefactors.Tau_2_VsEleTauID_SF_Run3,
-                ],
-                samples="data",
-            ),
-        )
 
-    if era in ERAS_RUN3:
-        configuration.add_modification_rule(
-            ["mt"],
-            RemoveProducer(
-                producers=[
-                    scalefactors.SingleMuTriggerSF,
-                    scalefactors.DoubleMuTauTriggerSF,
-                ],
-                samples=["data", "embedding", "embedding_mc"],
-            ),
-        )
+    # Remove tau ID scale factor producers from data samples in mt scope
+    configuration.add_modification_rule(
+        ["mt"],
+        RemoveProducer(
+            producers=mt_tau_sf_producers,
+            samples="data",
+        ),
+    )
 
+    # Remove tau ID scale factor producers from data samples in tt scope
+    configuration.add_modification_rule(
+        ["tt"],
+        RemoveProducer(
+            producers=mt_tau_sf_producers,
+            samples="data",
+        ),
+    )
+
+    # Remove trigger scale factor producers from data and embedding samples in mt scope
     configuration.add_modification_rule(
         ["et"],
         RemoveProducer(
@@ -2504,6 +2490,16 @@ def build_config(
             samples=["data", "embedding", "embedding_mc"],
         ),
     )
+
+    # Remove trigger scale factor producers from data and embedding samples in mt scope
+    configuration.add_modification_rule(
+        ["mt"],
+        RemoveProducer(
+            producers=mt_trigger_sf_producers,
+            samples=["data", "embedding", "embedding_mc"],
+        )
+    )
+
 
     # TODO re-include
     #configuration.add_modification_rule(
@@ -2519,72 +2515,34 @@ def build_config(
     #    ),
     #)
 
+    # Remove old MVA ID scale factor producers from data and embedding samples in et scope
+    configuration.add_modification_rule(
+        ["et"],
+        RemoveProducer(
+            producers=et_old_tau_mva_sf_producers,
+            samples=["data", "embedding", "embedding_mc"],
+        ),
+    )
+
+    # Remove old MVA ID scale factor producers from data and embedding samples in mt scope
+    configuration.add_modification_rule(
+        ["mt"],
+        RemoveProducer(
+            producers=mt_old_tau_mva_sf_producers,
+            samples=["data", "embedding", "embedding_mc"],
+        ),
+    )
+
+    # Remove old MVA ID scale factor producers from data and embedding samples in tt scope
     configuration.add_modification_rule(
         ["tt"],
         RemoveProducer(
-            producers=[
-                scalefactors.Tau_1_VsMuTauID_SF,
-                scalefactors.Tau_2_VsMuTauID_SF,
-            ],
-            samples="data",
+            producers=tt_old_tau_mva_sf_producers,
+            samples=["data", "embedding", "embedding_mc"],
         ),
     )
-    if era in ERAS_RUN2:
-        configuration.add_modification_rule(
-            ["tt"],
-            RemoveProducer(
-                producers=[
-                    scalefactors.Tau_1_VsJetTauID_tt_SF,
-                    scalefactors.Tau_2_VsJetTauID_tt_SF,
-                    scalefactors.Tau_1_VsEleTauID_SF_Run2,
-                    scalefactors.Tau_2_VsEleTauID_SF_Run2,
-                ],
-                samples="data",
-            ),
-        )
-    elif era in ERAS_RUN3:
-        configuration.add_modification_rule(
-            ["tt"],
-            RemoveProducer(
-                producers=[
-                    scalefactors.Tau_1_VsJetTauID_SF,
-                    scalefactors.Tau_2_VsJetTauID_SF,
-                    scalefactors.Tau_1_VsEleTauID_SF_Run3,
-                    scalefactors.Tau_2_VsEleTauID_SF_Run3,
-                ],
-                samples="data",
-            ),
-        )
 
-
-    # the old MVA ID producers must only be removed for Run 2 eras as they have not been added to Run 3 eras
-    if era in ERAS_RUN2:
-        configuration.add_modification_rule(
-            ["et", "mt"],
-            RemoveProducer(
-                producers=[
-                    scalefactors.Tau_2_antiMuTauID_SF,
-                    scalefactors.Tau_2_oldIsoTauID_lt_SF,
-                    scalefactors.Tau_2_antiEleTauID_SF,
-                ],
-                samples=["data", "embedding"],
-            ),
-        )
-        configuration.add_modification_rule(
-            ["tt"],
-            RemoveProducer(
-                producers=[
-                    scalefactors.Tau_1_oldIsoTauID_tt_SF,
-                    scalefactors.Tau_1_antiEleTauID_SF,
-                    scalefactors.Tau_1_antiMuTauID_SF,
-                    scalefactors.Tau_2_oldIsoTauID_tt_SF,
-                    scalefactors.Tau_2_antiEleTauID_SF,
-                    scalefactors.Tau_2_antiMuTauID_SF,
-                ],
-                samples=["data", "embedding"],
-            ),
-        )
-
+    # Remove b tagging scale factor producers from data and embedding samples in all scopes 
     configuration.add_modification_rule(
         HAD_TAU_SCOPES,
         RemoveProducer(
@@ -2595,6 +2553,8 @@ def build_config(
             samples=["data", "embedding", "embedding_mc"],
         ),
     )
+
+    # Remove X -> bb fatjet producers from data and embedding samples in all scopes
     configuration.add_modification_rule(
         HAD_TAU_SCOPES,
         RemoveProducer(
@@ -2610,19 +2570,14 @@ def build_config(
         ),
     )
 
-    # in 2018, we need to remove the Xbb tagging scale factors for data
-    # TODO also provide these scale factors for other eras
-    if era in ["2018"]:
-        configuration.add_modification_rule(
-            HAD_TAU_SCOPES,
-            RemoveProducer(
-                producers=[
-                    scalefactors.Xbb_tagging_SF,
-                    scalefactors.Xbb_tagging_SF_boosted,
-                ],
-                samples=["data", "embedding", "embedding_mc"],
-            ),
-        )
+    # Remove X -> bb tagging scale factor producers from data and embedding samples in all scopes
+    configuration.add_modification_rule(
+        HAD_TAU_SCOPES,
+        RemoveProducer(
+            producers=xbb_sf_producers,
+            samples=["data", "embedding", "embedding_mc"],
+        ),
+    )
 
     if era in ERAS_RUN2:
         configuration.add_modification_rule(
