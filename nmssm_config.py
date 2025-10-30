@@ -2275,26 +2275,51 @@ def build_config(
         + bb_jet_pair_quantity_producers,
     )
 
-
+    # Producers for quantities in the et scope
     configuration.add_producers(
-        "mm",
+        "et",
         [
-            muons.GoodMuons,
-            muons.VetoMuons,
-            muons.VetoSecondMuon,
+            electrons.GoodElectrons,
+            taus.GoodTaus,
+            taus.NumberOfGoodTaus,
+            boostedtaus.boostedTauEnergyCorrection,
+            boostedtaus.GoodBoostedTaus,
+            boostedtaus.NumberOfGoodBoostedTaus,
+            electrons.NumberOfGoodElectrons,
+            electrons.VetoElectrons,
+            electrons.VetoElectrons_boosted,
+            electrons.ExtraElectronsVeto,
+            electrons.BoostedExtraElectronsVeto,
             muons.ExtraMuonsVeto,
-            muons.NumberOfGoodMuons,
-            pairselection.ZMuMuPairSelection,
-            pairselection.GoodMuMuPairFilter,
-            pairselection.LVMu1,
-            pairselection.LVMu2,
-            pairselection.LVMu1Uncorrected,
-            pairselection.LVMu2Uncorrected,
-            pairquantities.MuMuPairQuantities,
-            genparticles.MuMuGenPairQuantities,
-            scalefactors.MuonIDIso_SF,
-            triggers.SingleMuTriggerFlags,
-        ],
+            pairselection.ETPairSelection,
+            pairselection.boostedETPairSelection,
+            pairselection.GoodETPairFilter,
+            pairselection.LVEl1,
+            pairselection.LVTau2,
+            pairselection.additionalBoostedTau,
+            pairselection.LVaddBoostedTau,
+            boostedtaus.boostedLVEl1,
+            boostedtaus.boostedLVTau2,
+            boostedtaus.boostedLVEl1_uncorrected,
+            boostedtaus.boostedLVTau2_uncorrected,
+            pairselection.LVEl1Uncorrected,
+            pairselection.LVTau2Uncorrected,
+            pairquantities.ETDiTauPairQuantities,
+            boostedtaus.boostedETDiTauPairQuantities,
+            genparticles.ETGenDiTauPairQuantities,
+            scalefactors.Tau_2_VsMuTauID_SF,
+            triggers.SingleEleTriggerFlags,
+            triggers.DoubleEleTauTriggerFlags,
+            scalefactors.SingleEleTriggerSF,
+            scalefactors.DoubleEleTauTriggerSF,
+            # TODO rework trigger setup before enabling this
+            # triggers.BoostedETGenerateSingleElectronTriggerFlags,  
+            # triggers.ETGenerateCrossTriggerFlags,
+            # triggers.GenerateSingleTrailingTauTriggerFlags,
+        ]
+        + et_electron_sf_producers
+        + et_tau_sf_producers
+        + et_old_tau_mva_sf_producers,
     )
 
     # Producers for quantities in the mt scope
@@ -2342,60 +2367,12 @@ def build_config(
         + mt_old_tau_mva_sf_producers,
     )
 
-    # Producers for quantities in the et scope
-    configuration.add_producers(
-        "et",
-        [
-            electrons.GoodElectrons,
-            # taus.BaseTaus,
-            taus.GoodTaus,
-            taus.NumberOfGoodTaus,
-            boostedtaus.boostedTauEnergyCorrection,
-            boostedtaus.GoodBoostedTaus,
-            boostedtaus.NumberOfGoodBoostedTaus,
-            electrons.NumberOfGoodElectrons,
-            electrons.VetoElectrons,
-            electrons.VetoElectrons_boosted,
-            electrons.ExtraElectronsVeto,
-            electrons.BoostedExtraElectronsVeto,
-            muons.ExtraMuonsVeto,
-            pairselection.ETPairSelection,
-            pairselection.boostedETPairSelection,
-            pairselection.GoodETPairFilter,
-            pairselection.LVEl1,
-            pairselection.LVTau2,
-            pairselection.additionalBoostedTau,
-            pairselection.LVaddBoostedTau,
-            boostedtaus.boostedLVEl1,
-            boostedtaus.boostedLVTau2,
-            boostedtaus.boostedLVEl1_uncorrected,
-            boostedtaus.boostedLVTau2_uncorrected,
-            pairselection.LVEl1Uncorrected,
-            pairselection.LVTau2Uncorrected,
-            pairquantities.ETDiTauPairQuantities,
-            boostedtaus.boostedETDiTauPairQuantities,
-            genparticles.ETGenDiTauPairQuantities,
-            scalefactors.Tau_2_VsMuTauID_SF,
-            triggers.SingleEleTriggerFlags,
-            triggers.DoubleEleTauTriggerFlags,
-            scalefactors.SingleEleTriggerSF,
-            scalefactors.DoubleEleTauTriggerSF,
-            # TODO rework trigger setup before enabling this
-            # triggers.BoostedETGenerateSingleElectronTriggerFlags,  
-            # triggers.ETGenerateCrossTriggerFlags,
-            # triggers.GenerateSingleTrailingTauTriggerFlags,
-        ]
-        + et_electron_sf_producers
-        + et_tau_sf_producers
-        + et_old_tau_mva_sf_producers,
-    )
-
+    # Producers for quantities in the tt scope
     configuration.add_producers(
         "tt",
         [
             electrons.ExtraElectronsVeto,
             muons.ExtraMuonsVeto,
-            # taus.BaseTaus,
             taus.GoodTaus,
             taus.NumberOfGoodTaus,
             boostedtaus.boostedTauEnergyCorrection,
@@ -2428,6 +2405,28 @@ def build_config(
         + tt_tau_sf_producers
         + tt_old_tau_mva_sf_producers
         + tt_trigger_sf_producers,
+    )
+
+    # Producers for quantities in the mm scope
+    configuration.add_producers(
+        "mm",
+        [
+            muons.GoodMuons,
+            muons.VetoMuons,
+            muons.VetoSecondMuon,
+            muons.ExtraMuonsVeto,
+            muons.NumberOfGoodMuons,
+            pairselection.ZMuMuPairSelection,
+            pairselection.GoodMuMuPairFilter,
+            pairselection.LVMu1,
+            pairselection.LVMu2,
+            pairselection.LVMu1Uncorrected,
+            pairselection.LVMu2Uncorrected,
+            pairquantities.MuMuPairQuantities,
+            genparticles.MuMuGenPairQuantities,
+            scalefactors.MuonIDIso_SF,
+            triggers.SingleMuTriggerFlags,
+        ],
     )
 
 
