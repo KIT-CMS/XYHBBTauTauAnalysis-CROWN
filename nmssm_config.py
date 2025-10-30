@@ -2092,6 +2092,56 @@ def build_config(
         default=[],
     )
 
+    # Electron ID and isolation scale factors in the et channel
+    # - In Run 2, the scale factors are provided from own measurements with the same methods as for
+    #   embedding.
+    # - In Run 3, the official measurements from the EGM POG are taken.
+    et_electron_sf_producers = get_for_era(
+        {
+            tuple(ERAS_RUN2): [
+                scalefactors.TauEmbeddingElectronIDSF_1_MC,
+                scalefactors.TauEmbeddingElectronIsoSF_1_MC,
+            ],
+            tuple(ERAS_RUN3): [
+                scalefactors.EleID_SF,
+            ],
+        },
+        era,
+    )
+
+    # Tau ID scale factors in the et channel
+    # - In Run 2, the scale factors are provided from own measurements with the same methods as for
+    #   embedding.
+    # - In Run 3, the official measurements from the TAU POG are taken.
+    et_tau_sf_producers = get_for_era(
+        {
+            tuple(ERAS_RUN2): [
+                scalefactors.Tau_2_VsJetTauID_lt_SF,
+                scalefactors.Tau_2_VsEleTauID_SF_Run2,
+            ],
+            tuple(ERAS_RUN3): [
+                scalefactors.Tau_2_VsJetTauID_SF,
+                scalefactors.Tau_2_VsEleTauID_SF_Run3,
+            ],
+        },
+        era,
+    )
+
+    # Old tau MVA ID scale factors in the mt channel
+    # For Run 2, add the old MVA ID scale factor producers. They are used for the boosted tau
+    # reconstruction in this case.
+    et_old_tau_mva_sf_producers = get_for_era(
+        {
+            tuple(ERAS_RUN2): [
+                scalefactors.Tau_2_oldIsoTauID_lt_SF,
+                scalefactors.Tau_2_antiEleTauID_SF,
+                scalefactors.Tau_2_antiMuTauID_SF,
+            ],
+        },
+        era,
+        default=[],
+    )
+
 
     #
     # PRODUCER DEFINITIONS
@@ -2238,17 +2288,7 @@ def build_config(
         + mt_old_tau_mva_sf_producers,
     )
 
-    # add the old MVA ID scale factor producers only for Run 2 eras (not available for Run 3)
-    if era in ERAS_RUN2:
-        configuration.add_producers(
-            "mt",
-            [
-                scalefactors.Tau_2_oldIsoTauID_lt_SF,
-                scalefactors.Tau_2_antiEleTauID_SF,
-                scalefactors.Tau_2_antiMuTauID_SF,
-            ],
-        )
-
+    # Producers for quantities in the et scope
     configuration.add_producers(
         "et",
         [
@@ -2286,45 +2326,15 @@ def build_config(
             triggers.DoubleEleTauTriggerFlags,
             scalefactors.SingleEleTriggerSF,
             scalefactors.DoubleEleTauTriggerSF,
-            #triggers.BoostedETGenerateSingleElectronTriggerFlags,  TODO rework trigger setup before enabling this
+            # TODO rework trigger setup before enabling this
+            # triggers.BoostedETGenerateSingleElectronTriggerFlags,  
             # triggers.ETGenerateCrossTriggerFlags,
             # triggers.GenerateSingleTrailingTauTriggerFlags,
-        ],
+        ]
+        + et_electron_sf_producers
+        + et_tau_sf_producers
+        + et_old_tau_mva_sf_producers,
     )
-
-    # some producers need to be different for Run 2 and Run 3 eras
-    # - electron scale factors are taken from own measurements in Run 2 and from POG in Run 3
-    if era in ERAS_RUN2:
-        # run 2 producers
-        configuration.add_producers(
-            ["et"],
-            [
-                scalefactors.TauEmbeddingElectronIDSF_1_MC,
-                scalefactors.TauEmbeddingElectronIsoSF_1_MC,
-                scalefactors.Tau_2_VsJetTauID_lt_SF,
-                scalefactors.Tau_2_VsEleTauID_SF_Run2,
-            ],
-        )
-    elif era in ERAS_RUN3:
-        configuration.add_producers(
-            ["et"],
-            [
-                scalefactors.EleID_SF,
-                scalefactors.Tau_2_VsJetTauID_SF,
-                scalefactors.Tau_2_VsEleTauID_SF_Run3,
-            ]
-        )
-
-    # add the old MVA ID scale factor producers only for Run 2 eras (not available for Run 3)
-    if era in ERAS_RUN2:
-        configuration.add_producers(
-            "et",
-            [
-                scalefactors.Tau_2_oldIsoTauID_lt_SF,
-                scalefactors.Tau_2_antiEleTauID_SF,
-                scalefactors.Tau_2_antiMuTauID_SF,
-            ],
-        )
 
     configuration.add_producers(
         "tt",
@@ -2391,6 +2401,27 @@ def build_config(
                 scalefactors.DoubleTauTauTriggerSF,
             ],
         )
+
+
+    #
+    # PRODUCER MODIFICATIONS
+    # 
+    # Remove, append, or modify producers in specific cases.
+    #
+
+
+    # Flag for the DY decay flavor is only relevant for DY samples
+    configuration.add_modification_rule(
+        GLOBAL_SCOPES,
+        AppendProducer(
+            [
+                event.LHEDrellYanDecayFlavor,
+            ],
+            samples=["dyjets", "dyjets_madgraph", "dyjets_amcatnlo", "dyjets_powheg"],
+        )
+    )
+
+
 
     configuration.add_modification_rule(
         ["et", "mt"],
