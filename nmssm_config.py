@@ -1916,6 +1916,92 @@ def build_config(
         },
     )
 
+
+    #
+    # ERA-DEPENDENT PRODUCERS
+    #
+    # Catch correct producers depending on the era.
+    #
+
+    # Prefiring weights
+    # Correction of this issue is only relevant for 2016 and 2017 data/MC
+    prefire_weight_producers = get_for_era(
+        {
+            ("2016preVFP", "2016postVFP", "2017"): [event.PrefireWeight],
+        },
+        era,
+        default=[],
+    )
+
+    # Electron pt correction
+    # - In Run 2, a fix must be applied to the already corrected electron pt.
+    # - In Run 3, the electon pt is not corrected at NanoAOD level, the full correction is applied
+    #   based on correctionlib files.
+    electron_pt_correction_producers = get_for_era(
+        {
+            tuple(ERAS_RUN2): [electrons.ElectronPtCorrectionMCRun2],
+            tuple(ERAS_RUN3): [electrons.ElectronPtCorrectionMCRun3],
+        },
+        era,
+    )
+
+    # Jet selection
+    # - In Run 2, the CHS collection is used and pileup ID is applied.
+    # - In Run 3, the PUPPI collection is used and no pileup ID is applied; the jet ID needs to
+    #   be corrected in 2022 and 2023 due to a bug.
+    jet_selection_producers = get_for_era(
+        {
+            tuple(ERAS_RUN2): [
+                jets.JetIDRun2,
+                jets.GoodJetsWithPUID,
+                jets.GoodBJetsWithPUID,
+            ],
+            tuple(ERAS_RUN3): [
+                jets.JetIDRun3NanoV12Corrected,
+                jets.GoodJetsWithoutPUID,
+                jets.GoodBJetsWithoutPUID,
+                jets.GoodJetsCombinedWithoutPUID,
+            ],
+        },
+        era,
+    )
+
+    # Jet energy corrections for AK4 and AK8 jets
+    # Different producers are used for Run 2 and Run 3 due to minor differences in the parameters
+    # that the corrections depend on.
+    jerc_producers = get_for_era(
+        {
+            tuple(ERAS_RUN2): [
+                jets.JetEnergyCorrectionRun2,
+                fatjets.FatJetEnergyCorrectionRun2,
+            ],
+            tuple(ERAS_RUN3): [
+                jets.JetEnergyCorrection,
+                fatjets.FatJetEnergyCorrection,
+            ]
+        },
+        era,
+    )
+
+    # Jet vetomaps
+    # Vetoing events with jets in regions with known issues is only applied to Run 3 data/MC
+    jet_veto_map_producers = get_for_era(
+        {
+            tuple(ERAS_RUN3): [event.JetVetoMapVeto],
+        },
+        era,
+        default=[],
+    )
+
+
+    #
+    # PRODUCER DEFINITIONS
+    #
+    # Add producers to the configuration.
+    #
+
+
+    # global producers, to be executed before any channel selection
     configuration.add_producers(
         "global",
         [
@@ -1926,79 +2012,17 @@ def build_config(
             event.MetFilter,
             event.PUweights,
             event.LHE_Scale_weight,
-            muons.BaseMuons,
             electrons.BaseElectrons,
+            muons.BaseMuons,
             fatjets.GoodFatJets,
             event.DiLeptonVeto,
             met.MetBasics,
-        ],
-    )
-
-    if era in ERAS_RUN2:
-        configuration.add_producers(
-            "global",
-            [
-                jets.JetEnergyCorrectionRun2,
-                fatjets.FatJetEnergyCorrectionRun2,
-            ]
-        )
-
-    if era in ERAS_RUN3:
-        configuration.add_producers(
-            "global",
-            [
-                jets.JetEnergyCorrection,
-                fatjets.FatJetEnergyCorrection,
-                event.JetVetoMapVeto,
-            ],
-        )
-
-    # some producers need to be different for Run 2 and Run 3 eras
-    # - electron pt correction (different procedure for Run 2 and Run 3)
-    # - b jet energy regression (does not exist in Run 3)
-    # - a bug in the jet ID column production needs to be fixed in Run 3
-    # - PUPPI jets in Run 3 do not have a pileup ID, hence it is removed from the list of selection criteria
-    if era in ERAS_RUN2:
-        # run 2 producers
-        configuration.add_producers(
-            "global",
-            [
-                electrons.ElectronPtCorrectionMCRun2,
-                jets.JetIDRun2,
-                jets.GoodJetsWithPUID,
-                jets.GoodBJetsWithPUID,
-            ],
-        )
-    elif era in ERAS_RUN3:
-        configuration.add_producers(
-            "global",
-            [
-                electrons.ElectronPtCorrectionMCRun3,
-                jets.JetIDRun3NanoV12Corrected,
-                jets.GoodJetsWithoutPUID,
-                jets.GoodBJetsWithoutPUID,
-                jets.GoodJetsCombinedWithoutPUID,
-            ]
-        )
-
-    ## add prefiring
-    if era in ["2016preVFP", "2016postVFP", "2017"]:
-        configuration.add_producers(
-            "global",
-            [
-                event.PrefireWeight,
-            ],
-        )
-
-    # DY decay flavor
-    configuration.add_modification_rule(
-        GLOBAL_SCOPES,
-        AppendProducer(
-            [
-                event.LHEDrellYanDecayFlavor,
-            ],
-            samples=["dyjets", "dyjets_madgraph", "dyjets_amcatnlo", "dyjets_powheg"],
-        )
+        ]
+        + prefire_weight_producers
+        + electron_pt_correction_producers
+        + jet_selection_producers
+        + jerc_producers
+        + jet_veto_map_producers
     )
 
     # common
