@@ -2506,7 +2506,7 @@ def build_config(
         ["et"],
         RemoveProducer(
             producers=et_tau_sf_producers,
-            samples="data",
+            samples=["data"],
         ),
     )
 
@@ -2515,7 +2515,7 @@ def build_config(
         ["mt"],
         RemoveProducer(
             producers=mt_tau_sf_producers,
-            samples="data",
+            samples=["data"],
         ),
     )
 
@@ -2523,8 +2523,8 @@ def build_config(
     configuration.add_modification_rule(
         ["tt"],
         RemoveProducer(
-            producers=mt_tau_sf_producers,
-            samples="data",
+            producers=tt_tau_sf_producers,
+            samples=["data"],
         ),
     )
 
@@ -2551,7 +2551,7 @@ def build_config(
 
     # Remove trigger scale factor producers from data and embedding samples in tt scope
     configuration.add_modification_rule(
-        ["mt"],
+        ["tt"],
         RemoveProducer(
             producers=tt_trigger_sf_producers,
             samples=["data", "embedding", "embedding_mc"],
