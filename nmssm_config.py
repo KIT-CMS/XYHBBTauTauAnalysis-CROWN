@@ -2142,6 +2142,60 @@ def build_config(
         default=[],
     )
 
+    # Tau ID scale factors in the tt channel 
+    # - In Run 2, the scale factors are provided from own measurements with the same methods as for
+    #   embedding.
+    # - In Run 3, the official measurements from the TAU POG are taken.
+    tt_tau_sf_producers = get_for_era(
+        {
+            tuple(ERAS_RUN2): [
+                scalefactors.Tau_1_VsJetTauID_tt_SF,
+                scalefactors.Tau_2_VsJetTauID_tt_SF,
+                scalefactors.Tau_1_VsEleTauID_SF_Run2,
+                scalefactors.Tau_2_VsEleTauID_SF_Run2,
+            ],
+            tuple(ERAS_RUN3): [
+                scalefactors.Tau_1_VsJetTauID_SF,
+                scalefactors.Tau_2_VsJetTauID_SF,
+                scalefactors.Tau_1_VsEleTauID_SF_Run3,
+                scalefactors.Tau_2_VsEleTauID_SF_Run3,
+            ],
+        },
+        era,
+    )
+
+    # Old tau MVA ID scale factors in the tt channel
+    # For Run 2, add the old MVA ID scale factor producers. They are used for the boosted tau
+    # reconstruction in this case.
+    tt_old_tau_mva_sf_producers = get_for_era(
+        {
+            tuple(ERAS_RUN2): [
+                scalefactors.Tau_1_oldIsoTauID_tt_SF,
+                scalefactors.Tau_1_antiEleTauID_SF,
+                scalefactors.Tau_1_antiMuTauID_SF,
+                scalefactors.Tau_2_oldIsoTauID_tt_SF,
+                scalefactors.Tau_2_antiEleTauID_SF,
+                scalefactors.Tau_2_antiMuTauID_SF,
+            ],
+        },
+        era,
+    )
+
+    # Trigger scale factors in the mt channel
+    # - In Run 2, no trigger scale factors are applied for now (to be reworked).
+    # - In Run 3, the official MUO POG / TAU POG / HIG PAG SFs are used.
+    tt_trigger_sf_producers = get_for_era(
+        {
+            tuple(ERAS_RUN2): [
+                scalefactors.TTGenerateDoubleTauTriggerSF_MC,
+            ],
+            tuple(ERAS_RUN3): [
+                scalefactors.DoubleTauTauTriggerSF,
+            ],
+        },
+        era,
+    )
+
 
     #
     # PRODUCER DEFINITIONS
@@ -2364,43 +2418,17 @@ def build_config(
             scalefactors.Tau_1_VsMuTauID_SF,
             scalefactors.Tau_2_VsMuTauID_SF,
             triggers.DoubleTauTauTriggerFlags,
-            #triggers.BoostedTTGenerateDoubleTriggerFlags,  TODO rework trigger setup before enabling this
+            # TODO rework trigger setup before enabling this
+            # triggers.BoostedTTGenerateDoubleTriggerFlags,
             # triggers.GenerateSingleTrailingTauTriggerFlags,
             # triggers.GenerateSingleLeadingTauTriggerFlags,
             # triggers.BoostedTTTriggerFlags,
-            #scalefactors.BoostedTTGenerateFatjetTriggerSF_MC,
-        ],
+            # scalefactors.BoostedTTGenerateFatjetTriggerSF_MC,
+        ]
+        + tt_tau_sf_producers
+        + tt_old_tau_mva_sf_producers
+        + tt_trigger_sf_producers,
     )
-
-    # add the old MVA ID scale factor producers only for Run 2 eras (not available for Run 3)
-    if era in ERAS_RUN2:
-        configuration.add_producers(
-            "tt",
-            [
-                scalefactors.Tau_1_VsJetTauID_tt_SF,
-                scalefactors.Tau_2_VsJetTauID_tt_SF,
-                scalefactors.Tau_1_VsEleTauID_SF_Run2,
-                scalefactors.Tau_2_VsEleTauID_SF_Run2,
-                scalefactors.Tau_1_oldIsoTauID_tt_SF,
-                scalefactors.Tau_1_antiEleTauID_SF,
-                scalefactors.Tau_1_antiMuTauID_SF,
-                scalefactors.Tau_2_oldIsoTauID_tt_SF,
-                scalefactors.Tau_2_antiEleTauID_SF,
-                scalefactors.Tau_2_antiMuTauID_SF,
-                scalefactors.TTGenerateDoubleTauTriggerSF_MC,
-            ],
-        )
-    elif era in ERAS_RUN3:
-        configuration.add_producers(
-            "tt",
-            [
-                scalefactors.Tau_1_VsJetTauID_SF,
-                scalefactors.Tau_2_VsJetTauID_SF,
-                scalefactors.Tau_1_VsEleTauID_SF_Run3,
-                scalefactors.Tau_2_VsEleTauID_SF_Run3,
-                scalefactors.DoubleTauTauTriggerSF,
-            ],
-        )
 
 
     #
