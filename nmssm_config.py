@@ -72,25 +72,26 @@ def get_for_era(objects: dict[str | tuple[str], T], era: str, default: T = None)
     # Raise an exception if the keys are not a string or a tuple of strings
     # Raise an exception if there are duplicate keys
     keys = []
+    _objects = {}
     for key in objects.keys():
         if isinstance(key, str):
             keys.append(key)
+            _objects[key] = objects[key]
         elif isinstance(key, tuple) and all(isinstance(k, str) for k in key):
             keys.extend(list(key))
-            o = objects.pop(key)
             for k in key:
-                objects[k] = o
+                _objects[k] = objects[key]
         else:
             raise KeyError(
                 f"Invalid key type {type(key)} in 'objects' dictionary; expected str or tuple of "
                 "str."
             )
     if len(keys) != len(set(keys)):
-        raise KeyError(f"Keys of 'objects' dictionary are not unqiqe: {keys}.")
+        raise KeyError(f"Keys of 'objects' dictionary are not unique: {keys}.")
 
     # Return the object for the respective era if it exists in the flattened dictionary
-    if era in objects:
-        return objects[era]
+    if era in _objects:
+        return _objects[era]
     
     # Return the default value if specified
     if default is not None:
@@ -1950,8 +1951,9 @@ def build_config(
     electron_pt_correction_data_producer = get_for_era(
         {
             tuple(ERAS_RUN2): electrons.RenameElectronPt,
-            tuple(ERAS_RUN3): electrons.ElectronptCorrectionDataRun3,
-        }
+            tuple(ERAS_RUN3): electrons.ElectronPtCorrectionDataRun3,
+        },
+        era,
     )
 
     # Tau energy correction on MC
@@ -2013,7 +2015,7 @@ def build_config(
     rename_jets_data_producer = get_for_era(
         {
             tuple(ERAS_RUN2): jets.RenameJetsDataRun2,
-            tuple(ERAS_RUN3): jets.RenameJetsDataRun3,
+            tuple(ERAS_RUN3): jets.RenameJetsData,
         },
         era,
     )
@@ -2022,8 +2024,8 @@ def build_config(
     # In embedding, the full JEC has already been applied, so no further correction is needed.
     rename_fatjets_data_producer = get_for_era(
         {
-            tuple(ERAS_RUN2): jets.RenameFatJetsDataRun2,
-            tuple(ERAS_RUN3): jets.RenameFatJetsDataRun3,
+            tuple(ERAS_RUN2): fatjets.RenameFatJetsDataRun2,
+            tuple(ERAS_RUN3): fatjets.RenameFatJetsData,
         },
         era,
     )
@@ -2232,6 +2234,7 @@ def build_config(
             ],
         },
         era,
+        default=[],
     )
 
     # Trigger scale factors in the mt channel
@@ -2408,7 +2411,6 @@ def build_config(
             pairquantities.MTDiTauPairQuantities,
             boostedtaus.boostedMTDiTauPairQuantities,
             genparticles.MTGenDiTauPairQuantities,
-            scalefactors.Tau_2_VsMuTauID_SF,
             triggers.SingleMuTriggerFlags,
             triggers.DoubleMuTauTriggerFlags,
             # TODO rework trigger setup before enabling this
