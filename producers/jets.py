@@ -156,14 +156,31 @@ GoodBJetsBaseWithoutPUID = Producer(
     scopes=GLOBAL_SCOPES,
 )
 
-# requirement on b tagging score
-BTagCut = Producer(
+# requirement on b tagging score (DeepJet)
+BTagCutDeepJet = Producer(
     name="BTagCut",
     call="physicsobject::CutMin<float>({df}, {output}, {input}, {bjet_min_deepjet_score})",
     input=[nanoAOD_run2.Jet_btagDeepFlavB],
     output=[q.Jet_deepjet_b_tagged_medium],
     scopes=GLOBAL_SCOPES,
 )
+
+# requirement on b tagging score (ParticleNet)
+BTagCutPNet = Producer(
+    name="BTagCutPNet",
+    call="physicsobject::CutMin<float>({df}, {output}, {input}, {bjet_min_deepjet_score})",
+    input=[nanoAOD.Jet_btagPNetB],
+    output=[q.Jet_pnet_b_tagged_medium],
+    scopes=GLOBAL_SCOPES,
+)
+
+# requirement that jet must be b tagged by either DeepJet or ParticleNet
+BTagCut = Producer(
+    name="BTagCut",
+    call='physicsobject::CombineMasks({df}, {output}, {input}, "any_of")',
+    input=[q.Jet_deepjet_b_tagged_medium, q.Jet_pnet_b_tagged_medium],
+    output=[q.Jet_any_b_tagged_medium],
+) 
 
 # b jet selection combining the base b jet selection and the b tagging requirement not applying the pileup ID (for PUPPI jets)
 GoodBJetsWithoutPUID = ProducerGroup(
@@ -343,7 +360,9 @@ for q_input, q_output, data_type in [
     (q.Jet_mass_corrected, q.jet_mass, "float"),
     (q.Jet_ID_corrected, q.jet_id, "UChar_t"),
     (nanoAOD.Jet_btagDeepFlavB, q.jet_deepjet_b_score, "float"),
+    (nanoAOD.Jet_btagPNetB, q.jet_pnet_b_score, "float"),
     (q.Jet_deepjet_b_tagged_medium, q.jet_deepjet_b_tagged_medium, "int"),
+    (q.Jet_pnet_b_tagged_medium, q.jet_pnet_b_tagged_medium, "int"),
 ]:
     jet_column_producers.append(
         Producer(
