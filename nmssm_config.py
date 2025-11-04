@@ -1445,7 +1445,7 @@ def add_bjet_config(configuration: Configuration):
         },
     )
 
-    # b jet identification
+    # b jet identification with DeepJet
     # recommendations: https://btv-wiki.docs.cern.ch/ScaleFactors
     configuration.add_config_parameters(
         GLOBAL_SCOPES + SCOPES,
@@ -1460,6 +1460,26 @@ def add_bjet_config(configuration: Configuration):
                     "2022postEE": 0.3196,
                     "2023preBPix": 0.2431,
                     "2023postBPix": 0.2435,
+                },
+            ),
+        },
+    )
+
+    # b jet identification with ParticleNet
+    # recommendations: https://btv-wiki.docs.cern.ch/ScaleFactors
+    configuration.add_config_parameters(
+        GLOBAL_SCOPES + HAD_TAU_SCOPES,
+        {
+            "bjet_min_pnet_score": EraModifier(  # medium
+                {
+                    "2016preVFP": 0.0,
+                    "2016postVFPP": 0.0,
+                    "2017": 0.0,
+                    "2018": 0.0,
+                    "2022preEE": 0.245,
+                    "2022postEE": 0.2605,
+                    "2023preBPix": 0.3487,
+                    "2023postBPix": 0.3494,
                 },
             ),
         },
@@ -2798,7 +2818,9 @@ def build_config(
             q.jet_mass,
             q.jet_id,
             q.jet_deepjet_b_score,
+            q.jet_pnet_b_score,
             q.jet_deepjet_b_tagged_medium,
+            q.jet_pnet_b_tagged_medium,
             q.jet_pt_pnet,
             q.jet_pt_pnet_with_neutrino,
             q.jet_pt_pnet_resolution,
