@@ -114,6 +114,9 @@ ROOT::RDF::RNode Id_vsJet(
                     variation,
                     sf_dependence
                 );
+                sf = evaluator->evaluate(
+                    {pt, decay_mode, gen_match, wp, vsele_wp, variation, sf_dependence}
+                );
         } else {
             Logger::get("physicsobject::tau::scalefactor::Id_vsJet")
                 ->debug(
