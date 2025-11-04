@@ -168,7 +168,7 @@ BTagCutDeepJet = Producer(
 # requirement on b tagging score (ParticleNet)
 BTagCutPNet = Producer(
     name="BTagCutPNet",
-    call="physicsobject::CutMin<float>({df}, {output}, {input}, {bjet_min_deepjet_score})",
+    call="physicsobject::CutMin<float>({df}, {output}, {input}, {bjet_min_pnet_score})",
     input=[nanoAOD.Jet_btagPNetB],
     output=[q.Jet_pnet_b_tagged_medium],
     scopes=GLOBAL_SCOPES,
@@ -348,6 +348,7 @@ JetCombinedCollection = ProducerGroup(
     scopes=SCOPES,
     subproducers=[GoodJetsCombinedWithVeto],
 )
+
 
 #
 # JET QUANTITIES
