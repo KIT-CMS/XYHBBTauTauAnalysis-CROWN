@@ -2,7 +2,7 @@ from ..quantities import output as q
 from ..quantities import nanoAOD as nanoAOD
 from code_generation.producer import ExtendedVectorProducer
 
-from ..constants import E_SCOPES, ET_SCOPES, M_SCOPES, MT_SCOPES, TT_SCOPES
+from ..constants import ET_SCOPES, MT_SCOPES, TT_SCOPES, ELECTRON_SCOPES, MUON_SCOPES
 
 
 #
@@ -23,7 +23,7 @@ SingleEleTriggerFlags = ExtendedVectorProducer(
         nanoAOD.TrigObj_phi,
     ],
     output="flagname",
-    scope=E_SCOPES,
+    scope=ELECTRON_SCOPES,
     vec_config="single_ele_trigger",
 )
 
@@ -64,7 +64,7 @@ SingleMuTriggerFlags = ExtendedVectorProducer(
         nanoAOD.TrigObj_phi,
     ],
     output="flagname",
-    scope=M_SCOPES,
+    scope=MUON_SCOPES,
     vec_config="single_mu_trigger",
 )
 

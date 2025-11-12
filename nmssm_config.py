@@ -359,7 +359,7 @@ def add_electron_config(configuration: Configuration):
         EE_SCOPES,
         {
             "electron_index_in_pair": 0,
-            "second_electron_index_in_pair": 1,  # index of the second electron in the dilepton pair
+            "second_electron_index_in_pair": 1,
         },
     )
 

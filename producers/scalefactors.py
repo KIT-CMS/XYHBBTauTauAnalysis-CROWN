@@ -4,7 +4,7 @@ from code_generation.quantity import Quantity
 from code_generation.producer import Producer, ProducerGroup
 from code_generation.producer import ExtendedVectorProducer
 
-from ..constants import E_SCOPES, ET_SCOPES, M_SCOPES, MT_SCOPES, TT_SCOPES, SL_SCOPES, HAD_TAU_SCOPES
+from ..constants import ET_SCOPES, MT_SCOPES, TT_SCOPES, SL_SCOPES, ELECTRON_SCOPES, MUON_SCOPES, HAD_TAU_SCOPES
 
 
 ############################
@@ -744,7 +744,7 @@ SingleEleTriggerSF = ExtendedVectorProducer(
         q.eta_1,
     ],
     output="e_trigger_flagname",
-    scope=E_SCOPES,
+    scope=ELECTRON_SCOPES,
     vec_config="single_ele_trigger_sf",
 )
 
@@ -763,7 +763,7 @@ SingleMuTriggerSF = ExtendedVectorProducer(
         q.eta_1,
     ],
     output="m_trigger_flagname",
-    scope=M_SCOPES,
+    scope=MUON_SCOPES,
     vec_config="single_mu_trigger_sf",
 )
 
