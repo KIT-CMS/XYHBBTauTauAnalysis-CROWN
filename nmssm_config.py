@@ -28,7 +28,7 @@ from code_generation.modifiers import EraModifier, SampleModifier
 from code_generation.rules import AppendProducer, RemoveProducer, ReplaceProducer
 from code_generation.systematics import SystematicShift, SystematicShiftByQuantity
 
-from .constants import ERAS_RUN2, ERAS_RUN3, CORRECTIONLIB_CAMPAIGNS, ET_SCOPES, MT_SCOPES, TT_SCOPES, SL_SCOPES, FH_SCOPES, HAD_TAU_SCOPES, SCOPES, GLOBAL_SCOPES
+from .constants import ERAS_RUN2, ERAS_RUN3, CORRECTIONLIB_CAMPAIGNS, ET_SCOPES, MT_SCOPES, TT_SCOPES, EE_SCOPES, MM_SCOPES, EM_SCOPES, SL_SCOPES, FH_SCOPES, HAD_TAU_SCOPES, ELECTRON_SCOPES, MUON_SCOPES, SCOPES, GLOBAL_SCOPES
 from .helpers import get_for_era
 
 
@@ -306,7 +306,7 @@ def add_electron_config(configuration: Configuration):
     :type electron_id_loose: str
     """
 
-    # loose electrons, mainly used for vetoes
+    # Loose electrons, mainly used for vetoes
     configuration.add_config_parameters(
         GLOBAL_SCOPES,
         {
@@ -319,7 +319,7 @@ def add_electron_config(configuration: Configuration):
         },
     )
 
-    # loose electrons and spatial separation for the di-electron veto
+    # Loose electrons and spatial separation for the di-electron veto
     configuration.add_config_parameters(
         GLOBAL_SCOPES,
         {
@@ -333,9 +333,9 @@ def add_electron_config(configuration: Configuration):
         },
     )
 
-    # tight electrons, mainly used as candidates for electron+hadronic tau pairs
+    # Tight electrons, mainly used as candidates for dilepton pairs
     configuration.add_config_parameters(
-        ET_SCOPES,
+        ELECTRON_SCOPES,
         {
             "tight_electron_min_pt": 25.0,
             "tight_electron_max_abs_eta": 2.5,
@@ -343,13 +343,29 @@ def add_electron_config(configuration: Configuration):
             "tight_electron_max_abs_dz": 0.2,
             "tight_electron_max_iso": 0.4,
             "tight_electron_id": "Electron_mvaNoIso_WP90",  # NanoAOD v9: Electron_mvaFall17V2noIso_WP90,
-            "electron_index_in_pair": 0,  # index of the electron in the dilepton pair
         },
     )
 
-    # electron reconstruction and identification corrections for simulated events
+    # In the et and em scopes, the first lepton is an electron
     configuration.add_config_parameters(
-        ET_SCOPES,
+        ET_SCOPES + EM_SCOPES,
+        {
+            "electron_index_in_pair": 0,
+        },
+    )
+
+    # In the ee scope, the first and the second leptons are electrons
+    configuration.add_config_parameters(
+        EE_SCOPES,
+        {
+            "electron_index_in_pair": 0,
+            "second_electron_index_in_pair": 1,  # index of the second electron in the dilepton pair
+        },
+    )
+
+    # Electron reconstruction and identification corrections for simulated events
+    configuration.add_config_parameters(
+        ELECTRON_SCOPES,
         {
             "ele_sf_file": EraModifier(
                 {
@@ -388,9 +404,9 @@ def add_electron_config(configuration: Configuration):
         },
     )
 
-    # electron identification and isolation corrections for mu->tau-embedded events
+    # Electron identification and isolation corrections for mu -> tau-embedded events
     configuration.add_config_parameters(
-        ET_SCOPES,
+        ELECTRON_SCOPES,
         {
             "mc_electron_sf_file": EraModifier(
                 {
