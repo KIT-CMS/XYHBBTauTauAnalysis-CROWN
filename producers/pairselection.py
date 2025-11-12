@@ -65,7 +65,10 @@ GoodMTPairFilter = Filter(
     call='event::filter::Flags({df}, "GoodMuTauPairs", {input}, "any_of")',
     input=[],
     scopes=["mt"],
-    subproducers=[GoodMTPairFlag, GoodBoostedMTPairFlag],
+    subproducers=[
+        GoodMTPairFlag,
+        # GoodBoostedMTPairFlag,
+    ],
 )
 
 MuMuPairSelection = Producer(
@@ -240,7 +243,10 @@ GoodETPairFilter = Filter(
     call='event::filter::Flags({df}, "GoodElTauPairs", {input}, "any_of")',
     input=[],
     scopes=["et"],
-    subproducers=[GoodETPairFlag, GoodBoostedETPairFlag],
+    subproducers=[
+        GoodETPairFlag,
+        # GoodBoostedETPairFlag,
+    ],
 )
 
 ####################
@@ -294,7 +300,10 @@ GoodTTPairFilter = Filter(
     call='event::filter::Flags({df}, "GoodTauTauPairs", {input}, "any_of")',
     input=[],
     scopes=["tt"],
-    subproducers=[GoodTTPairFlag, GoodBoostedTTPairFlag],
+    subproducers=[
+        GoodTTPairFlag,
+        # GoodBoostedTTPairFlag,
+    ],
 )
 ####################
 ## ElMu Pair Selection

@@ -342,7 +342,7 @@ BasicFatJetQuantities = ProducerGroup(
         LVFatJet1,
         # LVFatJet2,
         NumberOfFatJets,
-        NumberOfFatJets_boosted,
+        # NumberOfFatJets_boosted,
         fj_pt_1,
         fj_eta_1,
         fj_phi_1,
