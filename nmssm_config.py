@@ -1633,7 +1633,7 @@ def build_config(
 
     # electron energy scale corrections
     configuration.add_config_parameters(
-        "global",
+        GLOBAL_SCOPES,
         {
             "ele_es_master_seed": 44,
             "ele_es_era": EraModifier(
@@ -1705,7 +1705,7 @@ def build_config(
 
     # AK8 X->bb jet identification
     configuration.add_config_parameters(
-        HAD_TAU_SCOPES,
+        SCOPES,
         {
             "pNetXbb_sf_file": EraModifier(
                 {
@@ -1725,7 +1725,7 @@ def build_config(
 
     # gen b pair for NMSSM analysis
     configuration.add_config_parameters(
-        HAD_TAU_SCOPES,
+        SCOPES,
         {
             "bb_truegen_mother_pdgid": SampleModifier(
                 {"nmssm_Ybb": 35, "nmssm_Ytautau": 25}, default=-1
@@ -1743,9 +1743,9 @@ def build_config(
         },
     )
 
-    # deltaR condition for resolved tau definition
+    # Separation for resolved bb and tautau pair selections
     configuration.add_config_parameters(
-        HAD_TAU_SCOPES,
+        SCOPES,
         {
             "pairselection_min_dR": 0.5,
             "bb_pairselection_min_dR": 0.4,
@@ -1754,16 +1754,13 @@ def build_config(
 
 
     #
-    # RECOIL CALIBRATION
-    #
-
-    #
     # TRIGGERS
     #
 
-    # muon trigger SF settings from embedding measurements
+
+    # Trigger scale factors for measurements in the embedding workflow
     configuration.add_config_parameters(
-        ["mt"],
+        MUON_SCOPES,
         {
             "singlemuon_trigger_sf_mc": [
                 {
@@ -1785,9 +1782,9 @@ def build_config(
         },
     )
 
-    # electron trigger SF settings from embedding measurements
+    # Trigger scale factors for measurements in the embedding workflow
     configuration.add_config_parameters(
-        ["et"],
+        ELECTRON_SCOPES,
         {
             "singlelectron_trigger_sf_mc": [
                 {
@@ -1813,8 +1810,10 @@ def build_config(
             ]
         },
     )
+
+    # Trigger scale factors for electron triggers
     configuration.add_config_parameters(
-        ["et"],
+        ELECTRON_SCOPES,
         {
             "ele_trg_sf_file": EraModifier(
                 {
@@ -1830,9 +1829,9 @@ def build_config(
             ),
         },
     )
-    # ditau trigger SF settings for embedding
+    # Settings for the ditau trigger scale factors on embedding
     configuration.add_config_parameters(
-        ["tt"],
+        TT_SCOPES,
         {
             "ditau_trigger_wp": "Medium",
             "ditau_trigger_type": "ditau",
@@ -1843,7 +1842,7 @@ def build_config(
 
     # fatjet trigger settings
     configuration.add_config_parameters(
-        ["tt"],
+        SCOPES,
         {
             "fatjet_trigger_sf_file": EraModifier(
                 {
