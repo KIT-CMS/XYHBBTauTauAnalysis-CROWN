@@ -1930,7 +1930,13 @@ def build_config(
             [
                 event.LHEDrellYanDecayFlavor,
             ],
-            samples=["dyjets", "dyjets_madgraph", "dyjets_amcatnlo", "dyjets_powheg"],
+            samples=[
+                "dyjets",
+                "dyjets_madgraph",
+                "dyjets_amcatnlo_ll",
+                "dyjets_amcatnlo_tt",
+                "dyjets_powheg",
+            ],
         )
     )
 
