@@ -2219,36 +2219,47 @@ def build_config(
         ],
     )
 
-    # add the old MVA ID scale factor producers only for Run 2 eras (not available for Run 3)
-    if era in ERAS_RUN2:
-        configuration.add_producers(
-            "tt",
-            [
-                scalefactors.Tau_1_VsJetTauID_tt_SF,
-                scalefactors.Tau_2_VsJetTauID_tt_SF,
-                scalefactors.Tau_1_VsEleTauID_SF_Run2,
-                scalefactors.Tau_2_VsEleTauID_SF_Run2,
-                scalefactors.Tau_1_oldIsoTauID_tt_SF,
-                scalefactors.Tau_1_antiEleTauID_SF,
-                scalefactors.Tau_1_antiMuTauID_SF,
-                scalefactors.Tau_2_oldIsoTauID_tt_SF,
-                scalefactors.Tau_2_antiEleTauID_SF,
-                scalefactors.Tau_2_antiMuTauID_SF,
-                scalefactors.TTGenerateDoubleTauTriggerSF_MC,
-            ],
-        )
-    elif era in ERAS_RUN3:
-        configuration.add_producers(
-            "tt",
-            [
-                scalefactors.Tau_1_VsJetTauID_SF,
-                scalefactors.Tau_2_VsJetTauID_SF,
-                scalefactors.Tau_1_VsEleTauID_SF_Run3,
-                scalefactors.Tau_2_VsEleTauID_SF_Run3,
-                scalefactors.DoubleTauTauTriggerSF,
-            ],
-        )
+    # Producers for quantities in the mm scope
+    configuration.add_producers(
+        "mm",
+        [
+            muons.GoodMuons,
+            muons.VetoMuons,
+            muons.VetoSecondMuon,
+            muons.ExtraMuonsVeto,
+            muons.NumberOfGoodMuons,
+            pairselection.ZMuMuPairSelection,
+            pairselection.GoodMuMuPairFilter,
+            pairselection.LVMu1,
+            pairselection.LVMu2,
+            pairselection.LVMu1Uncorrected,
+            pairselection.LVMu2Uncorrected,
+            pairquantities.MuMuPairQuantities,
+            genparticles.MuMuGenPairQuantities,
+            scalefactors.MuonIDIso_SF,
+            triggers.SingleMuTriggerFlags,
+        ],
+    )
 
+
+    #
+    # PRODUCER MODIFICATIONS
+    # 
+    # Remove, append, or modify producers in specific cases.
+    #
+
+    # For DY samples, add producer for flag indicating the flavor of the decay products
+    configuration.add_modification_rule(
+        GLOBAL_SCOPES,
+        AppendProducer(
+            [
+                event.LHEDrellYanDecayFlavor,
+            ],
+            samples=["dyjets", "dyjets_madgraph", "dyjets_amcatnlo", "dyjets_powheg"],
+        )
+    )
+
+    # Remove tau ID scale factor producers from data samples in et scope
     configuration.add_modification_rule(
         ["et", "mt"],
         RemoveProducer(
@@ -2519,14 +2530,17 @@ def build_config(
         "global",
         RemoveProducer(
             producers=[event.npartons],
-            exclude_samples=["dyjets", "dyjets_madgraph", "dyjets_powheg", "dyjets_amcatnlo", "wjets", "wjets_madgraph", "wjets_amcatnlo", "electroweak_boson"],
-        ),
-    )
-    configuration.add_modification_rule(
-        "global",
-        RemoveProducer(
-            producers=[event.PUweights],
-            samples=["data", "embedding", "embedding_mc"],
+            exclude_samples=[
+                "dyjets",
+                "dyjets_madgraph",
+                "dyjets_powheg",
+                "dyjets_amcatnlo_ll",
+                "dyjets_amcatnlo_tt",
+                "wjets",
+                "wjets_madgraph",
+                "wjets_amcatnlo",
+                "electroweak_boson",
+            ],
         ),
     )
     # for whatever reason, the diboson samples do not have these weights in the ntuple....
@@ -2911,7 +2925,7 @@ def build_config(
             ],
         )
 
-    if sample in ["dyjets", "dyjets_madgraph", "dyjets_powheg", "dyjets_amcatnlo"]:
+    if sample in ["dyjets", "dyjets_madgraph", "dyjets_powheg", "dyjets_amcatnlo_ll", "dyjets_amcatnlo_tt"]:
         configuration.add_outputs(
             HAD_TAU_SCOPES,
             [
