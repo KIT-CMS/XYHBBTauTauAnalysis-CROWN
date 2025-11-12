@@ -4,6 +4,7 @@ from code_generation.code_generation import CodeGenerator
 from code_generation.friend_trees import FriendTreeConfiguration
 import inspect
 
+from .constants import ERAS, SCOPES
 
 def run(args):
     analysis_name = "xyh_bbtautau"
@@ -41,8 +42,8 @@ def run(args):
         "nmssm_Ytautau",
     ]
 
-    available_eras = ["2016preVFP", "2016postVFP", "2017", "2018", "2022preEE", "2022postEE", "2023preBPix", "2023postBPix"]
-    available_scopes = ["et", "mt", "tt", "mm"]
+    available_eras = ERAS
+    available_scopes = SCOPES
 
     ## setup variables
     shifts = set([shift.lower() for shift in args.shifts])
