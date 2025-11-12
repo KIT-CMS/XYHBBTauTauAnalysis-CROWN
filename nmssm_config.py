@@ -538,7 +538,7 @@ def add_muon_config(configuration: Configuration):
 
     # In the mm scope, the first and the second leptons are muons 
     configuration.add_config_parameters(
-        EE_SCOPES,
+        MM_SCOPES,
         {
             "muon_index_in_pair": 0,
             "second_muon_index_in_pair": 1,
@@ -2306,7 +2306,7 @@ def build_config(
             pairselection.LVMu2Uncorrected,
             pairquantities.EMDiTauPairQuantities,
             genparticles.EMGenDiTauPairQuantities,
-            scalefactors.EleIDIso_SF,
+            scalefactors.EleID_SF,
             scalefactors.MuonIDIso_SF,
             triggers.SingleEleTriggerFlags,
             triggers.SingleMuTriggerFlags,
@@ -2322,6 +2322,7 @@ def build_config(
     # Remove, append, or modify producers in specific cases.
     #
 
+
     # For DY samples, add producer for flag indicating the flavor of the decay products
     configuration.add_modification_rule(
         GLOBAL_SCOPES,
@@ -2335,7 +2336,7 @@ def build_config(
 
     # Remove tau ID scale factor producers from data samples in et scope
     configuration.add_modification_rule(
-        ["et"],
+        ET_SCOPES,
         RemoveProducer(
             producers=et_tau_sf_producers,
             samples=["data"],
@@ -2344,7 +2345,7 @@ def build_config(
 
     # Remove tau ID scale factor producers from data samples in mt scope
     configuration.add_modification_rule(
-        ["mt"],
+        MT_SCOPES,
         RemoveProducer(
             producers=mt_tau_sf_producers,
             samples=["data"],
@@ -2353,7 +2354,7 @@ def build_config(
 
     # Remove tau ID scale factor producers from data samples in tt scope
     configuration.add_modification_rule(
-        ["tt"],
+        TT_SCOPES,
         RemoveProducer(
             producers=tt_tau_sf_producers,
             samples=["data"],
@@ -2362,7 +2363,7 @@ def build_config(
 
     # Remove trigger scale factor producers from data and embedding samples in mt scope
     configuration.add_modification_rule(
-        ["et"],
+        ELECTRON_SCOPES,
         RemoveProducer(
             producers=[
                 scalefactors.SingleEleTriggerSF,
@@ -2374,7 +2375,7 @@ def build_config(
 
     # Remove trigger scale factor producers from data and embedding samples in mt scope
     configuration.add_modification_rule(
-        ["mt"],
+        MUON_SCOPES,
         RemoveProducer(
             producers=[
                 scalefactors.SingleMuTriggerSF,
@@ -2386,7 +2387,7 @@ def build_config(
 
     # Remove trigger scale factor producers from data and embedding samples in tt scope
     configuration.add_modification_rule(
-        ["tt"],
+        TT_SCOPES,
         RemoveProducer(
             producers=[
                 scalefactors.DoubleTauTauTriggerSF,
@@ -2410,7 +2411,7 @@ def build_config(
 
     # Remove b tagging scale factor producers from data and embedding samples in all scopes 
     configuration.add_modification_rule(
-        HAD_TAU_SCOPES,
+        SCOPES,
         RemoveProducer(
             producers=[
                 scalefactors.btagging_SF,
@@ -2421,7 +2422,7 @@ def build_config(
 
     # Remove X -> bb fatjet producers from data and embedding samples in all scopes
     configuration.add_modification_rule(
-        HAD_TAU_SCOPES,
+        SCOPES,
         RemoveProducer(
             producers=[
                 fatjets.fj_Xbb_hadflavor,
@@ -2434,7 +2435,7 @@ def build_config(
 
     # Remove X -> bb tagging scale factor producers from data and embedding samples in all scopes
     configuration.add_modification_rule(
-        HAD_TAU_SCOPES,
+        SCOPES,
         RemoveProducer(
             producers=xbb_sf_producers,
             samples=["data", "embedding", "embedding_mc"],
@@ -2443,7 +2444,7 @@ def build_config(
 
     # Remove the pileup weights from data and embedding samples
     configuration.add_modification_rule(
-        "global",
+        GLOBAL_SCOPES,
         RemoveProducer(
             producers=[event.PUweights],
             samples=["data", "embedding", "embedding_mc"],
@@ -2452,7 +2453,7 @@ def build_config(
 
     # Replace jet energy correction for data
     configuration.add_modification_rule(
-        "global",
+        GLOBAL_SCOPES,
         ReplaceProducer(
             producers=[jet_energy_correction_producer, jets.JetEnergyCorrection_data_Run2],
             samples=["data"],
@@ -2461,7 +2462,7 @@ def build_config(
 
     # Replace fat jet energy correction for data
     configuration.add_modification_rule(
-        "global",
+        GLOBAL_SCOPES,
         ReplaceProducer(
             producers=[
                 fat_jet_energy_correction_producer,
@@ -2473,7 +2474,7 @@ def build_config(
 
     # Replace jet energy correction for embedding with dummy rename operation
     configuration.add_modification_rule(
-        "global",
+        GLOBAL_SCOPES,
         ReplaceProducer(
             producers=[jet_energy_correction_producer, rename_jets_data_producer],
             samples=["embedding", "embedding_mc"],
@@ -2482,7 +2483,7 @@ def build_config(
 
     # Replace fat jet energy correction for embedding with dummy rename operation
     configuration.add_modification_rule(
-        "global",
+        GLOBAL_SCOPES,
         ReplaceProducer(
             producers=[fat_jet_energy_correction_producer, rename_fatjets_data_producer],
             samples=["embedding", "embedding_mc"],
@@ -2492,7 +2493,7 @@ def build_config(
     # Replace electron pt correction for data, as the correction is computed differently in data and
     # MC
     configuration.add_modification_rule(
-        "global",
+        GLOBAL_SCOPES,
         ReplaceProducer(
             producers=[
                 electron_pt_correction_mc_producer,
@@ -2514,7 +2515,7 @@ def build_config(
     # The number of partons is only defined for MC samples and only important to know for EW
     # process samples
     configuration.add_modification_rule(
-        "global",
+        GLOBAL_SCOPES,
         RemoveProducer(
             producers=[event.npartons],
             exclude_samples=[
@@ -2533,7 +2534,7 @@ def build_config(
 
     # for whatever reason, the diboson samples do not have these weights in the ntuple....
     configuration.add_modification_rule(
-        "global",
+        GLOBAL_SCOPES,
         RemoveProducer(
             producers=[event.LHE_Scale_weight],
             samples=["data", "embedding", "embedding_mc", "diboson"],
@@ -2543,7 +2544,7 @@ def build_config(
     # for whatever reason, the nmssm samples have one less entry of the weights and therefore need
     # special treatment
     configuration.add_modification_rule(
-        "global",
+        GLOBAL_SCOPES,
         ReplaceProducer(
             producers=[event.LHE_Scale_weight, event.NMSSM_LHE_Scale_weight],
             samples=["nmssm_Ybb", "nmssm_Ytautau"],
@@ -2552,7 +2553,7 @@ def build_config(
 
     # Remove the generator-level tau matching producers from data samples
     configuration.add_modification_rule(
-        HAD_TAU_SCOPES,
+        SCOPES,
         RemoveProducer(
             producers=[
                 genparticles.GenMatching,
@@ -2574,7 +2575,7 @@ def build_config(
 
     # For ttbar samples, top pt weights should be produced
     configuration.add_modification_rule(
-        HAD_TAU_SCOPES,
+        SCOPES,
         AppendProducer(
             producers=[event.TopPtReweighting],
             samples=["ttbar"],
@@ -2591,7 +2592,7 @@ def build_config(
 
     # Add Golden JSON filter for data and embedding samples
     configuration.add_modification_rule(
-        "global",
+        GLOBAL_SCOPES,
         AppendProducer(
             producers=[event.JSONFilter],
             samples=["data", "embedding"],
@@ -2600,7 +2601,7 @@ def build_config(
 
     # Remove generator-level tau quantities in et scope
     configuration.add_modification_rule(
-        "et",
+        ET_SCOPES,
         RemoveProducer(
             producers=[genparticles.ETGenDiTauPairQuantities],
             samples=["data"],
@@ -2609,7 +2610,7 @@ def build_config(
 
     # Remove generator-level tau quantities in mt scope
     configuration.add_modification_rule(
-        "mt",
+        MT_SCOPES,
         RemoveProducer(
             producers=[genparticles.MTGenDiTauPairQuantities],
             samples=["data"],
@@ -2618,7 +2619,7 @@ def build_config(
 
     # Remove generator-level tau quantities in tt scope
     configuration.add_modification_rule(
-        "tt",
+        TT_SCOPES,
         RemoveProducer(
             producers=[genparticles.TTGenDiTauPairQuantities],
             samples=["data"],
@@ -2627,24 +2628,24 @@ def build_config(
 
     # Remove generator-level tau quantities in mm scope
     configuration.add_modification_rule(
-        "mm",
+        MM_SCOPES,
         RemoveProducer(
             producers=[genparticles.MuMuGenPairQuantities],
             samples=["data"],
         ),
     )
 
-    # lepton scalefactors from our measurement
-    configuration.add_modification_rule(
-        ["mm"],
-        AppendProducer(
-            producers=[
-                scalefactors.MuonIDIso_SF,
-                scalefactors.SingleMuTriggerSF,
-            ],
-            exclude_samples=["data", "embedding", "embedding_mc"],
-        ),
-    )
+    # Append scale factor producers
+    #configuration.add_modification_rule(
+    #    MUON_SCOPES,
+    #    AppendProducer(
+    #        producers=[
+    #            scalefactors.MuonIDIso_SF,
+    #            scalefactors.SingleMuTriggerSF,
+    #        ],
+    #        exclude_samples=["data", "embedding", "embedding_mc"],
+    #    ),
+    #)
 
     configuration.add_outputs(
         HAD_TAU_SCOPES,
