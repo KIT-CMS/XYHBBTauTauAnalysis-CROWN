@@ -1429,7 +1429,7 @@ def add_bjet_config(configuration: Configuration):
 
     # b jet selection
     configuration.add_config_parameters(
-        "global",
+        GLOBAL_SCOPES,
         {
             "bjet_min_pt": 20.,
             "bjet_max_abs_eta": EraModifier(
@@ -1448,7 +1448,7 @@ def add_bjet_config(configuration: Configuration):
     # b jet identification
     # recommendations: https://btv-wiki.docs.cern.ch/ScaleFactors
     configuration.add_config_parameters(
-        GLOBAL_SCOPES + HAD_TAU_SCOPES,
+        GLOBAL_SCOPES + SCOPES,
         {
             "bjet_min_deepjet_score": EraModifier(  # medium
                 {
@@ -1467,7 +1467,7 @@ def add_bjet_config(configuration: Configuration):
 
     # corrections for b jet identification
     configuration.add_config_parameters(
-        HAD_TAU_SCOPES,
+        SCOPES,
         {
             "btag_sf_file": EraModifier(
                 {
@@ -2150,13 +2150,13 @@ def build_config(
     configuration.add_producers(
         HAD_TAU_SCOPES,
         [
-
+            tau_energy_correction_mc_producer,
         ]
     )
 
     # Producers for quantities in the et scope
     configuration.add_producers(
-        "et",
+        ET_SCOPES,
         [
             electrons.GoodElectrons,
             taus.GoodTaus,
@@ -2187,7 +2187,7 @@ def build_config(
 
     # Producers for quantities in the mt scope
     configuration.add_producers(
-        "mt",
+        MT_SCOPES,
         [
             muons.GoodMuons,
             muons.NumberOfGoodMuons,
@@ -2217,7 +2217,7 @@ def build_config(
 
     # Producers for quantities in the tt scope
     configuration.add_producers(
-        "tt",
+        TT_SCOPES,
         [
             electrons.ExtraElectronsVeto,
             muons.ExtraMuonsVeto,
@@ -2240,6 +2240,29 @@ def build_config(
         + tt_tau_sf_producers
     )
 
+    # Producers for quantities in the et scope
+    configuration.add_producers(
+        EE_SCOPES,
+        [
+            electrons.GoodElectrons,
+            electrons.NumberOfGoodElectrons,
+            electrons.VetoElectrons,
+            electrons.VetoSecondElectron,
+            electrons.ExtraElectronsVeto,
+            pairselection.ZElElPairSelection,
+            pairselection.GoodElElPairFilter,
+            pairselection.LVEl1,
+            pairselection.LVEl2,
+            pairselection.LVEl1Uncorrected,
+            pairselection.LVEl2Uncorrected,
+            pairquantities.ElElPairQuantities,
+            genparticles.ElElGenPairQuantities,
+            scalefactors.EleID_SF,
+            triggers.SingleEleTriggerFlags,
+            scalefactors.SingleEleTriggerSF,
+        ]
+    )
+
     # Producers for quantities in the mm scope
     configuration.add_producers(
         "mm",
@@ -2259,9 +2282,9 @@ def build_config(
             genparticles.MuMuGenPairQuantities,
             scalefactors.MuonIDIso_SF,
             triggers.SingleMuTriggerFlags,
+            scalefactors.SingleMuTriggerSF,
         ],
     )
-
 
     #
     # PRODUCER MODIFICATIONS
