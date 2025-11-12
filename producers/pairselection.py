@@ -2,6 +2,9 @@ from ..quantities import output as q
 from ..quantities import nanoAOD as nanoAOD
 from code_generation.producer import Producer, Filter
 
+from ..constants import ET_SCOPES, MT_SCOPES, TT_SCOPES, EE_SCOPES, MM_SCOPES, EM_SCOPES, HAD_TAU_SCOPES, ELECTRON_SCOPES, SCOPES
+
+
 ####################
 # Set of producers used for contruction of MT good pairs and the coressponding lorentz vectors
 ####################
@@ -24,7 +27,7 @@ MTPairSelection = Producer(
         q.good_taus_mask,
     ],
     output=[q.dileptonpair],
-    scopes=["mt"],
+    scopes=MT_SCOPES,
 )
 boostedMTPairSelection = Producer(
     name="boostedMTPairSelection",
@@ -42,7 +45,7 @@ boostedMTPairSelection = Producer(
         q.good_boostedtaus_mask,
     ],
     output=[q.boosteddileptonpair],
-    scopes=["mt"],
+    scopes=MT_SCOPES,
 )
 
 GoodMTPairFlag = Producer(
@@ -50,21 +53,21 @@ GoodMTPairFlag = Producer(
     call="ditau_pairselection::flagGoodPairs({df}, {output}, {input})",
     input=[q.dileptonpair],
     output=[],
-    scopes=["mt"],
+    scopes=MT_SCOPES,
 )
 GoodBoostedMTPairFlag = Producer(
     name="GoodboostedMTPairFlag",
     call="ditau_pairselection::flagGoodPairs({df}, {output}, {input})",
     input=[q.boosteddileptonpair],
     output=[],
-    scopes=["mt"],
+    scopes=MT_SCOPES,
 )
 
 GoodMTPairFilter = Filter(
     name="GoodMTPairFilter",
     call='event::filter::Flags({df}, "GoodMuTauPairs", {input}, "any_of")',
     input=[],
-    scopes=["mt"],
+    scopes=MT_SCOPES,
     subproducers=[
         GoodMTPairFlag,
         # GoodBoostedMTPairFlag,
@@ -82,7 +85,7 @@ MuMuPairSelection = Producer(
         q.good_muons_mask,
     ],
     output=[q.dileptonpair],
-    scopes=["mm"],
+    scopes=MM_SCOPES,
 )
 MuMuPairSelectionOSPreferred = Producer(
     name="MuMuPairSelectionOSPreferred",
@@ -96,7 +99,7 @@ MuMuPairSelectionOSPreferred = Producer(
         q.good_muons_mask,
     ],
     output=[q.dileptonpair],
-    scopes=["mm"],
+    scopes=MM_SCOPES,
 )
 ZMuMuPairSelection = Producer(
     name="ZMuMuPairSelection",
@@ -109,7 +112,7 @@ ZMuMuPairSelection = Producer(
         q.good_muons_mask,
     ],
     output=[q.dileptonpair],
-    scopes=["mm"],
+    scopes=MM_SCOPES,
 )
 ZMuMuPairSelectionOSPreferred = Producer(
     name="ZMuMuPairSelectionOSPrefered",
@@ -123,21 +126,21 @@ ZMuMuPairSelectionOSPreferred = Producer(
         q.good_muons_mask,
     ],
     output=[q.dileptonpair],
-    scopes=["mm"],
+    scopes=MM_SCOPES,
 )
 GoodMuMuPairFlag = Producer(
     name="GoodMuMuPairFlag",
     call="ditau_pairselection::flagGoodPairs({df}, {output}, {input})",
     input=[q.dileptonpair],
     output=[],
-    scopes=["mm"],
+    scopes=MM_SCOPES,
 )
 
 GoodMuMuPairFilter = Filter(
     name="GoodMuMuPairFilter",
     call='event::filter::Flags({df}, "GoodMuMuPairs", {input}, "any_of")',
     input=[],
-    scopes=["mm"],
+    scopes=MM_SCOPES,
     subproducers=[GoodMuMuPairFlag],
 )
 
@@ -152,7 +155,7 @@ ElElPairSelection = Producer(
         q.good_electrons_mask,
     ],
     output=[q.dileptonpair],
-    scopes=["ee"],
+    scopes=EE_SCOPES,
 )
 ZElElPairSelection = Producer(
     name="ZElElPairSelection",
@@ -165,7 +168,7 @@ ZElElPairSelection = Producer(
         q.good_electrons_mask,
     ],
     output=[q.dileptonpair],
-    scopes=["ee"],
+    scopes=EE_SCOPES,
 )
 
 GoodElElPairFlag = Producer(
@@ -173,14 +176,14 @@ GoodElElPairFlag = Producer(
     call="ditau_pairselection::flagGoodPairs({df}, {output}, {input})",
     input=[q.dileptonpair],
     output=[],
-    scopes=["ee"],
+    scopes=EE_SCOPES,
 )
 
 GoodElElPairFilter = Filter(
     name="GoodElElPairFilter",
     call='event::filter::Flags({df}, "GoodElElPairs", {input}, "any_of")',
     input=[],
-    scopes=["ee"],
+    scopes=EE_SCOPES,
     subproducers=[GoodElElPairFlag],
 )
 
@@ -202,7 +205,7 @@ ETPairSelection = Producer(
         q.good_taus_mask,
     ],
     output=[q.dileptonpair],
-    scopes=["et"],
+    scopes=ET_SCOPES,
 )
 boostedETPairSelection = Producer(
     name="boostedETPairSelection",
@@ -220,7 +223,7 @@ boostedETPairSelection = Producer(
         q.good_boostedtaus_mask,
     ],
     output=[q.boosteddileptonpair],
-    scopes=["et"],
+    scopes=ET_SCOPES,
 )
 
 GoodETPairFlag = Producer(
@@ -228,21 +231,21 @@ GoodETPairFlag = Producer(
     call="ditau_pairselection::flagGoodPairs({df}, {output}, {input})",
     input=[q.dileptonpair],
     output=[],
-    scopes=["et"],
+    scopes=ET_SCOPES,
 )
 GoodBoostedETPairFlag = Producer(
     name="GoodboostedETPairFlag",
     call="ditau_pairselection::flagGoodPairs({df}, {output}, {input})",
     input=[q.boosteddileptonpair],
     output=[],
-    scopes=["et"],
+    scopes=ET_SCOPES,
 )
 
 GoodETPairFilter = Filter(
     name="GoodETPairFilter",
     call='event::filter::Flags({df}, "GoodElTauPairs", {input}, "any_of")',
     input=[],
-    scopes=["et"],
+    scopes=ET_SCOPES,
     subproducers=[
         GoodETPairFlag,
         # GoodBoostedETPairFlag,
@@ -264,7 +267,7 @@ TTPairSelection = Producer(
         q.good_taus_mask,
     ],
     output=[q.dileptonpair],
-    scopes=["tt"],
+    scopes=TT_SCOPES,
 )
 boostedTTPairSelection = Producer(
     name="boostedTTPairSelection",
@@ -277,7 +280,7 @@ boostedTTPairSelection = Producer(
         q.good_boostedtaus_mask,
     ],
     output=[q.boosteddileptonpair],
-    scopes=["tt"],
+    scopes=TT_SCOPES,
 )
 
 GoodTTPairFlag = Producer(
@@ -285,21 +288,21 @@ GoodTTPairFlag = Producer(
     call="ditau_pairselection::flagGoodPairs({df}, {output}, {input})",
     input=[q.dileptonpair],
     output=[],
-    scopes=["tt"],
+    scopes=TT_SCOPES,
 )
 GoodBoostedTTPairFlag = Producer(
     name="GoodTTPairFlag",
     call="ditau_pairselection::flagGoodPairs({df}, {output}, {input})",
     input=[q.boosteddileptonpair],
     output=[],
-    scopes=["tt"],
+    scopes=TT_SCOPES,
 )
 
 GoodTTPairFilter = Filter(
     name="GoodTTPairFilter",
     call='event::filter::Flags({df}, "GoodTauTauPairs", {input}, "any_of")',
     input=[],
-    scopes=["tt"],
+    scopes=TT_SCOPES,
     subproducers=[
         GoodTTPairFlag,
         # GoodBoostedTTPairFlag,
@@ -327,7 +330,7 @@ EMPairSelection = Producer(
         q.good_muons_mask,
     ],
     output=[q.dileptonpair],
-    scopes=["em"],
+    scopes=EM_SCOPES,
 )
 
 GoodEMPairFlag = Producer(
@@ -335,14 +338,14 @@ GoodEMPairFlag = Producer(
     call="ditau_pairselection::flagGoodPairs({df}, {output}, {input})",
     input=[q.dileptonpair],
     output=[],
-    scopes=["em"],
+    scopes=EM_SCOPES,
 )
 
 GoodEMPairFilter = Filter(
     name="GoodEMPairFilter",
     call='event::filter::Flags({df}, "GoodElMuPairs", {input}, "any_of")',
     input=[],
-    scopes=["em"],
+    scopes=EM_SCOPES,
     subproducers=[GoodEMPairFlag],
 )
 
@@ -363,7 +366,7 @@ BBPairSelection = Producer(
         q.good_jet_collection,
     ],
     output=[q.dibjetpair],
-    scopes=["et", "mt", "tt", "mm"],
+    scopes=SCOPES,
 )
 BBPairSelection_boosted = Producer(
     name="BBPairSelection_boosted",
@@ -378,27 +381,27 @@ BBPairSelection_boosted = Producer(
         q.good_jet_collection_boosted,
     ],
     output=[q.dibjetpair_boosted],
-    scopes=["et", "mt", "tt", "mm"],
+    scopes=SCOPES,
 )
 GoodBBPairFlag = Producer(
     name="GoodBBPairFlag",
     call="ditau_pairselection::flagGoodPairs({df}, {output}, {input})",
     input=[q.dibjetpair],
     output=[],
-    scopes=["et", "mt", "tt", "mm"],
+    scopes=SCOPES,
 )
 GoodBBPairFlag_boosted = Producer(
     name="GoodBBPairFlag",
     call="ditau_pairselection::flagGoodPairs({df}, {output}, {input})",
     input=[q.dibjetpair_boosted],
     output=[],
-    scopes=["et", "mt", "tt", "mm"],
+    scopes=SCOPES,
 )
 GoodBBPairFilter = Filter(
     name="GoodBBPairFilter",
     call='event::filter::Flags({df}, "GoodBBPairs", {input}, "any_of")',
     input=[],
-    scopes=["et", "mt", "tt", "mm"],
+    scopes=SCOPES,
     subproducers=[GoodBBPairFlag, GoodBBPairFlag_boosted],
 )
 
@@ -417,7 +420,7 @@ LVMu1 = Producer(
         q.dileptonpair,
     ],
     output=[q.p4_1],
-    scopes=["mt", "mm"],
+    scopes=MT_SCOPES + MM_SCOPES,
 )
 LVMu2 = Producer(
     name="LVMu2",
@@ -430,7 +433,7 @@ LVMu2 = Producer(
         q.dileptonpair,
     ],
     output=[q.p4_2],
-    scopes=["mm", "em"],
+    scopes=MM_SCOPES + EM_SCOPES,
 )
 LVEl1 = Producer(
     name="LVEl1",
@@ -443,7 +446,7 @@ LVEl1 = Producer(
         q.dileptonpair,
     ],
     output=[q.p4_1],
-    scopes=["et", "ee", "em"],
+    scopes=ELECTRON_SCOPES,
 )
 LVEl2 = Producer(
     name="LVEl2",
@@ -456,7 +459,7 @@ LVEl2 = Producer(
         q.dileptonpair,
     ],
     output=[q.p4_2],
-    scopes=["ee"],
+    scopes=EE_SCOPES,
 )
 LVTau1 = Producer(
     name="LVTau1",
@@ -469,7 +472,7 @@ LVTau1 = Producer(
         q.dileptonpair,
     ],
     output=[q.p4_1],
-    scopes=["tt"],
+    scopes=TT_SCOPES,
 )
 LVTau2 = Producer(
     name="LVTau2",
@@ -482,7 +485,7 @@ LVTau2 = Producer(
         q.dileptonpair,
     ],
     output=[q.p4_2],
-    scopes=["mt", "et", "tt"],
+    scopes=HAD_TAU_SCOPES,
 )
 ## uncorrected versions of all particles, used for MET propagation
 LVMu1Uncorrected = Producer(
@@ -496,7 +499,7 @@ LVMu1Uncorrected = Producer(
         q.dileptonpair,
     ],
     output=[q.p4_1_uncorrected],
-    scopes=["mt", "mm"],
+    scopes=MT_SCOPES + MM_SCOPES,
 )
 LVMu2Uncorrected = Producer(
     name="LVMu2Uncorrected",
@@ -509,7 +512,7 @@ LVMu2Uncorrected = Producer(
         q.dileptonpair,
     ],
     output=[q.p4_2_uncorrected],
-    scopes=["mm", "em"],
+    scopes=MM_SCOPES + EM_SCOPES,
 )
 LVEl1Uncorrected = Producer(
     name="LVEl1Uncorrected",
@@ -522,7 +525,7 @@ LVEl1Uncorrected = Producer(
         q.dileptonpair,
     ],
     output=[q.p4_1_uncorrected],
-    scopes=["em", "et", "ee"],
+    scopes=ELECTRON_SCOPES,
 )
 LVEl2Uncorrected = Producer(
     name="LVEl2Uncorrected",
@@ -535,7 +538,7 @@ LVEl2Uncorrected = Producer(
         q.dileptonpair,
     ],
     output=[q.p4_2_uncorrected],
-    scopes=["ee"],
+    scopes=EE_SCOPES,
 )
 LVTau1Uncorrected = Producer(
     name="LVTau1Uncorrected",
@@ -548,7 +551,7 @@ LVTau1Uncorrected = Producer(
         q.dileptonpair,
     ],
     output=[q.p4_1_uncorrected],
-    scopes=["tt"],
+    scopes=TT_SCOPES,
 )
 LVTau2Uncorrected = Producer(
     name="LVTau2Uncorrected",
@@ -561,7 +564,7 @@ LVTau2Uncorrected = Producer(
         q.dileptonpair,
     ],
     output=[q.p4_2_uncorrected],
-    scopes=["mt", "et", "tt"],
+    scopes=HAD_TAU_SCOPES,
 )
 
 ####################
@@ -576,7 +579,7 @@ additionalBoostedTau = Producer(
         q.boosteddileptonpair,
     ],
     output=[q.additional_boostedtau],
-    scopes=["mt", "et", "tt"],
+    scopes=HAD_TAU_SCOPES,
 )
 LVaddBoostedTau = Producer(
     name="LVaddBoostedTau",
@@ -589,7 +592,7 @@ LVaddBoostedTau = Producer(
         q.additional_boostedtau,
     ],
     output=[q.boosted_p4_add],
-    scopes=["mt", "et", "tt"],
+    scopes=HAD_TAU_SCOPES,
 )
 
 ####################
@@ -607,7 +610,7 @@ LVbjet1 = Producer(
         q.dibjetpair,
     ],
     output=[q.bpair_p4_1],
-    scopes=["mt", "et", "tt", "mm"],
+    scopes=SCOPES,
 )
 LVbjet2 = Producer(
     name="LVbjet2",
@@ -620,7 +623,7 @@ LVbjet2 = Producer(
         q.dibjetpair,
     ],
     output=[q.bpair_p4_2],
-    scopes=["mt", "et", "tt", "mm"],
+    scopes=SCOPES,
 )
 LVbjet1_boosted = Producer(
     name="LVbjet1_boosted",
@@ -633,7 +636,7 @@ LVbjet1_boosted = Producer(
         q.dibjetpair_boosted,
     ],
     output=[q.bpair_p4_1_boosted],
-    scopes=["mt", "et", "tt", "mm"],
+    scopes=SCOPES,
 )
 LVbjet2_boosted = Producer(
     name="LVbjet2_boosted",
@@ -646,5 +649,5 @@ LVbjet2_boosted = Producer(
         q.dibjetpair_boosted,
     ],
     output=[q.bpair_p4_2_boosted],
-    scopes=["mt", "et", "tt", "mm"],
+    scopes=SCOPES,
 )

@@ -2004,11 +2004,9 @@ def build_config(
         {
             tuple(ERAS_RUN2): [
                 pairquantities_bbpair.DiBjetPairQuantitiesRun2,
-                taus.TauEnergyCorrectionMCRun2,
             ],
             tuple(ERAS_RUN3): [
                 pairquantities_bbpair.DiBjetPairQuantitiesRun3,
-                taus.TauEnergyCorrectionMCRun3,
             ]
         },
         era,
@@ -2115,7 +2113,7 @@ def build_config(
 
     # Producers common to all scopes with at least one hadronic tau
     configuration.add_producers(
-        HAD_TAU_SCOPES,
+        SCOPES,
         [
             fatjets.FatJetCollection,
             fatjets.FatJetCollectionWithoutVeto,
@@ -2146,6 +2144,14 @@ def build_config(
         ]
         + xbb_sf_producers
         + bb_jet_pair_quantity_producers,
+    )
+
+    # Producers for quantities in all scopes with hadronic taus
+    configuration.add_producers(
+        HAD_TAU_SCOPES,
+        [
+
+        ]
     )
 
     # Producers for quantities in the et scope
