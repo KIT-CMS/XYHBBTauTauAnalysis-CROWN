@@ -117,7 +117,7 @@ def add_noise_filters_config(configuration: Configuration):
                         "Flag_eeBadScFilter",
                         "Flag_ecalBadCalibFilter",  # marked as "yellow" in TWiki
                     ],
-                     "2023preBPix": [
+                    "2023preBPix": [
                         "Flag_goodVertices",
                         "Flag_globalSuperTightHalo2016Filter",
                         "Flag_EcalDeadCellTriggerPrimitiveFilter",
@@ -1994,22 +1994,6 @@ def build_config(
         era,
     )
 
-    # Trigger scale factors in the mt channel
-    # - In Run 2, no trigger scale factors are applied for now (to be reworked).
-    # - In Run 3, the official MUO POG / TAU POG / HIG PAG SFs are used.
-    mt_trigger_sf_producers = get_for_era(
-        {
-            tuple(ERAS_RUN2): [
-                # TODO For Run 2, trigger producers need to be reworked.
-            ],
-            tuple(ERAS_RUN3): [
-                scalefactors.SingleMuTriggerSF,
-                scalefactors.DoubleMuTauTriggerSF,
-            ],
-        },
-        era,
-    )
-
     # Tau ID scale factors in the et channel
     # - In Run 2, the scale factors are provided from own measurements with the same methods as for
     #   embedding.
@@ -2177,11 +2161,12 @@ def build_config(
             triggers.SingleMuTriggerFlags,
             triggers.DoubleMuTauTriggerFlags,
             scalefactors.MuonIDIso_SF,
+            scalefactors.SingleMuTriggerSF,
+            scalefactors.DoubleMuTauTriggerSF,
             # TODO rework trigger setup before enabling this
             # triggers.GenerateSingleTrailingTauTriggerFlags,
         ]
         + mt_tau_sf_producers
-        + mt_trigger_sf_producers
     )
 
     # Producers for quantities in the tt scope
@@ -2292,7 +2277,10 @@ def build_config(
     configuration.add_modification_rule(
         ["mt"],
         RemoveProducer(
-            producers=mt_trigger_sf_producers,
+            producers=[
+                scalefactors.SingleMuTriggerSF,
+                scalefactors.DoubleMuTauTriggerSF,
+            ],
             samples=["data", "embedding", "embedding_mc"],
         )
     )
