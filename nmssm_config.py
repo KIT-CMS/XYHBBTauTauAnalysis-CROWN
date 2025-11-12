@@ -2430,7 +2430,7 @@ def build_config(
             [
                 event.LHEDrellYanDecayFlavor,
             ],
-            samples=["dyjets", "dyjets_madgraph", "dyjets_amcatnlo", "dyjets_powheg"],
+            samples=["dyjets", "dyjets_madgraph", "dyjets_amcatnlo_ll", "dyjets_amcatnlo_tt", "dyjets_powheg"],
         )
     )
 
@@ -2664,7 +2664,8 @@ def build_config(
                 "dyjets",
                 "dyjets_madgraph",
                 "dyjets_powheg",
-                "dyjets_amcatnlo",
+                "dyjets_amcatnlo_ll",
+                "dyjets_amcatnlo_tt",
                 "wjets",
                 "wjets_madgraph",
                 "wjets_amcatnlo",
@@ -3030,7 +3031,7 @@ def build_config(
             ],
         )
 
-    if sample in ["dyjets", "dyjets_madgraph", "dyjets_powheg", "dyjets_amcatnlo"]:
+    if sample in ["dyjets", "dyjets_madgraph", "dyjets_powheg", "dyjets_amcatnlo_ll", "dyjets_amcatnlo_tt"]:
         configuration.add_outputs(
             HAD_TAU_SCOPES,
             [
