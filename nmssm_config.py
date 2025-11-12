@@ -2265,7 +2265,7 @@ def build_config(
 
     # Producers for quantities in the mm scope
     configuration.add_producers(
-        "mm",
+        MM_SCOPES,
         [
             muons.GoodMuons,
             muons.VetoMuons,
@@ -2285,6 +2285,36 @@ def build_config(
             scalefactors.SingleMuTriggerSF,
         ],
     )
+
+    # Producers for quantities in the em scope
+    configuration.add_producers(
+        EM_SCOPES,
+        [
+            electrons.GoodElectrons,
+            muons.GoodMuons,
+            electrons.VetoElectrons,
+            electrons.ExtraElectronsVeto,
+            muons.VetoMuons,
+            muons.ExtraMuonsVeto,
+            electrons.NumberOfGoodElectrons,
+            muons.NumberOfGoodMuons,
+            pairselection.EMPairSelection,
+            pairselection.GoodEMPairFlag,
+            pairselection.LVEl1,
+            pairselection.LVMu2,
+            pairselection.LVEl1Uncorrected,
+            pairselection.LVMu2Uncorrected,
+            pairquantities.EMDiTauPairQuantities,
+            genparticles.EMGenDiTauPairQuantities,
+            scalefactors.EleIDIso_SF,
+            scalefactors.MuonIDIso_SF,
+            triggers.SingleEleTriggerFlags,
+            triggers.SingleMuTriggerFlags,
+            scalefactors.SingleEleTriggerSF,
+            scalefactors.SingleMuTriggerSF,
+        ],
+    )
+
 
     #
     # PRODUCER MODIFICATIONS
