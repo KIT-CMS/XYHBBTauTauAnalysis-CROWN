@@ -480,7 +480,7 @@ def add_muon_config(configuration: Configuration):
     :type configuration: Configuration
     """
 
-    # loose muons, mainly used for vetoes
+    # Loose muons, mainly used for vetoes
     configuration.add_config_parameters(
         GLOBAL_SCOPES,
         {
@@ -493,7 +493,7 @@ def add_muon_config(configuration: Configuration):
         },
     )
 
-    # loose electrons and spatial separation for the di-muon veto
+    # Loose muons and spatial separation for the di-muon veto
     configuration.add_config_parameters(
         GLOBAL_SCOPES,
         {
@@ -506,9 +506,9 @@ def add_muon_config(configuration: Configuration):
         },
     )
 
-    # tight muons, mainly used as candidates for muon+hadronic tau pairs
+    # Tight muons, mainly used as candidates for dileptons pairs
     configuration.add_config_parameters(
-        MT_SCOPES,
+        MUON_SCOPES,
         {
             "tight_muon_min_pt": 20.0,
             "tight_muon_max_abs_eta": 2.4,
@@ -520,9 +520,34 @@ def add_muon_config(configuration: Configuration):
         },
     )
 
-    # muon reconstruction, identification, and isolation corrections for simulated events
+    # In the mt scope, the first lepton is a muon
     configuration.add_config_parameters(
         MT_SCOPES,
+        {
+            "muon_index_in_pair": 0,
+        },
+    )
+
+    # In the em scope, the first lepton is a muon
+    configuration.add_config_parameters(
+        EM_SCOPES,
+        {
+            "muon_index_in_pair": 1,
+        },
+    )
+
+    # In the mm scope, the first and the second leptons are muons 
+    configuration.add_config_parameters(
+        EE_SCOPES,
+        {
+            "muon_index_in_pair": 0,
+            "second_muon_index_in_pair": 1,
+        },
+    )
+
+    # Muon reconstruction, identification, and isolation corrections for simulated events
+    configuration.add_config_parameters(
+        MUON_SCOPES,
         {
             "muon_sf_file": EraModifier(
                 {
@@ -550,9 +575,9 @@ def add_muon_config(configuration: Configuration):
         },
     )
 
-    # muon identification and isolation corrections for mu->tau-embedded events
+    # Muon identification and isolation corrections for mu -> tau-embedded events
     configuration.add_config_parameters(
-        MT_SCOPES,
+        MUON_SCOPES,
         {
             "mc_muon_sf_file": EraModifier(
                 {
