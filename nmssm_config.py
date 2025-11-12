@@ -2232,7 +2232,6 @@ def build_config(
         + mt_muon_sf_producers
         + mt_tau_sf_producers
         + mt_trigger_sf_producers
-        + mt_old_tau_mva_sf_producers,
     )
 
     # Producers for quantities in the tt scope
@@ -2257,7 +2256,6 @@ def build_config(
             # triggers.GenerateSingleLeadingTauTriggerFlags,
         ]
         + tt_tau_sf_producers
-        + tt_old_tau_mva_sf_producers
         + tt_trigger_sf_producers,
     )
 
