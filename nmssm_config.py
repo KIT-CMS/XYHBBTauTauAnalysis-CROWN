@@ -2367,11 +2367,20 @@ def build_config(
         RemoveProducer(
             producers=[
                 scalefactors.SingleEleTriggerSF,
+            ],
+            samples=["data", "embedding", "embedding_mc"],
+        ),
+    )
+    configuration.add_modification_rule(
+        ET_SCOPES,
+        RemoveProducer(
+            producers=[
                 scalefactors.DoubleEleTauTriggerSF,
             ],
             samples=["data", "embedding", "embedding_mc"],
         ),
     )
+
 
     # Remove trigger scale factor producers from data and embedding samples in mt scope
     configuration.add_modification_rule(
@@ -2379,6 +2388,14 @@ def build_config(
         RemoveProducer(
             producers=[
                 scalefactors.SingleMuTriggerSF,
+            ],
+            samples=["data", "embedding", "embedding_mc"],
+        )
+    )
+    configuration.add_modification_rule(
+        MT_SCOPES,
+        RemoveProducer(
+            producers=[
                 scalefactors.DoubleMuTauTriggerSF,
             ],
             samples=["data", "embedding", "embedding_mc"],
@@ -2564,7 +2581,7 @@ def build_config(
 
     # Remove the generator-level b jet pair quantities from data and embedding samples
     configuration.add_modification_rule(
-        HAD_TAU_SCOPES,
+        SCOPES,
         RemoveProducer(
             producers=[
                 genparticles.GenDiBjetPairQuantities,
@@ -2626,11 +2643,29 @@ def build_config(
         ),
     )
 
-    # Remove generator-level tau quantities in mm scope
+    # Remove generator-level dilepton quantities in ee scope
+    configuration.add_modification_rule(
+        EE_SCOPES,
+        RemoveProducer(
+            producers=[genparticles.ElElGenPairQuantities],
+            samples=["data"],
+        ),
+    )
+
+    # Remove generator-level dilepton quantities in mm scope
     configuration.add_modification_rule(
         MM_SCOPES,
         RemoveProducer(
             producers=[genparticles.MuMuGenPairQuantities],
+            samples=["data"],
+        ),
+    )
+
+    # Remove generator-level dilepton quantities in mm scope
+    configuration.add_modification_rule(
+        EM_SCOPES,
+        RemoveProducer(
+            producers=[genparticles.EMGenDiTauPairQuantities],
             samples=["data"],
         ),
     )
@@ -2647,8 +2682,9 @@ def build_config(
     #    ),
     #)
 
+    # Output columns for all scopes
     configuration.add_outputs(
-        HAD_TAU_SCOPES,
+        SCOPES,
         [
             q.is_data,
             q.is_embedding,
@@ -2822,7 +2858,7 @@ def build_config(
     if era in ["2018"] and sample not in ["data", "embedding", "embedding_mc"]:
         # in 2018, we have the Xbb tagging scale factors
         configuration.add_outputs(
-            HAD_TAU_SCOPES,
+            SCOPES,
             [
                 q.pNet_Xbb_weight,
             ],
@@ -2830,7 +2866,7 @@ def build_config(
 
     if sample in ["dyjets", "dyjets_madgraph", "dyjets_powheg", "dyjets_amcatnlo_ll", "dyjets_amcatnlo_tt"]:
         configuration.add_outputs(
-            HAD_TAU_SCOPES,
+            SCOPES,
             [
                 q.lhe_drell_yan_decay_flavor,
             ]
@@ -2839,7 +2875,7 @@ def build_config(
     # add genWeight for everything but data
     if sample != "data":
         configuration.add_outputs(
-            HAD_TAU_SCOPES,
+            SCOPES,
             [
                 nanoAOD.genWeight,
             ],
@@ -2848,12 +2884,189 @@ def build_config(
     # jet vetomap selection only applies to Run 3 analyses
     if era in ERAS_RUN3:
         configuration.add_outputs(
-            HAD_TAU_SCOPES,
+            SCOPES,
             [
                 q.jet_vetomap_veto,
 
             ],
         )
+
+    """
+    # Output columns for all hadronic tau scopes
+    configuration.add_outputs(
+        HAD_TAU_SCOPES,
+        [
+            q.is_data,
+            q.is_embedding,
+            q.is_ttbar,
+            q.is_dyjets,
+            q.is_wjets,
+            q.is_ggh_htautau,
+            q.is_vbf_htautau,
+            q.is_diboson,
+            nanoAOD.run,
+            q.lumi,
+            q.npartons,
+            nanoAOD.event,
+            q.puweight,
+            q.lhe_scale_weight,
+            q.pt_1,
+            q.pt_2,
+            q.eta_1,
+            q.eta_2,
+            q.phi_1,
+            q.phi_2,
+            q.nfatjets,
+            # q.fj_pt_1,
+            # q.fj_eta_1,
+            # q.fj_phi_1,
+            # q.fj_mass_1,
+            # q.fj_msoftdrop_1,
+            # q.fj_particleNet_XbbvsQCD_1,
+            # q.fj_nsubjettiness_2over1_1,
+            # q.fj_nsubjettiness_3over2_1,
+            # q.fj_pt_2,
+            # q.fj_eta_2,
+            # q.fj_phi_2,
+            # q.fj_mass_2,
+            # q.fj_msoftdrop_2,
+            # q.fj_particleNet_XbbvsQCD_2,
+            # q.fj_nsubjettiness_2over1_2,
+            # q.fj_nsubjettiness_3over2_2,
+            # q.fj_matched_pt,
+            # q.fj_matched_eta,
+            # q.fj_matched_phi,
+            # q.fj_matched_mass,
+            # q.fj_matched_msoftdrop,
+            # q.fj_matched_particleNet_XbbvsQCD,
+            # q.fj_matched_nsubjettiness_2over1,
+            # q.fj_matched_nsubjettiness_3over2,
+            q.fj_Xbb_pt,
+            q.fj_Xbb_eta,
+            q.fj_Xbb_phi,
+            q.fj_Xbb_mass,
+            q.fj_Xbb_msoftdrop,
+            q.fj_Xbb_particleNet_XbbvsQCD,
+            q.fj_Xbb_nsubjettiness_2over1,
+            q.fj_Xbb_nsubjettiness_3over2,
+            q.fj_Xbb_hadflavor,
+            q.fj_Xbb_nBhad,
+            q.fj_Xbb_nChad,
+            q.bpair_pt_1,
+            q.bpair_pt_2,
+            q.bpair_eta_1,
+            q.bpair_eta_2,
+            q.bpair_phi_1,
+            q.bpair_phi_2,
+            q.bpair_mass_1,
+            q.bpair_mass_2,
+            q.bpair_btag_value_1,
+            q.bpair_btag_value_2,
+            q.bpair_m_inv,
+            q.bpair_deltaR,
+            q.bpair_pt_dijet,
+            q.genjet_pt_1,
+            q.genjet_eta_1,
+            q.genjet_phi_1,
+            q.genjet_mass_1,
+            q.genjet_hadFlavour_1,
+            q.genjet_pt_2,
+            q.genjet_eta_2,
+            q.genjet_phi_2,
+            q.genjet_mass_2,
+            q.genjet_hadFlavour_2,
+            q.genjet_m_inv,
+            q.njets,
+            q.jet_pt,
+            q.jet_eta,
+            q.jet_phi,
+            q.jet_mass,
+            q.jet_id,
+            q.jet_deepjet_b_score,
+            q.jet_deepjet_b_tagged_medium,
+            q.jpt_1,
+            q.jpt_2,
+            q.jeta_1,
+            q.jeta_2,
+            q.jphi_1,
+            q.jphi_2,
+            q.jtag_value_1,
+            q.jtag_value_2,
+            q.mjj,
+            q.m_vis,
+            q.deltaR_ditaupair,
+            q.pt_vis,
+            q.nbtag,
+            # q.bpt_1,
+            # q.bpt_2,
+            # q.beta_1,
+            # q.beta_2,
+            # q.bphi_1,
+            # q.bphi_2,
+            # q.btag_value_1,
+            # q.btag_value_2,
+            q.btag_weight,
+            q.mass_1,
+            q.mass_2,
+            q.dxy_1,
+            q.dxy_2,
+            q.dz_1,
+            q.dz_2,
+            q.q_1,
+            q.q_2,
+            q.iso_1,
+            q.iso_2,
+            q.gen_pt_1,
+            q.gen_eta_1,
+            q.gen_phi_1,
+            q.gen_mass_1,
+            q.gen_pdgid_1,
+            q.gen_pt_2,
+            q.gen_eta_2,
+            q.gen_phi_2,
+            q.gen_mass_2,
+            q.gen_pdgid_2,
+            q.gen_m_vis,
+            q.met,
+            q.metphi,
+            #q.pfmet,
+            #q.pfmetphi,
+            q.met_uncorrected,
+            q.metphi_uncorrected,
+            #q.pfmet_uncorrected,
+            #q.pfmetphi_uncorrected,
+            q.metSumEt,
+            q.metcov00,
+            q.metcov01,
+            q.metcov10,
+            q.metcov11,
+            q.pzetamissvis,
+            q.mTdileptonMET,
+            q.mt_1,
+            q.mt_2,
+            q.pt_tautau,
+            # q.pt_ttjj,
+            q.pt_tautaubb,
+            q.mass_tautaubb,
+            q.mt_tot,
+            q.genbosonmass,
+            q.gen_match_1,
+            q.gen_match_2,
+            # TODO remove these variables as PF MET is not used anymore by us
+            #q.pzetamissvis_pf,
+            #q.mTdileptonMET_pf,
+            #q.mt_1_pf,
+            #q.mt_2_pf,
+            #q.pt_tt_pf,
+            # q.pt_ttjj_pf,
+            #q.pt_ttbb_pf,
+            #q.mt_tot_pf,
+            q.pt_dijet,
+            q.jet_hemisphere,
+        ],
+    )
+    """
+
 
     configuration.add_outputs(
         "mt",

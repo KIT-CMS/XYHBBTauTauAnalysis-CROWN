@@ -103,7 +103,7 @@ MuMuPairSelectionOSPreferred = Producer(
 )
 ZMuMuPairSelection = Producer(
     name="ZMuMuPairSelection",
-    call="pairselection::mumu::ZBosonPairSelection({df}, {input_vec}, {output}, {pairselection_min_dR})",
+    call="ditau_pairselection::mumu::ZBosonPairSelection({df}, {input_vec}, {output}, {pairselection_min_dR})",
     input=[
         nanoAOD.Muon_pt,
         nanoAOD.Muon_eta,
