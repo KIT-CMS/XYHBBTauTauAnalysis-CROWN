@@ -199,49 +199,6 @@ ROOT::RDF::RNode JetPtPNetRegressionWithNeutrino(
 }
 
 
-ROOT::RDF::RNode JetPtPNetRegressionResolution(
-    ROOT::RDF::RNode df,
-    const std::string &outputname,
-    const std::string &jet_pt_uncorrected,
-    const std::string &jet_raw_factor,
-    const std::string &jet_pnet_reg_pt_resolution_factor,
-    const std::string &jet_collection_index
-) {
-
-    auto resolution = [] (
-        const ROOT::RVec<float> &jet_pt_uncorrected,
-        const ROOT::RVec<float> &jet_raw_factor,
-        const ROOT::RVec<float> &jet_pnet_reg_pt_resolution_factor,
-        const ROOT::RVec<int> &jet_collection_index
-    ) {
-        // Jet_rawFactor is 1 - (raw pt)/(corrected pt) (from NANOAOD documentation)
-        // Calculate raw pt before JEC
-        auto jet_pt_raw = ROOT::VecOps::Take(
-            jet_pt_uncorrected * (1 - jet_raw_factor),
-            jet_collection_index
-        );
-        auto jet_pt_pnet_res = jet_pt_raw * ROOT::VecOps::Take(
-            jet_pnet_reg_pt_resolution_factor,
-            jet_collection_index
-        );
-
-        return jet_pt_pnet_res;
-    };
-
-    // redefine the data type of the Jet ID mask
-    return df.Define(
-        outputname,
-        resolution,
-        {
-            jet_pt_uncorrected,
-            jet_raw_factor,
-            jet_pnet_reg_pt_resolution_factor,
-            jet_collection_index
-        }
-    );
-}
-
-
 } // end quantities
 
 

@@ -45,17 +45,6 @@ JetPtPNetRegressionWithNeutrino(
 );
 
 
-ROOT::RDF::RNode
-JetPtPNetRegressionResolution(
-    ROOT::RDF::RNode df,
-    const std::string &outputname,
-    const std::string &jet_pt_uncorrected,
-    const std::string &jet_raw_factor,
-    const std::string &jet_pnet_reg_pt_resolution_factor,
-    const std::string &jet_collection_index
-);
-
-
 } // end quantities
 
 } // end jet
