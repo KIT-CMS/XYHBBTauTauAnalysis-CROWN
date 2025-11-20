@@ -335,6 +335,8 @@ JetCombinedCollection = ProducerGroup(
 
 jet_column_producers = []
 for q_input, q_output, data_type in [
+    (nanoAOD.Jet_pt, q.jet_pt_nanoaod, "float"),
+    (nanoAOD.Jet_rawFactor, q.jet_pt_raw_factor, "float"),
     (q.Jet_pt_corrected, q.jet_pt, "float"),
     (nanoAOD.Jet_eta, q.jet_eta, "float"),
     (nanoAOD.Jet_phi, q.jet_phi, "float"),

@@ -2641,6 +2641,8 @@ def build_config(
             q.jet_pt_pnet,
             q.jet_pt_pnet_with_neutrino,
             q.jet_pt_pnet_resolution,
+            q.jet_pt_nanoaod,
+            q.jet_pt_raw_factor,
             q.jpt_1,
             q.jpt_2,
             q.jeta_1,

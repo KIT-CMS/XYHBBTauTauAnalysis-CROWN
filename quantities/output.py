@@ -377,6 +377,8 @@ jet_deepjet_b_tagged_medium = Quantity("jet_deepjet_b_tagged_medium")
 jet_pt_pnet = Quantity("jet_pt_pnet")
 jet_pt_pnet_with_neutrino = Quantity("jet_pt_pnet_with_neutrino")
 jet_pt_pnet_resolution = Quantity("jet_pt_pnet_resolution")
+jet_pt_nanoaod = Quantity("jet_pt_nanoaod")
+jet_pt_raw_factor = Quantity("jet_pt_raw_factor")
 
 # FatJet quantities
 nfatjets = Quantity("nfatjets")
