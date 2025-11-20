@@ -1589,6 +1589,18 @@ def build_config(
         available_scopes,
     )
 
+    # Set sample flags manually
+    # The configuration of is_data and is_embedding is set here for better readability, although
+    # it has already been set in the Configuration class.
+    configuration.add_config_parameters(
+        GLOBAL_SCOPES,
+        {
+            "is_data": sample == "data",
+            "is_embedding": sample == "embedding",
+            "is_mc": sample not in ["data", "embedding"],
+        },
+    )
+
     # noise filters
     add_noise_filters_config(configuration)
 
@@ -2688,12 +2700,7 @@ def build_config(
         [
             q.is_data,
             q.is_embedding,
-            q.is_ttbar,
-            q.is_dyjets,
-            q.is_wjets,
-            q.is_ggh_htautau,
-            q.is_vbf_htautau,
-            q.is_diboson,
+            q.is_mc,
             nanoAOD.run,
             q.lumi,
             q.npartons,
