@@ -117,13 +117,13 @@ ROOT::RDF::RNode CorrectJetIDRun3NanoV12(
 ROOT::RDF::RNode JetPtPNetRegression(
     ROOT::RDF::RNode df,
     const std::string &outputname,
-    const std::string &jet_pt_uncorrected,
+    const std::string &jet_pt_nanoaod,
     const std::string &jet_raw_factor,
     const std::string &jet_pnet_reg_pt_factor,
     const std::string &jet_collection_index
 ) {
     auto correction = [] (
-        const ROOT::RVec<float> &jet_pt_uncorrected,
+        const ROOT::RVec<float> &jet_pt_nanoaod,
         const ROOT::RVec<float> &jet_raw_factor,
         const ROOT::RVec<float> &jet_pnet_reg_pt_factor,
         const ROOT::RVec<int> &jet_collection_index
@@ -131,7 +131,7 @@ ROOT::RDF::RNode JetPtPNetRegression(
         // Jet_rawFactor is 1 - (raw pt)/(corrected pt) (from NANOAOD documentation)
         // Calculate raw pt before JEC
         auto jet_pt_raw = ROOT::VecOps::Take(
-            jet_pt_uncorrected * (1 - jet_raw_factor),
+            jet_pt_nanoaod * (1 - jet_raw_factor),
             jet_collection_index
         );
         auto jet_pt_pnet = jet_pt_raw * ROOT::VecOps::Take(
@@ -146,7 +146,7 @@ ROOT::RDF::RNode JetPtPNetRegression(
         outputname,
         correction,
         {
-            jet_pt_uncorrected,
+            jet_pt_nanoaod,
             jet_raw_factor,
             jet_pnet_reg_pt_factor,
             jet_collection_index
@@ -158,14 +158,14 @@ ROOT::RDF::RNode JetPtPNetRegression(
 ROOT::RDF::RNode JetPtPNetRegressionWithNeutrino(
     ROOT::RDF::RNode df,
     const std::string &outputname,
-    const std::string &jet_pt_uncorrected,
+    const std::string &jet_pt_nanoaod,
     const std::string &jet_raw_factor,
     const std::string &jet_pnet_reg_pt_factor,
     const std::string &jet_pnet_reg_pt_neutrino_factor,
     const std::string &jet_collection_index
 ) {
     auto correction = [] (
-        const ROOT::RVec<float> &jet_pt_uncorrected,
+        const ROOT::RVec<float> &jet_pt_nanoaod,
         const ROOT::RVec<float> &jet_raw_factor,
         const ROOT::RVec<float> &jet_pnet_reg_pt_factor,
         const ROOT::RVec<float> &jet_pnet_reg_pt_neutrino_factor,
@@ -174,7 +174,7 @@ ROOT::RDF::RNode JetPtPNetRegressionWithNeutrino(
         // Jet_rawFactor is 1 - (raw pt)/(corrected pt) (from NANOAOD documentation)
         // Calculate raw pt before JEC
         auto jet_pt_raw = ROOT::VecOps::Take(
-            jet_pt_uncorrected * (1 - jet_raw_factor),
+            jet_pt_nanoaod * (1 - jet_raw_factor),
             jet_collection_index
         );
         auto jet_pt_pnet_neutrino = jet_pt_raw * ROOT::VecOps::Take(
@@ -189,7 +189,7 @@ ROOT::RDF::RNode JetPtPNetRegressionWithNeutrino(
         outputname,
         correction,
         {
-            jet_pt_uncorrected,
+            jet_pt_nanoaod,
             jet_raw_factor,
             jet_pnet_reg_pt_factor,
             jet_pnet_reg_pt_neutrino_factor,
