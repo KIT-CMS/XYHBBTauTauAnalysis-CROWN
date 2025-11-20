@@ -174,31 +174,70 @@ BTagCutPNet = Producer(
     scopes=GLOBAL_SCOPES,
 )
 
-# requirement that jet must be b tagged by either DeepJet or ParticleNet
-BTagCut = ProducerGroup(
-    name="BTagCut",
-    call='physicsobject::CombineMasks({df}, {output}, {input}, "any_of")',
-    input=[],
-    output=[q.Jet_any_b_tagged_medium],
-    scopes=GLOBAL_SCOPES,
-    subproducers=[
-        BTagCutDeepJet,
-        BTagCutPNet,
-    ],
-) 
-
 # b jet selection combining the base b jet selection and the b tagging requirement not applying the pileup ID (for PUPPI jets)
-GoodBJetsWithoutPUID = ProducerGroup(
-    name="GoodBJetsWithoutPUID",
+GoodBJetsWithoutPUIDDeepJet = ProducerGroup(
+    name="GoodBJetsWithoutPUIDDeepJet",
     call='physicsobject::CombineMasks({df}, {output}, {input}, "all_of")',
     input=[],
-    output=[q.good_bjets_mask],
+    output=[q.good_bjets_deepjet_mask],
     subproducers=[
         GoodBJetsBaseWithoutPUID,
-        BTagCut,
+        BTagCutDeepJet,
     ],
     scopes=GLOBAL_SCOPES,
 )
+
+# b jet selection combining the base b jet selection and the b tagging requirement not applying the pileup ID (for PUPPI jets)
+GoodBJetsWithPUIDDeepJet = ProducerGroup(
+    name="GoodBJetsWithPUIDDeepJet",
+    call='physicsobject::CombineMasks({df}, {output}, {input}, "all_of")',
+    input=[],
+    output=[q.good_bjets_deepjet_mask],
+    subproducers=[
+        GoodBJetsBaseWithPUID,
+        BTagCutDeepJet,
+    ],
+    scopes=GLOBAL_SCOPES,
+)
+
+# b jet selection combining the base b jet selection and the b tagging requirement not applying the pileup ID (for PUPPI jets)
+GoodBJetsWithoutPUIDPNet = ProducerGroup(
+    name="GoodBJetsWithoutPUIDPNet",
+    call='physicsobject::CombineMasks({df}, {output}, {input}, "all_of")',
+    input=[],
+    output=[q.good_bjets_pnet_mask],
+    subproducers=[
+        GoodBJetsBaseWithoutPUID,
+        BTagCutPNet,
+    ],
+    scopes=GLOBAL_SCOPES,
+)
+
+# b jet selection combining the base b jet selection and the b tagging requirement not applying the pileup ID (for PUPPI jets)
+GoodBJetsWithPUIDPNet = ProducerGroup(
+    name="GoodBJetsWithPUIDPNet",
+    call='physicsobject::CombineMasks({df}, {output}, {input}, "all_of")',
+    input=[],
+    output=[q.good_bjets_pnet_mask],
+    subproducers=[
+        GoodBJetsBaseWithPUID,
+        BTagCutPNet,
+    ],
+    scopes=GLOBAL_SCOPES,
+)
+
+# requirement that jet must be b tagged by either DeepJet or ParticleNet
+GoodBJetsWithoutPUID = ProducerGroup(
+    name="GoodBJetsWithoutPUID",
+    call='physicsobject::CombineMasks({df}, {output}, {input}, "any_of")',
+    input=[],
+    output=[q.good_bjets_mask],
+    scopes=GLOBAL_SCOPES,
+    subproducers=[
+        GoodBJetsWithoutPUIDDeepJet,
+        GoodBJetsWithoutPUIDPNet,
+    ],
+) 
 
 # b jet selection combining the base b jet selection and the b tagging requirement including the pileup ID (for CHS jets)
 GoodBJetsWithPUID = ProducerGroup(
@@ -207,15 +246,15 @@ GoodBJetsWithPUID = ProducerGroup(
     input=[],
     output=[q.good_bjets_mask],
     subproducers=[
-        GoodBJetsBaseWithPUID,
-        BTagCut,
+        GoodBJetsWithPUIDDeepJet,
+        GoodBJetsWithPUIDPNet,
     ],
     scopes=GLOBAL_SCOPES,
 )
 
 # combined jet-bjet mask (OR)
-GoodJetsCombinedWithoutPUID = Producer(
-    name="GoodJetsCombinedWithoutPUID",
+GoodJetsCombined = Producer(
+    name="GoodJetsCombined",
     call='physicsobject::CombineMasks({df}, {output}, {input}, "any_of")',
     input=[q.good_jets_mask, q.good_bjets_mask],
     output=[q.good_jets_combined_mask],
