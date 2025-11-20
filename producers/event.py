@@ -51,95 +51,12 @@ is_embedding = Producer(
     output=[q.is_embedding],
     scopes=["global"],
 )
-is_ttbar = Producer(
-    name="is_ttbar",
-    call="event::quantity::Define({df}, {output}, {is_ttbar})",
+
+is_mc = Producer(
+    name="is_mc",
+    call="event::quantity::Define({df}, {output}, {is_mc})",
     input=[],
-    output=[q.is_ttbar],
-    scopes=["global"],
-)
-is_dyjets = Producer(
-    name="is_dyjets",
-    call="event::quantity::Define({df}, {output}, {is_dyjets})",
-    input=[],
-    output=[q.is_dyjets],
-    scopes=["global"],
-)
-is_wjets = Producer(
-    name="is_wjets",
-    call="event::quantity::Define({df}, {output}, {is_wjets})",
-    input=[],
-    output=[q.is_wjets],
-    scopes=["global"],
-)
-is_ggh_htautau = Producer(
-    name="is_ggh_htautau",
-    call="event::quantity::Define({df}, {output}, {is_ggh_htautau})",
-    input=[],
-    output=[q.is_ggh_htautau],
-    scopes=["global"],
-)
-is_vbf_htautau = Producer(
-    name="is_vbf_htautau",
-    call="event::quantity::Define({df}, {output}, {is_vbf_htautau})",
-    input=[],
-    output=[q.is_vbf_htautau],
-    scopes=["global"],
-)
-is_diboson = Producer(
-    name="is_diboson",
-    call="event::quantity::Define({df}, {output}, {is_diboson})",
-    input=[],
-    output=[q.is_diboson],
-    scopes=["global"],
-)
-is_ggh_hbb = Producer(
-    name="is_ggh_hbb",
-    call="event::quantity::Define({df}, {output}, {is_ggh_hbb})",
-    input=[],
-    output=[q.is_ggh_hbb],
-    scopes=["global"],
-)
-is_vbf_hbb = Producer(
-    name="is_vbf_hbb",
-    call="event::quantity::Define({df}, {output}, {is_vbf_hbb})",
-    input=[],
-    output=[q.is_vbf_hbb],
-    scopes=["global"],
-)
-is_rem_hbb = Producer(
-    name="is_rem_hbb",
-    call="event::quantity::Define({df}, {output}, {is_rem_hbb})",
-    input=[],
-    output=[q.is_rem_hbb],
-    scopes=["global"],
-)
-is_embedding_mc = Producer(
-    name="is_embedding_mc",
-    call="event::quantity::Define({df}, {output}, {is_embedding_mc})",
-    input=[],
-    output=[q.is_embedding_mc],
-    scopes=["global"],
-)
-is_singletop = Producer(
-    name="is_singletop",
-    call="event::quantity::Define({df}, {output}, {is_singletop})",
-    input=[],
-    output=[q.is_singletop],
-    scopes=["global"],
-)
-is_rem_htautau = Producer(
-    name="is_singletop",
-    call="event::quantity::Define({df}, {output}, {is_rem_htautau})",
-    input=[],
-    output=[q.is_rem_htautau],
-    scopes=["global"],
-)
-is_electroweak_boson = Producer(
-    name="is_singletop",
-    call="event::quantity::Define({df}, {output}, {is_electroweak_boson})",
-    input=[],
-    output=[q.is_electroweak_boson],
+    output=[q.is_mc],
     scopes=["global"],
 )
 
@@ -152,19 +69,7 @@ SampleFlags = ProducerGroup(
     subproducers=[
         is_data,
         is_embedding,
-        is_ttbar,
-        is_dyjets,
-        is_wjets,
-        is_ggh_htautau,
-        is_vbf_htautau,
-        is_diboson,
-        is_ggh_hbb,
-        is_vbf_hbb,
-        is_rem_hbb,
-        is_embedding_mc,
-        is_singletop,
-        is_rem_htautau,
-        is_electroweak_boson,
+        is_mc,
     ],
 )
 
