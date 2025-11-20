@@ -1,7 +1,7 @@
 from code_generation.configuration import Configuration
 from code_generation.modifiers import EraModifier
 
-from .constants import ET_SCOPES, MT_SCOPES, TT_SCOPES, ELECTRON_SCOPES, MUON_SCOPES, ERAS_RUN2, ERAS_RUN3, CORRECTIONLIB_CAMPAIGNS
+from .constants import EM_SCOPES, ET_SCOPES, MT_SCOPES, TT_SCOPES, ELECTRON_SCOPES, MUON_SCOPES, ERAS_RUN2, ERAS_RUN3, CORRECTIONLIB_CAMPAIGNS
 
 
 def add_diTauTriggerSetup(configuration: Configuration):
@@ -995,6 +995,57 @@ def add_diTauTriggerSetup(configuration: Configuration):
                 }
             ),
         },
+    )
+
+    ## electron-muon cross triggers for the em control channel
+    configuration.add_config_parameters(
+        EM_SCOPES,
+        {
+            "double_ele_mu_trigger": EraModifier(
+                {
+                    **{
+                        _era: [
+                            # trigger:            HLT_Mu8_TrkIsoVVL_Ele23_CaloIdL_TrackIdL_IsoVL
+                            # final filter:       hltMu8TrkIsoVVLEle23CaloIdLTrackIdLIsoVLElectronlegTrackIsoFilter
+                            # filter bit:         5 for electron and muon leg
+                            # documentation:      ???
+                            {
+                                "flagname": "trg_double_mu8_ele23",
+                                "hlt_path": "HLT_Mu8_TrkIsoVVL_Ele23_CaloIdL_TrackIdL_IsoVL",
+                                "p1_min_pt": 10,
+                                "p2_min_pt": 25,
+                                "p1_max_abs_eta": 2.4,
+                                "p2_max_abs_eta": 2.5,
+                                "p1_filter_bit": 5,
+                                "p2_filter_bit": 5,
+                                "p1_particle_id": 13,
+                                "p2_particle_id": 11,
+                                "match_max_delta_r": 0.4,
+                            },
+
+                            # trigger:            HLT_Mu23_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL
+                            # final filter:       hltMu23TrkIsoVVLEle12CaloIdLTrackIdLIsoVLElectronlegTrackIsoFilter
+                            # filter bit:         5 for electron and muon leg
+                            # documentation:      ???
+                            {
+                                "flagname": "trg_double_mu23_ele12",
+                                "hlt_path": "HLT_Mu23_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL",
+                                "p1_min_pt": 25,
+                                "p2_min_pt": 14,
+                                "p1_max_abs_eta": 2.4,
+                                "p2_max_abs_eta": 2.5,
+                                "p1_filter_bit": 5,
+                                "p2_filter_bit": 5,
+                                "p1_particle_id": 13,
+                                "p2_particle_id": 11,
+                                "match_max_delta_r": 0.4,
+                            },
+                        ]
+                        for _era in ["2022preEE", "2022postEE", "2023preBPix", "2023postBPix"]
+                    },
+                }
+            ),
+        }
     )
 
     # single electron trigger scale factors

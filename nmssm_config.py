@@ -2324,6 +2324,7 @@ def build_config(
             scalefactors.MuonIDIso_SF,
             triggers.SingleEleTriggerFlags,
             triggers.SingleMuTriggerFlags,
+            triggers.DoubleEleMuTriggerFlags,
             scalefactors.SingleEleTriggerSF,
             scalefactors.SingleMuTriggerSF,
         ],
@@ -3079,6 +3080,7 @@ def build_config(
             triggers.SingleMuTriggerFlags.output_group,
             q.muon_veto_flag,
             q.electron_veto_flag,
+            q.dielectron_veto,
         ] + scalefactors.MuonIDIso_SF.get_outputs("mm")
         + scalefactors.SingleMuTriggerSF.get_outputs("mm"),
     )
@@ -3091,10 +3093,26 @@ def build_config(
             triggers.SingleEleTriggerFlags.output_group,
             q.muon_veto_flag,
             q.electron_veto_flag,
-            q.dielectron_veto,
-            q.dilepton_veto,
+            q.dimuon_veto,
         ] + scalefactors.EleID_SF.get_outputs("ee")
         + scalefactors.SingleEleTriggerSF.get_outputs("ee"),
+    )
+
+    # Outputs for the em scope
+    configuration.add_outputs(
+        "em",
+        [
+            q.nelectrons,
+            q.nmuons,
+            triggers.SingleEleTriggerFlags.output_group,
+            triggers.SingleMuTriggerFlags.output_group,
+            triggers.DoubleEleMuTriggerFlags.output_group,
+            q.electron_veto_flag,
+            q.muon_veto_flag,
+            q.dilepton_veto,
+        ] + scalefactors.EleID_SF.get_outputs("em")
+        + scalefactors.MuonIDIso_SF.get_outputs("em")
+        + scalefactors.SingleEleTriggerSF.get_outputs("em"),
     )
 
     # TODO re-include
