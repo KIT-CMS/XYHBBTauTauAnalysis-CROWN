@@ -374,6 +374,9 @@ jet_mass = Quantity("jet_mass")
 jet_id = Quantity("jet_id")
 jet_deepjet_b_score = Quantity("jet_deepjet_b_score")
 jet_deepjet_b_tagged_medium = Quantity("jet_deepjet_b_tagged_medium")
+jet_pt_pnet = Quantity("jet_pt_pnet")
+jet_pt_pnet_with_neutrino = Quantity("jet_pt_pnet_with_neutrino")
+jet_pt_pnet_resolution = Quantity("jet_pt_pnet_resolution")
 
 # FatJet quantities
 nfatjets = Quantity("nfatjets")
