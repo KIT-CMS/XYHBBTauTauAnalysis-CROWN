@@ -354,6 +354,50 @@ for q_input, q_output, data_type in [
     )
 
 
+# columns for jet pt regression with PNet
+jet_column_producers.extend(
+    [
+        Producer(
+            name="JetColumn_jet_pt_pnet",
+            call="jet::quantities::JetPtPNetRegression({df}, {output}, {input})",
+            input=[
+                q.Jet_pt,
+                q.Jet_rawFactor,
+                q.Jet_PNetRegPtRawCorr,
+                q.good_jet_combined_collection,
+            ],
+            output=[q.jet_pt_pnet],
+            scopes=SCOPES,
+        ),
+        Producer(
+            name="JetColumn_jet_pt_pnet_with_neutrino",
+            call="jet::quantities::JetPtPNetRegressionWithNeutrino({df}, {output}, {input})",
+            input=[
+                q.Jet_pt,
+                q.Jet_rawFactor,
+                q.Jet_PNetRegPtRawCorr,
+                q.Jet_PNetRegPtRawCorrNeutrino,
+                q.good_jet_combined_collection
+            ],
+            output=[q.jet_pt_pnet_with_neutrino],
+            scopes=SCOPES,
+        ),
+        Producer(
+            name="JetColumn_jet_pt_resolution_pnet_with_neutrino",
+            call="jet::quantities::JetPtPNetRegressionResolution({df}, {output}, {input})",
+            input=[
+                q.Jet_pt,
+                q.Jet_rawFactor,
+                q.Jet_PNetRegPtRawRes,
+                q.good_jet_combined_collection,
+            ],
+            output=[q.jet_pt_pnet_resolution],
+            scopes=SCOPES,
+        ),
+    ]
+)
+
+
 JetColumns = ProducerGroup(
     name="JetColumns",
     call=None,
