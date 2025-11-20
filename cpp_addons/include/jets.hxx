@@ -19,7 +19,28 @@ CorrectJetIDRun3NanoV12(
     const std::string &jet_ne_em_ef,
     const std::string &jet_mu_ef,
     const std::string &jet_ch_em_ef
-); 
+);
+
+ROOT::RDF::RNode
+JetPtPNetRegressionWithNeutrino(
+    ROOT::RDF::RNode df,
+    const std::string &outputname,
+    const std::string &jet_pt_uncorrected,
+    const std::string &jet_raw_factor,
+    const std::string &jet_pnet_reg_pt_factor,
+    const std::string &jet_pnet_reg_pt_neutrino_factor
+);
+
+
+ROOT::RDF::RNode
+JetPtPNetRegressionResolution(
+    ROOT::RDF::RNode df,
+    const std::string &outputname,
+    const std::string &jet_pt_uncorrected,
+    const std::string &jet_raw_factor,
+    const std::string &jet_pnet_reg_pt_resolution_factor
+);
+
 
 } // end quantities
 
