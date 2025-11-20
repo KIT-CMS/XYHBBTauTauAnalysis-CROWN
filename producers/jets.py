@@ -359,7 +359,7 @@ jet_column_producers.extend(
     [
         Producer(
             name="JetColumn_jet_pt_pnet",
-            call="jet::quantities::JetPtPNetRegression({df}, {output}, {input})",
+            call="physicsobject::jet::quantities::JetPtPNetRegression({df}, {output}, {input})",
             input=[
                 nanoAOD.Jet_pt,
                 nanoAOD.Jet_rawFactor,
@@ -371,7 +371,7 @@ jet_column_producers.extend(
         ),
         Producer(
             name="JetColumn_jet_pt_pnet_with_neutrino",
-            call="jet::quantities::JetPtPNetRegressionWithNeutrino({df}, {output}, {input})",
+            call="physicsobject::jet::quantities::JetPtPNetRegressionWithNeutrino({df}, {output}, {input})",
             input=[
                 nanoAOD.Jet_pt,
                 nanoAOD.Jet_rawFactor,
@@ -384,7 +384,7 @@ jet_column_producers.extend(
         ),
         Producer(
             name="JetColumn_jet_pt_resolution_pnet_with_neutrino",
-            call="jet::quantities::JetPtPNetRegressionResolution({df}, {output}, {input})",
+            call="physicsobject::jet::quantities::JetPtPNetRegressionResolution({df}, {output}, {input})",
             input=[
                 nanoAOD.Jet_pt,
                 nanoAOD.Jet_rawFactor,
