@@ -1,13 +1,13 @@
 from code_generation.configuration import Configuration
 from code_generation.modifiers import EraModifier
 
-from .constants import E_SCOPES, M_SCOPES, ET_SCOPES, MT_SCOPES, TT_SCOPES, ERAS_RUN2, ERAS_RUN3, CORRECTIONLIB_CAMPAIGNS
+from .constants import ET_SCOPES, MT_SCOPES, TT_SCOPES, ELECTRON_SCOPES, MUON_SCOPES, ERAS_RUN2, ERAS_RUN3, CORRECTIONLIB_CAMPAIGNS
 
 
 def add_diTauTriggerSetup(configuration: Configuration):
     ## MT, MM scope trigger setup
     configuration.add_config_parameters(
-        M_SCOPES,
+        MUON_SCOPES,
         {
             "single_mu_trigger": EraModifier(
                 {
@@ -342,7 +342,7 @@ def add_diTauTriggerSetup(configuration: Configuration):
     )
     ## ET, EE scope trigger setup
     configuration.add_config_parameters(
-        E_SCOPES,
+        ELECTRON_SCOPES,
         {
             "single_ele_trigger": EraModifier(
                 {
@@ -999,7 +999,7 @@ def add_diTauTriggerSetup(configuration: Configuration):
 
     # single electron trigger scale factors
     configuration.add_config_parameters(
-        E_SCOPES,
+        ELECTRON_SCOPES,
         {
             "e_trigger_sf_file": EraModifier(
                 {
@@ -1088,7 +1088,7 @@ def add_diTauTriggerSetup(configuration: Configuration):
 
     # single muon trigger scale factors
     configuration.add_config_parameters(
-        M_SCOPES,
+        MUON_SCOPES,
         {
             "single_mu_trigger_sf": [
                 {

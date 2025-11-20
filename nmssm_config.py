@@ -28,7 +28,7 @@ from code_generation.modifiers import EraModifier, SampleModifier
 from code_generation.rules import AppendProducer, RemoveProducer, ReplaceProducer
 from code_generation.systematics import SystematicShift, SystematicShiftByQuantity
 
-from .constants import ERAS_RUN2, ERAS_RUN3, CORRECTIONLIB_CAMPAIGNS, ET_SCOPES, MT_SCOPES, TT_SCOPES, SL_SCOPES, FH_SCOPES, HAD_TAU_SCOPES, SCOPES, GLOBAL_SCOPES
+from .constants import ERAS_RUN2, ERAS_RUN3, CORRECTIONLIB_CAMPAIGNS, ET_SCOPES, MT_SCOPES, TT_SCOPES, EE_SCOPES, MM_SCOPES, EM_SCOPES, SL_SCOPES, FH_SCOPES, HAD_TAU_SCOPES, ELECTRON_SCOPES, MUON_SCOPES, SCOPES, GLOBAL_SCOPES
 from .helpers import get_for_era
 
 
@@ -306,7 +306,7 @@ def add_electron_config(configuration: Configuration):
     :type electron_id_loose: str
     """
 
-    # loose electrons, mainly used for vetoes
+    # Loose electrons, mainly used for vetoes
     configuration.add_config_parameters(
         GLOBAL_SCOPES,
         {
@@ -319,7 +319,7 @@ def add_electron_config(configuration: Configuration):
         },
     )
 
-    # loose electrons and spatial separation for the di-electron veto
+    # Loose electrons and spatial separation for the di-electron veto
     configuration.add_config_parameters(
         GLOBAL_SCOPES,
         {
@@ -333,9 +333,9 @@ def add_electron_config(configuration: Configuration):
         },
     )
 
-    # tight electrons, mainly used as candidates for electron+hadronic tau pairs
+    # Tight electrons, mainly used as candidates for dilepton pairs
     configuration.add_config_parameters(
-        ET_SCOPES,
+        ELECTRON_SCOPES,
         {
             "tight_electron_min_pt": 25.0,
             "tight_electron_max_abs_eta": 2.5,
@@ -343,13 +343,29 @@ def add_electron_config(configuration: Configuration):
             "tight_electron_max_abs_dz": 0.2,
             "tight_electron_max_iso": 0.4,
             "tight_electron_id": "Electron_mvaNoIso_WP90",  # NanoAOD v9: Electron_mvaFall17V2noIso_WP90,
-            "electron_index_in_pair": 0,  # index of the electron in the dilepton pair
         },
     )
 
-    # electron reconstruction and identification corrections for simulated events
+    # In the et and em scopes, the first lepton is an electron
     configuration.add_config_parameters(
-        ET_SCOPES,
+        ET_SCOPES + EM_SCOPES,
+        {
+            "electron_index_in_pair": 0,
+        },
+    )
+
+    # In the ee scope, the first and the second leptons are electrons
+    configuration.add_config_parameters(
+        EE_SCOPES,
+        {
+            "electron_index_in_pair": 0,
+            "second_electron_index_in_pair": 1,
+        },
+    )
+
+    # Electron reconstruction and identification corrections for simulated events
+    configuration.add_config_parameters(
+        ELECTRON_SCOPES,
         {
             "ele_sf_file": EraModifier(
                 {
@@ -388,9 +404,9 @@ def add_electron_config(configuration: Configuration):
         },
     )
 
-    # electron identification and isolation corrections for mu->tau-embedded events
+    # Electron identification and isolation corrections for mu -> tau-embedded events
     configuration.add_config_parameters(
-        ET_SCOPES,
+        ELECTRON_SCOPES,
         {
             "mc_electron_sf_file": EraModifier(
                 {
@@ -464,7 +480,7 @@ def add_muon_config(configuration: Configuration):
     :type configuration: Configuration
     """
 
-    # loose muons, mainly used for vetoes
+    # Loose muons, mainly used for vetoes
     configuration.add_config_parameters(
         GLOBAL_SCOPES,
         {
@@ -477,7 +493,7 @@ def add_muon_config(configuration: Configuration):
         },
     )
 
-    # loose electrons and spatial separation for the di-muon veto
+    # Loose muons and spatial separation for the di-muon veto
     configuration.add_config_parameters(
         GLOBAL_SCOPES,
         {
@@ -490,9 +506,9 @@ def add_muon_config(configuration: Configuration):
         },
     )
 
-    # tight muons, mainly used as candidates for muon+hadronic tau pairs
+    # Tight muons, mainly used as candidates for dileptons pairs
     configuration.add_config_parameters(
-        MT_SCOPES,
+        MUON_SCOPES,
         {
             "tight_muon_min_pt": 20.0,
             "tight_muon_max_abs_eta": 2.4,
@@ -504,9 +520,34 @@ def add_muon_config(configuration: Configuration):
         },
     )
 
-    # muon reconstruction, identification, and isolation corrections for simulated events
+    # In the mt scope, the first lepton is a muon
     configuration.add_config_parameters(
         MT_SCOPES,
+        {
+            "muon_index_in_pair": 0,
+        },
+    )
+
+    # In the em scope, the first lepton is a muon
+    configuration.add_config_parameters(
+        EM_SCOPES,
+        {
+            "muon_index_in_pair": 1,
+        },
+    )
+
+    # In the mm scope, the first and the second leptons are muons 
+    configuration.add_config_parameters(
+        MM_SCOPES,
+        {
+            "muon_index_in_pair": 0,
+            "second_muon_index_in_pair": 1,
+        },
+    )
+
+    # Muon reconstruction, identification, and isolation corrections for simulated events
+    configuration.add_config_parameters(
+        MUON_SCOPES,
         {
             "muon_sf_file": EraModifier(
                 {
@@ -534,9 +575,9 @@ def add_muon_config(configuration: Configuration):
         },
     )
 
-    # muon identification and isolation corrections for mu->tau-embedded events
+    # Muon identification and isolation corrections for mu -> tau-embedded events
     configuration.add_config_parameters(
-        MT_SCOPES,
+        MUON_SCOPES,
         {
             "mc_muon_sf_file": EraModifier(
                 {
@@ -1388,7 +1429,7 @@ def add_bjet_config(configuration: Configuration):
 
     # b jet selection
     configuration.add_config_parameters(
-        "global",
+        GLOBAL_SCOPES,
         {
             "bjet_min_pt": 20.,
             "bjet_max_abs_eta": EraModifier(
@@ -1407,7 +1448,7 @@ def add_bjet_config(configuration: Configuration):
     # b jet identification
     # recommendations: https://btv-wiki.docs.cern.ch/ScaleFactors
     configuration.add_config_parameters(
-        GLOBAL_SCOPES + HAD_TAU_SCOPES,
+        GLOBAL_SCOPES + SCOPES,
         {
             "bjet_min_deepjet_score": EraModifier(  # medium
                 {
@@ -1426,7 +1467,7 @@ def add_bjet_config(configuration: Configuration):
 
     # corrections for b jet identification
     configuration.add_config_parameters(
-        HAD_TAU_SCOPES,
+        SCOPES,
         {
             "btag_sf_file": EraModifier(
                 {
@@ -1592,7 +1633,7 @@ def build_config(
 
     # electron energy scale corrections
     configuration.add_config_parameters(
-        "global",
+        GLOBAL_SCOPES,
         {
             "ele_es_master_seed": 44,
             "ele_es_era": EraModifier(
@@ -1664,7 +1705,7 @@ def build_config(
 
     # AK8 X->bb jet identification
     configuration.add_config_parameters(
-        HAD_TAU_SCOPES,
+        SCOPES,
         {
             "pNetXbb_sf_file": EraModifier(
                 {
@@ -1684,7 +1725,7 @@ def build_config(
 
     # gen b pair for NMSSM analysis
     configuration.add_config_parameters(
-        HAD_TAU_SCOPES,
+        SCOPES,
         {
             "bb_truegen_mother_pdgid": SampleModifier(
                 {"nmssm_Ybb": 35, "nmssm_Ytautau": 25}, default=-1
@@ -1702,9 +1743,9 @@ def build_config(
         },
     )
 
-    # deltaR condition for resolved tau definition
+    # Separation for resolved bb and tautau pair selections
     configuration.add_config_parameters(
-        HAD_TAU_SCOPES,
+        SCOPES,
         {
             "pairselection_min_dR": 0.5,
             "bb_pairselection_min_dR": 0.4,
@@ -1713,16 +1754,13 @@ def build_config(
 
 
     #
-    # RECOIL CALIBRATION
-    #
-
-    #
     # TRIGGERS
     #
 
-    # muon trigger SF settings from embedding measurements
+
+    # Trigger scale factors for measurements in the embedding workflow
     configuration.add_config_parameters(
-        ["mt"],
+        MUON_SCOPES,
         {
             "singlemuon_trigger_sf_mc": [
                 {
@@ -1744,9 +1782,9 @@ def build_config(
         },
     )
 
-    # electron trigger SF settings from embedding measurements
+    # Trigger scale factors for measurements in the embedding workflow
     configuration.add_config_parameters(
-        ["et"],
+        ELECTRON_SCOPES,
         {
             "singlelectron_trigger_sf_mc": [
                 {
@@ -1772,8 +1810,10 @@ def build_config(
             ]
         },
     )
+
+    # Trigger scale factors for electron triggers
     configuration.add_config_parameters(
-        ["et"],
+        ELECTRON_SCOPES,
         {
             "ele_trg_sf_file": EraModifier(
                 {
@@ -1789,9 +1829,9 @@ def build_config(
             ),
         },
     )
-    # ditau trigger SF settings for embedding
+    # Settings for the ditau trigger scale factors on embedding
     configuration.add_config_parameters(
-        ["tt"],
+        TT_SCOPES,
         {
             "ditau_trigger_wp": "Medium",
             "ditau_trigger_type": "ditau",
@@ -1802,7 +1842,7 @@ def build_config(
 
     # fatjet trigger settings
     configuration.add_config_parameters(
-        ["tt"],
+        SCOPES,
         {
             "fatjet_trigger_sf_file": EraModifier(
                 {
@@ -1964,11 +2004,9 @@ def build_config(
         {
             tuple(ERAS_RUN2): [
                 pairquantities_bbpair.DiBjetPairQuantitiesRun2,
-                taus.TauEnergyCorrectionMCRun2,
             ],
             tuple(ERAS_RUN3): [
                 pairquantities_bbpair.DiBjetPairQuantitiesRun3,
-                taus.TauEnergyCorrectionMCRun3,
             ]
         },
         era,
@@ -2075,7 +2113,7 @@ def build_config(
 
     # Producers common to all scopes with at least one hadronic tau
     configuration.add_producers(
-        HAD_TAU_SCOPES,
+        SCOPES,
         [
             fatjets.FatJetCollection,
             fatjets.FatJetCollectionWithoutVeto,
@@ -2108,9 +2146,17 @@ def build_config(
         + bb_jet_pair_quantity_producers,
     )
 
+    # Producers for quantities in all scopes with hadronic taus
+    configuration.add_producers(
+        HAD_TAU_SCOPES,
+        [
+            tau_energy_correction_mc_producer,
+        ]
+    )
+
     # Producers for quantities in the et scope
     configuration.add_producers(
-        "et",
+        ET_SCOPES,
         [
             electrons.GoodElectrons,
             taus.GoodTaus,
@@ -2141,7 +2187,7 @@ def build_config(
 
     # Producers for quantities in the mt scope
     configuration.add_producers(
-        "mt",
+        MT_SCOPES,
         [
             muons.GoodMuons,
             muons.NumberOfGoodMuons,
@@ -2171,7 +2217,7 @@ def build_config(
 
     # Producers for quantities in the tt scope
     configuration.add_producers(
-        "tt",
+        TT_SCOPES,
         [
             electrons.ExtraElectronsVeto,
             muons.ExtraMuonsVeto,
@@ -2194,9 +2240,32 @@ def build_config(
         + tt_tau_sf_producers
     )
 
+    # Producers for quantities in the et scope
+    configuration.add_producers(
+        EE_SCOPES,
+        [
+            electrons.GoodElectrons,
+            electrons.NumberOfGoodElectrons,
+            electrons.VetoElectrons,
+            electrons.VetoSecondElectron,
+            electrons.ExtraElectronsVeto,
+            pairselection.ZElElPairSelection,
+            pairselection.GoodElElPairFilter,
+            pairselection.LVEl1,
+            pairselection.LVEl2,
+            pairselection.LVEl1Uncorrected,
+            pairselection.LVEl2Uncorrected,
+            pairquantities.ElElPairQuantities,
+            genparticles.ElElGenPairQuantities,
+            scalefactors.EleID_SF,
+            triggers.SingleEleTriggerFlags,
+            scalefactors.SingleEleTriggerSF,
+        ]
+    )
+
     # Producers for quantities in the mm scope
     configuration.add_producers(
-        "mm",
+        MM_SCOPES,
         [
             muons.GoodMuons,
             muons.VetoMuons,
@@ -2213,6 +2282,36 @@ def build_config(
             genparticles.MuMuGenPairQuantities,
             scalefactors.MuonIDIso_SF,
             triggers.SingleMuTriggerFlags,
+            scalefactors.SingleMuTriggerSF,
+        ],
+    )
+
+    # Producers for quantities in the em scope
+    configuration.add_producers(
+        EM_SCOPES,
+        [
+            electrons.GoodElectrons,
+            muons.GoodMuons,
+            electrons.VetoElectrons,
+            electrons.ExtraElectronsVeto,
+            muons.VetoMuons,
+            muons.ExtraMuonsVeto,
+            electrons.NumberOfGoodElectrons,
+            muons.NumberOfGoodMuons,
+            pairselection.EMPairSelection,
+            pairselection.GoodEMPairFlag,
+            pairselection.LVEl1,
+            pairselection.LVMu2,
+            pairselection.LVEl1Uncorrected,
+            pairselection.LVMu2Uncorrected,
+            pairquantities.EMDiTauPairQuantities,
+            genparticles.EMGenDiTauPairQuantities,
+            scalefactors.EleID_SF,
+            scalefactors.MuonIDIso_SF,
+            triggers.SingleEleTriggerFlags,
+            triggers.SingleMuTriggerFlags,
+            scalefactors.SingleEleTriggerSF,
+            scalefactors.SingleMuTriggerSF,
         ],
     )
 
@@ -2222,6 +2321,7 @@ def build_config(
     # 
     # Remove, append, or modify producers in specific cases.
     #
+
 
     # For DY samples, add producer for flag indicating the flavor of the decay products
     configuration.add_modification_rule(
@@ -2236,7 +2336,7 @@ def build_config(
 
     # Remove tau ID scale factor producers from data samples in et scope
     configuration.add_modification_rule(
-        ["et"],
+        ET_SCOPES,
         RemoveProducer(
             producers=et_tau_sf_producers,
             samples=["data"],
@@ -2245,7 +2345,7 @@ def build_config(
 
     # Remove tau ID scale factor producers from data samples in mt scope
     configuration.add_modification_rule(
-        ["mt"],
+        MT_SCOPES,
         RemoveProducer(
             producers=mt_tau_sf_producers,
             samples=["data"],
@@ -2254,7 +2354,7 @@ def build_config(
 
     # Remove tau ID scale factor producers from data samples in tt scope
     configuration.add_modification_rule(
-        ["tt"],
+        TT_SCOPES,
         RemoveProducer(
             producers=tt_tau_sf_producers,
             samples=["data"],
@@ -2263,22 +2363,39 @@ def build_config(
 
     # Remove trigger scale factor producers from data and embedding samples in mt scope
     configuration.add_modification_rule(
-        ["et"],
+        ELECTRON_SCOPES,
         RemoveProducer(
             producers=[
                 scalefactors.SingleEleTriggerSF,
+            ],
+            samples=["data", "embedding", "embedding_mc"],
+        ),
+    )
+    configuration.add_modification_rule(
+        ET_SCOPES,
+        RemoveProducer(
+            producers=[
                 scalefactors.DoubleEleTauTriggerSF,
             ],
             samples=["data", "embedding", "embedding_mc"],
         ),
     )
 
+
     # Remove trigger scale factor producers from data and embedding samples in mt scope
     configuration.add_modification_rule(
-        ["mt"],
+        MUON_SCOPES,
         RemoveProducer(
             producers=[
                 scalefactors.SingleMuTriggerSF,
+            ],
+            samples=["data", "embedding", "embedding_mc"],
+        )
+    )
+    configuration.add_modification_rule(
+        MT_SCOPES,
+        RemoveProducer(
+            producers=[
                 scalefactors.DoubleMuTauTriggerSF,
             ],
             samples=["data", "embedding", "embedding_mc"],
@@ -2287,7 +2404,7 @@ def build_config(
 
     # Remove trigger scale factor producers from data and embedding samples in tt scope
     configuration.add_modification_rule(
-        ["tt"],
+        TT_SCOPES,
         RemoveProducer(
             producers=[
                 scalefactors.DoubleTauTauTriggerSF,
@@ -2311,7 +2428,7 @@ def build_config(
 
     # Remove b tagging scale factor producers from data and embedding samples in all scopes 
     configuration.add_modification_rule(
-        HAD_TAU_SCOPES,
+        SCOPES,
         RemoveProducer(
             producers=[
                 scalefactors.btagging_SF,
@@ -2322,7 +2439,7 @@ def build_config(
 
     # Remove X -> bb fatjet producers from data and embedding samples in all scopes
     configuration.add_modification_rule(
-        HAD_TAU_SCOPES,
+        SCOPES,
         RemoveProducer(
             producers=[
                 fatjets.fj_Xbb_hadflavor,
@@ -2335,7 +2452,7 @@ def build_config(
 
     # Remove X -> bb tagging scale factor producers from data and embedding samples in all scopes
     configuration.add_modification_rule(
-        HAD_TAU_SCOPES,
+        SCOPES,
         RemoveProducer(
             producers=xbb_sf_producers,
             samples=["data", "embedding", "embedding_mc"],
@@ -2344,7 +2461,7 @@ def build_config(
 
     # Remove the pileup weights from data and embedding samples
     configuration.add_modification_rule(
-        "global",
+        GLOBAL_SCOPES,
         RemoveProducer(
             producers=[event.PUweights],
             samples=["data", "embedding", "embedding_mc"],
@@ -2353,7 +2470,7 @@ def build_config(
 
     # Replace jet energy correction for data
     configuration.add_modification_rule(
-        "global",
+        GLOBAL_SCOPES,
         ReplaceProducer(
             producers=[jet_energy_correction_producer, jets.JetEnergyCorrection_data_Run2],
             samples=["data"],
@@ -2362,7 +2479,7 @@ def build_config(
 
     # Replace fat jet energy correction for data
     configuration.add_modification_rule(
-        "global",
+        GLOBAL_SCOPES,
         ReplaceProducer(
             producers=[
                 fat_jet_energy_correction_producer,
@@ -2374,7 +2491,7 @@ def build_config(
 
     # Replace jet energy correction for embedding with dummy rename operation
     configuration.add_modification_rule(
-        "global",
+        GLOBAL_SCOPES,
         ReplaceProducer(
             producers=[jet_energy_correction_producer, rename_jets_data_producer],
             samples=["embedding", "embedding_mc"],
@@ -2383,7 +2500,7 @@ def build_config(
 
     # Replace fat jet energy correction for embedding with dummy rename operation
     configuration.add_modification_rule(
-        "global",
+        GLOBAL_SCOPES,
         ReplaceProducer(
             producers=[fat_jet_energy_correction_producer, rename_fatjets_data_producer],
             samples=["embedding", "embedding_mc"],
@@ -2393,7 +2510,7 @@ def build_config(
     # Replace electron pt correction for data, as the correction is computed differently in data and
     # MC
     configuration.add_modification_rule(
-        "global",
+        GLOBAL_SCOPES,
         ReplaceProducer(
             producers=[
                 electron_pt_correction_mc_producer,
@@ -2415,7 +2532,7 @@ def build_config(
     # The number of partons is only defined for MC samples and only important to know for EW
     # process samples
     configuration.add_modification_rule(
-        "global",
+        GLOBAL_SCOPES,
         RemoveProducer(
             producers=[event.npartons],
             exclude_samples=[
@@ -2434,7 +2551,7 @@ def build_config(
 
     # for whatever reason, the diboson samples do not have these weights in the ntuple....
     configuration.add_modification_rule(
-        "global",
+        GLOBAL_SCOPES,
         RemoveProducer(
             producers=[event.LHE_Scale_weight],
             samples=["data", "embedding", "embedding_mc", "diboson"],
@@ -2444,7 +2561,7 @@ def build_config(
     # for whatever reason, the nmssm samples have one less entry of the weights and therefore need
     # special treatment
     configuration.add_modification_rule(
-        "global",
+        GLOBAL_SCOPES,
         ReplaceProducer(
             producers=[event.LHE_Scale_weight, event.NMSSM_LHE_Scale_weight],
             samples=["nmssm_Ybb", "nmssm_Ytautau"],
@@ -2453,7 +2570,7 @@ def build_config(
 
     # Remove the generator-level tau matching producers from data samples
     configuration.add_modification_rule(
-        HAD_TAU_SCOPES,
+        SCOPES,
         RemoveProducer(
             producers=[
                 genparticles.GenMatching,
@@ -2464,7 +2581,7 @@ def build_config(
 
     # Remove the generator-level b jet pair quantities from data and embedding samples
     configuration.add_modification_rule(
-        HAD_TAU_SCOPES,
+        SCOPES,
         RemoveProducer(
             producers=[
                 genparticles.GenDiBjetPairQuantities,
@@ -2475,7 +2592,7 @@ def build_config(
 
     # For ttbar samples, top pt weights should be produced
     configuration.add_modification_rule(
-        HAD_TAU_SCOPES,
+        SCOPES,
         AppendProducer(
             producers=[event.TopPtReweighting],
             samples=["ttbar"],
@@ -2492,7 +2609,7 @@ def build_config(
 
     # Add Golden JSON filter for data and embedding samples
     configuration.add_modification_rule(
-        "global",
+        GLOBAL_SCOPES,
         AppendProducer(
             producers=[event.JSONFilter],
             samples=["data", "embedding"],
@@ -2501,7 +2618,7 @@ def build_config(
 
     # Remove generator-level tau quantities in et scope
     configuration.add_modification_rule(
-        "et",
+        ET_SCOPES,
         RemoveProducer(
             producers=[genparticles.ETGenDiTauPairQuantities],
             samples=["data"],
@@ -2510,7 +2627,7 @@ def build_config(
 
     # Remove generator-level tau quantities in mt scope
     configuration.add_modification_rule(
-        "mt",
+        MT_SCOPES,
         RemoveProducer(
             producers=[genparticles.MTGenDiTauPairQuantities],
             samples=["data"],
@@ -2519,36 +2636,55 @@ def build_config(
 
     # Remove generator-level tau quantities in tt scope
     configuration.add_modification_rule(
-        "tt",
+        TT_SCOPES,
         RemoveProducer(
             producers=[genparticles.TTGenDiTauPairQuantities],
             samples=["data"],
         ),
     )
 
-    # Remove generator-level tau quantities in mm scope
+    # Remove generator-level dilepton quantities in ee scope
     configuration.add_modification_rule(
-        "mm",
+        EE_SCOPES,
+        RemoveProducer(
+            producers=[genparticles.ElElGenPairQuantities],
+            samples=["data"],
+        ),
+    )
+
+    # Remove generator-level dilepton quantities in mm scope
+    configuration.add_modification_rule(
+        MM_SCOPES,
         RemoveProducer(
             producers=[genparticles.MuMuGenPairQuantities],
             samples=["data"],
         ),
     )
 
-    # lepton scalefactors from our measurement
+    # Remove generator-level dilepton quantities in mm scope
     configuration.add_modification_rule(
-        ["mm"],
-        AppendProducer(
-            producers=[
-                scalefactors.MuonIDIso_SF,
-                scalefactors.SingleMuTriggerSF,
-            ],
-            exclude_samples=["data", "embedding", "embedding_mc"],
+        EM_SCOPES,
+        RemoveProducer(
+            producers=[genparticles.EMGenDiTauPairQuantities],
+            samples=["data"],
         ),
     )
 
+    # Append scale factor producers
+    #configuration.add_modification_rule(
+    #    MUON_SCOPES,
+    #    AppendProducer(
+    #        producers=[
+    #            scalefactors.MuonIDIso_SF,
+    #            scalefactors.SingleMuTriggerSF,
+    #        ],
+    #        exclude_samples=["data", "embedding", "embedding_mc"],
+    #    ),
+    #)
+
+    # Output columns for all scopes
     configuration.add_outputs(
-        HAD_TAU_SCOPES,
+        SCOPES,
         [
             q.is_data,
             q.is_embedding,
@@ -2722,7 +2858,7 @@ def build_config(
     if era in ["2018"] and sample not in ["data", "embedding", "embedding_mc"]:
         # in 2018, we have the Xbb tagging scale factors
         configuration.add_outputs(
-            HAD_TAU_SCOPES,
+            SCOPES,
             [
                 q.pNet_Xbb_weight,
             ],
@@ -2730,7 +2866,7 @@ def build_config(
 
     if sample in ["dyjets", "dyjets_madgraph", "dyjets_powheg", "dyjets_amcatnlo_ll", "dyjets_amcatnlo_tt"]:
         configuration.add_outputs(
-            HAD_TAU_SCOPES,
+            SCOPES,
             [
                 q.lhe_drell_yan_decay_flavor,
             ]
@@ -2739,7 +2875,7 @@ def build_config(
     # add genWeight for everything but data
     if sample != "data":
         configuration.add_outputs(
-            HAD_TAU_SCOPES,
+            SCOPES,
             [
                 nanoAOD.genWeight,
             ],
@@ -2748,7 +2884,7 @@ def build_config(
     # jet vetomap selection only applies to Run 3 analyses
     if era in ERAS_RUN3:
         configuration.add_outputs(
-            HAD_TAU_SCOPES,
+            SCOPES,
             [
                 q.jet_vetomap_veto,
 
@@ -2911,13 +3047,6 @@ def build_config(
             ],
         )
 
-    configuration.add_outputs(
-        "mm",
-        [
-            q.nmuons,
-            triggers.SingleMuTriggerFlags.output_group,
-        ],
-    )
     if "data" not in sample:
         configuration.add_outputs(
             "tt",
@@ -2927,6 +3056,32 @@ def build_config(
                 #q.trg_wgt_fatjet,  TODO rework trigger setup before enabling this
             ],
         )
+
+    # Outputs for the mm scope
+    configuration.add_outputs(
+        "mm",
+        [
+            q.nmuons,
+            triggers.SingleMuTriggerFlags.output_group,
+            q.muon_veto_flag,
+            q.electron_veto_flag,
+        ] + scalefactors.MuonIDIso_SF.get_outputs("mm")
+        + scalefactors.SingleMuTriggerSF.get_outputs("mm"),
+    )
+
+    # Outputs for the ee scope
+    configuration.add_outputs(
+        "ee",
+        [
+            q.nelectrons,
+            triggers.SingleEleTriggerFlags.output_group,
+            q.muon_veto_flag,
+            q.electron_veto_flag,
+            q.dielectron_veto,
+            q.dilepton_veto,
+        ] + scalefactors.EleID_SF.get_outputs("ee")
+        + scalefactors.SingleEleTriggerSF.get_outputs("ee"),
+    )
 
     # TODO re-include
     #if sample in ["nmssm_Ybb", "nmssm_Ytautau"]:
