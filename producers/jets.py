@@ -335,6 +335,8 @@ JetCombinedCollection = ProducerGroup(
 
 jet_column_producers = []
 for q_input, q_output, data_type in [
+    (nanoAOD.Jet_pt, q.jet_pt_nanoaod, "float"),
+    (nanoAOD.Jet_rawFactor, q.jet_pt_raw_factor, "float"),
     (q.Jet_pt_corrected, q.jet_pt, "float"),
     (nanoAOD.Jet_eta, q.jet_eta, "float"),
     (nanoAOD.Jet_phi, q.jet_phi, "float"),
@@ -352,6 +354,50 @@ for q_input, q_output, data_type in [
             scopes=SCOPES,
         )
     )
+
+
+# columns for jet pt regression with PNet
+jet_column_producers.extend(
+    [
+        Producer(
+            name="JetColumn_jet_pt_pnet",
+            call="physicsobject::jet::quantities::JetPtPNetRegression({df}, {output}, {input})",
+            input=[
+                nanoAOD.Jet_pt,
+                nanoAOD.Jet_rawFactor,
+                nanoAOD.Jet_PNetRegPtRawCorr,
+                q.good_jet_combined_collection,
+            ],
+            output=[q.jet_pt_pnet],
+            scopes=SCOPES,
+        ),
+        Producer(
+            name="JetColumn_jet_pt_pnet_with_neutrino",
+            call="physicsobject::jet::quantities::JetPtPNetRegressionWithNeutrino({df}, {output}, {input})",
+            input=[
+                nanoAOD.Jet_pt,
+                nanoAOD.Jet_rawFactor,
+                nanoAOD.Jet_PNetRegPtRawCorr,
+                nanoAOD.Jet_PNetRegPtRawCorrNeutrino,
+                q.good_jet_combined_collection
+            ],
+            output=[q.jet_pt_pnet_with_neutrino],
+            scopes=SCOPES,
+        ),
+        Producer(
+            name="JetColumn_jet_pt_resolution_pnet_with_neutrino",
+            call="physicsobject::jet::quantities::JetPtPNetRegression({df}, {output}, {input})",
+            input=[
+                nanoAOD.Jet_pt,
+                nanoAOD.Jet_rawFactor,
+                nanoAOD.Jet_PNetRegPtRawRes,
+                q.good_jet_combined_collection,
+            ],
+            output=[q.jet_pt_pnet_resolution],
+            scopes=SCOPES,
+        ),
+    ]
+)
 
 
 JetColumns = ProducerGroup(
