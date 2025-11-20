@@ -178,7 +178,7 @@ ROOT::RDF::RNode JetPtPNetRegressionWithNeutrino(
             jet_pnet_reg_pt_neutrino_factor
         },
     );
-};
+}
 
 
 ROOT::RDF::RNode JetPtPNetRegressionResolution(
@@ -212,7 +212,7 @@ ROOT::RDF::RNode JetPtPNetRegressionResolution(
             jet_pnet_reg_pt_resolution_factor
         }
     );
-};
+}
 
 
 } // end quantities
