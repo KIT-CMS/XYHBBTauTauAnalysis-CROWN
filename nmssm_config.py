@@ -1548,7 +1548,9 @@ def build_config(
         available_scopes,
     )
 
-    # set sample flags manually
+    # Set sample flags manually
+    # The configuration of is_data and is_embedding is set here for better readability, although
+    # it has already been set in the Configuration class.
     configuration.add_config_parameters(
         GLOBAL_SCOPES,
         {
