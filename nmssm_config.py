@@ -3047,13 +3047,6 @@ def build_config(
             ],
         )
 
-    configuration.add_outputs(
-        "mm",
-        [
-            q.nmuons,
-            triggers.SingleMuTriggerFlags.output_group,
-        ],
-    )
     if "data" not in sample:
         configuration.add_outputs(
             "tt",
@@ -3063,6 +3056,32 @@ def build_config(
                 #q.trg_wgt_fatjet,  TODO rework trigger setup before enabling this
             ],
         )
+
+    # Outputs for the mm scope
+    configuration.add_outputs(
+        "mm",
+        [
+            q.nmuons,
+            triggers.SingleMuTriggerFlags.output_group,
+            q.muon_veto_flag,
+            q.electron_veto_flag,
+        ] + scalefactors.MuonIDIso_SF.get_outputs("mm")
+        + scalefactors.SingleMuTriggerSF.get_outputs("mm"),
+    )
+
+    # Outputs for the ee scope
+    configuration.add_outputs(
+        "ee",
+        [
+            q.nelectrons,
+            triggers.SingleEleTriggerFlags.output_group,
+            q.muon_veto_flag,
+            q.electron_veto_flag,
+            q.dielectron_veto,
+            q.dilepton_veto,
+        ] + scalefactors.EleID_SF.get_outputs("ee")
+        + scalefactors.SingleEleTriggerSF.get_outputs("ee"),
+    )
 
     # TODO re-include
     #if sample in ["nmssm_Ybb", "nmssm_Ytautau"]:
