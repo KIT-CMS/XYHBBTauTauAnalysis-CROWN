@@ -150,7 +150,7 @@ ROOT::RDF::RNode JetPtPNetRegression(
             jet_raw_factor,
             jet_pnet_reg_pt_factor,
             jet_collection_index
-        },
+        }
     );
 }
 
@@ -194,7 +194,7 @@ ROOT::RDF::RNode JetPtPNetRegressionWithNeutrino(
             jet_pnet_reg_pt_factor,
             jet_pnet_reg_pt_neutrino_factor,
             jet_collection_index
-        },
+        }
     );
 }
 
