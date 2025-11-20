@@ -3112,7 +3112,8 @@ def build_config(
             q.dilepton_veto,
         ] + scalefactors.EleID_SF.get_outputs("em")
         + scalefactors.MuonIDIso_SF.get_outputs("em")
-        + scalefactors.SingleEleTriggerSF.get_outputs("em"),
+        + scalefactors.SingleEleTriggerSF.get_outputs("em")
+        + scalefactors.SingleMuTriggerSF.get_outputs("em"),
     )
 
     # TODO re-include
