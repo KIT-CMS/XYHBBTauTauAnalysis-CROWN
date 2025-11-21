@@ -13,14 +13,14 @@ from ..constants import ET_SCOPES, MT_SCOPES, TT_SCOPES, ELECTRON_SCOPES, MUON_S
 # single electron trigger flags, including trigger object matching
 SingleEleTriggerFlags = ExtendedVectorProducer(
     name="SingleEleTriggerFlags",
-    call='trigger::GenerateSingleTriggerFlag({df}, {output}, {input}, "{hlt_path}", {min_pt}, {max_abs_eta}, {particle_id}, {filter_bit}, {match_max_delta_r})',
+    call='trigger::SingleObjectFlag({df}, {output}, {input}, "{hlt_path}", {min_pt}, {max_abs_eta}, {particle_id}, {filter_bit}, {match_max_delta_r})',
     input=[
         q.p4_1,
-        nanoAOD.TrigObj_filterBits,
-        nanoAOD.TrigObj_id,
         nanoAOD.TrigObj_pt,
         nanoAOD.TrigObj_eta,
         nanoAOD.TrigObj_phi,
+        nanoAOD.TrigObj_id,
+        nanoAOD.TrigObj_filterBits,
     ],
     output="flagname",
     scope=ELECTRON_SCOPES,
@@ -30,15 +30,15 @@ SingleEleTriggerFlags = ExtendedVectorProducer(
 # double electron-tau trigger flags, including trigger object matching
 DoubleEleTauTriggerFlags = ExtendedVectorProducer(
     name="DoubleEleTauTriggerFlags",
-    call='trigger::GenerateDoubleTriggerFlag({df}, {output}, {input}, "{hlt_path}", {p1_min_pt}, {p2_min_pt}, {p1_max_abs_eta}, {p2_max_abs_eta}, {p1_particle_id}, {p2_particle_id}, {p1_filter_bit}, {p2_filter_bit}, {match_max_delta_r})',
+    call='trigger::DoubleObjectFlag({df}, {output}, {input}, "{hlt_path}", {p1_min_pt}, {p2_min_pt}, {p1_max_abs_eta}, {p2_max_abs_eta}, {p1_particle_id}, {p2_particle_id}, {p1_filter_bit}, {p2_filter_bit}, {match_max_delta_r})',
     input=[
         q.p4_1,
         q.p4_2,
-        nanoAOD.TrigObj_filterBits,
-        nanoAOD.TrigObj_id,
         nanoAOD.TrigObj_pt,
         nanoAOD.TrigObj_eta,
         nanoAOD.TrigObj_phi,
+        nanoAOD.TrigObj_id,
+        nanoAOD.TrigObj_filterBits,
     ],
     output="flagname",
     scope=ET_SCOPES,
@@ -54,14 +54,14 @@ DoubleEleTauTriggerFlags = ExtendedVectorProducer(
 # single muon trigger flags, including trigger object matching
 SingleMuTriggerFlags = ExtendedVectorProducer(
     name="SingleMuTriggerFlags",
-    call='trigger::GenerateSingleTriggerFlag({df}, {output}, {input}, "{hlt_path}", {min_pt}, {max_abs_eta}, {particle_id}, {filter_bit}, {match_max_delta_r})',
+    call='trigger::SingleObjectFlag({df}, {output}, {input}, "{hlt_path}", {min_pt}, {max_abs_eta}, {particle_id}, {filter_bit}, {match_max_delta_r})',
     input=[
         q.p4_1,
-        nanoAOD.TrigObj_filterBits,
-        nanoAOD.TrigObj_id,
         nanoAOD.TrigObj_pt,
         nanoAOD.TrigObj_eta,
         nanoAOD.TrigObj_phi,
+        nanoAOD.TrigObj_id,
+        nanoAOD.TrigObj_filterBits,
     ],
     output="flagname",
     scope=MUON_SCOPES,
@@ -71,15 +71,15 @@ SingleMuTriggerFlags = ExtendedVectorProducer(
 # double muon-tau trigger flags, including trigger object matching
 DoubleMuTauTriggerFlags = ExtendedVectorProducer(
     name="DoubleMuTauTriggerFlags",
-    call='trigger::GenerateDoubleTriggerFlag({df}, {output}, {input}, "{hlt_path}", {p1_min_pt}, {p2_min_pt}, {p1_max_abs_eta}, {p2_max_abs_eta}, {p1_particle_id}, {p2_particle_id}, {p1_filter_bit}, {p2_filter_bit}, {match_max_delta_r})',
+    call='trigger::DoubleObjectFlag({df}, {output}, {input}, "{hlt_path}", {p1_min_pt}, {p2_min_pt}, {p1_max_abs_eta}, {p2_max_abs_eta}, {p1_particle_id}, {p2_particle_id}, {p1_filter_bit}, {p2_filter_bit}, {match_max_delta_r})',
     input=[
         q.p4_1,
         q.p4_2,
-        nanoAOD.TrigObj_filterBits,
-        nanoAOD.TrigObj_id,
         nanoAOD.TrigObj_pt,
         nanoAOD.TrigObj_eta,
         nanoAOD.TrigObj_phi,
+        nanoAOD.TrigObj_id,
+        nanoAOD.TrigObj_filterBits,
     ],
     output="flagname",
     scope=MT_SCOPES,
@@ -94,15 +94,15 @@ DoubleMuTauTriggerFlags = ExtendedVectorProducer(
 # double tau-tau trigger flags, including trigger object matching
 DoubleTauTauTriggerFlags = ExtendedVectorProducer(
     name="DoubleTauTauTriggerFlags",
-    call='trigger::GenerateDoubleTriggerFlag({df}, {output}, {input}, "{hlt_path}", {p1_min_pt}, {p2_min_pt}, {p1_max_abs_eta}, {p2_max_abs_eta}, {p1_particle_id}, {p2_particle_id}, {p1_filter_bit}, {p2_filter_bit}, {match_max_delta_r})',
+    call='trigger::DoubleObjectFlag({df}, {output}, {input}, "{hlt_path}", {p1_min_pt}, {p2_min_pt}, {p1_max_abs_eta}, {p2_max_abs_eta}, {p1_particle_id}, {p2_particle_id}, {p1_filter_bit}, {p2_filter_bit}, {match_max_delta_r})',
     input=[
         q.p4_1,
         q.p4_2,
-        nanoAOD.TrigObj_filterBits,
-        nanoAOD.TrigObj_id,
         nanoAOD.TrigObj_pt,
         nanoAOD.TrigObj_eta,
         nanoAOD.TrigObj_phi,
+        nanoAOD.TrigObj_id,
+        nanoAOD.TrigObj_filterBits,
     ],
     output="flagname",
     scope=TT_SCOPES,
@@ -117,14 +117,14 @@ DoubleTauTauTriggerFlags = ExtendedVectorProducer(
 
 MuMuGenerateSingleMuonTriggerFlags = ExtendedVectorProducer(
     name="MuMuGenerateSingleMuonTriggerFlags",
-    call='trigger::GenerateSingleTriggerFlag({df}, {output}, {input}, "{hlt_path}", {ptcut}, {etacut}, {trigger_particle_id}, {filterbit}, {max_deltaR_triggermatch} )',
+    call='trigger::SingleObjectFlag({df}, {output}, {input}, "{hlt_path}", {ptcut}, {etacut}, {trigger_particle_id}, {filterbit}, {max_deltaR_triggermatch} )',
     input=[
         q.p4_1,
-        nanoAOD.TrigObj_filterBits,
-        nanoAOD.TrigObj_id,
         nanoAOD.TrigObj_pt,
         nanoAOD.TrigObj_eta,
         nanoAOD.TrigObj_phi,
+        nanoAOD.TrigObj_id,
+        nanoAOD.TrigObj_filterBits,
     ],
     output="flagname",
     scope=["mm"],
@@ -132,14 +132,14 @@ MuMuGenerateSingleMuonTriggerFlags = ExtendedVectorProducer(
 )
 ElElGenerateSingleElectronTriggerFlags = ExtendedVectorProducer(
     name="ElElGenerateSingleElectronTriggerFlags",
-    call='trigger::GenerateSingleTriggerFlag({df}, {output}, {input}, "{hlt_path}", {ptcut}, {etacut}, {trigger_particle_id}, {filterbit}, {max_deltaR_triggermatch} )',
+    call='trigger::SingleObjectFlag({df}, {output}, {input}, "{hlt_path}", {ptcut}, {etacut}, {trigger_particle_id}, {filterbit}, {max_deltaR_triggermatch} )',
     input=[
         q.p4_1,
-        nanoAOD.TrigObj_filterBits,
-        nanoAOD.TrigObj_id,
         nanoAOD.TrigObj_pt,
         nanoAOD.TrigObj_eta,
         nanoAOD.TrigObj_phi,
+        nanoAOD.TrigObj_id,
+        nanoAOD.TrigObj_filterBits,
     ],
     output="flagname",
     scope=["ee"],
@@ -147,15 +147,15 @@ ElElGenerateSingleElectronTriggerFlags = ExtendedVectorProducer(
 )
 ElElGenerateDoubleMuonTriggerFlags = ExtendedVectorProducer(
     name="ElElGenerateDoubleMuonTriggerFlags",
-    call='trigger::GenerateDoubleTriggerFlag({df}, {output}, {input}, "{hlt_path}", {p1_ptcut}, {p2_ptcut}, {p1_etacut}, {p2_etacut}, {p1_trigger_particle_id}, {p2_trigger_particle_id}, {p1_filterbit}, {p2_filterbit}, {max_deltaR_triggermatch})',
+    call='trigger::DoubleObjectFlag({df}, {output}, {input}, "{hlt_path}", {p1_ptcut}, {p2_ptcut}, {p1_etacut}, {p2_etacut}, {p1_trigger_particle_id}, {p2_trigger_particle_id}, {p1_filterbit}, {p2_filterbit}, {max_deltaR_triggermatch})',
     input=[
         q.p4_1,
         q.p4_2,
-        nanoAOD.TrigObj_filterBits,
-        nanoAOD.TrigObj_id,
         nanoAOD.TrigObj_pt,
         nanoAOD.TrigObj_eta,
         nanoAOD.TrigObj_phi,
+        nanoAOD.TrigObj_id,
+        nanoAOD.TrigObj_filterBits,
     ],
     output="flagname",
     scope=["ee"],
@@ -163,15 +163,15 @@ ElElGenerateDoubleMuonTriggerFlags = ExtendedVectorProducer(
 )
 MuMuGenerateDoubleMuonTriggerFlags = ExtendedVectorProducer(
     name="MuMuGenerateDoubleMuonTriggerFlags",
-    call='trigger::GenerateDoubleTriggerFlag({df}, {output}, {input}, "{hlt_path}", {p1_ptcut}, {p2_ptcut}, {p1_etacut}, {p2_etacut}, {p1_trigger_particle_id}, {p2_trigger_particle_id}, {p1_filterbit}, {p2_filterbit}, {max_deltaR_triggermatch})',
+    call='trigger::DoubleObjectFlag({df}, {output}, {input}, "{hlt_path}", {p1_ptcut}, {p2_ptcut}, {p1_etacut}, {p2_etacut}, {p1_trigger_particle_id}, {p2_trigger_particle_id}, {p1_filterbit}, {p2_filterbit}, {max_deltaR_triggermatch})',
     input=[
         q.p4_1,
         q.p4_2,
-        nanoAOD.TrigObj_filterBits,
-        nanoAOD.TrigObj_id,
         nanoAOD.TrigObj_pt,
         nanoAOD.TrigObj_eta,
         nanoAOD.TrigObj_phi,
+        nanoAOD.TrigObj_id,
+        nanoAOD.TrigObj_filterBits,
     ],
     output="flagname",
     scope=["mm"],
@@ -180,14 +180,14 @@ MuMuGenerateDoubleMuonTriggerFlags = ExtendedVectorProducer(
 
 BoostedMTGenerateSingleMuonTriggerFlags = ExtendedVectorProducer(
     name="BoostedMTGenerateSingleMuonTriggerFlags",
-    call='trigger::GenerateSingleTriggerFlag({df}, {output}, {input}, "{hlt_path}", {ptcut}, {etacut}, {trigger_particle_id}, {filterbit}, {max_deltaR_triggermatch} )',
+    call='trigger::SingleObjectFlag({df}, {output}, {input}, "{hlt_path}", {ptcut}, {etacut}, {trigger_particle_id}, {filterbit}, {max_deltaR_triggermatch} )',
     input=[
         q.boosted_p4_1,
-        nanoAOD.TrigObj_filterBits,
-        nanoAOD.TrigObj_id,
         nanoAOD.TrigObj_pt,
         nanoAOD.TrigObj_eta,
         nanoAOD.TrigObj_phi,
+        nanoAOD.TrigObj_id,
+        nanoAOD.TrigObj_filterBits,
     ],
     output="flagname",
     scope=["mt"],
@@ -195,14 +195,14 @@ BoostedMTGenerateSingleMuonTriggerFlags = ExtendedVectorProducer(
 )
 ETGenerateSingleElectronTriggerFlags = ExtendedVectorProducer(
     name="ETGenerateSingleElectronTriggerFlags",
-    call='trigger::GenerateSingleTriggerFlag({df}, {output}, {input}, "{hlt_path}", {ptcut}, {etacut}, {trigger_particle_id}, {filterbit}, {max_deltaR_triggermatch} )',
+    call='trigger::SingleObjectFlag({df}, {output}, {input}, "{hlt_path}", {ptcut}, {etacut}, {trigger_particle_id}, {filterbit}, {max_deltaR_triggermatch} )',
     input=[
         q.p4_1,
-        nanoAOD.TrigObj_filterBits,
-        nanoAOD.TrigObj_id,
         nanoAOD.TrigObj_pt,
         nanoAOD.TrigObj_eta,
         nanoAOD.TrigObj_phi,
+        nanoAOD.TrigObj_id,
+        nanoAOD.TrigObj_filterBits,
     ],
     output="flagname",
     scope=["et"],
@@ -210,14 +210,14 @@ ETGenerateSingleElectronTriggerFlags = ExtendedVectorProducer(
 )
 BoostedETGenerateSingleElectronTriggerFlags = ExtendedVectorProducer(
     name="BoostedETGenerateSingleElectronTriggerFlags",
-    call='trigger::GenerateSingleTriggerFlag({df}, {output}, {input}, "{hlt_path}", {ptcut}, {etacut}, {trigger_particle_id}, {filterbit}, {max_deltaR_triggermatch} )',
+    call='trigger::SingleObjectFlag({df}, {output}, {input}, "{hlt_path}", {ptcut}, {etacut}, {trigger_particle_id}, {filterbit}, {max_deltaR_triggermatch} )',
     input=[
         q.boosted_p4_1,
-        nanoAOD.TrigObj_filterBits,
-        nanoAOD.TrigObj_id,
         nanoAOD.TrigObj_pt,
         nanoAOD.TrigObj_eta,
         nanoAOD.TrigObj_phi,
+        nanoAOD.TrigObj_id,
+        nanoAOD.TrigObj_filterBits,
     ],
     output="flagname",
     scope=["et"],
@@ -225,14 +225,14 @@ BoostedETGenerateSingleElectronTriggerFlags = ExtendedVectorProducer(
 )
 EMGenerateSingleElectronTriggerFlags = ExtendedVectorProducer(
     name="EMGenerateSingleElectronTriggerFlags",
-    call='trigger::GenerateSingleTriggerFlag({df}, {output}, {input}, "{hlt_path}", {ptcut}, {etacut}, {trigger_particle_id}, {filterbit}, {max_deltaR_triggermatch} )',
+    call='trigger::SingleObjectFlag({df}, {output}, {input}, "{hlt_path}", {ptcut}, {etacut}, {trigger_particle_id}, {filterbit}, {max_deltaR_triggermatch} )',
     input=[
         q.p4_1,
-        nanoAOD.TrigObj_filterBits,
-        nanoAOD.TrigObj_id,
         nanoAOD.TrigObj_pt,
         nanoAOD.TrigObj_eta,
         nanoAOD.TrigObj_phi,
+        nanoAOD.TrigObj_id,
+        nanoAOD.TrigObj_filterBits,
     ],
     output="flagname",
     scope=["em"],
@@ -240,14 +240,14 @@ EMGenerateSingleElectronTriggerFlags = ExtendedVectorProducer(
 )
 GenerateSingleLeadingTauTriggerFlags = ExtendedVectorProducer(
     name="GenerateSingleLeadingTauTriggerFlags",
-    call='trigger::GenerateSingleTriggerFlag({df}, {output}, {input}, "{hlt_path}", {ptcut}, {etacut}, {trigger_particle_id}, {filterbit}, {max_deltaR_triggermatch} )',
+    call='trigger::SingleObjectFlag({df}, {output}, {input}, "{hlt_path}", {ptcut}, {etacut}, {trigger_particle_id}, {filterbit}, {max_deltaR_triggermatch} )',
     input=[
         q.p4_1,
-        nanoAOD.TrigObj_filterBits,
-        nanoAOD.TrigObj_id,
         nanoAOD.TrigObj_pt,
         nanoAOD.TrigObj_eta,
         nanoAOD.TrigObj_phi,
+        nanoAOD.TrigObj_id,
+        nanoAOD.TrigObj_filterBits,
     ],
     output="flagname",
     scope=["tt"],
@@ -263,14 +263,14 @@ BoostedTTTriggerFlags = ExtendedVectorProducer(
 )
 GenerateSingleTrailingTauTriggerFlags = ExtendedVectorProducer(
     name="GenerateSingleTrailingTauTriggerFlags",
-    call='trigger::GenerateSingleTriggerFlag({df}, {output}, {input}, "{hlt_path}", {ptcut}, {etacut}, {trigger_particle_id}, {filterbit}, {max_deltaR_triggermatch} )',
+    call='trigger::SingleObjectFlag({df}, {output}, {input}, "{hlt_path}", {ptcut}, {etacut}, {trigger_particle_id}, {filterbit}, {max_deltaR_triggermatch} )',
     input=[
         q.p4_2,
-        nanoAOD.TrigObj_filterBits,
-        nanoAOD.TrigObj_id,
         nanoAOD.TrigObj_pt,
         nanoAOD.TrigObj_eta,
         nanoAOD.TrigObj_phi,
+        nanoAOD.TrigObj_id,
+        nanoAOD.TrigObj_filterBits,
     ],
     output="flagname",
     scope=["et", "mt", "tt"],
@@ -278,14 +278,14 @@ GenerateSingleTrailingTauTriggerFlags = ExtendedVectorProducer(
 )
 EMGenerateSingleMuonTriggerFlags = ExtendedVectorProducer(
     name="EMGenerateSingleMuonTriggerFlags",
-    call='trigger::GenerateSingleTriggerFlag({df}, {output}, {input}, "{hlt_path}", {ptcut}, {etacut}, {trigger_particle_id}, {filterbit}, {max_deltaR_triggermatch} )',
+    call='trigger::SingleObjectFlag({df}, {output}, {input}, "{hlt_path}", {ptcut}, {etacut}, {trigger_particle_id}, {filterbit}, {max_deltaR_triggermatch} )',
     input=[
         q.p4_2,
-        nanoAOD.TrigObj_filterBits,
-        nanoAOD.TrigObj_id,
         nanoAOD.TrigObj_pt,
         nanoAOD.TrigObj_eta,
         nanoAOD.TrigObj_phi,
+        nanoAOD.TrigObj_id,
+        nanoAOD.TrigObj_filterBits,
     ],
     output="flagname",
     scope=["em"],
@@ -293,15 +293,15 @@ EMGenerateSingleMuonTriggerFlags = ExtendedVectorProducer(
 )
 MTGenerateCrossTriggerFlags = ExtendedVectorProducer(
     name="GenerateCrossTriggerFlags",
-    call='trigger::GenerateDoubleTriggerFlag({df}, {output}, {input}, "{hlt_path}", {p1_ptcut}, {p2_ptcut}, {p1_etacut}, {p2_etacut}, {p1_trigger_particle_id}, {p2_trigger_particle_id}, {p1_filterbit}, {p2_filterbit}, {max_deltaR_triggermatch})',
+    call='trigger::DoubleObjectFlag({df}, {output}, {input}, "{hlt_path}", {p1_ptcut}, {p2_ptcut}, {p1_etacut}, {p2_etacut}, {p1_trigger_particle_id}, {p2_trigger_particle_id}, {p1_filterbit}, {p2_filterbit}, {max_deltaR_triggermatch})',
     input=[
         q.p4_1,
         q.p4_2,
-        nanoAOD.TrigObj_filterBits,
-        nanoAOD.TrigObj_id,
         nanoAOD.TrigObj_pt,
         nanoAOD.TrigObj_eta,
         nanoAOD.TrigObj_phi,
+        nanoAOD.TrigObj_id,
+        nanoAOD.TrigObj_filterBits,
     ],
     output="flagname",
     scope=["mt"],
@@ -309,15 +309,15 @@ MTGenerateCrossTriggerFlags = ExtendedVectorProducer(
 )
 ETGenerateCrossTriggerFlags = ExtendedVectorProducer(
     name="GenerateCrossTriggerFlags",
-    call='trigger::GenerateDoubleTriggerFlag({df}, {output}, {input}, "{hlt_path}", {p1_ptcut}, {p2_ptcut}, {p1_etacut}, {p2_etacut}, {p1_trigger_particle_id}, {p2_trigger_particle_id}, {p1_filterbit}, {p2_filterbit}, {max_deltaR_triggermatch})',
+    call='trigger::DoubleObjectFlag({df}, {output}, {input}, "{hlt_path}", {p1_ptcut}, {p2_ptcut}, {p1_etacut}, {p2_etacut}, {p1_trigger_particle_id}, {p2_trigger_particle_id}, {p1_filterbit}, {p2_filterbit}, {max_deltaR_triggermatch})',
     input=[
         q.p4_1,
         q.p4_2,
-        nanoAOD.TrigObj_filterBits,
-        nanoAOD.TrigObj_id,
         nanoAOD.TrigObj_pt,
         nanoAOD.TrigObj_eta,
         nanoAOD.TrigObj_phi,
+        nanoAOD.TrigObj_id,
+        nanoAOD.TrigObj_filterBits,
     ],
     output="flagname",
     scope=["et"],
@@ -325,15 +325,15 @@ ETGenerateCrossTriggerFlags = ExtendedVectorProducer(
 )
 TTGenerateDoubleTriggerFlags = ExtendedVectorProducer(
     name="TTGenerateDoubleTriggerFlags",
-    call='trigger::GenerateDoubleTriggerFlag({df}, {output}, {input}, "{hlt_path}", {p1_ptcut}, {p2_ptcut}, {p1_etacut}, {p2_etacut}, {p1_trigger_particle_id}, {p2_trigger_particle_id}, {p1_filterbit}, {p2_filterbit}, {max_deltaR_triggermatch})',
+    call='trigger::DoubleObjectFlag({df}, {output}, {input}, "{hlt_path}", {p1_ptcut}, {p2_ptcut}, {p1_etacut}, {p2_etacut}, {p1_trigger_particle_id}, {p2_trigger_particle_id}, {p1_filterbit}, {p2_filterbit}, {max_deltaR_triggermatch})',
     input=[
         q.p4_1,
         q.p4_2,
-        nanoAOD.TrigObj_filterBits,
-        nanoAOD.TrigObj_id,
         nanoAOD.TrigObj_pt,
         nanoAOD.TrigObj_eta,
         nanoAOD.TrigObj_phi,
+        nanoAOD.TrigObj_id,
+        nanoAOD.TrigObj_filterBits,
     ],
     output="flagname",
     scope=["tt"],
@@ -341,15 +341,15 @@ TTGenerateDoubleTriggerFlags = ExtendedVectorProducer(
 )
 EMGenerateCrossTriggerFlags = ExtendedVectorProducer(
     name="EMGenerateCrossTriggerFlags",
-    call='trigger::GenerateDoubleTriggerFlag({df}, {output}, {input}, "{hlt_path}", {p1_ptcut}, {p2_ptcut}, {p1_etacut}, {p2_etacut}, {p1_trigger_particle_id}, {p2_trigger_particle_id}, {p1_filterbit}, {p2_filterbit}, {max_deltaR_triggermatch})',
+    call='trigger::DoubleObjectFlag({df}, {output}, {input}, "{hlt_path}", {p1_ptcut}, {p2_ptcut}, {p1_etacut}, {p2_etacut}, {p1_trigger_particle_id}, {p2_trigger_particle_id}, {p1_filterbit}, {p2_filterbit}, {max_deltaR_triggermatch})',
     input=[
         q.p4_1,
         q.p4_2,
-        nanoAOD.TrigObj_filterBits,
-        nanoAOD.TrigObj_id,
         nanoAOD.TrigObj_pt,
         nanoAOD.TrigObj_eta,
         nanoAOD.TrigObj_phi,
+        nanoAOD.TrigObj_id,
+        nanoAOD.TrigObj_filterBits,
     ],
     output="flagname",
     scope=["em"],
@@ -359,15 +359,15 @@ EMGenerateCrossTriggerFlags = ExtendedVectorProducer(
 
 TTGenerateDoubleTriggerFlagsEmbedding = ExtendedVectorProducer(
     name="TTGenerateDoubleTriggerFlagsEmbedding",
-    call="trigger::MatchDoubleTriggerObject({df}, {output}, {input}, {p1_ptcut}, {p2_ptcut}, {p1_etacut}, {p2_etacut}, {p1_trigger_particle_id}, {p2_trigger_particle_id}, {p1_filterbit}, {p2_filterbit}, {max_deltaR_triggermatch})",
+    call="trigger::DoubleObjectFlag({df}, {output}, {input}, {p1_ptcut}, {p2_ptcut}, {p1_etacut}, {p2_etacut}, {p1_trigger_particle_id}, {p2_trigger_particle_id}, {p1_filterbit}, {p2_filterbit}, {max_deltaR_triggermatch})",
     input=[
         q.p4_1,
         q.p4_2,
-        nanoAOD.TrigObj_filterBits,
-        nanoAOD.TrigObj_id,
         nanoAOD.TrigObj_pt,
         nanoAOD.TrigObj_eta,
         nanoAOD.TrigObj_phi,
+        nanoAOD.TrigObj_id,
+        nanoAOD.TrigObj_filterBits,
     ],
     output="flagname",
     scope=["tt"],
@@ -376,15 +376,15 @@ TTGenerateDoubleTriggerFlagsEmbedding = ExtendedVectorProducer(
 
 MTGenerateCrossTriggerFlagsEmbedding = ExtendedVectorProducer(
     name="MTGenerateCrossTriggerFlagsEmbedding",
-    call="trigger::MatchDoubleTriggerObject({df}, {output}, {input}, {p1_ptcut}, {p2_ptcut}, {p1_etacut}, {p2_etacut}, {p1_trigger_particle_id}, {p2_trigger_particle_id}, {p1_filterbit}, {p2_filterbit}, {max_deltaR_triggermatch})",
+    call="trigger::DoubleObjectFlag({df}, {output}, {input}, {p1_ptcut}, {p2_ptcut}, {p1_etacut}, {p2_etacut}, {p1_trigger_particle_id}, {p2_trigger_particle_id}, {p1_filterbit}, {p2_filterbit}, {max_deltaR_triggermatch})",
     input=[
         q.p4_1,
         q.p4_2,
-        nanoAOD.TrigObj_filterBits,
-        nanoAOD.TrigObj_id,
         nanoAOD.TrigObj_pt,
         nanoAOD.TrigObj_eta,
         nanoAOD.TrigObj_phi,
+        nanoAOD.TrigObj_id,
+        nanoAOD.TrigObj_filterBits,
     ],
     output="flagname",
     scope=["mt"],

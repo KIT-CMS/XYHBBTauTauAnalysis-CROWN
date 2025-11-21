@@ -101,7 +101,7 @@ PFMetPhi_uncorrected = Producer(
 )
 CalculateGenBosonVector = Producer(
     name="calculateGenBosonVector",
-    call="met::calculateGenBosonVector({df}, {input}, {output}, {is_data})",
+    call="genparticles::GetBoson({df}, {output}, {input}, {is_data})",
     input=[
         nanoAOD.GenPart_pt,
         nanoAOD.GenPart_eta,
@@ -111,13 +111,28 @@ CalculateGenBosonVector = Producer(
         nanoAOD.GenPart_status,
         nanoAOD.GenPart_statusFlags,
     ],
-    output=[q.recoil_genboson_p4_vec],
+    output=[q.recoil_genboson_p4],
+    scopes=["global"],
+)
+CalculateVisGenBosonVector = Producer(
+    name="calculateVisGenBosonVector",
+    call="genparticles::GetVisibleBoson({df}, {output}, {input}, {is_data})",
+    input=[
+        nanoAOD.GenPart_pt,
+        nanoAOD.GenPart_eta,
+        nanoAOD.GenPart_phi,
+        nanoAOD.GenPart_mass,
+        nanoAOD.GenPart_pdgId,
+        nanoAOD.GenPart_status,
+        nanoAOD.GenPart_statusFlags,
+    ],
+    output=[q.recoil_vis_genboson_p4],
     scopes=["global"],
 )
 GenBosonMass = Producer(
     name="GenBosonMass",
-    call="met::genBosonMass({df}, {output}, {input})",
-    input=[q.recoil_genboson_p4_vec],
+    call="lorentzvector::GetMass({df}, {output}, {input})",
+    input=[q.recoil_genboson_p4],
     output=[q.genbosonmass],
     scopes=["global"],
 )
@@ -140,6 +155,7 @@ MetBasics = ProducerGroup(
         MetCov11,
         MetSumEt,
         CalculateGenBosonVector,
+        CalculateVisGenBosonVector,
         GenBosonMass,
     ],
 )
@@ -147,28 +163,28 @@ MetBasics = ProducerGroup(
 
 PropagateLeptonsToMet = Producer(
     name="PropagateLeptonsToMet",
-    call="met::propagateLeptonsToMet({df}, {input}, {output}, {propagateLeptons})",
+    call="lorentzvector::PropagateToMET({df}, {output}, {input}, {propagateLeptons})",
     input=[q.met_p4, q.p4_1_uncorrected, q.p4_2_uncorrected, q.p4_1, q.p4_2],
     output=[q.met_p4_leptoncorrected],
     scopes=["et", "mt", "tt", "em", "mm", "ee"],
 )
 PropagateLeptonsToPFMet = Producer(
     name="PropagateLeptonsToPFMet",
-    call="met::propagateLeptonsToMet({df}, {input}, {output}, {propagateLeptons})",
+    call="lorentzvector::PropagateToMET({df}, {output}, {input}, {propagateLeptons})",
     input=[q.pfmet_p4, q.p4_1_uncorrected, q.p4_2_uncorrected, q.p4_1, q.p4_2],
     output=[q.pfmet_p4_leptoncorrected],
     scopes=["et", "mt", "tt", "em", "mm", "ee"],
 )
 PropagateLeptonsToMet_boosted = Producer(
     name="PropagateLeptonsToMet_boosted",
-    call="met::propagateLeptonsToMet({df}, {input}, {output}, {propagateLeptons})",
+    call="lorentzvector::PropagateToMET({df}, {output}, {input}, {propagateLeptons})",
     input=[q.met_p4, q.boosted_p4_1_uncorrected, q.boosted_p4_2_uncorrected, q.boosted_p4_1, q.boosted_p4_2],
     output=[q.met_p4_boosted_leptoncorrected],
     scopes=["et", "mt", "tt", "em", "mm", "ee"],
 )
 PropagateLeptonsToPFMet_boosted = Producer(
     name="PropagateLeptonsToPFMet_boosted",
-    call="met::propagateLeptonsToMet({df}, {input}, {output}, {propagateLeptons})",
+    call="lorentzvector::PropagateToMET({df}, {output}, {input}, {propagateLeptons})",
     input=[q.pfmet_p4, q.boosted_p4_1_uncorrected, q.boosted_p4_2_uncorrected, q.boosted_p4_1, q.boosted_p4_2],
     output=[q.pfmet_p4_boosted_leptoncorrected],
     scopes=["et", "mt", "tt", "em", "mm", "ee"],
@@ -176,7 +192,7 @@ PropagateLeptonsToPFMet_boosted = Producer(
 
 PropagateJetsToMet = Producer(
     name="PropagateJetsToMet",
-    call="met::propagateJetsToMet({df}, {input}, {output}, {propagateJets}, {min_jetpt_met_propagation})",
+    call="physicsobject::PropagateToMET({df}, {output}, {input}, {propagateJets}, {min_jetpt_met_propagation})",
     input=[
         q.met_p4_leptoncorrected,
         q.Jet_pt_corrected,
@@ -193,7 +209,7 @@ PropagateJetsToMet = Producer(
 )
 PropagateJetsToPFMet = Producer(
     name="PropagateJetsToPFMet",
-    call="met::propagateJetsToMet({df}, {input}, {output}, {propagateJets}, {min_jetpt_met_propagation})",
+    call="physicsobject::PropagateToMET({df}, {output}, {input}, {propagateJets}, {min_jetpt_met_propagation})",
     input=[
         q.pfmet_p4_leptoncorrected,
         q.Jet_pt_corrected,
@@ -211,7 +227,7 @@ PropagateJetsToPFMet = Producer(
 
 PropagateJetsToMet_boosted = Producer(
     name="PropagateJetsToMet_boosted",
-    call="met::propagateJetsToMet({df}, {input}, {output}, {propagateJets}, {min_jetpt_met_propagation})",
+    call="physicsobject::PropagateToMET({df}, {output}, {input}, {propagateJets}, {min_jetpt_met_propagation})",
     input=[
         q.met_p4_boosted_leptoncorrected,
         q.Jet_pt_corrected,
@@ -228,7 +244,7 @@ PropagateJetsToMet_boosted = Producer(
 )
 PropagateJetsToPFMet_boosted = Producer(
     name="PropagateJetsToPFMet_boosted",
-    call="met::propagateJetsToMet({df}, {input}, {output}, {propagateJets}, {min_jetpt_met_propagation})",
+    call="physicsobject::PropagateToMET({df}, {output}, {input}, {propagateJets}, {min_jetpt_met_propagation})",
     input=[
         q.pfmet_p4_boosted_leptoncorrected,
         q.Jet_pt_corrected,
@@ -246,10 +262,11 @@ PropagateJetsToPFMet_boosted = Producer(
 
 ApplyRecoilCorrections = Producer(
     name="ApplyRecoilCorrections",
-    call='met::applyRecoilCorrections({df}, {input}, {output}, "{recoil_corrections_file}", "{recoil_systematics_file}", {applyRecoilCorrections}, {apply_recoil_resolution_systematic}, {apply_recoil_response_systematic}, {recoil_systematic_shift_up}, {recoil_systematic_shift_down}, {is_wjets})',
+    call='met::RecoilCorrections({df}, {input}, {output}, "{recoil_corrections_file}", "{recoil_systematics_file}", {applyRecoilCorrections}, {apply_recoil_resolution_systematic}, {apply_recoil_response_systematic}, {recoil_systematic_shift_up}, {recoil_systematic_shift_down}, {is_wjets})',
     input=[
         q.met_p4_jetcorrected,
-        q.recoil_genboson_p4_vec,
+        q.recoil_genboson_p4,
+        q.recoil_vis_genboson_p4,
         q.Jet_pt_corrected,
     ],
     output=[q.met_p4_recoilcorrected],
@@ -257,10 +274,11 @@ ApplyRecoilCorrections = Producer(
 )
 ApplyRecoilCorrectionsPFMet = Producer(
     name="ApplyRecoilCorrectionsPFMet",
-    call='met::applyRecoilCorrections({df}, {input}, {output}, "{recoil_corrections_file}", "{recoil_systematics_file}", {applyRecoilCorrections}, {apply_recoil_resolution_systematic}, {apply_recoil_response_systematic}, {recoil_systematic_shift_up}, {recoil_systematic_shift_down}, {is_wjets})',
+    call='met::RecoilCorrections({df}, {input}, {output}, "{recoil_corrections_file}", "{recoil_systematics_file}", {applyRecoilCorrections}, {apply_recoil_resolution_systematic}, {apply_recoil_response_systematic}, {recoil_systematic_shift_up}, {recoil_systematic_shift_down}, {is_wjets})',
     input=[
         q.pfmet_p4_jetcorrected,
-        q.recoil_genboson_p4_vec,
+        q.recoil_genboson_p4,
+        q.recoil_vis_genboson_p4,
         q.Jet_pt_corrected,
     ],
     output=[q.pfmet_p4_recoilcorrected],
@@ -269,10 +287,11 @@ ApplyRecoilCorrectionsPFMet = Producer(
 
 ApplyRecoilCorrections_boosted = Producer(
     name="ApplyRecoilCorrections_boosted",
-    call='met::applyRecoilCorrections({df}, {input}, {output}, "{recoil_corrections_file}", "{recoil_systematics_file}", {applyRecoilCorrections}, {apply_recoil_resolution_systematic}, {apply_recoil_response_systematic}, {recoil_systematic_shift_up}, {recoil_systematic_shift_down}, {is_wjets})',
+    call='met::RecoilCorrections({df}, {input}, {output}, "{recoil_corrections_file}", "{recoil_systematics_file}", {applyRecoilCorrections}, {apply_recoil_resolution_systematic}, {apply_recoil_response_systematic}, {recoil_systematic_shift_up}, {recoil_systematic_shift_down}, {is_wjets})',
     input=[
         q.met_p4_boosted_jetcorrected,
-        q.recoil_genboson_p4_vec,
+        q.recoil_genboson_p4,
+        q.recoil_vis_genboson_p4,
         q.Jet_pt_corrected,
     ],
     output=[q.met_p4_boosted_recoilcorrected],
@@ -280,10 +299,11 @@ ApplyRecoilCorrections_boosted = Producer(
 )
 ApplyRecoilCorrectionsPFMet_boosted = Producer(
     name="ApplyRecoilCorrectionsPFMet_boosted",
-    call='met::applyRecoilCorrections({df}, {input}, {output}, "{recoil_corrections_file}", "{recoil_systematics_file}", {applyRecoilCorrections}, {apply_recoil_resolution_systematic}, {apply_recoil_response_systematic}, {recoil_systematic_shift_up}, {recoil_systematic_shift_down}, {is_wjets})',
+    call='met::RecoilCorrections({df}, {input}, {output}, "{recoil_corrections_file}", "{recoil_systematics_file}", {applyRecoilCorrections}, {apply_recoil_resolution_systematic}, {apply_recoil_response_systematic}, {recoil_systematic_shift_up}, {recoil_systematic_shift_down}, {is_wjets})',
     input=[
         q.pfmet_p4_boosted_jetcorrected,
-        q.recoil_genboson_p4_vec,
+        q.recoil_genboson_p4,
+        q.recoil_vis_genboson_p4,
         q.Jet_pt_corrected,
     ],
     output=[q.pfmet_p4_boosted_recoilcorrected],
