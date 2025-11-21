@@ -1528,7 +1528,7 @@ def add_bjet_config(configuration: Configuration):
     configuration.add_config_parameters(
         SCOPES,
         {
-            "btag_sf_file": EraModifier(
+            "bjet_sf_file": EraModifier(
                 {
                     "2016preVFP": "/cvmfs/cms-griddata.cern.ch/cat/metadata/BTV/Run2-2016preVFP-UL-NanoAODv9/2025-08-19/btagging.json.gz",
                     "2016postVFP": "/cvmfs/cms-griddata.cern.ch/cat/metadata/BTV/Run2-2016postVFP-UL-NanoAODv9/2025-08-19/btagging.json.gz",
@@ -1540,8 +1540,10 @@ def add_bjet_config(configuration: Configuration):
                     "2023postBPix": "/cvmfs/cms-griddata.cern.ch/cat/metadata/BTV/Run3-23DSep23-Summer23BPix-NanoAODv12/2025-08-20/btagging.json.gz",
                 }
             ),
-            "btag_sf_variation": "central",
-            "btag_corr_algo": "deepJet_shape",
+            "bjet_sf_deepjet_shape_name": "deepJet_shape",
+            "bjet_sf_deepjet_shape_variation": "central",
+            "bjet_sf_pnet_shape_name": "particleNet_shape",
+            "bjet_sf_pnet_shape_variation": "central",
         },
     )
 
@@ -2002,6 +2004,7 @@ def build_config(
                 jets.GoodBJetsWithoutPUID,
             ]
         },
+        era,
     )
 
     # Jet energy corrections for AK4 jets
@@ -2204,6 +2207,7 @@ def build_config(
             fatjets.FatJetCollection,
             fatjets.FatJetCollectionWithoutVeto,
             fatjets.BasicFatJetQuantities,
+            jets.JetWithVetoMasks,
             jets.JetCollection,
             jets.CombinedJetCollection,
             jets.JetColumns,
