@@ -2524,7 +2524,8 @@ def build_config(
         SCOPES,
         RemoveProducer(
             producers=[
-                scalefactors.btagging_SF,
+                scalefactors.BJetShapeDeepJet_SF,
+                scalefactors.BJetShapePNet_SF,
             ],
             samples=["data", "embedding", "embedding_mc"],
         ),
