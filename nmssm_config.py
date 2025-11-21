@@ -1489,14 +1489,16 @@ def add_bjet_config(configuration: Configuration):
     configuration.add_config_parameters(
         SCOPES,
         {
-            "btag_sf_file": EraModifier(
+            "bjet_sf_file": EraModifier(
                 {
                     _era: f"data/jsonpog-integration/POG/BTV/{_campaign}/btagging.json.gz"
                     for _era, _campaign in CORRECTIONLIB_CAMPAIGNS.items()
                 }
             ),
-            "btag_sf_variation": "central",
-            "btag_corr_algo": "deepJet_shape",
+            "bjet_sf_deepjet_shape_name": "deepJet_shape",
+            "bjet_sf_deepjet_shape_variation": "central",
+            "bjet_sf_pnet_shape_name": "particleNet_shape",
+            "bjet_sf_pnet_shape_variation": "central",
         },
     )
 
@@ -1962,6 +1964,7 @@ def build_config(
                 jets.GoodBJetsWithoutPUID,
             ]
         },
+        era,
     )
 
     # Jet energy corrections for AK4 jets
@@ -2164,6 +2167,7 @@ def build_config(
             fatjets.FatJetCollection,
             fatjets.FatJetCollectionWithoutVeto,
             fatjets.BasicFatJetQuantities,
+            jets.JetWithVetoMasks,
             jets.JetCollection,
             jets.CombinedJetCollection,
             jets.JetColumns,
