@@ -76,6 +76,7 @@ JetEnergyCorrection_data, JetEnergyCorrection, RenameJetsData = jerc_producer_fa
 # AK4 JET SELECTION
 #
 
+
 # correct the jet ID value for Run3 samples
 JetIDRun3NanoV12Corrected = Producer(
     name="JetIDRun3NanoV12Corrected",
@@ -242,22 +243,13 @@ GoodBJetsWithoutPUID = ProducerGroup(
 # b jet selection combining the base b jet selection and the b tagging requirement including the pileup ID (for CHS jets)
 GoodBJetsWithPUID = ProducerGroup(
     name="GoodBJetsWithPUID",
-    call='physicsobject::CombineMasks({df}, {output}, {input}, "all_of")',
+    call='physicsobject::CombineMasks({df}, {output}, {input}, "any_of")',
     input=[],
     output=[q.good_bjets_mask],
     subproducers=[
         GoodBJetsWithPUIDDeepJet,
         GoodBJetsWithPUIDPNet,
     ],
-    scopes=GLOBAL_SCOPES,
-)
-
-# combined jet-bjet mask (OR)
-GoodJetsCombined = Producer(
-    name="GoodJetsCombined",
-    call='physicsobject::CombineMasks({df}, {output}, {input}, "any_of")',
-    input=[q.good_jets_mask, q.good_bjets_mask],
-    output=[q.good_jets_combined_mask],
     scopes=GLOBAL_SCOPES,
 )
 
@@ -296,7 +288,7 @@ GoodJetsWithVeto = ProducerGroup(
     name="GoodJetsWithVeto",
     call='physicsobject::CombineMasks({df}, {output}, {input}, "all_of")',
     input=[q.good_jets_mask],
-    output=[],
+    output=[q.good_jets_with_veto_mask],
     scopes=SCOPES,
     subproducers=[VetoOverlappingJets],
 )
@@ -306,36 +298,66 @@ GoodJetsWithVeto_boosted = ProducerGroup(
     name="GoodJetsWithVeto_boosted",
     call='physicsobject::CombineMasks({df}, {output}, {input}, "all_of")',
     input=[q.good_jets_mask],
-    output=[],
+    output=[q.good_jets_with_veto_mask_boosted],
     scopes=SCOPES,
     subproducers=[VetoOverlappingJets_boosted],
 )
 
-# create a mask that includes selected jets + b jets that do not overlap with the lepton candidates from the resolved selection
-GoodJetsCombinedWithVeto = Producer(
-    name="GoodCombinedJetsWithVeto",
+# create a mask that includes selected jets that do not overlap with the lepton candidates from the resolved selection
+GoodBJetsDeepJetWithVeto = ProducerGroup(
+    name="GoodBJetsDeepJetWithVeto",
     call='physicsobject::CombineMasks({df}, {output}, {input}, "all_of")',
-    input=[q.good_jets_combined_mask, q.jet_overlap_veto_mask],
-    output=[],
+    input=[q.good_bjets_deepjet_mask],
+    output=[q.good_bjets_deepjet_with_veto_mask],
     scopes=SCOPES,
+    subproducers=[VetoOverlappingJets],
 )
 
-# create a mask that includes selected b-jets that do not overlap with the lepton candidates from the resolved selection
-GoodBJetsWithVeto = Producer(
-    name="GoodBJetsWithVeto",
+# create a mask that includes selected jets that do not overlap with the lepton candidates from the resolved selection
+GoodBJetsPNetWithVeto = ProducerGroup(
+    name="GoodBJetsPNetWithVeto",
     call='physicsobject::CombineMasks({df}, {output}, {input}, "all_of")',
-    input=[q.good_bjets_mask, q.jet_overlap_veto_mask],
-    output=[],
+    input=[q.good_bjets_pnet_mask],
+    output=[q.good_bjets_pnet_with_veto_mask],
     scopes=SCOPES,
+    subproducers=[VetoOverlappingJets],
 )
 
-# create a mask that includes selected b-jets that do not overlap with the lepton candidates from the boosted selection
-GoodBJetsWithVeto_boosted = Producer(
-    name="GoodBJetsWithVeto_boosted",
-    call='physicsobject::CombineMasks({df}, {output}, {input}, "all_of")',
-    input=[q.good_bjets_mask, q.jet_overlap_veto_mask_boosted],
+# This collection considers all jets and tagged b jets (DeepJet)
+GoodJetsWithVeto = ProducerGroup(
+    name="GoodJetsWithVeto",
+    call='physicsobject::CombineMasks({df}, {output}, {input}, "any_of")',
+    input=[],
     output=[],
     scopes=SCOPES,
+    subproducers=[
+        GoodBJetsDeepJetWithVeto,  # default is still DeepJet
+        GoodJetsWithVeto,
+    ],
+)
+
+# This collection considers all jets and tagged b jets (DeepJet + PNet)
+CombinedGoodJetsWithVeto = ProducerGroup(
+    name="GoodJetsWithVetoCombined",
+    call='physicsobject::CombineMasks({df}, {output}, {input}, "any_of")',
+    input=[],
+    output=[],
+    scopes=SCOPES,
+    subproducers=[
+        GoodBJetsDeepJetWithVeto,
+        GoodBJetsPNetWithVeto,
+        GoodJetsWithVeto,
+    ],
+)
+
+# Jet collection containing the indices of selected jets, ordered by pt for the resolved selection
+CombinedJetCollection = ProducerGroup(
+    name="CombinedJetCollection",
+    call="physicsobject::OrderByPt({df}, {output}, {input})",
+    input=[q.Jet_pt_corrected],
+    output=[q.good_jet_combined_collection],
+    scopes=SCOPES,
+    subproducers=[CombinedGoodJetsWithVeto],
 )
 
 # final jet collection as list of indices of selected jets, ordered by pt for the resolved selection
@@ -365,27 +387,17 @@ BJetCollection = ProducerGroup(
     input=[q.Jet_pt_corrected],
     output=[q.good_bjet_collection],
     scopes=SCOPES,
-    subproducers=[GoodBJetsWithVeto],
+    subproducers=[GoodBJetsDeepJetWithVeto],  # for now, DeepJet is used as default
 )
 
-# final b jet collection as list of indices of selected jets, ordered by pt for the boosted selection
+# final b jet collection as list of indices of selected jets, ordered by pt for the resolved selection
 BJetCollection_boosted = ProducerGroup(
     name="BJetCollection_boosted",
     call="physicsobject::OrderByPt({df}, {output}, {input})",
     input=[q.Jet_pt_corrected],
     output=[q.good_bjet_collection_boosted],
     scopes=SCOPES,
-    subproducers=[GoodBJetsWithVeto_boosted],
-)
-
-# final combined jet collection as list of indices of selected jets, ordered by pt for the resolved selection
-JetCombinedCollection = ProducerGroup(
-    name="JetCombinedCollection",
-    call="physicsobject::OrderByPt({df}, {output}, {input})",
-    input=[q.Jet_pt_corrected],
-    output=[q.good_jet_combined_collection],
-    scopes=SCOPES,
-    subproducers=[GoodJetsCombinedWithVeto],
+    subproducers=[GoodBJetsWithVeto_boosted],  # for now, DeepJet is used as default
 )
 
 
@@ -474,6 +486,51 @@ JetColumns = ProducerGroup(
 )
 
 
+#
+# Number of jets (depending on the b jet tagger)
+#
+
+
+JetMaskDeepJet = Producer(
+    name="JetMaskDeepJet",
+    call="physicsobject::CombineMasks({df}, {output}, {input}, \"all_of\")",
+    input=[q.good_jets_mask, q.good_bjets_deepjet_mask, q.jet_overlap_veto_mask],
+    output=[],
+    scopes=SCOPES,
+)
+
+JetMaskPNet = Producer(
+    name="JetMaskPNet",
+    call="physicsobject::CombineMasks({df}, {output}, {input}, \"all_of\")",
+    input=[q.good_jets_mask, q.good_bjets_pnet_mask, q.jet_overlap_veto_mask],
+    output=[],
+    scopes=SCOPES,
+)
+
+NumberOfJetsDeepJet = ProducerGroup(
+    name="NumberOfJetsDeepJet",
+    call="physicsobject::Count({df}, {output}, {input})",
+    input=[],
+    output=[q.n_jets_deepjet],
+    scopes=SCOPES,
+    subproducers=[JetMaskDeepJet],
+)
+
+NumberOfJetsPNet = ProducerGroup(
+    name="NumberOfJetsPNet",
+    call="physicsobject::Count({df}, {output}, {input})",
+    input=[],
+    output=[q.n_jets_pnet],
+    scopes=SCOPES,
+    subproducers=[JetMaskPNet],
+)
+
+
+#
+# Quantities for the two leading jets
+#
+
+
 LVJet1 = Producer(
     name="LVJet1",
     call="lorentzvector::Build({df}, {output}, {input}, 0)",
@@ -498,20 +555,6 @@ LVJet2 = Producer(
         q.good_jet_collection,
     ],
     output=[q.jet_p4_2],
-    scopes=SCOPES,
-)
-NumberOfJets = Producer(
-    name="NumberOfJets",
-    call="physicsobject::Size<Int_t>({df}, {output}, {input})",
-    input=[q.good_jet_collection],
-    output=[q.njets],
-    scopes=SCOPES,
-)
-NumberOfJets_boosted = Producer(
-    name="NumberOfJets_boosted",
-    call="physicsobject::Size<Int_t>({df}, {output}, {input})",
-    input=[q.good_jet_collection_boosted],
-    output=[q.njets_boosted],
     scopes=SCOPES,
 )
 jpt_1 = Producer(
@@ -586,8 +629,8 @@ BasicJetQuantities = ProducerGroup(
     subproducers=[
         LVJet1,
         LVJet2,
-        NumberOfJets,
-        # NumberOfJets_boosted,
+        NumberOfJetsDeepJet,
+        NumberOfJetsPNet,
         jpt_1,
         jeta_1,
         jphi_1,
@@ -631,20 +674,23 @@ LVBJet2 = Producer(
     output=[q.bjet_p4_2],
     scopes=SCOPES,
 )
-NumberOfBJets = Producer(
-    name="NumberOfBJets",
-    call="physicsobject::Size<Int_t>({df}, {output}, {input})",
-    input=[q.good_bjet_collection],
-    output=[q.nbtag],
+
+NumberOfBJetsDeepJet = Producer(
+    name="NumberOfBJetsDeepJet",
+    call="physicsobject::Count({df}, {output}, {input})",
+    input=[q.good_bjets_deepjet_mask],
+    output=[q.n_bjets_deepjet],
     scopes=SCOPES,
 )
-NumberOfBJets_boosted = Producer(
-    name="NumberOfBJets_boosted",
-    call="physicsobject::Size<Int_t>({df}, {output}, {input})",
-    input=[q.good_bjet_collection_boosted],
-    output=[q.nbtag_boosted],
+
+NumberOfBJetsPNet = Producer(
+    name="NumberOfBJetsPNet",
+    call="physicsobject::Count({df}, {output}, {input})",
+    input=[q.good_bjets_pnet_mask],
+    output=[q.n_bjets_pnet],
     scopes=SCOPES,
 )
+
 bpt_1 = Producer(
     name="bpt_1",
     call="lorentzvector::GetPt({df}, {output}, {input})",
@@ -710,8 +756,8 @@ BasicBJetQuantities = ProducerGroup(
     subproducers=[
         # LVBJet1,
         # LVBJet2,
-        NumberOfBJets,
-        # NumberOfBJets_boosted,
+        NumberOfBJetsDeepJet,
+        NumberOfBJetsPNet,
         # bpt_1,
         # beta_1,
         # bphi_1,
