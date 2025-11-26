@@ -3123,8 +3123,6 @@ def build_config(
             q.nmuons,
             triggers.SingleMuTriggerFlags.output_group,
             q.muon_veto_flag,
-            q.electron_veto_flag,
-            q.dielectron_veto,
         ] + scalefactors.MuonIDIso_SF.get_outputs("mm")
         + scalefactors.SingleMuTriggerSF.get_outputs("mm"),
     )
@@ -3135,9 +3133,7 @@ def build_config(
         [
             q.nelectrons,
             triggers.SingleEleTriggerFlags.output_group,
-            q.muon_veto_flag,
             q.electron_veto_flag,
-            q.dimuon_veto,
         ] + scalefactors.EleID_SF.get_outputs("ee")
         + scalefactors.SingleEleTriggerSF.get_outputs("ee"),
     )
