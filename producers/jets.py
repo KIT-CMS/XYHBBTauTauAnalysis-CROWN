@@ -320,7 +320,7 @@ CombinedJetCollection = ProducerGroup(
 
 # This collection considers all jets and tagged b jets (DeepJet)
 GoodJetsDeepJetWithVetoMask = Producer(
-    name="GoodJetsWithVetoMask",
+    name="GoodJetsDeepJetWithVetoMask",
     call='physicsobject::CombineMasks({df}, {output}, {input}, "any_of")',
     input=[q.good_jets_with_veto_mask, q.good_bjets_deepjet_with_veto_mask],
     output=[],
@@ -436,19 +436,18 @@ JetColumns = ProducerGroup(
 # Number of jets (depending on the b jet tagger)
 #
 
-
-JetMaskDeepJet = Producer(
-    name="JetMaskDeepJet",
-    call="physicsobject::CombineMasks({df}, {output}, {input}, \"all_of\")",
-    input=[q.good_jets_mask, q.good_bjets_deepjet_mask, q.jet_overlap_veto_mask],
+NJetDeepJetMask = Producer(
+    name="NJetDeepJetMask",
+    call="physicsobject::CombineMasks({df}, {output}, {input}, \"any_of\")",
+    input=[q.good_jets_with_veto_mask, q.good_bjets_deepjet_with_veto_mask],
     output=[],
     scopes=SCOPES,
 )
 
-JetMaskPNet = Producer(
-    name="JetMaskPNet",
-    call="physicsobject::CombineMasks({df}, {output}, {input}, \"all_of\")",
-    input=[q.good_jets_mask, q.good_bjets_pnet_mask, q.jet_overlap_veto_mask],
+NJetPNetMask = Producer(
+    name="NJetPNetMask",
+    call="physicsobject::CombineMasks({df}, {output}, {input}, \"any_of\")",
+    input=[q.good_jets_with_veto_mask, q.good_bjets_pnet_with_veto_mask],
     output=[],
     scopes=SCOPES,
 )
@@ -459,7 +458,7 @@ NumberOfJetsDeepJet = ProducerGroup(
     input=[],
     output=[q.n_jets_deepjet],
     scopes=SCOPES,
-    subproducers=[JetMaskDeepJet],
+    subproducers=[NJetDeepJetMask],
 )
 
 NumberOfJetsPNet = ProducerGroup(
@@ -468,7 +467,7 @@ NumberOfJetsPNet = ProducerGroup(
     input=[],
     output=[q.n_jets_pnet],
     scopes=SCOPES,
-    subproducers=[JetMaskPNet],
+    subproducers=[NJetPNetMask],
 )
 
 
@@ -624,7 +623,7 @@ LVBJet2 = Producer(
 NumberOfBJetsDeepJet = Producer(
     name="NumberOfBJetsDeepJet",
     call="physicsobject::Count({df}, {output}, {input})",
-    input=[q.good_bjets_deepjet_mask],
+    input=[q.good_bjets_deepjet_with_veto_mask],
     output=[q.n_bjets_deepjet],
     scopes=SCOPES,
 )
@@ -632,7 +631,7 @@ NumberOfBJetsDeepJet = Producer(
 NumberOfBJetsPNet = Producer(
     name="NumberOfBJetsPNet",
     call="physicsobject::Count({df}, {output}, {input})",
-    input=[q.good_bjets_pnet_mask],
+    input=[q.good_bjets_pnet_with_veto_mask],
     output=[q.n_bjets_pnet],
     scopes=SCOPES,
 )
