@@ -2566,7 +2566,7 @@ def build_config(
         GLOBAL_SCOPES,
         RemoveProducer(
             producers=[event.LHE_Scale_weight],
-            samples=["data", "embedding", "embedding_mc", "diboson"],
+            samples=["data", "embedding", "embedding_mc", "diboson", "hh2b2tau"],
         ),
     )
 
