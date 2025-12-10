@@ -1278,7 +1278,7 @@ def add_ak4jet_config(configuration: Configuration):
                     "2022preEE": '"Summer22_22Sep2023_V2_MC"',
                     "2022postEE": '"Summer22EE_22Sep2023_V2_MC"',
                     "2023preBPix": '"Summer23Prompt23_V2_MC"',
-                    "2023postBPix": '"Summer23BPixPrompt23_V2_MC"',
+                    "2023postBPix": '"Summer23BPixPrompt23_V3_MC"',
                 }
             ),
             "ak4jet_jec_algo": EraModifier(
@@ -1323,7 +1323,7 @@ def add_ak4jet_config(configuration: Configuration):
                     "2022preEE": "Summer22_23Sep2023_RunCD_V1",
                     "2022postEE": "Summer22EE_23Sep2023_RunEFG_V1",
                     "2023preBPix": "Summer23Prompt23_RunC_V1",
-                    "2023postBPix": "Summer23Prompt23_RunC_V1",
+                    "2023postBPix": "Summer23BPixPrompt23_RunD_V1",
                 },
             ),
             "jet_veto_map_type": "jetvetomap",
@@ -1694,9 +1694,10 @@ def build_config(
                     },
                     **{
                         _era: f"EGMScale_Compound_Ele_{_era}"
-                        for _era in ERAS_RUN3 if _era != "2023preBPix"
+                        for _era in ERAS_RUN3 if not _era.startswith("2023")
                     },
                     "2023preBPix": "EGMScale_Compound_Ele_2023preBPIX",
+                    "2023postBPix": "EGMScale_Compound_Ele_2023postBPIX",
                 }
             ),
             "ele_es_sf_mc_name": EraModifier(
@@ -1707,9 +1708,10 @@ def build_config(
                     },
                     **{
                         _era: f"EGMSmearAndSyst_ElePTsplit_{_era}"
-                        for _era in ERAS_RUN3 if _era != "2023preBPix"
+                        for _era in ERAS_RUN3 if not _era.startswith("2023")
                     },
                     "2023preBPix": "EGMSmearAndSyst_ElePTsplit_2023preBPIX",
+                    "2023postBPix": "EGMSmearAndSyst_ElePTsplit_2023postBPIX",
                 }
             ),
         },
@@ -2566,7 +2568,7 @@ def build_config(
         GLOBAL_SCOPES,
         RemoveProducer(
             producers=[event.LHE_Scale_weight],
-            samples=["data", "embedding", "embedding_mc", "diboson"],
+            samples=["data", "embedding", "embedding_mc", "diboson", "hh2b2tau"],
         ),
     )
 

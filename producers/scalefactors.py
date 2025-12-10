@@ -599,7 +599,7 @@ Ele_1_Reco_SF = Producer(
         "{ele_sf_cset_name}", 
         "{ele_reco_sf_variation}")
         """,
-    input=[q.pt_1, q.eta_1],
+    input=[q.pt_1, q.eta_1, q.phi_1],
     output=[q.reco_wgt_ele_1],
     scopes=["em", "ee", "et"],
 )
@@ -616,7 +616,7 @@ Ele_2_Reco_SF = Producer(
         "{ele_sf_cset_name}", 
         "{ele_reco_sf_variation}")
         """,
-    input=[q.pt_2, q.eta_2],
+    input=[q.pt_2, q.eta_2, q.phi_2],
     output=[q.reco_wgt_ele_2],
     scopes=["ee"],
 )
@@ -633,7 +633,7 @@ Ele_1_IDWP90_SF = Producer(
         "{ele_sf_cset_name}", 
         "{ele_id_sf_variation}")
         """,
-    input=[q.pt_1, q.eta_1],
+    input=[q.pt_1, q.eta_1, q.phi_1],
     output=[q.id_wgt_ele_wp90nonIso_1],
     scopes=["em", "ee", "et"],
 )
@@ -650,7 +650,7 @@ Ele_2_IDWP90_SF = Producer(
         "{ele_sf_cset_name}", 
         "{ele_id_sf_variation}")
         """,
-    input=[q.pt_2, q.eta_2],
+    input=[q.pt_2, q.eta_2, q.phi_2],
     output=[q.id_wgt_ele_wp90nonIso_2],
     scopes=["ee"],
 )
@@ -690,7 +690,7 @@ Ele_1_Reco_SF_boosted = Producer(
         "{ele_sf_cset_name}", 
         "{ele_reco_sf_variation}")
         """,
-    input=[q.boosted_pt_1, q.boosted_eta_1],
+    input=[q.boosted_pt_1, q.boosted_eta_1, q.boosted_phi_1],
     output=[q.reco_wgt_ele_boosted_1],
     scopes=["et"],
 )
@@ -707,7 +707,7 @@ Ele_1_IDWP90_SF_boosted = Producer(
         "{ele_sf_cset_name}", 
         "{ele_id_sf_variation}")
         """,
-    input=[q.boosted_pt_1, q.boosted_eta_1],
+    input=[q.boosted_pt_1, q.boosted_eta_1, q.boosted_phi_1],
     output=[q.id_wgt_ele_boosted_wp90nonIso_1],
     scopes=["et"],
 )
@@ -1201,7 +1201,7 @@ TauEmbeddingBoostedElectronIsoSF_1_MC = Producer(
 #########################
 btagging_SF = Producer(
     name="btagging_SF",
-    call="""physicsobject::jet::scalefactor::Btagging(
+    call="""physicsobject::jet::scalefactor::BtaggingShape(
         {df}, 
         correctionManager, 
         {output}, 
@@ -1224,7 +1224,7 @@ btagging_SF = Producer(
 )
 btagging_SF_boosted = Producer(
     name="btagging_SF_boosted",
-    call="""physicsobject::jet::scalefactor::Btagging(
+    call="""physicsobject::jet::scalefactor::BtaggingShape(
         {df}, 
         correctionManager, 
         {output}, 
