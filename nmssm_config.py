@@ -10,6 +10,7 @@ from .producers import fatjets as fatjets
 from .producers import met as met
 from .producers import muons as muons
 from .producers import pairquantities as pairquantities
+from .producers import boson_corrections as boson_corrections
 from .producers import pairquantities_bbpair as pairquantities_bbpair
 from .producers import pairselection as pairselection
 from .producers import scalefactors as scalefactors
@@ -1526,6 +1527,44 @@ def add_bjet_config(configuration: Configuration):
     )
 
 
+def add_zpt_weight_config(configuration: Configuration):
+    """
+    Configuration parameters for Z boson pt reweighting.
+
+    This configuration applies to run 3 eras only. Corrections are read from `correctionlib` files
+    provided by the HLepRare group.
+    """
+    ## all scopes MET selection
+    configuration.add_config_parameters(
+        SCOPES,
+        {
+            "zpt_weight_order": SampleModifier(
+                {
+                    "dyjets": "LO",
+                    "dyjets_madgraph": "LO",
+                    "dyjets_amcatnlo_ll": "NLO",
+                    "dyjets_amcatnlo_tt": "NLO",
+                    "dyjets_powheg": "NLO",
+                },
+                default="DOES_NOT_EXIST",  # placeholder for samples without z pt reweighting
+            ),
+            "zpt_weight_file": EraModifier(
+                {
+                    **{
+                        _era: f"data/hleprare/DYweightCorrlib/DY_pTll_weights_{_era}_v3.json.gz"
+                        for _era in ERAS_RUN3
+                    },
+                    **{
+                        _era: "DOES_NOT_EXIST"  # placeholder for Run 2, for which corrections are provided in a different way
+                        for _era in ERAS_RUN2
+                    },
+                },
+            ),
+            "zpt_weight_variation": "nom",
+        },
+    )
+
+
 def add_recoil_corrections_config(configuration: Configuration):
     ## all scopes MET selection
     configuration.add_config_parameters(
@@ -1675,6 +1714,9 @@ def build_config(
 
     # b jet selection, identification, and corrections
     add_bjet_config(configuration)
+
+    # Z pt reweighting
+    add_zpt_weight_config(configuration)
 
     # recoil corrections
     # TODO needs to be refined for run 3, not considered at the moment(https://github.com/kit-cms/XYHBBTauTauAnalysis-CROWN/issues/6)
@@ -2066,6 +2108,19 @@ def build_config(
         era,
     )
 
+    # Z boson pt reweighting
+    # - TODO For Run 2, the corrections are provided in ROOT files and require a dedicated producer chain.
+    # - For Run 3, the corrections are provided in correctionlib files.
+    z_pt_reweighting_producers = get_for_era(
+        {
+            tuple(ERAS_RUN3): [
+                boson_corrections.ZPtReweighting,
+            ],
+        },
+        era,
+        default=[],
+    )
+
     # Di-tau + jet trigger
     # - In Run 2, di-tau + jet triggers did not exist, so no producer is added.
     # - In Run 3, di-tau + jet triggers are available and the corresponding trigger flag producers
@@ -2168,6 +2223,7 @@ def build_config(
             fatjets.GoodFatJets,
             event.DiLeptonVeto,
             met.MetBasics,
+            boson_corrections.GenBosonQuantities,
         ]
         + prefire_weight_producers
         + jet_selection_producers
@@ -2401,6 +2457,15 @@ def build_config(
                 event.LHEDrellYanDecayFlavor,
             ],
             samples=["dyjets", "dyjets_madgraph", "dyjets_amcatnlo_ll", "dyjets_amcatnlo_tt", "dyjets_powheg"],
+        )
+    )
+
+    # For DY samples, apply Z pt reweighting
+    configuration.add_modification_rule(
+        SCOPES,
+        AppendProducer(
+            z_pt_reweighting_producers,
+            samples=["dyjets_madgraph", "dyjets_amcatnlo_ll", "dyjets_amcatnlo_tt", "dyjets_powheg"],
         )
     )
 
