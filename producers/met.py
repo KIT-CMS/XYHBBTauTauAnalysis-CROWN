@@ -154,9 +154,9 @@ MetBasics = ProducerGroup(
         MetCov10,
         MetCov11,
         MetSumEt,
-        CalculateGenBosonVector,
-        CalculateVisGenBosonVector,
-        GenBosonMass,
+        #CalculateGenBosonVector,
+        #CalculateVisGenBosonVector,
+        #GenBosonMass,
     ],
 )
 
@@ -435,6 +435,21 @@ RenameMet = ProducerGroup(
         RenameMetPhiBoosted,
         RenameMetP4RecoilCorrected,
         RenameMetP4RecoilCorrectedBoosted,
+    ],
+)
+
+
+MetQuantities = ProducerGroup(
+    name="MetQuantities",
+    call=None,
+    input=None,
+    output=None,
+    scopes=["global"],
+    subproducers=[
+        MetBasics,
+        CalculateGenBosonVector,
+        CalculateVisGenBosonVector,
+        GenBosonMass,
     ],
 )
 
