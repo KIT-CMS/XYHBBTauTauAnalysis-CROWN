@@ -1566,6 +1566,66 @@ def add_zpt_weight_config(configuration: Configuration):
 
 
 def add_recoil_corrections_config(configuration: Configuration):
+    """
+    Configuration parameters for recoil corrections.
+
+    This configuration applies to Run 3 eras only. Corrections are read from `correctionlib` files
+    provided by the HLepRare group.
+    """
+
+    configuration.add_config_parameters(
+        SCOPES,
+        {
+            "recoil_correction_file": EraModifier(
+                {
+                    **{
+                        _era: f"data/hleprare/RecoilCorrlib/Recoil_corrections_{_era}_v3.json.gz"
+                        for _era in ERAS_RUN3
+                    },
+                    **{
+                        _era: "DOES_NOT_EXIST"  # placeholder for Run 2, for which corrections are provided in a different way
+                        for _era in ERAS_RUN2
+                    },
+                },
+            ),
+            "recoil_correction_order": SampleModifier(
+                {
+                    "dyjets": "LO",
+                    "dyjets_madgraph": "LO",
+                    "dyjets_amcatnlo_ll": "NLO",
+                    "dyjets_amcatnlo_tt": "NLO",
+                    "dyjets_powheg": "NLO",
+                    "wjets_madgraph": "LO",
+                    "wjets_amcatnlo": "NLO",
+                },
+                default="DOES_NOT_EXIST",  # placeholder for samples without recoil corrections
+            ),
+            "recoil_correction_method": "Quantile",
+            "recoil_correction_apply": SampleModifier(
+                {
+                    "dyjets": True,
+                    "dyjets_madgraph": True,
+                    "dyjets_amcatnlo_ll": True,
+                    "dyjets_amcatnlo_tt": True,
+                    "dyjets_powheg": True,
+                    "wjets_madgraph": True,
+                    "wjets_amcatnlo": True,
+                },
+                default=False,
+            ),
+            "recoil_correction_is_wjets": SampleModifier(
+                {
+                    "wjets_madgraph": True,
+                    "wjets_amcatnlo": True,
+                },
+                default=False,
+            ),
+            "recoil_correction_variation": "nom",
+        },
+    )
+
+
+def add_recoil_corrections_config_run2(configuration: Configuration):
     ## all scopes MET selection
     configuration.add_config_parameters(
         SCOPES,
@@ -1622,7 +1682,7 @@ def add_recoil_corrections_config(configuration: Configuration):
     )
 
 
-def add_z_pt_reweighting_config(configuration: Configuration):
+def add_z_pt_reweighting_config_run2(configuration: Configuration):
     """
     Configuration for the Z boson pt reweighting.
 
@@ -1717,6 +1777,9 @@ def build_config(
 
     # Z pt reweighting
     add_zpt_weight_config(configuration)
+
+    # Recoil corrections
+    add_recoil_corrections_config(configuration)
 
     # recoil corrections
     # TODO needs to be refined for run 3, not considered at the moment(https://github.com/kit-cms/XYHBBTauTauAnalysis-CROWN/issues/6)
@@ -2121,6 +2184,19 @@ def build_config(
         default=[],
     )
 
+    # Recoil corrections
+    # - TODO For Run 2, the corrections are provided in ROOT files and require a dedicated producer chain.
+    # - For Run 3, the corrections are provided in correctionlib files.
+    recoil_correction_producers = get_for_era(
+        {
+            tuple(ERAS_RUN3): [
+                boson_corrections.BosonRecoilCorrection,
+            ],
+        },
+        era,
+        default=[],
+    )
+
     # Di-tau + jet trigger
     # - In Run 2, di-tau + jet triggers did not exist, so no producer is added.
     # - In Run 3, di-tau + jet triggers are available and the corresponding trigger flag producers
@@ -2460,12 +2536,30 @@ def build_config(
         )
     )
 
+    # For DY and W samples, calculate the generator-level boson four-vector
+    configuration.add_modification_rule(
+        SCOPES,
+        AppendProducer(
+            [boson_corrections.GenBosonQuantities],
+            samples=["dyjets_madgraph", "dyjets_amcatnlo_ll", "dyjets_amcatnlo_tt", "dyjets_powheg", "wjets_madgraph", "wjets_amcatnlo"],
+        ),
+    )
+
     # For DY samples, apply Z pt reweighting
     configuration.add_modification_rule(
         SCOPES,
         AppendProducer(
             z_pt_reweighting_producers,
             samples=["dyjets_madgraph", "dyjets_amcatnlo_ll", "dyjets_amcatnlo_tt", "dyjets_powheg"],
+        )
+    )
+
+    # For DY and W samples, apply Z pt reweighting
+    configuration.add_modification_rule(
+        SCOPES,
+        AppendProducer(
+            recoil_correction_producers,
+            samples=["dyjets_madgraph", "dyjets_amcatnlo_ll", "dyjets_amcatnlo_tt", "dyjets_powheg", "wjets_madgraph", "wjets_amcatnlo"],
         )
     )
 
