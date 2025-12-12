@@ -671,9 +671,37 @@ def add_diTauTriggerSetup(configuration: Configuration):
     configuration.add_config_parameters(
         TT_SCOPES,
         {
+            "double_tautau_jet_trigger": EraModifier(
+                {
+                    **{
+                        _era: [
+                            # trigger:        HLT_DoubleMediumDeepTauPFTauHPS35_L2NN_eta2p1
+                            # final filter:   hltHpsOverlapFilterDeepTauDoublePFTau30PFJet60
+                            # filter bit:     3, 14
+                            # documentation:  https://twiki.cern.ch/twiki/bin/view/CMS/TauTrigger#Trigger_Table_for_2022
+                            {
+                                "flagname": "trg_double_tau30_jet60",
+                                "hlt_path": "HLT_DoubleMediumDeepTauPFTauHPS30_L2NN_eta2p1_PFJet60",
+                                "p1_min_pt": 35.,
+                                "p1_max_abs_eta": 2.1,
+                                "p1_filter_bit": 14,
+                                "p1_particle_id": 15,
+                                "p2_min_pt": 35.,
+                                "p2_max_abs_eta": 2.1,
+                                "p2_filter_bit": 14,
+                                "p2_particle_id": 15,
+                                "match_max_delta_r": 0.4,
+                            },
+                        ]
+                        for _era in ERAS_RUN3
+                    },
+                    **{
+                        _era: [] for _era in ERAS_RUN2  # These triggers do not exist for Run 2
+                    },
+                },
+            ),
             "double_tautau_trigger": EraModifier(
                 {
-                    # TODO placeholder for Run3 eras, add these triggers also there
                     **{
                         _era: [
                             # trigger:        HLT_DoubleMediumDeepTauPFTauHPS35_L2NN_eta2p1
