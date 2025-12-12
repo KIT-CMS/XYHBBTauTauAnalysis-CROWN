@@ -495,6 +495,10 @@ THU_qqH_JET01 = Quantity("THU_qqH_JET01")
 
 ## MET quantities
 met_p4 = Quantity("met_p4")
+gen_boson_p4 = Quantity("gen_boson_p4")
+gen_vis_boson_p4 = Quantity("gen_vis_boson_p4")
+gen_boson_pt = Quantity("gen_boson_pt")
+gen_boson_mass = Quantity("gen_boson_mass")
 recoil_genboson_p4 = Quantity("recoil_genboson_p4")
 recoil_vis_genboson_p4 = Quantity("recoil_vis_genboson_p4")
 genbosonmass = Quantity("genbosonmass")
