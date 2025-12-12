@@ -32,7 +32,7 @@ main () {
 
     # split the samples string into an array
     if [[ "${samples}" == "all" ]]; then
-        samples="data,nmssm_Ybb,ttbar,dyjets_amcatnlo"
+        samples="data,nmssm_Ybb,ttbar,dyjets_amcatnlo_ll"
     fi
     declare -a samples_list
     IFS="," read -ra samples_list <<< "${samples}"
@@ -47,7 +47,7 @@ main () {
     test_files_list[data]="root://xrootd-cms.infn.it///store/data/Run2022E/Muon/NANOAOD/22Sep2023-v1/40000/cb3afe1f-699f-4be6-a1ed-dd6fd0b2ca81.root"
     test_files_list[nmssm_Ybb]="root://xrootd-cms.infn.it///store/mc/Run3Summer22EENanoAODv12/NMSSM_XtoYHto2B2Tau_MX-1000_MY-100_TuneCP5_13p6TeV_madgraph-pythia8/NANOAODSIM/130X_mcRun3_2022_realistic_postEE_v6-v2/2830000/da15832e-6657-4d0c-bfb3-7641b5b6bc9e.root"
     test_files_list[ttbar]="root://xrootd-cms.infn.it///store/mc/Run3Summer22EENanoAODv12/TTto2L2Nu_TuneCP5_13p6TeV_powheg-pythia8/NANOAODSIM/130X_mcRun3_2022_realistic_postEE_v6_ext1-v2/50000/fce23976-3083-4220-ab86-abfde0dc2c2f.root"
-    test_files_list[dyjets_amcatnlo]="root://xrootd-cms.infn.it///store/mc/Run3Summer22EENanoAODv12/DYto2L-2Jets_MLL-50_1J_TuneCP5_13p6TeV_amcatnloFXFX-pythia8/NANOAODSIM/130X_mcRun3_2022_realistic_postEE_v6-v2/60000/27b270df-2d16-4b51-8617-84b2abb37000.root"
+    test_files_list[dyjets_amcatnlo_ll]="root://xrootd-cms.infn.it///store/mc/Run3Summer22EENanoAODv12/DYto2L-2Jets_MLL-50_1J_TuneCP5_13p6TeV_amcatnloFXFX-pythia8/NANOAODSIM/130X_mcRun3_2022_realistic_postEE_v6-v2/60000/27b270df-2d16-4b51-8617-84b2abb37000.root"
 
     # configure and compile the project
     if [[ "${steps}" == "build" || "${steps}" == "all" ]]; then
