@@ -101,9 +101,10 @@ BosonRecoilCorrection = Producer(
             {input},
             \"{recoil_correction_file}\",
             \"{recoil_correction_order}\",
+            \"{recoil_correction_method}\",
             \"{recoil_correction_variation}\",
-            \"{recoil_correction_apply}\",
-            \"{recoil_correction_is_wjets}\"
+            {recoil_correction_apply},
+            {recoil_correction_is_wjets}
         )
         """
     ),
