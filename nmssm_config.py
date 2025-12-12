@@ -2026,6 +2026,20 @@ def build_config(
         era,
     )
 
+    # Di-tau + jet trigger
+    # - In Run 2, di-tau + jet triggers did not exist, so no producer is added.
+    # - In Run 3, di-tau + jet triggers are available and the corresponding trigger flag producers
+    #   are added to the tt scope.
+    double_tau_jet_trigger_producers = get_for_era(
+        {
+            tuple(ERAS_RUN3): [
+                triggers.DoubleTauTauJetTriggerFlags,
+            ],
+        },
+        era,
+        default=[],
+    )
+
     # Tau ID scale factors in the mt channel
     # - In Run 2, the scale factors are provided from own measurements with the same methods as for
     #   embedding.
@@ -2251,6 +2265,7 @@ def build_config(
             # triggers.GenerateSingleTrailingTauTriggerFlags,
             # triggers.GenerateSingleLeadingTauTriggerFlags,
         ]
+        + double_tau_jet_trigger_producers
         + tt_tau_sf_producers
     )
 
