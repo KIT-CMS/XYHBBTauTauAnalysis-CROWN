@@ -25,7 +25,23 @@ GenBosonP4 = Producer(
         nanoAOD.GenPart_statusFlags,
     ],
     output=[q.gen_boson_p4],
-    scopes=GLOBAL_SCOPES,
+    scopes=SCOPES,
+)
+
+GenVisBosonP4 = Producer(
+    name="GenVisBosonP4",
+    call="genparticles::GetVisibleBoson({df}, {output}, {input}, {is_data})",
+    input=[
+        nanoAOD.GenPart_pt,
+        nanoAOD.GenPart_eta,
+        nanoAOD.GenPart_phi,
+        nanoAOD.GenPart_mass,
+        nanoAOD.GenPart_pdgId,
+        nanoAOD.GenPart_status,
+        nanoAOD.GenPart_statusFlags,
+    ],
+    output=[q.gen_vis_boson_p4],
+    scopes=SCOPES,
 )
 
 GenBosonPt = Producer(
@@ -33,7 +49,7 @@ GenBosonPt = Producer(
     call="lorentzvector::GetPt({df}, {output}, {input})",
     input=[q.gen_boson_p4],
     output=[q.gen_boson_pt],
-    scopes=GLOBAL_SCOPES,
+    scopes=SCOPES,
 )
 
 GenBosonQuantities = ProducerGroup(
@@ -41,8 +57,8 @@ GenBosonQuantities = ProducerGroup(
     call=None,
     input=None,
     output=None,
-    scopes=GLOBAL_SCOPES,
-    subproducers=[GenBosonP4, GenBosonPt],
+    scopes=SCOPES,
+    subproducers=[GenBosonP4, GenVisBosonP4, GenBosonPt],
 )
 
 #
