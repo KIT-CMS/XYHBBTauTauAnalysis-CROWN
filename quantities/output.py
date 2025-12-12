@@ -494,6 +494,7 @@ THU_qqH_25 = Quantity("THU_qqH_25")
 THU_qqH_JET01 = Quantity("THU_qqH_JET01")
 
 ## MET quantities
+met_p4_uncorrected = Quantity("met_p4_uncorrected")
 met_p4 = Quantity("met_p4")
 gen_boson_p4 = Quantity("gen_boson_p4")
 gen_vis_boson_p4 = Quantity("gen_vis_boson_p4")
@@ -523,6 +524,7 @@ metphi_boosted = Quantity("metphi_boosted")
 
 ## PFMET quantities
 pfmet = Quantity("pfmet")
+pfmet_p4_uncorrected = Quantity("pfmet_p4_uncorrected")
 pfmet_p4 = Quantity("pfmet_p4")
 pfmetphi = Quantity("pfmetphi")
 pfmet_uncorrected = Quantity("pfmet_uncorrected")
