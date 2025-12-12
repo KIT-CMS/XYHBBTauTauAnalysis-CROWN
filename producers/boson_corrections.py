@@ -44,43 +44,37 @@ GenVisBosonP4 = Producer(
     scopes=SCOPES,
 )
 
-GenBosonPt = Producer(
-    name="GenBosonPt",
-    call="lorentzvector::GetPt({df}, {output}, {input})",
-    input=[q.gen_boson_p4],
-    output=[q.gen_boson_pt],
-    scopes=SCOPES,
-)
-
 GenBosonQuantities = ProducerGroup(
     name="GenBosonQuantities",
     call=None,
     input=None,
     output=None,
     scopes=SCOPES,
-    subproducers=[GenBosonP4, GenVisBosonP4, GenBosonPt],
+    subproducers=[GenBosonP4, GenVisBosonP4],
 )
 
 #
 # Z PT REWEIGHTING
 #
 
+# Z boson p_T weights evaluation via correctionlib
 ZPtReweighting = Producer(
     name="ZPtReweighting",
     call=(
         """
-        event::reweighting::ZPtWeight(
+        event::reweighting::ZBosonPt(
             {df},
             correctionManager,
             {output},
             {input},
-            \"{zpt_weight_order}\",
             \"{zpt_weight_file}\",
+            \"{zpt_weight_name}\",
+            \"{zpt_weight_order}\",
             \"{zpt_weight_variation}\"
         )
         """
     ),
-    input=[q.gen_boson_pt],
+    input=[q.gen_boson_p4],
     output=[q.ZPtMassReweightWeight],
     scopes=SCOPES,
 )
@@ -90,21 +84,22 @@ ZPtReweighting = Producer(
 # RECOIL CORRECTIONS
 #
 
+# Recoil correction evaluation via correctionlib
 BosonRecoilCorrection = Producer(
     name="BosonRecoilCorrection",
     call=(
         """
-        met::applyRecoilCorrections(
+        met::RecoilCorrection(
             {df},
             correctionManager,
             {output},
             {input},
             \"{recoil_correction_file}\",
-            \"{recoil_correction_order}\",
+            \"{recoil_correction_name}\",
             \"{recoil_correction_method}\",
+            \"{recoil_correction_order}\",
             \"{recoil_correction_variation}\",
-            {recoil_correction_apply},
-            {recoil_correction_is_wjets}
+            {recoil_correction_apply}
         )
         """
     ),
@@ -114,6 +109,6 @@ BosonRecoilCorrection = Producer(
         q.gen_vis_boson_p4,
         q.njets,
     ],
-    output=[q.met_p4],
+    output=[q.met_p4_recoilcorrected],
     scopes=SCOPES,
 )
