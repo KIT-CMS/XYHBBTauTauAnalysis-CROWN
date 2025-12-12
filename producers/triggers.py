@@ -118,15 +118,15 @@ DoubleTauTauTriggerFlags = ExtendedVectorProducer(
 # double electron-muon trigger flags, including trigger object matching
 DoubleEleMuTriggerFlags = ExtendedVectorProducer(
     name="DoubleEleMuTriggerFlags",
-    call='trigger::GenerateDoubleTriggerFlag({df}, {output}, {input}, "{hlt_path}", {p1_min_pt}, {p2_min_pt}, {p1_max_abs_eta}, {p2_max_abs_eta}, {p1_particle_id}, {p2_particle_id}, {p1_filter_bit}, {p2_filter_bit}, {match_max_delta_r})',
+    call='trigger::DoubleObjectFlag({df}, {output}, {input}, "{hlt_path}", {p1_min_pt}, {p2_min_pt}, {p1_max_abs_eta}, {p2_max_abs_eta}, {p1_particle_id}, {p2_particle_id}, {p1_filter_bit}, {p2_filter_bit}, {match_max_delta_r})',
     input=[
         q.p4_1,
         q.p4_2,
-        nanoAOD.TrigObj_filterBits,
-        nanoAOD.TrigObj_id,
         nanoAOD.TrigObj_pt,
         nanoAOD.TrigObj_eta,
         nanoAOD.TrigObj_phi,
+        nanoAOD.TrigObj_id,
+        nanoAOD.TrigObj_filterBits,
     ],
     output="flagname",
     scope=EM_SCOPES,
