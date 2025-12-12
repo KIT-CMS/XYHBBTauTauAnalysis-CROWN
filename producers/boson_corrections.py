@@ -68,3 +68,35 @@ ZPtReweighting = Producer(
     output=[q.ZPtMassReweightWeight],
     scopes=SCOPES,
 )
+
+
+#
+# RECOIL CORRECTIONS
+#
+
+BosonRecoilCorrection = Producer(
+    name="BosonRecoilCorrection",
+    call=(
+        """
+        met::applyRecoilCorrections(
+            {df},
+            correctionManager,
+            {output},
+            {input},
+            \"{recoil_correction_file}\",
+            \"{recoil_correction_order}\",
+            \"{recoil_correction_variation}\",
+            \"{recoil_correction_apply}\",
+            \"{recoil_correction_is_wjets}\"
+        )
+        """
+    ),
+    input=[
+        q.met_p4_uncorrected,
+        q.gen_boson_p4,
+        q.gen_vis_boson_p4,
+        q.njets,
+    ],
+    output=[q.met_p4],
+    scopes=SCOPES,
+)
