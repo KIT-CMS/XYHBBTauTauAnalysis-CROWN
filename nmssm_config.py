@@ -15,6 +15,7 @@ from .producers import pairquantities_bbpair as pairquantities_bbpair
 from .producers import pairselection as pairselection
 from .producers import scalefactors as scalefactors
 from .producers import taus as taus
+from .producers import puppimet as puppimet
 from .producers import triggers as triggers
 from .quantities import nanoAOD, nanoAOD_run2
 from .quantities import output as q
@@ -1506,7 +1507,7 @@ def add_zpt_weight_config(configuration: Configuration):
             "zpt_weight_file": EraModifier(
                 {
                     **{
-                        _era: f"data/hleprare/DYweightCorrlib/DY_pTll_weights_{_era}_v3.json.gz"
+                        _era: f"data/hleprare/DYweightCorrlib/DY_pTll_weights_{_era}_v5.json.gz"
                         for _era in ERAS_RUN3
                     },
                     **{
@@ -1515,6 +1516,7 @@ def add_zpt_weight_config(configuration: Configuration):
                     },
                 },
             ),
+            "zpt_weight_name": "DY_pTll_reweighting",
             "zpt_weight_variation": "nom",
         },
     )
@@ -1534,7 +1536,7 @@ def add_recoil_corrections_config(configuration: Configuration):
             "recoil_correction_file": EraModifier(
                 {
                     **{
-                        _era: f"data/hleprare/RecoilCorrlib/Recoil_corrections_{_era}_v3.json.gz"
+                        _era: f"data/hleprare/RecoilCorrlib/Recoil_corrections_{_era}_v5.json.gz"
                         for _era in ERAS_RUN3
                     },
                     **{
@@ -1543,6 +1545,7 @@ def add_recoil_corrections_config(configuration: Configuration):
                     },
                 },
             ),
+            "recoil_correction_name": "Recoil_correction",
             "recoil_correction_order": SampleModifier(
                 {
                     "dyjets": "LO",
@@ -1555,7 +1558,7 @@ def add_recoil_corrections_config(configuration: Configuration):
                 },
                 default="DOES_NOT_EXIST",  # placeholder for samples without recoil corrections
             ),
-            "recoil_correction_method": "Quantile",
+            "recoil_correction_method": "QuantileMapHist",
             "recoil_correction_apply": SampleModifier(
                 {
                     "dyjets": True,
@@ -1797,10 +1800,8 @@ def build_config(
                         _era: "DOES_NOT_EXIST"  # not needed for Run 2 producer
                         for _era in ERAS_RUN2
                     },
-                    **{
-                        _era: f"EGMScale_Compound_Ele_{_era}"
-                        for _era in ERAS_RUN3 if not _era.startswith("2023")
-                    },
+                    "2022preEE": "EGMScale_Compound_Ele_2022preEE",
+                    "2022postEE": "EGMScale_Compound_Ele_2022postEE",
                     "2023preBPix": "EGMScale_Compound_Ele_2023preBPIX",
                     "2023postBPix": "EGMScale_Compound_Ele_2023postBPIX",
                 }
@@ -1811,10 +1812,8 @@ def build_config(
                         _era: "DOES_NOT_EXIST"  # not needed for Run 2 producer
                         for _era in ERAS_RUN2
                     },
-                    **{
-                        _era: f"EGMSmearAndSyst_ElePTsplit_{_era}"
-                        for _era in ERAS_RUN3 if not _era.startswith("2023")
-                    },
+                    "2022preEE": "EGMSmearAndSyst_ElePTsplit_2022preEE",
+                    "2022postEE": "EGMSmearAndSyst_ElePTsplit_2022postEE",
                     "2023preBPix": "EGMSmearAndSyst_ElePTsplit_2023preBPIX",
                     "2023postBPix": "EGMSmearAndSyst_ElePTsplit_2023postBPIX",
                 }
@@ -2147,14 +2146,12 @@ def build_config(
     # Recoil corrections
     # - TODO For Run 2, the corrections are provided in ROOT files and require a dedicated producer chain.
     # - For Run 3, the corrections are provided in correctionlib files.
-    recoil_correction_producers = get_for_era(
+    recoil_correction_producer = get_for_era(
         {
-            tuple(ERAS_RUN3): [
-                boson_corrections.BosonRecoilCorrection,
-            ],
+            tuple(ERAS_RUN2): None,
+            tuple(ERAS_RUN3): boson_corrections.BosonRecoilCorrection,
         },
         era,
-        default=[],
     )
 
     # Di-tau + jet trigger
@@ -2258,8 +2255,12 @@ def build_config(
             muons.BaseMuons,
             fatjets.GoodFatJets,
             event.DiLeptonVeto,
+<<<<<<< HEAD
             met.MetBasics,
             boson_corrections.GenBosonQuantities,
+=======
+            puppimet.MetQuantitiesUncorrected,
+>>>>>>> ba5715d (Update parameter values of Z boson pt and recoil corrections)
         ]
         + prefire_weight_producers
         + jet_selection_producers
@@ -2298,7 +2299,8 @@ def build_config(
             # TODO producers need to be refined for run 3, not considered at the moment
             #met.MetCorrections,
             #met.PFMetCorrections,
-            met.RenameMet,
+            puppimet.RenameMet,  # dummy producer for samples, on which MET is not corrected via recoil corrections
+            puppimet.MetQuantities,
             pairquantities.DiTauPairMETQuantities,
             genparticles.GenMatching,
         ]
@@ -2517,8 +2519,8 @@ def build_config(
     # For DY and W samples, apply Z pt reweighting
     configuration.add_modification_rule(
         SCOPES,
-        AppendProducer(
-            recoil_correction_producers,
+        ReplaceProducer(
+            [puppimet.RenameMet, recoil_correction_producer],
             samples=["dyjets_madgraph", "dyjets_amcatnlo_ll", "dyjets_amcatnlo_tt", "dyjets_powheg", "wjets_madgraph", "wjets_amcatnlo"],
         )
     )
@@ -3028,7 +3030,6 @@ def build_config(
             q.pt_tautaubb,
             q.mass_tautaubb,
             q.mt_tot,
-            q.genbosonmass,
             q.gen_match_1,
             q.gen_match_2,
             # TODO remove these variables as PF MET is not used anymore by us
