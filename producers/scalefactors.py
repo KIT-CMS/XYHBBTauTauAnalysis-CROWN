@@ -4,7 +4,7 @@ from code_generation.quantity import Quantity
 from code_generation.producer import Producer, ProducerGroup
 from code_generation.producer import ExtendedVectorProducer
 
-from ..constants import ET_SCOPES, MT_SCOPES, TT_SCOPES, SL_SCOPES, ELECTRON_SCOPES, MUON_SCOPES, HAD_TAU_SCOPES
+from ..constants import ET_SCOPES, MT_SCOPES, TT_SCOPES, SL_SCOPES, ELECTRON_SCOPES, MUON_SCOPES, HAD_TAU_SCOPES, SCOPES
 
 
 ############################
@@ -1222,6 +1222,59 @@ btagging_SF = Producer(
     output=[q.btag_weight],
     scopes=["tt", "mt", "et", "mm", "em", "ee"],
 )
+
+BJetShapeDeepJet_SF = Producer(
+    name="BJetShapeDeepJet_SF",
+    call="""
+    physicsobject::jet::scalefactor::Btagging(
+        {df},
+        correctionManager,
+        {output},
+        {input},
+        "{bjet_sf_file}",
+        "{bjet_sf_deepjet_shape_name}",
+        "{bjet_sf_deepjet_shape_variation}"
+    )
+    """,
+    input=[
+        q.Jet_pt_corrected,
+        nanoAOD.Jet_eta,
+        nanoAOD.Jet_btagDeepFlavB,
+        nanoAOD.Jet_hadronFlavour,
+        q.good_jets_mask,
+        q.good_bjets_deepjet_mask,
+        q.jet_overlap_veto_mask,
+    ],
+    output=[q.id_wgt_bjet_deepjet_shape],
+    scopes=SCOPES,
+)
+
+BJetShapePNet_SF = Producer(
+    name="BJetShapePNet_SF",
+    call="""
+    physicsobject::jet::scalefactor::Btagging(
+        {df},
+        correctionManager,
+        {output},
+        {input},
+        "{bjet_sf_file}",
+        "{bjet_sf_pnet_shape_name}",
+        "{bjet_sf_pnet_shape_variation}"
+    )
+    """,
+    input=[
+        q.Jet_pt_corrected,
+        nanoAOD.Jet_eta,
+        nanoAOD.Jet_btagPNetB,
+        nanoAOD.Jet_hadronFlavour,
+        q.good_jets_mask,
+        q.good_bjets_pnet_mask,
+        q.jet_overlap_veto_mask,
+    ],
+    output=[q.id_wgt_bjet_pnet_shape],
+    scopes=SCOPES,
+)
+
 btagging_SF_boosted = Producer(
     name="btagging_SF_boosted",
     call="""physicsobject::jet::scalefactor::BtaggingShape(
