@@ -7,7 +7,7 @@ Transform_njets = Producer(
     name="Transform_njets",
     call='ml::StandardTransformer({df}, {input}, {output}, "{feature_transformation_file}", "i")',
     input=[
-        q.njets,
+        q.n_jets,
     ],
     output=[q.transformed_njets],
     scopes=["mt"],
@@ -16,7 +16,7 @@ Transform_nbtag = Producer(
     name="Transform_nbtag",
     call='ml::StandardTransformer({df}, {input}, {output}, "{feature_transformation_file}", "i")',
     input=[
-        q.nbtag,
+        q.n_bjets,
     ],
     output=[q.transformed_nbtag],
     scopes=["mt"],
@@ -455,7 +455,7 @@ Transform_njets_boosted = Producer(
     name="Transform_njets_boosted",
     call='ml::StandardTransformer({df}, {input}, {output}, "{feature_transformation_file_boosted}", "i")',
     input=[
-        q.njets_boosted,
+        q.n_jets_boosted,
     ],
     output=[q.transformed_njets_boosted],
     scopes=["mt"],
@@ -464,7 +464,7 @@ Transform_nbtag_boosted = Producer(
     name="Transform_nbtag_boosted",
     call='ml::StandardTransformer({df}, {input}, {output}, "{feature_transformation_file_boosted}", "i")',
     input=[
-        q.nbtag_boosted,
+        q.n_bjets_boosted,
     ],
     output=[q.transformed_nbtag_boosted],
     scopes=["mt"],
