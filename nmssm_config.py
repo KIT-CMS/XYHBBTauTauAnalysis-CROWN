@@ -2026,6 +2026,20 @@ def build_config(
         era,
     )
 
+    # Di-tau + jet trigger
+    # - In Run 2, di-tau + jet triggers did not exist, so no producer is added.
+    # - In Run 3, di-tau + jet triggers are available and the corresponding trigger flag producers
+    #   are added to the tt scope.
+    double_tau_jet_trigger_producers = get_for_era(
+        {
+            tuple(ERAS_RUN3): [
+                triggers.DoubleTauTauJetTriggerFlags,
+            ],
+        },
+        era,
+        default=[],
+    )
+
     # Tau ID scale factors in the mt channel
     # - In Run 2, the scale factors are provided from own measurements with the same methods as for
     #   embedding.
@@ -2251,6 +2265,7 @@ def build_config(
             # triggers.GenerateSingleTrailingTauTriggerFlags,
             # triggers.GenerateSingleLeadingTauTriggerFlags,
         ]
+        + double_tau_jet_trigger_producers
         + tt_tau_sf_producers
     )
 
@@ -2324,6 +2339,7 @@ def build_config(
             scalefactors.MuonIDIso_SF,
             triggers.SingleEleTriggerFlags,
             triggers.SingleMuTriggerFlags,
+            triggers.DoubleEleMuTriggerFlags,
             scalefactors.SingleEleTriggerSF,
             scalefactors.SingleMuTriggerSF,
         ],
@@ -3079,6 +3095,7 @@ def build_config(
             triggers.SingleMuTriggerFlags.output_group,
             q.muon_veto_flag,
             q.electron_veto_flag,
+            q.dielectron_veto,
         ] + scalefactors.MuonIDIso_SF.get_outputs("mm")
         + scalefactors.SingleMuTriggerSF.get_outputs("mm"),
     )
@@ -3091,10 +3108,27 @@ def build_config(
             triggers.SingleEleTriggerFlags.output_group,
             q.muon_veto_flag,
             q.electron_veto_flag,
-            q.dielectron_veto,
-            q.dilepton_veto,
+            q.dimuon_veto,
         ] + scalefactors.EleID_SF.get_outputs("ee")
         + scalefactors.SingleEleTriggerSF.get_outputs("ee"),
+    )
+
+    # Outputs for the em scope
+    configuration.add_outputs(
+        "em",
+        [
+            q.nelectrons,
+            q.nmuons,
+            triggers.SingleEleTriggerFlags.output_group,
+            triggers.SingleMuTriggerFlags.output_group,
+            triggers.DoubleEleMuTriggerFlags.output_group,
+            q.electron_veto_flag,
+            q.muon_veto_flag,
+            q.dilepton_veto,
+        ] + scalefactors.EleID_SF.get_outputs("em")
+        + scalefactors.MuonIDIso_SF.get_outputs("em")
+        + scalefactors.SingleEleTriggerSF.get_outputs("em")
+        + scalefactors.SingleMuTriggerSF.get_outputs("em"),
     )
 
     # TODO re-include
