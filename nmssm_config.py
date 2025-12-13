@@ -2255,12 +2255,7 @@ def build_config(
             muons.BaseMuons,
             fatjets.GoodFatJets,
             event.DiLeptonVeto,
-<<<<<<< HEAD
-            met.MetBasics,
-            boson_corrections.GenBosonQuantities,
-=======
             puppimet.MetQuantitiesUncorrected,
->>>>>>> ba5715d (Update parameter values of Z boson pt and recoil corrections)
         ]
         + prefire_weight_producers
         + jet_selection_producers
@@ -2952,7 +2947,7 @@ def build_config(
             q.genjet_mass_2,
             q.genjet_hadFlavour_2,
             q.genjet_m_inv,
-            q.njets,
+            q.n_jets,
             q.jet_pt,
             q.jet_eta,
             q.jet_phi,
@@ -2977,7 +2972,7 @@ def build_config(
             q.m_vis,
             q.deltaR_ditaupair,
             q.pt_vis,
-            q.nbtag,
+            q.n_bjets,
             # q.bpt_1,
             # q.bpt_2,
             # q.beta_1,
