@@ -1667,11 +1667,10 @@ def build_config(
                         _era: f"data/electron_energy_scale/{_era}_UL/EGM_ScaleUnc.json.gz"
                         for _era in ERAS_RUN2
                     },
-                    **{
-                        _era: f"data/jsonpog-integration/POG/EGM/{_campaign}/electronSS_EtDependent.json.gz"
-                        for _era, _campaign in CORRECTIONLIB_CAMPAIGNS.items()
-                        if _era in ERAS_RUN3
-                    },
+                    "2022preEE": "/cvmfs/cms-griddata.cern.ch/cat/metadata/EGM/22CDSep23-Summer22-NanoAODv12/2025-12-03/electronSS_EtDependent.json.gz",
+                    "2022postEE": "/cvmfs/cms-griddata.cern.ch/cat/metadata/EGM/Run3-22EFGSep23-Summer22EE-NanoAODv12/2025-12-03/electronSS_EtDependent.json.gz",
+                    "2023prePPix": "/cvmfs/cms-griddata.cern.ch/cat/metadata/EGM/23CSep23-Summer23-NanoAODv12/2025-12-03/electronSS_EtDependent.json.gz",
+                    "2023postBPix": "/cvmfs/cms-griddata.cern.ch/cat/metadata/EGM/23DSep23-Summer23BPix-NanoAODv12/2025-12-03/electronSS_EtDependent.json.gz",
                 }
             ),
             "ele_es_sf_name": EraModifier(
@@ -1693,11 +1692,9 @@ def build_config(
                         for _era in ERAS_RUN2
                     },
                     **{
-                        _era: f"EGMScale_Compound_Ele_{_era}"
-                        for _era in ERAS_RUN3 if not _era.startswith("2023")
+                        _era: "Scale"
+                        for _era in ERAS_RUN3
                     },
-                    "2023preBPix": "EGMScale_Compound_Ele_2023preBPIX",
-                    "2023postBPix": "EGMScale_Compound_Ele_2023postBPIX",
                 }
             ),
             "ele_es_sf_mc_name": EraModifier(
@@ -1707,11 +1704,9 @@ def build_config(
                         for _era in ERAS_RUN2
                     },
                     **{
-                        _era: f"EGMSmearAndSyst_ElePTsplit_{_era}"
-                        for _era in ERAS_RUN3 if not _era.startswith("2023")
+                        _era: "SmearAndSyst"
+                        for _era in ERAS_RUN3
                     },
-                    "2023preBPix": "EGMSmearAndSyst_ElePTsplit_2023preBPIX",
-                    "2023postBPix": "EGMSmearAndSyst_ElePTsplit_2023postBPIX",
                 }
             ),
         },
