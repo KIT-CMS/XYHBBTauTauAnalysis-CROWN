@@ -107,7 +107,7 @@ BosonRecoilCorrection = Producer(
         q.met_p4_uncorrected,
         q.gen_boson_p4,
         q.gen_vis_boson_p4,
-        q.njets,
+        q.n_jets,
     ],
     output=[q.met_p4_recoilcorrected],
     scopes=SCOPES,
