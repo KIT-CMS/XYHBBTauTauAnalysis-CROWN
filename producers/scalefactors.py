@@ -620,7 +620,7 @@ Ele_2_Reco_SF = Producer(
     output=[q.reco_wgt_ele_2],
     scopes=["ee"],
 )
-Ele_1_IDWP90_SF = Producer(
+Ele_1_ID_SF = Producer(
     name="Ele_1_IDWP90_SF",
     call="""physicsobject::electron::scalefactor::Id(
         {df}, 
@@ -634,10 +634,10 @@ Ele_1_IDWP90_SF = Producer(
         "{ele_id_sf_variation}")
         """,
     input=[q.pt_1, q.eta_1, q.phi_1],
-    output=[q.id_wgt_ele_wp90nonIso_1],
+    output=[q.id_wgt_ele_1],
     scopes=["em", "ee", "et"],
 )
-Ele_2_IDWP90_SF = Producer(
+Ele_2_ID_SF = Producer(
     name="Ele_2_IDWP90_SF",
     call="""physicsobject::electron::scalefactor::Id(
         {df}, 
@@ -651,7 +651,7 @@ Ele_2_IDWP90_SF = Producer(
         "{ele_id_sf_variation}")
         """,
     input=[q.pt_2, q.eta_2, q.phi_2],
-    output=[q.id_wgt_ele_wp90nonIso_2],
+    output=[q.id_wgt_ele_2],
     scopes=["ee"],
 )
 EleID_SF = ProducerGroup(
@@ -663,17 +663,17 @@ EleID_SF = ProducerGroup(
     subproducers={
         "em": [
             #Ele_1_Reco_SF,  TODO a bit tedious to implement
-            Ele_1_IDWP90_SF,
+            Ele_1_ID_SF,
         ],
         "ee": [
             #Ele_1_Reco_SF,  TODO a bit tedious to implement
             #Ele_2_Reco_SF,  TODO a bit tedious to implement
-            Ele_1_IDWP90_SF,
-            Ele_2_IDWP90_SF,
+            Ele_1_ID_SF,
+            Ele_2_ID_SF,
         ],
         "et": [
             #Ele_1_Reco_SF,  TODO a bit tedious to implement
-            Ele_1_IDWP90_SF,
+            Ele_1_ID_SF,
         ],
     },
 )
