@@ -463,7 +463,7 @@ JetColumns = ProducerGroup(
 
 NumberOfJets = Producer(
     name="NumberOfJets",
-    call="physicsobject::Size({df}, {output}, {input})",
+    call="physicsobject::Size<Int_t>({df}, {output}, {input})",
     input=[q.good_jet_collection],
     output=[q.n_jets],
     scopes=SCOPES,
@@ -634,7 +634,7 @@ LVBJet2 = Producer(
 
 NumberOfBJets = Producer(
     name="NumberOfBJets",
-    call="physicsobject::Size({df}, {output}, {input})",
+    call="physicsobject::Size<Int_t>({df}, {output}, {input})",
     input=[q.good_bjet_collection],
     output=[q.n_bjets],
     scopes=SCOPES,
