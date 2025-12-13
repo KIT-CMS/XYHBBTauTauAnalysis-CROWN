@@ -2,6 +2,7 @@
 Constant definitions.
 """
 
+import enum
 
 __all__ = [
     "GLOBAL_SCOPES",
@@ -19,6 +20,8 @@ __all__ = [
     "HAD_TAU_SCOPES",
     "SCOPES",
     "ERAS",
+    "BJetIDAlgorithm",
+    "BJET_ID_ALGORTHM",
 ]
 
 
@@ -54,3 +57,9 @@ CORRECTIONLIB_CAMPAIGNS = {
     "2023preBPix": "2023_Summer23",
     "2023postBPix": "2023_Summer23BPix",
 }
+
+# b jet identification algorithms
+class BJetIDAlgorithm(enum.Enum):
+    DEEPJET = enum.auto() 
+    PNET = enum.auto()
+BJET_ID_ALGORTHM = BJetIDAlgorithm.PNET
