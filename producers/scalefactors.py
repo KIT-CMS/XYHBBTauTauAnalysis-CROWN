@@ -1226,7 +1226,7 @@ btagging_SF = Producer(
 BJetShapeDeepJet_SF = Producer(
     name="BJetShapeDeepJet_SF",
     call="""
-    physicsobject::jet::scalefactor::Btagging(
+    physicsobject::jet::scalefactor::BtaggingShape(
         {df},
         correctionManager,
         {output},
@@ -1252,7 +1252,7 @@ BJetShapeDeepJet_SF = Producer(
 BJetShapePNet_SF = Producer(
     name="BJetShapePNet_SF",
     call="""
-    physicsobject::jet::scalefactor::Btagging(
+    physicsobject::jet::scalefactor::BtaggingShape(
         {df},
         correctionManager,
         {output},
