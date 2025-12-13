@@ -1086,11 +1086,10 @@ def add_diTauTriggerSetup(configuration: Configuration):
                         _era: "DOES_NOT_EXIST"  # TODO does not exist for Run2 eras
                         for _era in ERAS_RUN2
                     },
-                    **{
-                        _era: f"data/jsonpog-integration/POG/EGM/{_campaign}/electronHlt.json.gz"
-                        for _era, _campaign in CORRECTIONLIB_CAMPAIGNS.items()
-                        if _era in ERAS_RUN3
-                    },
+                    "2022preEE": "/cvmfs/cms-griddata.cern.ch/cat/metadata/JME/Run3-22CDSep23-Summer22-NanoAODv12/2025-12-03/electronHlt.json.gz",
+                    "2022postEE": "/cvmfs/cms-griddata.cern.ch/cat/metadata/JME/Run3-22EFGSep23-Summer22EE-NanoAODv12/2025-12-03/electronHlt.json.gz",
+                    "2023preBPix": "/cvmfs/cms-griddata.cern.ch/cat/metadata/JME/Run3-23CSep23-Summer23-NanoAODv12/2025-12-03/electronHlt.json.gz",
+                    "2023postBPix": "/cvmfs/cms-griddata.cern.ch/cat/metadata/JME/Run3-23DSep23-Summer23BPix-NanoAODv12/2025-12-03/electronHlt.json.gz",
                 }
             ),
             "single_ele_trigger_sf": [
