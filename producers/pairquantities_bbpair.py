@@ -2,7 +2,16 @@ from ..quantities import output as q
 from ..quantities import nanoAOD, nanoAOD_run2
 from code_generation.producer import Producer, ProducerGroup
 
-from ..constants import SCOPES
+from ..constants import SCOPES, BJetIDAlgorithm, BJET_ID_ALGORTHM
+
+
+# Get the nanoAOD b jet tagging column, according to the default b jet identification algorithm
+# selected with BJET_ID_ALGORITHM
+nanoaod_btag_score = None
+if BJET_ID_ALGORTHM == BJetIDAlgorithm.DEEPJET:
+    nanoaod_btag_score = nanoAOD_run2.Jet_btagDeepFlavB
+elif BJET_ID_ALGORTHM == BJetIDAlgorithm.PNET:
+    nanoaod_btag_score = nanoAOD.Jet_btagPNetB
 
 
 ####################
@@ -68,14 +77,14 @@ bpair_mass_2 = Producer(
 bpair_btag_value_1 = Producer(
     name="bpair_btag_value_1",
     call="event::quantity::Get<float>({df}, {output}, {input}, 0)",
-    input=[nanoAOD.Jet_btagDeepFlavB, q.dibjetpair],
+    input=[nanoaod_btag_score, q.dibjetpair],
     output=[q.bpair_btag_value_1],
     scopes=SCOPES,
 )
 bpair_btag_value_2 = Producer(
     name="bpair_btag_value_2",
     call="event::quantity::Get<float>({df}, {output}, {input}, 1)",
-    input=[nanoAOD.Jet_btagDeepFlavB, q.dibjetpair],
+    input=[nanoaod_btag_score, q.dibjetpair],
     output=[q.bpair_btag_value_2],
     scopes=SCOPES,
 )
@@ -258,14 +267,14 @@ bpair_mass_2_boosted = Producer(
 bpair_btag_value_1_boosted = Producer(
     name="bpair_btag_value_1_boosted",
     call="event::quantity::Get<float>({df}, {output}, {input}, 0)",
-    input=[nanoAOD.Jet_btagDeepFlavB, q.dibjetpair_boosted],
+    input=[nanoaod_btag_score, q.dibjetpair_boosted],
     output=[q.bpair_btag_value_1_boosted],
     scopes=SCOPES,
 )
 bpair_btag_value_2_boosted = Producer(
     name="bpair_btag_value_2_boosted",
     call="event::quantity::Get<float>({df}, {output}, {input}, 1)",
-    input=[nanoAOD.Jet_btagDeepFlavB, q.dibjetpair_boosted],
+    input=[nanoaod_btag_score, q.dibjetpair_boosted],
     output=[q.bpair_btag_value_2_boosted],
     scopes=SCOPES,
 )
