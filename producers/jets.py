@@ -7,7 +7,25 @@ from ..quantities import nanoAOD, nanoAOD_run2
 from code_generation.producer import Producer, ProducerGroup
 
 from ._helpers import jerc_producer_factory
-from ..constants import GLOBAL_SCOPES, SCOPES
+from ..constants import GLOBAL_SCOPES, SCOPES, BJetIDAlgorithm, BJET_ID_ALGORTHM
+
+
+# Choose the default b jet mask according to the selected b jet identification algorithm in
+# BJET_ID_ALGORITHM
+good_bjets_with_veto_mask = None
+if BJET_ID_ALGORTHM == BJetIDAlgorithm.DEEPJET:
+    good_bjets_with_veto_mask = q.good_bjets_deepjet_with_veto_mask
+elif BJET_ID_ALGORTHM == BJetIDAlgorithm.PNET:
+    good_bjets_with_veto_mask = q.good_bjets_pnet_with_veto_mask
+
+# Get the nanoAOD b jet tagging column, according to the default b jet identification algorithm
+# selected with BJET_ID_ALGORITHM
+nanoaod_btag_score = None
+if BJET_ID_ALGORTHM == BJetIDAlgorithm.DEEPJET:
+    nanoaod_btag_score = nanoAOD_run2.Jet_btagDeepFlavB
+elif BJET_ID_ALGORTHM == BJetIDAlgorithm.PNET:
+    nanoaod_btag_score = nanoAOD.Jet_btagPNetB
+
 
 
 #
@@ -309,6 +327,7 @@ CombinedGoodJetsWithVetoMask = Producer(
 )
 
 # Jet collection containing the indices of selected jets, ordered by pt for the resolved selection
+# This collection considers b jets that pass any of the selected b jet identification algorithms
 CombinedJetCollection = ProducerGroup(
     name="CombinedJetCollection",
     call="physicsobject::OrderByPt({df}, {output}, {input})",
@@ -318,30 +337,35 @@ CombinedJetCollection = ProducerGroup(
     subproducers=[CombinedGoodJetsWithVetoMask],
 )
 
-# This collection considers all jets and tagged b jets (DeepJet)
-GoodJetsDeepJetWithVetoMask = Producer(
+# This collection considers all jets and tagged b jets with the default algorithm selected with
+# BJET_ID_ALGORITHM
+GoodJetsWithVetoMask = Producer(
     name="GoodJetsDeepJetWithVetoMask",
     call='physicsobject::CombineMasks({df}, {output}, {input}, "any_of")',
-    input=[q.good_jets_with_veto_mask, q.good_bjets_deepjet_with_veto_mask],
+    input=[
+        q.good_jets_with_veto_mask,
+        good_bjets_with_veto_mask,
+    ],
     output=[],
     scopes=SCOPES,
 )
 
 # final jet collection as list of indices of selected jets, ordered by pt for the resolved selection
+# only b jets selected with the default algorithm BJET_ID_ALGORITHM are considered
 JetCollection = ProducerGroup(
     name="JetCollection",
     call="physicsobject::OrderByPt({df}, {output}, {input})",
     input=[q.Jet_pt_corrected],
     output=[q.good_jet_collection],
     scopes=SCOPES,
-    subproducers=[GoodJetsDeepJetWithVetoMask],
+    subproducers=[GoodJetsWithVetoMask],
 )
 
 # final b jet collection as list of indices of selected jets, ordered by pt for the resolved selection
 BJetCollection = Producer(
     name="BJetCollection",
     call="physicsobject::OrderByPt({df}, {output}, {input})",
-    input=[q.Jet_pt_corrected, q.good_bjets_deepjet_with_veto_mask],
+    input=[q.Jet_pt_corrected, good_bjets_with_veto_mask],
     output=[q.good_bjet_collection],
     scopes=SCOPES,
 )
@@ -349,10 +373,10 @@ BJetCollection = Producer(
 
 #
 # JET QUANTITIES
-# TODO simplify this by designing a generic function
 #
 
-
+# Columns with _vectors_ of jet quantities, considering all selected jets and multiple b jet
+# identification algorithms
 jet_column_producers = []
 for q_input, q_output, data_type in [
     (nanoAOD.Jet_pt, q.jet_pt_nanoaod, "float"),
@@ -364,6 +388,7 @@ for q_input, q_output, data_type in [
     (q.Jet_ID_corrected, q.jet_id, "UChar_t"),
     (nanoAOD.Jet_btagDeepFlavB, q.jet_deepjet_b_score, "float"),
     (nanoAOD.Jet_btagPNetB, q.jet_pnet_b_score, "float"),
+    (q.good_jets_with_veto_mask, q.jet_standard_selected, "int"),
     (q.Jet_deepjet_b_tagged_medium, q.jet_deepjet_b_tagged_medium, "int"),
     (q.Jet_pnet_b_tagged_medium, q.jet_pnet_b_tagged_medium, "int"),
 ]:
@@ -436,38 +461,12 @@ JetColumns = ProducerGroup(
 # Number of jets (depending on the b jet tagger)
 #
 
-NJetDeepJetMask = Producer(
-    name="NJetDeepJetMask",
-    call="physicsobject::CombineMasks({df}, {output}, {input}, \"any_of\")",
-    input=[q.good_jets_with_veto_mask, q.good_bjets_deepjet_with_veto_mask],
-    output=[],
+NumberOfJets = Producer(
+    name="NumberOfJets",
+    call="physicsobject::Size({df}, {output}, {input})",
+    input=[q.good_jet_collection],
+    output=[q.n_jets],
     scopes=SCOPES,
-)
-
-NJetPNetMask = Producer(
-    name="NJetPNetMask",
-    call="physicsobject::CombineMasks({df}, {output}, {input}, \"any_of\")",
-    input=[q.good_jets_with_veto_mask, q.good_bjets_pnet_with_veto_mask],
-    output=[],
-    scopes=SCOPES,
-)
-
-NumberOfJetsDeepJet = ProducerGroup(
-    name="NumberOfJetsDeepJet",
-    call="physicsobject::Count({df}, {output}, {input})",
-    input=[],
-    output=[q.n_jets_deepjet],
-    scopes=SCOPES,
-    subproducers=[NJetDeepJetMask],
-)
-
-NumberOfJetsPNet = ProducerGroup(
-    name="NumberOfJetsPNet",
-    call="physicsobject::Count({df}, {output}, {input})",
-    input=[],
-    output=[q.n_jets_pnet],
-    scopes=SCOPES,
-    subproducers=[NJetPNetMask],
 )
 
 
@@ -547,14 +546,14 @@ jphi_2 = Producer(
 jtag_value_1 = Producer(
     name="jtag_value_1",
     call="event::quantity::Get<float>({df}, {output}, {input}, 0)",
-    input=[nanoAOD_run2.Jet_btagDeepFlavB, q.good_jet_collection],
+    input=[nanoaod_btag_score, q.good_jet_collection],
     output=[q.jtag_value_1],
     scopes=SCOPES,
 )
 jtag_value_2 = Producer(
     name="jtag_value_2",
     call="event::quantity::Get<float>({df}, {output}, {input}, 1)",
-    input=[nanoAOD_run2.Jet_btagDeepFlavB, q.good_jet_collection],
+    input=[nanoaod_btag_score, q.good_jet_collection],
     output=[q.jtag_value_2],
     scopes=SCOPES,
 )
@@ -574,8 +573,7 @@ BasicJetQuantities = ProducerGroup(
     subproducers=[
         LVJet1,
         LVJet2,
-        NumberOfJetsDeepJet,
-        NumberOfJetsPNet,
+        NumberOfJets,
         jpt_1,
         jeta_1,
         jphi_1,
@@ -620,19 +618,11 @@ LVBJet2 = Producer(
     scopes=SCOPES,
 )
 
-NumberOfBJetsDeepJet = Producer(
-    name="NumberOfBJetsDeepJet",
-    call="physicsobject::Count({df}, {output}, {input})",
-    input=[q.good_bjets_deepjet_with_veto_mask],
-    output=[q.n_bjets_deepjet],
-    scopes=SCOPES,
-)
-
-NumberOfBJetsPNet = Producer(
-    name="NumberOfBJetsPNet",
-    call="physicsobject::Count({df}, {output}, {input})",
-    input=[q.good_bjets_pnet_with_veto_mask],
-    output=[q.n_bjets_pnet],
+NumberOfBJets = Producer(
+    name="NumberOfBJets",
+    call="physicsobject::Size({df}, {output}, {input})",
+    input=[q.good_bjet_collection],
+    output=[q.n_bjets],
     scopes=SCOPES,
 )
 
@@ -681,14 +671,14 @@ bphi_2 = Producer(
 btag_value_1 = Producer(
     name="btag_value_1",
     call="event::quantity::Get<float>({df}, {output}, {input}, 0)",
-    input=[nanoAOD_run2.Jet_btagDeepFlavB, q.good_bjet_collection],
+    input=[nanoaod_btag_score, q.good_bjet_collection],
     output=[q.btag_value_1],
     scopes=SCOPES,
 )
 btag_value_2 = Producer(
     name="btag_value_2",
     call="event::quantity::Get<float>({df}, {output}, {input}, 1)",
-    input=[nanoAOD_run2.Jet_btagDeepFlavB, q.good_bjet_collection],
+    input=[nanoaod_btag_score, q.good_bjet_collection],
     output=[q.btag_value_2],
     scopes=SCOPES,
 )
@@ -699,7 +689,6 @@ BasicBJetQuantities = ProducerGroup(
     output=None,
     scopes=SCOPES,
     subproducers=[
-        NumberOfBJetsDeepJet,
-        NumberOfBJetsPNet,
+        NumberOfBJets,
     ],
 )
