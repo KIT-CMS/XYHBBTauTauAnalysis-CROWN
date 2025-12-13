@@ -501,6 +501,20 @@ LVJet2 = Producer(
     output=[q.jet_p4_2],
     scopes=SCOPES,
 )
+NumberOfJets = Producer(
+    name="NumberOfJets",
+    call="physicsobject::Size<Int_t>({df}, {output}, {input})",
+    input=[q.good_jet_collection],
+    output=[q.n_jets],
+    scopes=SCOPES,
+)
+NumberOfJets_boosted = Producer(
+    name="NumberOfJets_boosted",
+    call="physicsobject::Size<Int_t>({df}, {output}, {input})",
+    input=[q.good_jet_collection_boosted],
+    output=[q.n_jets_boosted],
+    scopes=SCOPES,
+)
 jpt_1 = Producer(
     name="jpt_1",
     call="lorentzvector::GetPt({df}, {output}, {input})",
@@ -625,7 +639,13 @@ NumberOfBJets = Producer(
     output=[q.n_bjets],
     scopes=SCOPES,
 )
-
+NumberOfBJets_boosted = Producer(
+    name="NumberOfBJets_boosted",
+    call="physicsobject::Size<Int_t>({df}, {output}, {input})",
+    input=[q.good_bjet_collection_boosted],
+    output=[q.n_bjets_boosted],
+    scopes=SCOPES,
+)
 bpt_1 = Producer(
     name="bpt_1",
     call="lorentzvector::GetPt({df}, {output}, {input})",
