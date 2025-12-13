@@ -183,10 +183,10 @@ def add_pileup_reweighting_config(configuration: Configuration):
                         for _era, _campaign in CORRECTIONLIB_CAMPAIGNS.items()
                         if _era in ERAS_RUN2
                     },
-                    "2022preEE": "/cvmfs/cms-griddata.cern.ch/cat/metadata/LUM/Run3-22CDSep23-Summer22-NanoAODv12/2024-01-31/puWeights.json",
-                    "2022postEE": "/cvmfs/cms-griddata.cern.ch/cat/metadata/LUM/Run3-22EFGSep23-Summer22EE-NanoAODv12/2024-01-31/puWeights.json",
-                    "2023preBPix": "/cvmfs/cms-griddata.cern.ch/cat/metadata/LUM/Run3-23CSep23-Summer23-NanoAODv12/2024-01-31/puWeights.json",
-                    "2023postBPix": "/cvmfs/cms-griddata.cern.ch/cat/metadata/LUM/Run3-23DSep23-Summer23BPix-NanoAODv12/2024-01-31/puWeights.json",
+                    "2022preEE": "/cvmfs/cms-griddata.cern.ch/cat/metadata/LUM/Run3-22CDSep23-Summer22-NanoAODv12/2024-01-31/puWeights.json.gz",
+                    "2022postEE": "/cvmfs/cms-griddata.cern.ch/cat/metadata/LUM/Run3-22EFGSep23-Summer22EE-NanoAODv12/2024-01-31/puWeights.json.gz",
+                    "2023preBPix": "/cvmfs/cms-griddata.cern.ch/cat/metadata/LUM/Run3-23CSep23-Summer23-NanoAODv12/2024-01-31/puWeights.json.gz",
+                    "2023postBPix": "/cvmfs/cms-griddata.cern.ch/cat/metadata/LUM/Run3-23DSep23-Summer23BPix-NanoAODv12/2024-01-31/puWeights.json.gz",
                 },
             ),
             "PU_reweighting_era": EraModifier(
@@ -1270,7 +1270,7 @@ def add_ak4jet_config(configuration: Configuration):
             "ak4jet_jes_sources": '{""}',
             "ak4jet_jes_shift": 0,
             "ak4jet_jer_master_seed": 42,
-            "ak4jet_jer_shift": '"nom"',  # or '"up"', '"down"'
+            "ak4jet_jer_shift": "nom",  # or '"up"', '"down"'
             "ak4jet_jec_file": EraModifier(
                 {
                     **{
@@ -1286,37 +1286,37 @@ def add_ak4jet_config(configuration: Configuration):
             ),
             "ak4jet_jer_tag": EraModifier(
                 {
-                    "2016preVFP": '"Summer20UL16APV_JRV3_MC"',
-                    "2016postVFP": '"Summer20UL16_JRV3_MC"',
-                    "2017": '"Summer19UL17_JRV2_MC"',
-                    "2018": '"Summer19UL18_JRV2_MC"',
-                    "2022preEE": '"Summer22_22Sep2023_JRV1_MC"',
-                    "2022postEE": '"Summer22EE_22Sep2023_JRV1_MC"',
-                    "2023preBPix": '"Summer23Prompt23_RunCv1234_JRV1_MC"',
-                    "2023postBPix": '"Summer23BPixPrompt23_RunD_JRV1_MC"',
+                    "2016preVFP": "Summer20UL16APV_JRV3_MC",
+                    "2016postVFP": "Summer20UL16_JRV3_MC",
+                    "2017": "Summer19UL17_JRV2_MC",
+                    "2018": "Summer19UL18_JRV2_MC",
+                    "2022preEE": "Summer22_22Sep2023_JRV1_MC",
+                    "2022postEE": "Summer22EE_22Sep2023_JRV1_MC",
+                    "2023preBPix": "Summer23Prompt23_RunCv1234_JRV1_MC",
+                    "2023postBPix": "Summer23BPixPrompt23_RunD_JRV1_MC",
                 }
             ),
-            "ak4jet_jes_tag_data": '""',
+            "ak4jet_jes_tag_data": "\"\"",
             "ak4jet_jes_tag": EraModifier(
                 {
-                    "2016preVFP": '"Summer19UL16APV_V7_MC"',
-                    "2016postVFP": '"Summer19UL16_V7_MC"',
-                    "2017": '"Summer19UL17_V5_MC"',
-                    "2018": '"Summer19UL18_V5_MC"',
-                    "2022preEE": '"Summer22_22Sep2023_V2_MC"',
-                    "2022postEE": '"Summer22EE_22Sep2023_V2_MC"',
-                    "2023preBPix": '"Summer23Prompt23_V2_MC"',
-                    "2023postBPix": '"Summer23BPixPrompt23_V3_MC"',
+                    "2016preVFP": "Summer19UL16APV_V7_MC",
+                    "2016postVFP": "Summer19UL16_V7_MC",
+                    "2017": "Summer19UL17_V5_MC",
+                    "2018": "Summer19UL18_V5_MC",
+                    "2022preEE": "Summer22_22Sep2023_V2_MC",
+                    "2022postEE": "Summer22EE_22Sep2023_V2_MC",
+                    "2023preBPix": "Summer23Prompt23_V2_MC",
+                    "2023postBPix": "Summer23BPixPrompt23_V3_MC",
                 }
             ),
             "ak4jet_jec_algo": EraModifier(
                 {
                     **{
-                        _era: '"AK4PFchs"'
+                        _era: "AK4PFchs"
                         for _era in ERAS_RUN2
                     },
                     **{
-                        _era: '"AK4PFPuppi"'
+                        _era: "AK4PFPuppi"
                         for _era in ERAS_RUN3
                     }
                 }
@@ -1399,11 +1399,11 @@ def add_ak8jet_config(configuration: Configuration):
             "ak8jet_jes_sources": '{""}',
             "ak8jet_jes_shift": 0,
             "ak8jet_jer_master_seed": 43,
-            "ak8jet_jer_shift": '"nom"',  # or '"up"', '"down"'
+            "ak8jet_jer_shift": "nom",  # or '"up"', '"down"'
             "ak8jet_jec_file": EraModifier(  # TODO use AK4 file for fatjets because it either was is just copied and the fatjet file has no merged uncertainty scheme?
                 {
                     **{
-                        _era: f'"data/jsonpog-integration/POG/JME/{_campaign}/fatJet_jerc.json.gz"'
+                        _era: f"data/jsonpog-integration/POG/JME/{_campaign}/fatJet_jerc.json.gz"
                         for _era, _campaign in CORRECTIONLIB_CAMPAIGNS.items()
                         if _era in ERAS_RUN2
                     },
@@ -1415,30 +1415,30 @@ def add_ak8jet_config(configuration: Configuration):
             ),
             "ak8jet_jer_tag": EraModifier(
                 {
-                    "2016preVFP": '"Summer20UL16APV_JRV3_MC"',
-                    "2016postVFP": '"Summer20UL16_JRV3_MC"',
-                    "2017": '"Summer19UL17_JRV2_MC"',
-                    "2018": '"Summer19UL18_JRV2_MC"',
-                    "2022preEE": '"Summer22_22Sep2023_JRV1_MC"',
-                    "2022postEE": '"Summer22EE_22Sep2023_JRV1_MC"',
-                    "2023preBPix": '"Summer23Prompt23_RunCv1234_JRV1_MC"',
-                    "2023postBPix": '"Summer23BPixPrompt23_RunD_JRV1_MC"',
+                    "2016preVFP": "Summer20UL16APV_JRV3_MC",
+                    "2016postVFP": "Summer20UL16_JRV3_MC",
+                    "2017": "Summer19UL17_JRV2_MC",
+                    "2018": "Summer19UL18_JRV2_MC",
+                    "2022preEE": "Summer22_22Sep2023_JRV1_MC",
+                    "2022postEE": "Summer22EE_22Sep2023_JRV1_MC",
+                    "2023preBPix": "Summer23Prompt23_RunCv1234_JRV1_MC",
+                    "2023postBPix": "Summer23BPixPrompt23_RunD_JRV1_MC",
                 }
             ),
-            "ak8jet_jes_tag_data": '""',
+            "ak8jet_jes_tag_data": "\"\"",
             "ak8jet_jes_tag": EraModifier(
                 {
-                    "2016preVFP": '"Summer19UL16APV_V7_MC"',
-                    "2016postVFP": '"Summer19UL16_V7_MC"',
-                    "2017": '"Summer19UL17_V5_MC"',
-                    "2018": '"Summer19UL18_V5_MC"',
-                    "2022preEE": '"Summer22_22Sep2023_V2_MC"',
-                    "2022postEE": '"Summer22EE_22Sep2023_V2_MC"',
-                    "2023preBPix": '"Summer23Prompt23_V2_MC"',
-                    "2023postBPix": '"Summer23BPixPrompt23_V3_MC"',
+                    "2016preVFP": "Summer19UL16APV_V7_MC",
+                    "2016postVFP": "Summer19UL16_V7_MC",
+                    "2017": "Summer19UL17_V5_MC",
+                    "2018": "Summer19UL18_V5_MC",
+                    "2022preEE": "Summer22_22Sep2023_V3_MC",
+                    "2022postEE": "Summer22EE_22Sep2023_V3_MC",
+                    "2023preBPix": "Summer23Prompt23_V2_MC",
+                    "2023postBPix": "Summer23BPixPrompt23_V3_MC",
                 }
             ),
-            "ak8jet_jec_algo": '"AK8PFPuppi"',  # TODO normally "AK8PFPuppi" would be used -> change to AK4 naming to get merged uncertainty scheme?
+            "ak8jet_jec_algo": "AK8PFPuppi",  # TODO normally "AK8PFPuppi" would be used -> change to AK4 naming to get merged uncertainty scheme?
         },
     )
 
