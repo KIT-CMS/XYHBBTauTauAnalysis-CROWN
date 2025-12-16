@@ -6,24 +6,24 @@ from code_generation.producer import Producer, ProducerGroup
 # Set of producers used for contruction of met related quantities
 ####################
 
-BuildMetVector = Producer(
-    name="BuildMetVector",
+BuildMetVector_uncorrected = Producer(
+    name="BuildMetVector_uncorrected",
     call="lorentzvector::BuildMET({df}, {output}, {input})",
     input=[
         nanoAOD.PuppiMET_pt,
         nanoAOD.PuppiMET_phi,
     ],
-    output=[q.met_p4],
+    output=[q.met_p4_uncorrected],
     scopes=["global"],
 )
-BuildPFMetVector = Producer(
-    name="BuildPFMetVector",
+BuildPFMetVector_uncorrected = Producer(
+    name="BuildPFMetVector_uncorrected",
     call="lorentzvector::BuildMET({df}, {output}, {input})",
     input=[
         nanoAOD.MET_pt,
         nanoAOD.MET_phi,
     ],
-    output=[q.pfmet_p4],
+    output=[q.pfmet_p4_uncorrected],
     scopes=["global"],
 )
 MetCov00 = Producer(
@@ -74,28 +74,28 @@ MetSumEt = Producer(
 MetPt_uncorrected = Producer(
     name="MetPt_uncorrected",
     call="lorentzvector::GetPt({df}, {output}, {input})",
-    input=[q.met_p4],
+    input=[q.met_p4_uncorrected],
     output=[q.met_uncorrected],
     scopes=["global"],
 )
 MetPhi_uncorrected = Producer(
     name="MetPhi_uncorrected",
     call="lorentzvector::GetPhi({df}, {output}, {input})",
-    input=[q.met_p4],
+    input=[q.met_p4_uncorrected],
     output=[q.metphi_uncorrected],
     scopes=["global"],
 )
 PFMetPt_uncorrected = Producer(
     name="PFMetPt_uncorrected",
     call="lorentzvector::GetPt({df}, {output}, {input})",
-    input=[q.pfmet_p4],
+    input=[q.pfmet_p4_uncorrected],
     output=[q.pfmet_uncorrected],
     scopes=["global"],
 )
 PFMetPhi_uncorrected = Producer(
     name="PFMetPhi_uncorrected",
     call="lorentzvector::GetPhi({df}, {output}, {input})",
-    input=[q.pfmet_p4],
+    input=[q.pfmet_p4_uncorrected],
     output=[q.pfmetphi_uncorrected],
     scopes=["global"],
 )
@@ -143,8 +143,8 @@ MetBasics = ProducerGroup(
     output=None,
     scopes=["global"],
     subproducers=[
-        BuildPFMetVector,
-        BuildMetVector,
+        BuildPFMetVector_uncorrected,
+        BuildMetVector_uncorrected,
         MetPt_uncorrected,
         MetPhi_uncorrected,
         PFMetPt_uncorrected,
@@ -154,9 +154,9 @@ MetBasics = ProducerGroup(
         MetCov10,
         MetCov11,
         MetSumEt,
-        CalculateGenBosonVector,
-        CalculateVisGenBosonVector,
-        GenBosonMass,
+        #CalculateGenBosonVector,
+        #CalculateVisGenBosonVector,
+        #GenBosonMass,
     ],
 )
 
@@ -164,28 +164,28 @@ MetBasics = ProducerGroup(
 PropagateLeptonsToMet = Producer(
     name="PropagateLeptonsToMet",
     call="lorentzvector::PropagateToMET({df}, {output}, {input}, {propagateLeptons})",
-    input=[q.met_p4, q.p4_1_uncorrected, q.p4_2_uncorrected, q.p4_1, q.p4_2],
+    input=[q.met_p4_uncorrected, q.p4_1_uncorrected, q.p4_2_uncorrected, q.p4_1, q.p4_2],
     output=[q.met_p4_leptoncorrected],
     scopes=["et", "mt", "tt", "em", "mm", "ee"],
 )
 PropagateLeptonsToPFMet = Producer(
     name="PropagateLeptonsToPFMet",
     call="lorentzvector::PropagateToMET({df}, {output}, {input}, {propagateLeptons})",
-    input=[q.pfmet_p4, q.p4_1_uncorrected, q.p4_2_uncorrected, q.p4_1, q.p4_2],
+    input=[q.pfmet_p4_uncorrected, q.p4_1_uncorrected, q.p4_2_uncorrected, q.p4_1, q.p4_2],
     output=[q.pfmet_p4_leptoncorrected],
     scopes=["et", "mt", "tt", "em", "mm", "ee"],
 )
 PropagateLeptonsToMet_boosted = Producer(
     name="PropagateLeptonsToMet_boosted",
     call="lorentzvector::PropagateToMET({df}, {output}, {input}, {propagateLeptons})",
-    input=[q.met_p4, q.boosted_p4_1_uncorrected, q.boosted_p4_2_uncorrected, q.boosted_p4_1, q.boosted_p4_2],
+    input=[q.met_p4_uncorrected, q.boosted_p4_1_uncorrected, q.boosted_p4_2_uncorrected, q.boosted_p4_1, q.boosted_p4_2],
     output=[q.met_p4_boosted_leptoncorrected],
     scopes=["et", "mt", "tt", "em", "mm", "ee"],
 )
 PropagateLeptonsToPFMet_boosted = Producer(
     name="PropagateLeptonsToPFMet_boosted",
     call="lorentzvector::PropagateToMET({df}, {output}, {input}, {propagateLeptons})",
-    input=[q.pfmet_p4, q.boosted_p4_1_uncorrected, q.boosted_p4_2_uncorrected, q.boosted_p4_1, q.boosted_p4_2],
+    input=[q.pfmet_p4_uncorrected, q.boosted_p4_1_uncorrected, q.boosted_p4_2_uncorrected, q.boosted_p4_1, q.boosted_p4_2],
     output=[q.pfmet_p4_boosted_leptoncorrected],
     scopes=["et", "mt", "tt", "em", "mm", "ee"],
 )
@@ -407,7 +407,7 @@ RenameMetPhiBoosted = Producer(
 RenameMetP4RecoilCorrected = Producer(
     name="RenameMetP4RecoilCorrected",
     call="event::quantity::Rename<ROOT::Math::PtEtaPhiMVector>({df}, {output}, {input})",
-    input=[q.met_p4],
+    input=[q.met_p4_uncorrected],
     output=[q.met_p4_recoilcorrected],
     scopes=["et", "mt", "tt", "em", "mm", "ee"],
 )
@@ -416,7 +416,7 @@ RenameMetP4RecoilCorrected = Producer(
 RenameMetP4RecoilCorrectedBoosted = Producer(
     name="RenameMetP4RecoilCorrectedBoosted",
     call="event::quantity::Rename<ROOT::Math::PtEtaPhiMVector>({df}, {output}, {input})",
-    input=[q.met_p4],
+    input=[q.met_p4_uncorrected],
     output=[q.met_p4_boosted_recoilcorrected],
     scopes=["et", "mt", "tt", "em", "mm", "ee"],
 )
@@ -435,6 +435,21 @@ RenameMet = ProducerGroup(
         RenameMetPhiBoosted,
         RenameMetP4RecoilCorrected,
         RenameMetP4RecoilCorrectedBoosted,
+    ],
+)
+
+
+MetQuantities = ProducerGroup(
+    name="MetQuantities",
+    call=None,
+    input=None,
+    output=None,
+    scopes=["global"],
+    subproducers=[
+        MetBasics,
+        CalculateGenBosonVector,
+        CalculateVisGenBosonVector,
+        GenBosonMass,
     ],
 )
 

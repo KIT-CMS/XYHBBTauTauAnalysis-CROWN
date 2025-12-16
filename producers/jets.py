@@ -440,14 +440,14 @@ NumberOfJets = Producer(
     name="NumberOfJets",
     call="physicsobject::Size<Int_t>({df}, {output}, {input})",
     input=[q.good_jet_collection],
-    output=[q.njets],
+    output=[q.n_jets],
     scopes=SCOPES,
 )
 NumberOfJets_boosted = Producer(
     name="NumberOfJets_boosted",
     call="physicsobject::Size<Int_t>({df}, {output}, {input})",
     input=[q.good_jet_collection_boosted],
-    output=[q.njets_boosted],
+    output=[q.n_jets_boosted],
     scopes=SCOPES,
 )
 jpt_1 = Producer(
@@ -571,14 +571,14 @@ NumberOfBJets = Producer(
     name="NumberOfBJets",
     call="physicsobject::Size<Int_t>({df}, {output}, {input})",
     input=[q.good_bjet_collection],
-    output=[q.nbtag],
+    output=[q.n_bjets],
     scopes=SCOPES,
 )
 NumberOfBJets_boosted = Producer(
     name="NumberOfBJets_boosted",
     call="physicsobject::Size<Int_t>({df}, {output}, {input})",
     input=[q.good_bjet_collection_boosted],
-    output=[q.nbtag_boosted],
+    output=[q.n_bjets_boosted],
     scopes=SCOPES,
 )
 bpt_1 = Producer(
