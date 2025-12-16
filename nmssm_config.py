@@ -178,9 +178,15 @@ def add_pileup_reweighting_config(configuration: Configuration):
 
             "PU_reweighting_file": EraModifier(
                 {
-                    _era: f"data/jsonpog-integration/POG/LUM/{_campaign}/puWeights.json.gz"
-                    for _era, _campaign in CORRECTIONLIB_CAMPAIGNS.items()
-                }
+                    "2016preVFP": "/cvmfs/cms-griddata.cern.ch/cat/metadata/LUM/Run2-2016preVFP-UL-NanoAODv9/2021-09-10/puWeights.json.gz",
+                    "2016postVFP": "/cvmfs/cms-griddata.cern.ch/cat/metadata/LUM/Run2-2016postVFP-UL-NanoAODv9/2021-09-10/puWeights.json.gz",
+                    "2017": "/cvmfs/cms-griddata.cern.ch/cat/metadata/LUM/Run2-2017-UL-NanoAODv9/2021-09-10/puWeights.json.gz",
+                    "2018": "/cvmfs/cms-griddata.cern.ch/cat/metadata/LUM/Run2-2017-UL-NanoAODv9/2021-09-10/puWeights.json.gz",
+                    "2022preEE": "/cvmfs/cms-griddata.cern.ch/cat/metadata/LUM/Run3-22CDSep23-Summer22-NanoAODv12/2024-01-31/puWeights.json.gz",
+                    "2022postEE": "/cvmfs/cms-griddata.cern.ch/cat/metadata/LUM/Run3-22EFGSep23-Summer22EE-NanoAODv12/2024-01-31/puWeights.json.gz",
+                    "2023preBPix": "/cvmfs/cms-griddata.cern.ch/cat/metadata/LUM/Run3-23CSep23-Summer23-NanoAODv12/2024-01-31/puWeights.json.gz",
+                    "2023postBPix": "/cvmfs/cms-griddata.cern.ch/cat/metadata/LUM/Run3-23DSep23-Summer23BPix-NanoAODv12/2024-01-31/puWeights.json.gz",
+                },
             ),
             "PU_reweighting_era": EraModifier(
                 {
@@ -369,9 +375,15 @@ def add_electron_config(configuration: Configuration):
         {
             "ele_sf_file": EraModifier(
                 {
-                    _era: f"data/jsonpog-integration/POG/EGM/{_campaign}/electron.json.gz"
-                    for _era, _campaign in CORRECTIONLIB_CAMPAIGNS.items()
-                }
+                    "2016preVFP": "/cvmfs/cms-griddata.cern.ch/cat/metadata/EGM/Run2-2016preVFP-UL-NanoAODv9/2024-07-02/electron.json.gz",
+                    "2016postVFP": "/cvmfs/cms-griddata.cern.ch/cat/metadata/EGM/Run2-2016postVFP-UL-NanoAODv9/2024-07-02/electron.json.gz",
+                    "2017": "/cvmfs/cms-griddata.cern.ch/cat/metadata/EGM/Run2-2017-UL-NanoAODv9/2024-07-02/electron.json.gz",
+                    "2018": "/cvmfs/cms-griddata.cern.ch/cat/metadata/EGM/Run2-2018-UL-NanoAODv9/2024-07-02/electron.json.gz",
+                    "2022preEE": "/cvmfs/cms-griddata.cern.ch/cat/metadata/EGM/Run3-22CDSep23-Summer22-NanoAODv12/2025-12-03/electron.json.gz",
+                    "2022postEE": "/cvmfs/cms-griddata.cern.ch/cat/metadata/EGM/Run3-22EFGSep23-Summer22EE-NanoAODv12/2025-12-03/electron.json.gz",
+                    "2023preBPix": "/cvmfs/cms-griddata.cern.ch/cat/metadata/EGM/Run3-23CSep23-Summer23-NanoAODv12/2025-12-03/electron.json.gz",
+                    "2023postBPix": "/cvmfs/cms-griddata.cern.ch/cat/metadata/EGM/Run3-23DSep23-Summer23BPix-NanoAODv12/2025-12-03/electron.json.gz",
+                },
             ),
             "ele_sf_cset_name": EraModifier(
                 {
@@ -551,9 +563,20 @@ def add_muon_config(configuration: Configuration):
         {
             "muon_sf_file": EraModifier(
                 {
-                    _era: f"data/jsonpog-integration/POG/MUO/{_campaign}/muon_Z.json.gz"
-                    for _era, _campaign in CORRECTIONLIB_CAMPAIGNS.items()
-                }
+                    **{
+                        _era: f"data/jsonpog-integration/POG/MUO/{_campaign}/muon_Z.json.gz"
+                        for _era, _campaign in CORRECTIONLIB_CAMPAIGNS.items()
+                        if _era in ERAS_RUN2
+                    },
+                    "2016preVFP": "/cvmfs/cms-griddata.cern.ch/cat/metadata/MUO/Run2-2016preVFP-UL-NanoAODv9/2024-07-02/muon_Z.json.gz",
+                    "2016postVFP": "/cvmfs/cms-griddata.cern.ch/cat/metadata/MUO/Run2-2016postVFP-UL-NanoAODv9/2024-07-02/muon_Z.json.gz",
+                    "2017": "/cvmfs/cms-griddata.cern.ch/cat/metadata/MUO/Run2-2017-UL-NanoAODv9/2024-07-02/muon_Z.json.gz",
+                    "2018": "/cvmfs/cms-griddata.cern.ch/cat/metadata/MUO/Run2-2018-UL-NanoAODv9/2024-07-02/muon_Z.json.gz",
+                    "2022preEE": "/cvmfs/cms-griddata.cern.ch/cat/metadata/MUO/Run3-22CDSep23-Summer22-NanoAODv12/2025-08-14/muon_Z.json.gz",
+                    "2022postEE": "/cvmfs/cms-griddata.cern.ch/cat/metadata/MUO/Run3-22EFGSep23-Summer22EE-NanoAODv12/2025-08-14/muon_Z.json.gz",
+                    "2023preBPix": "/cvmfs/cms-griddata.cern.ch/cat/metadata/MUO/Run3-23CSep23-Summer23-NanoAODv12/2025-08-14/muon_Z.json.gz",
+                    "2023postBPix": "/cvmfs/cms-griddata.cern.ch/cat/metadata/MUO/Run3-23DSep23-Summer23BPix-NanoAODv12/2025-08-14/muon_Z.json.gz",
+                },
             ),
             "muon_reco_sf_name": EraModifier(
                 {
@@ -772,28 +795,26 @@ def add_hadronic_tau_config(configuration: Configuration, era: str):
         {
             "tau_ides_sf_file": EraModifier(
                 {
-                    **{
-                        _era: f"data/jsonpog-integration/POG/TAU/{_campaign}/tau.json.gz"
-                        for _era, _campaign in CORRECTIONLIB_CAMPAIGNS.items()
-                        if _era in ERAS_RUN2
-                    },
-                    "2022preEE": "payloads/preliminary_tau_corrections/tau_DeepTau2018v2p5_2022_preEE.json.gz",
-                    "2022postEE": "payloads/preliminary_tau_corrections/tau_DeepTau2018v2p5_2022_postEE.json.gz",
-                    "2023preBPix": "payloads/preliminary_tau_corrections/tau_DeepTau2018v2p5_2023_preBPix.json.gz",
-                    "2023postBPix": "payloads/preliminary_tau_corrections/tau_DeepTau2018v2p5_2023_postBPix.json.gz",
+                    "2016preVFP": "/cvmfs/cms-griddata.cern.ch/cat/metadata/TAU/Run2-2016preVFP-UL-NanoAODv9/2024-07-02/tau.json.gz",
+                    "2016postVFP": "/cvmfs/cms-griddata.cern.ch/cat/metadata/TAU/Run2-2016postVFP-UL-NanoAODv9/2024-07-02/tau.json.gz",
+                    "2017": "/cvmfs/cms-griddata.cern.ch/cat/metadata/TAU/Run2-2017-UL-NanoAODv9/2024-07-02/tau.json.gz",
+                    "2018": "/cvmfs/cms-griddata.cern.ch/cat/metadata/TAU/Run2-2018-UL-NanoAODv9/2024-07-02/tau.json.gz",
+                    "2022preEE": "/cvmfs/cms-griddata.cern.ch/cat/metadata/TAU/Run3-22CDSep23-Summer22-NanoAODv12/2025-10-01/tau_DeepTau2018v2p5_2022_preEE.json.gz",
+                    "2022postEE": "/cvmfs/cms-griddata.cern.ch/cat/metadata/TAU/Run3-22EFGSep23-Summer22EE-NanoAODv12/2025-10-01/tau_DeepTau2018v2p5_2022_postEE.json.gz",
+                    "2023preBPix": "/cvmfs/cms-griddata.cern.ch/cat/metadata/TAU/Run3-23CSep23-Summer23-NanoAODv12/2025-10-01/tau_DeepTau2018v2p5_2023_preBPix.json.gz",
+                    "2023postBPix": "/cvmfs/cms-griddata.cern.ch/cat/metadata/TAU/Run3-23DSep23-Summer23BPix-NanoAODv12/2025-10-01/tau_DeepTau2018v2p5_2023_postBPix.json.gz",
                 }
             ),
             "tau_trigger_sf_file": EraModifier(
                 {
-                    **{
-                        _era: f"data/jsonpog-integration/POG/TAU/{_campaign}/tau.json.gz"
-                        for _era, _campaign in CORRECTIONLIB_CAMPAIGNS.items()
-                        if _era in ERAS_RUN2
-                    },
-                    "2022preEE": "data/jsonpog-integration/POG/TAU/2022_Summer22/tau_DeepTau2018v2p5_2022_preEE.json.gz",
-                    "2022postEE": "data/jsonpog-integration/POG/TAU/2022_Summer22EE/tau_DeepTau2018v2p5_2022_postEE.json.gz",
-                    "2023preBPix": "data/jsonpog-integration/POG/TAU/2023_Summer23/tau_DeepTau2018v2p5_2023_preBPix.json.gz",
-                    "2023postBPix": "data/jsonpog-integration/POG/TAU/2023_Summer23BPix/tau_DeepTau2018v2p5_2023_postBPix.json.gz",
+                    "2016preVFP": "/cvmfs/cms-griddata.cern.ch/cat/metadata/TAU/Run2-2016preVFP-UL-NanoAODv9/2024-07-02/tau.json.gz",
+                    "2016postVFP": "/cvmfs/cms-griddata.cern.ch/cat/metadata/TAU/Run2-2016postVFP-UL-NanoAODv9/2024-07-02/tau.json.gz",
+                    "2017": "/cvmfs/cms-griddata.cern.ch/cat/metadata/TAU/Run2-2017-UL-NanoAODv9/2024-07-02/tau.json.gz",
+                    "2018": "/cvmfs/cms-griddata.cern.ch/cat/metadata/TAU/Run2-2018-UL-NanoAODv9/2024-07-02/tau.json.gz",
+                    "2022preEE": "/cvmfs/cms-griddata.cern.ch/cat/metadata/TAU/Run3-22CDSep23-Summer22-NanoAODv12/2025-10-01/tau_DeepTau2018v2p5_2022_preEE.json.gz",
+                    "2022postEE": "/cvmfs/cms-griddata.cern.ch/cat/metadata/TAU/Run3-22EFGSep23-Summer22EE-NanoAODv12/2025-10-01/tau_DeepTau2018v2p5_2022_postEE.json.gz",
+                    "2023preBPix": "/cvmfs/cms-griddata.cern.ch/cat/metadata/TAU/Run3-23CSep23-Summer23-NanoAODv12/2025-10-01/tau_DeepTau2018v2p5_2023_preBPix.json.gz",
+                    "2023postBPix": "/cvmfs/cms-griddata.cern.ch/cat/metadata/TAU/Run3-23DSep23-Summer23BPix-NanoAODv12/2025-10-01/tau_DeepTau2018v2p5_2023_postBPix.json.gz",
                 }
             ),
             "tau_ES_json_name": "tau_energy_scale",
@@ -1249,46 +1270,52 @@ def add_ak4jet_config(configuration: Configuration):
             "ak4jet_jes_sources": '{""}',
             "ak4jet_jes_shift": 0,
             "ak4jet_jer_master_seed": 42,
-            "ak4jet_jer_shift": '"nom"',  # or '"up"', '"down"'
+            "ak4jet_jer_shift": "nom",  # or '"up"', '"down"'
             "ak4jet_jec_file": EraModifier(
                 {
-                    _era: f'"data/jsonpog-integration/POG/JME/{_campaign}/jet_jerc.json.gz"'
-                    for _era, _campaign in CORRECTIONLIB_CAMPAIGNS.items()
-                }
+                    "2016preVFP": "/cvmfs/cms-griddata.cern.ch/cat/metadata/JME/Run2-2016preVFP-UL-NanoAODv9/2025-04-11/jet_jerc.json.gz",
+                    "2016postVFP": "/cvmfs/cms-griddata.cern.ch/cat/metadata/JME/Run2-2016postVFP-UL-NanoAODv9/2025-04-11/jet_jerc.json.gz",
+                    "2017": "/cvmfs/cms-griddata.cern.ch/cat/metadata/JME/Run2-2017-UL-NanoAODv9/2025-04-11/jet_jerc.json.gz",
+                    "2018": "/cvmfs/cms-griddata.cern.ch/cat/metadata/JME/Run2-2018-UL-NanoAODv9/2025-04-11/jet_jerc.json.gz",
+                    "2022preEE": "/cvmfs/cms-griddata.cern.ch/cat/metadata/JME/Run3-22CDSep23-Summer22-NanoAODv12/2025-09-23/jet_jerc.json.gz",
+                    "2022postEE": "/cvmfs/cms-griddata.cern.ch/cat/metadata/JME/Run3-22EFGSep23-Summer22EE-NanoAODv12/2025-10-07/jet_jerc.json.gz",
+                    "2023preBPix": "/cvmfs/cms-griddata.cern.ch/cat/metadata/JME/Run3-23CSep23-Summer23-NanoAODv12/2025-10-07/jet_jerc.json.gz",
+                    "2023postBPix": "/cvmfs/cms-griddata.cern.ch/cat/metadata/JME/Run3-23DSep23-Summer23BPix-NanoAODv12/2025-10-07/jet_jerc.json.gz",
+                },
             ),
             "ak4jet_jer_tag": EraModifier(
                 {
-                    "2016preVFP": '"Summer20UL16APV_JRV3_MC"',
-                    "2016postVFP": '"Summer20UL16_JRV3_MC"',
-                    "2017": '"Summer19UL17_JRV2_MC"',
-                    "2018": '"Summer19UL18_JRV2_MC"',
-                    "2022preEE": '"Summer22_22Sep2023_JRV1_MC"',
-                    "2022postEE": '"Summer22EE_22Sep2023_JRV1_MC"',
-                    "2023preBPix": '"Summer23Prompt23_RunCv1234_JRV1_MC"',
-                    "2023postBPix": '"Summer23BPixPrompt23_RunD_JRV1_MC"',
+                    "2016preVFP": "Summer20UL16APV_JRV3_MC",
+                    "2016postVFP": "Summer20UL16_JRV3_MC",
+                    "2017": "Summer19UL17_JRV2_MC",
+                    "2018": "Summer19UL18_JRV2_MC",
+                    "2022preEE": "Summer22_22Sep2023_JRV1_MC",
+                    "2022postEE": "Summer22EE_22Sep2023_JRV1_MC",
+                    "2023preBPix": "Summer23Prompt23_RunCv1234_JRV1_MC",
+                    "2023postBPix": "Summer23BPixPrompt23_RunD_JRV1_MC",
                 }
             ),
-            "ak4jet_jes_tag_data": '""',
+            "ak4jet_jes_tag_data": "\"\"",
             "ak4jet_jes_tag": EraModifier(
                 {
-                    "2016preVFP": '"Summer19UL16APV_V7_MC"',
-                    "2016postVFP": '"Summer19UL16_V7_MC"',
-                    "2017": '"Summer19UL17_V5_MC"',
-                    "2018": '"Summer19UL18_V5_MC"',
-                    "2022preEE": '"Summer22_22Sep2023_V2_MC"',
-                    "2022postEE": '"Summer22EE_22Sep2023_V2_MC"',
-                    "2023preBPix": '"Summer23Prompt23_V2_MC"',
-                    "2023postBPix": '"Summer23BPixPrompt23_V3_MC"',
+                    "2016preVFP": "Summer19UL16APV_V7_MC",
+                    "2016postVFP": "Summer19UL16_V7_MC",
+                    "2017": "Summer19UL17_V5_MC",
+                    "2018": "Summer19UL18_V5_MC",
+                    "2022preEE": "Summer22_22Sep2023_V3_MC",
+                    "2022postEE": "Summer22EE_22Sep2023_V3_MC",
+                    "2023preBPix": "Summer23Prompt23_V2_MC",
+                    "2023postBPix": "Summer23BPixPrompt23_V3_MC",
                 }
             ),
             "ak4jet_jec_algo": EraModifier(
                 {
                     **{
-                        _era: '"AK4PFchs"'
+                        _era: "AK4PFchs"
                         for _era in ERAS_RUN2
                     },
                     **{
-                        _era: '"AK4PFPuppi"'
+                        _era: "AK4PFPuppi"
                         for _era in ERAS_RUN3
                     }
                 }
@@ -1310,9 +1337,15 @@ def add_ak4jet_config(configuration: Configuration):
         {
             "jet_veto_map_file": EraModifier(
                 {
-                    _era: f"data/jsonpog-integration/POG/JME/{_campaign}/jetvetomaps.json.gz"
-                    for _era, _campaign in CORRECTIONLIB_CAMPAIGNS.items()
-                }
+                    "2016preVFP": "/cvmfs/cms-griddata.cern.ch/cat/metadata/JME/Run2-2016preVFP-UL-NanoAODv9/2025-04-11/jetvetomaps.json.gz",
+                    "2016postVFP": "/cvmfs/cms-griddata.cern.ch/cat/metadata/JME/Run2-2016postVFP-UL-NanoAODv9/2025-04-11/jetvetomaps.json.gz",
+                    "2017": "/cvmfs/cms-griddata.cern.ch/cat/metadata/JME/Run2-2017-UL-NanoAODv9/2025-04-11/jetvetomaps.json.gz",
+                    "2018": "/cvmfs/cms-griddata.cern.ch/cat/metadata/JME/Run2-2018-UL-NanoAODv9/2025-04-11/jetvetomaps.json.gz",
+                    "2022preEE": "/cvmfs/cms-griddata.cern.ch/cat/metadata/JME/Run3-22CDSep23-Summer22-NanoAODv12/2025-09-23/jetvetomaps.json.gz",
+                    "2022postEE": "/cvmfs/cms-griddata.cern.ch/cat/metadata/JME/Run3-22EFGSep23-Summer22EE-NanoAODv12/2025-10-07/jetvetomaps.json.gz",
+                    "2023preBPix": "/cvmfs/cms-griddata.cern.ch/cat/metadata/JME/Run3-23CSep23-Summer23-NanoAODv12/2025-10-07/jetvetomaps.json.gz",
+                    "2023postBPix": "/cvmfs/cms-griddata.cern.ch/cat/metadata/JME/Run3-23DSep23-Summer23BPix-NanoAODv12/2025-10-07/jetvetomaps.json.gz",
+                },
             ),
             "jet_veto_map_name": EraModifier(
                 {
@@ -1364,39 +1397,45 @@ def add_ak8jet_config(configuration: Configuration):
             "ak8jet_jes_sources": '{""}',
             "ak8jet_jes_shift": 0,
             "ak8jet_jer_master_seed": 43,
-            "ak8jet_jer_shift": '"nom"',  # or '"up"', '"down"'
+            "ak8jet_jer_shift": "nom",  # or '"up"', '"down"'
             "ak8jet_jec_file": EraModifier(  # TODO use AK4 file for fatjets because it either was is just copied and the fatjet file has no merged uncertainty scheme?
                 {
-                    _era: f'"data/jsonpog-integration/POG/JME/{_campaign}/fatJet_jerc.json.gz"'
-                    for _era, _campaign in CORRECTIONLIB_CAMPAIGNS.items()
-                }
+                    "2016preVFP": "/cvmfs/cms-griddata.cern.ch/cat/metadata/JME/Run2-2016preVFP-UL-NanoAODv9/2025-04-11/fatJet_jerc.json.gz",
+                    "2016postVFP": "/cvmfs/cms-griddata.cern.ch/cat/metadata/JME/Run2-2016postVFP-UL-NanoAODv9/2025-04-11/fatJet_jerc.json.gz",
+                    "2017": "/cvmfs/cms-griddata.cern.ch/cat/metadata/JME/Run2-2017-UL-NanoAODv9/2025-04-11/fatJet_jerc.json.gz",
+                    "2018": "/cvmfs/cms-griddata.cern.ch/cat/metadata/JME/Run2-2018-UL-NanoAODv9/2025-04-11/fatJet_jerc.json.gz",
+                    "2022preEE": "/cvmfs/cms-griddata.cern.ch/cat/metadata/JME/Run3-22CDSep23-Summer22-NanoAODv12/2025-09-23/fatJet_jerc.json.gz",
+                    "2022postEE": "/cvmfs/cms-griddata.cern.ch/cat/metadata/JME/Run3-22EFGSep23-Summer22EE-NanoAODv12/2025-10-07/fatJet_jerc.json.gz",
+                    "2023preBPix": "/cvmfs/cms-griddata.cern.ch/cat/metadata/JME/Run3-23CSep23-Summer23-NanoAODv12/2025-10-07/fatJet_jerc.json.gz",
+                    "2023postBPix": "/cvmfs/cms-griddata.cern.ch/cat/metadata/JME/Run3-23DSep23-Summer23BPix-NanoAODv12/2025-10-07/fatJet_jerc.json.gz",
+                },
             ),
             "ak8jet_jer_tag": EraModifier(
                 {
-                    "2016preVFP": '"Summer20UL16APV_JRV3_MC"',
-                    "2016postVFP": '"Summer20UL16_JRV3_MC"',
-                    "2017": '"Summer19UL17_JRV2_MC"',
-                    "2018": '"Summer19UL18_JRV2_MC"',
-                    "2022preEE": '"Summer22_22Sep2023_JRV1_MC"',
-                    "2022postEE": '"Summer22EE_22Sep2023_JRV1_MC"',
-                    "2023preBPix": '"Summer23Prompt23_RunCv1234_JRV1_MC"',
-                    "2023postBPix": '"Summer23BPixPrompt23_RunD_JRV1_MC"',
+                    "2016preVFP": "Summer20UL16APV_JRV3_MC",
+                    "2016postVFP": "Summer20UL16_JRV3_MC",
+                    "2017": "Summer19UL17_JRV2_MC",
+                    "2018": "Summer19UL18_JRV2_MC",
+                    "2022preEE": "Summer22_22Sep2023_JRV1_MC",
+                    "2022postEE": "Summer22EE_22Sep2023_JRV1_MC",
+                    "2023preBPix": "Summer23Prompt23_RunCv1234_JRV1_MC",
+                    "2023postBPix": "Summer23BPixPrompt23_RunD_JRV1_MC",
                 }
             ),
-            "ak8jet_jes_tag_data": '""',
+            "ak8jet_jes_tag_data": "\"\"",
             "ak8jet_jes_tag": EraModifier(
                 {
-                    "2016preVFP": '"Summer19UL16APV_V7_MC"',
-                    "2016postVFP": '"Summer19UL16_V7_MC"',
-                    "2017": '"Summer19UL17_V5_MC"',
-                    "2018": '"Summer19UL18_V5_MC"',
-                    "2022preEE": '"Summer22_22Sep2023_V2_MC"',
-                    "2022postEE": '"Summer22EE_22Sep2023_V2_MC"',
-                    "2023preBPix": '"Summer23Prompt23_V2_MC"',
-                    "2023postBPix": '"Summer23BPixPrompt23_V3_MC"',
+                    "2016preVFP": "Summer19UL16APV_V7_MC",
+                    "2016postVFP": "Summer19UL16_V7_MC",
+                    "2017": "Summer19UL17_V5_MC",
+                    "2018": "Summer19UL18_V5_MC",
+                    "2022preEE": "Summer22_22Sep2023_V3_MC",
+                    "2022postEE": "Summer22EE_22Sep2023_V3_MC",
+                    "2023preBPix": "Summer23Prompt23_V2_MC",
+                    "2023postBPix": "Summer23BPixPrompt23_V3_MC",
                 }
             ),
-            "ak8jet_jec_algo": '"AK8PFPuppi"',  # TODO normally "AK8PFPuppi" would be used -> change to AK4 naming to get merged uncertainty scheme?
+            "ak8jet_jec_algo": "AK8PFPuppi",  # TODO normally "AK8PFPuppi" would be used -> change to AK4 naming to get merged uncertainty scheme?
         },
     )
 
@@ -1471,8 +1510,14 @@ def add_bjet_config(configuration: Configuration):
         {
             "btag_sf_file": EraModifier(
                 {
-                    _era: f"data/jsonpog-integration/POG/BTV/{_campaign}/btagging.json.gz"
-                    for _era, _campaign in CORRECTIONLIB_CAMPAIGNS.items()
+                    "2016preVFP": "/cvmfs/cms-griddata.cern.ch/cat/metadata/BTV/Run2-2016preVFP-UL-NanoAODv9/2025-08-19/btagging.json.gz",
+                    "2016postVFP": "/cvmfs/cms-griddata.cern.ch/cat/metadata/BTV/Run2-2016postVFP-UL-NanoAODv9/2025-08-19/btagging.json.gz",
+                    "2017": "/cvmfs/cms-griddata.cern.ch/cat/metadata/BTV/Run2-2017-UL-NanoAODv9/2025-08-19/btagging.json.gz",
+                    "2018": "/cvmfs/cms-griddata.cern.ch/cat/metadata/BTV/Run2-2018-UL-NanoAODv9/2025-08-19/btagging.json.gz",
+                    "2022preEE": "/cvmfs/cms-griddata.cern.ch/cat/metadata/BTV/Run3-22CDSep23-Summer22-NanoAODv12/2025-08-20/btagging.json.gz",
+                    "2022postEE": "/cvmfs/cms-griddata.cern.ch/cat/metadata/BTV/Run3-22EFGSep23-Summer22EE-NanoAODv12/2025-08-20/btagging.json.gz",
+                    "2023preBPix": "/cvmfs/cms-griddata.cern.ch/cat/metadata/BTV/Run3-23CSep23-Summer23-NanoAODv12/2025-08-20/btagging.json.gz",
+                    "2023postBPix": "/cvmfs/cms-griddata.cern.ch/cat/metadata/BTV/Run3-23DSep23-Summer23BPix-NanoAODv12/2025-08-20/btagging.json.gz",
                 }
             ),
             "btag_sf_variation": "central",
@@ -1667,11 +1712,10 @@ def build_config(
                         _era: f"data/electron_energy_scale/{_era}_UL/EGM_ScaleUnc.json.gz"
                         for _era in ERAS_RUN2
                     },
-                    **{
-                        _era: f"data/jsonpog-integration/POG/EGM/{_campaign}/electronSS_EtDependent.json.gz"
-                        for _era, _campaign in CORRECTIONLIB_CAMPAIGNS.items()
-                        if _era in ERAS_RUN3
-                    },
+                    "2022preEE": "/cvmfs/cms-griddata.cern.ch/cat/metadata/EGM/Run3-22CDSep23-Summer22-NanoAODv12/2025-12-03/electronSS_EtDependent.json.gz",
+                    "2022postEE": "/cvmfs/cms-griddata.cern.ch/cat/metadata/EGM/Run3-22EFGSep23-Summer22EE-NanoAODv12/2025-12-03/electronSS_EtDependent.json.gz",
+                    "2023preBPix": "/cvmfs/cms-griddata.cern.ch/cat/metadata/EGM/Run3-23CSep23-Summer23-NanoAODv12/2025-12-03/electronSS_EtDependent.json.gz",
+                    "2023postBPix": "/cvmfs/cms-griddata.cern.ch/cat/metadata/EGM/Run3-23DSep23-Summer23BPix-NanoAODv12/2025-12-03/electronSS_EtDependent.json.gz",
                 }
             ),
             "ele_es_sf_name": EraModifier(
@@ -1693,11 +1737,9 @@ def build_config(
                         for _era in ERAS_RUN2
                     },
                     **{
-                        _era: f"EGMScale_Compound_Ele_{_era}"
-                        for _era in ERAS_RUN3 if not _era.startswith("2023")
+                        _era: "Scale"
+                        for _era in ERAS_RUN3
                     },
-                    "2023preBPix": "EGMScale_Compound_Ele_2023preBPIX",
-                    "2023postBPix": "EGMScale_Compound_Ele_2023postBPIX",
                 }
             ),
             "ele_es_sf_mc_name": EraModifier(
@@ -1707,11 +1749,9 @@ def build_config(
                         for _era in ERAS_RUN2
                     },
                     **{
-                        _era: f"EGMSmearAndSyst_ElePTsplit_{_era}"
-                        for _era in ERAS_RUN3 if not _era.startswith("2023")
+                        _era: "SmearAndSyst"
+                        for _era in ERAS_RUN3
                     },
-                    "2023preBPix": "EGMSmearAndSyst_ElePTsplit_2023preBPIX",
-                    "2023postBPix": "EGMSmearAndSyst_ElePTsplit_2023postBPIX",
                 }
             ),
         },
