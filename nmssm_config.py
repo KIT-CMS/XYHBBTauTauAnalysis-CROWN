@@ -1545,7 +1545,7 @@ def add_zpt_weight_config(configuration: Configuration):
                     "dyjets_madgraph": "LO",
                     "dyjets_amcatnlo_ll": "NLO",
                     "dyjets_amcatnlo_tt": "NLO",
-                    "dyjets_powheg": "NLO",
+                    "dyjets_powheg": "NNLO",
                 },
                 default="DOES_NOT_EXIST",  # placeholder for samples without z pt reweighting
             ),
@@ -1597,7 +1597,7 @@ def add_recoil_corrections_config(configuration: Configuration):
                     "dyjets_madgraph": "LO",
                     "dyjets_amcatnlo_ll": "NLO",
                     "dyjets_amcatnlo_tt": "NLO",
-                    "dyjets_powheg": "NLO",
+                    "dyjets_powheg": "NNLO",
                     "wjets_madgraph": "LO",
                     "wjets_amcatnlo": "NLO",
                 },
