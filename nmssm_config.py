@@ -3078,6 +3078,10 @@ def build_config(
             pairquantities.VsEleTauIDFlag_2.output_group,
             pairquantities.VsMuTauIDFlag_2.output_group,
             triggers.DoubleTauTauTriggerFlags.output_group,
+        ] + [
+                producer.output_group
+                for producer in double_tau_jet_trigger_producers
+        ] + [
             # q.taujet_pt_1,
             # q.taujet_pt_2,
             # q.gen_taujet_pt_2,
