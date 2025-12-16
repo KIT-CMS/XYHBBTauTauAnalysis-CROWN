@@ -7,23 +7,23 @@ from ..quantities import nanoAOD, nanoAOD_run2
 from code_generation.producer import Producer, ProducerGroup
 
 from ._helpers import jerc_producer_factory
-from ..constants import GLOBAL_SCOPES, SCOPES, BJetIDAlgorithm, BJET_ID_ALGORTHM
+from ..constants import GLOBAL_SCOPES, SCOPES, BJetIDAlgorithmEnum, BJET_ID_ALGORTHM
 
 
 # Choose the default b jet mask according to the selected b jet identification algorithm in
 # BJET_ID_ALGORITHM
 good_bjets_with_veto_mask = None
-if BJET_ID_ALGORTHM == BJetIDAlgorithm.DEEPJET:
+if BJET_ID_ALGORTHM == BJetIDAlgorithmEnum.DEEPJET:
     good_bjets_with_veto_mask = q.good_bjets_deepjet_with_veto_mask
-elif BJET_ID_ALGORTHM == BJetIDAlgorithm.PNET:
+elif BJET_ID_ALGORTHM == BJetIDAlgorithmEnum.PNET:
     good_bjets_with_veto_mask = q.good_bjets_pnet_with_veto_mask
 
 # Get the nanoAOD b jet tagging column, according to the default b jet identification algorithm
 # selected with BJET_ID_ALGORITHM
 nanoaod_btag_score = None
-if BJET_ID_ALGORTHM == BJetIDAlgorithm.DEEPJET:
+if BJET_ID_ALGORTHM == BJetIDAlgorithmEnum.DEEPJET:
     nanoaod_btag_score = nanoAOD_run2.Jet_btagDeepFlavB
-elif BJET_ID_ALGORTHM == BJetIDAlgorithm.PNET:
+elif BJET_ID_ALGORTHM == BJetIDAlgorithmEnum.PNET:
     nanoaod_btag_score = nanoAOD.Jet_btagPNetB
 
 

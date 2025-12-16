@@ -2,15 +2,15 @@ from ..quantities import output as q
 from ..quantities import nanoAOD, nanoAOD_run2
 from code_generation.producer import Producer, ProducerGroup
 
-from ..constants import SCOPES, BJetIDAlgorithm, BJET_ID_ALGORTHM
+from ..constants import SCOPES, BJetIDAlgorithmEnum, BJET_ID_ALGORTHM
 
 
 # Get the nanoAOD b jet tagging column, according to the default b jet identification algorithm
 # selected with BJET_ID_ALGORITHM
 nanoaod_btag_score = None
-if BJET_ID_ALGORTHM == BJetIDAlgorithm.DEEPJET:
+if BJET_ID_ALGORTHM == BJetIDAlgorithmEnum.DEEPJET:
     nanoaod_btag_score = nanoAOD_run2.Jet_btagDeepFlavB
-elif BJET_ID_ALGORTHM == BJetIDAlgorithm.PNET:
+elif BJET_ID_ALGORTHM == BJetIDAlgorithmEnum.PNET:
     nanoaod_btag_score = nanoAOD.Jet_btagPNetB
 
 

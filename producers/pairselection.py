@@ -2,14 +2,14 @@ from ..quantities import output as q
 from ..quantities import nanoAOD as nanoAOD
 from code_generation.producer import Producer, Filter
 
-from ..constants import ET_SCOPES, MT_SCOPES, TT_SCOPES, EE_SCOPES, MM_SCOPES, EM_SCOPES, HAD_TAU_SCOPES, ELECTRON_SCOPES, SCOPES, BJetIDAlgorithm, BJET_ID_ALGORTHM
+from ..constants import ET_SCOPES, MT_SCOPES, TT_SCOPES, EE_SCOPES, MM_SCOPES, EM_SCOPES, HAD_TAU_SCOPES, ELECTRON_SCOPES, SCOPES, BJetIDAlgorithmEnum, BJET_ID_ALGORTHM
 
 # Get the nanoAOD b jet tagging column, according to the default b jet identification algorithm
 # selected with BJET_ID_ALGORITHM
 nanoaod_btag_score = None
-if BJET_ID_ALGORTHM == BJetIDAlgorithm.DEEPJET:
+if BJET_ID_ALGORTHM == BJetIDAlgorithmEnum.DEEPJET:
     nanoaod_btag_score = nanoAOD.Jet_btagDeepFlavB
-elif BJET_ID_ALGORTHM == BJetIDAlgorithm.PNET:
+elif BJET_ID_ALGORTHM == BJetIDAlgorithmEnum.PNET:
     nanoaod_btag_score = nanoAOD.Jet_btagPNetB
 
 
