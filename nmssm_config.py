@@ -178,11 +178,10 @@ def add_pileup_reweighting_config(configuration: Configuration):
 
             "PU_reweighting_file": EraModifier(
                 {
-                    **{
-                        _era: f"data/jsonpog-integration/POG/LUM/{_campaign}/puWeights.json.gz"
-                        for _era, _campaign in CORRECTIONLIB_CAMPAIGNS.items()
-                        if _era in ERAS_RUN2
-                    },
+                    "2016preVFP": "/cvmfs/cms-griddata.cern.ch/cat/metadata/LUM/Run2-2016preVFP-UL-NanoAODv9/2021-09-10/puWeights.json.gz",
+                    "2016postVFP": "/cvmfs/cms-griddata.cern.ch/cat/metadata/LUM/Run2-2016postVFP-UL-NanoAODv9/2021-09-10/puWeights.json.gz",
+                    "2017": "/cvmfs/cms-griddata.cern.ch/cat/metadata/LUM/Run2-2017-UL-NanoAODv9/2021-09-10/puWeights.json.gz",
+                    "2018": "/cvmfs/cms-griddata.cern.ch/cat/metadata/LUM/Run2-2017-UL-NanoAODv9/2021-09-10/puWeights.json.gz",
                     "2022preEE": "/cvmfs/cms-griddata.cern.ch/cat/metadata/LUM/Run3-22CDSep23-Summer22-NanoAODv12/2024-01-31/puWeights.json.gz",
                     "2022postEE": "/cvmfs/cms-griddata.cern.ch/cat/metadata/LUM/Run3-22EFGSep23-Summer22EE-NanoAODv12/2024-01-31/puWeights.json.gz",
                     "2023preBPix": "/cvmfs/cms-griddata.cern.ch/cat/metadata/LUM/Run3-23CSep23-Summer23-NanoAODv12/2024-01-31/puWeights.json.gz",
@@ -376,11 +375,10 @@ def add_electron_config(configuration: Configuration):
         {
             "ele_sf_file": EraModifier(
                 {
-                    **{
-                        _era: f"data/jsonpog-integration/POG/EGM/{_campaign}/electron.json.gz"
-                        for _era, _campaign in CORRECTIONLIB_CAMPAIGNS.items()
-                        if _era in ERAS_RUN2
-                    },
+                    "2016preVFP": "/cvmfs/cms-griddata.cern.ch/cat/metadata/EGM/Run2-2016preVFP-UL-NanoAODv9/2024-07-02/electron.json.gz",
+                    "2016postVFP": "/cvmfs/cms-griddata.cern.ch/cat/metadata/EGM/Run2-2016postVFP-UL-NanoAODv9/2024-07-02/electron.json.gz",
+                    "2017": "/cvmfs/cms-griddata.cern.ch/cat/metadata/EGM/Run2-2017-UL-NanoAODv9/2024-07-02/electron.json.gz",
+                    "2018": "/cvmfs/cms-griddata.cern.ch/cat/metadata/EGM/Run2-2018-UL-NanoAODv9/2024-07-02/electron.json.gz",
                     "2022preEE": "/cvmfs/cms-griddata.cern.ch/cat/metadata/EGM/Run3-22CDSep23-Summer22-NanoAODv12/2025-12-03/electron.json.gz",
                     "2022postEE": "/cvmfs/cms-griddata.cern.ch/cat/metadata/EGM/Run3-22EFGSep23-Summer22EE-NanoAODv12/2025-12-03/electron.json.gz",
                     "2023preBPix": "/cvmfs/cms-griddata.cern.ch/cat/metadata/EGM/Run3-23CSep23-Summer23-NanoAODv12/2025-12-03/electron.json.gz",
@@ -570,6 +568,10 @@ def add_muon_config(configuration: Configuration):
                         for _era, _campaign in CORRECTIONLIB_CAMPAIGNS.items()
                         if _era in ERAS_RUN2
                     },
+                    "2016preVFP": "/cvmfs/cms-griddata.cern.ch/cat/metadata/MUO/Run2-2016preVFP-UL-NanoAODv9/2024-07-02/muon_Z.json.gz",
+                    "2016postVFP": "/cvmfs/cms-griddata.cern.ch/cat/metadata/MUO/Run2-2016postVFP-UL-NanoAODv9/2024-07-02/muon_Z.json.gz",
+                    "2017": "/cvmfs/cms-griddata.cern.ch/cat/metadata/MUO/Run2-2017-UL-NanoAODv9/2024-07-02/muon_Z.json.gz",
+                    "2018": "/cvmfs/cms-griddata.cern.ch/cat/metadata/MUO/Run2-2018-UL-NanoAODv9/2024-07-02/muon_Z.json.gz",
                     "2022preEE": "/cvmfs/cms-griddata.cern.ch/cat/metadata/MUO/Run3-22CDSep23-Summer22-NanoAODv12/2025-08-14/muon_Z.json.gz",
                     "2022postEE": "/cvmfs/cms-griddata.cern.ch/cat/metadata/MUO/Run3-22EFGSep23-Summer22EE-NanoAODv12/2025-08-14/muon_Z.json.gz",
                     "2023preBPix": "/cvmfs/cms-griddata.cern.ch/cat/metadata/MUO/Run3-23CSep23-Summer23-NanoAODv12/2025-08-14/muon_Z.json.gz",
@@ -793,11 +795,10 @@ def add_hadronic_tau_config(configuration: Configuration, era: str):
         {
             "tau_ides_sf_file": EraModifier(
                 {
-                    **{
-                        _era: f"data/jsonpog-integration/POG/TAU/{_campaign}/tau.json.gz"
-                        for _era, _campaign in CORRECTIONLIB_CAMPAIGNS.items()
-                        if _era in ERAS_RUN2
-                    },
+                    "2016preVFP": "/cvmfs/cms-griddata.cern.ch/cat/metadata/TAU/Run2-2016preVFP-UL-NanoAODv9/2024-07-02/tau.json.gz",
+                    "2016postVFP": "/cvmfs/cms-griddata.cern.ch/cat/metadata/TAU/Run2-2016postVFP-UL-NanoAODv9/2024-07-02/tau.json.gz",
+                    "2017": "/cvmfs/cms-griddata.cern.ch/cat/metadata/TAU/Run2-2017-UL-NanoAODv9/2024-07-02/tau.json.gz",
+                    "2018": "/cvmfs/cms-griddata.cern.ch/cat/metadata/TAU/Run2-2018-UL-NanoAODv9/2024-07-02/tau.json.gz",
                     "2022preEE": "/cvmfs/cms-griddata.cern.ch/cat/metadata/TAU/Run3-22CDSep23-Summer22-NanoAODv12/2025-10-01/tau_DeepTau2018v2p5_2022_preEE.json.gz",
                     "2022postEE": "/cvmfs/cms-griddata.cern.ch/cat/metadata/TAU/Run3-22EFGSep23-Summer22EE-NanoAODv12/2025-10-01/tau_DeepTau2018v2p5_2022_postEE.json.gz",
                     "2023preBPix": "/cvmfs/cms-griddata.cern.ch/cat/metadata/TAU/Run3-23CSep23-Summer23-NanoAODv12/2025-10-01/tau_DeepTau2018v2p5_2023_preBPix.json.gz",
@@ -806,11 +807,10 @@ def add_hadronic_tau_config(configuration: Configuration, era: str):
             ),
             "tau_trigger_sf_file": EraModifier(
                 {
-                    **{
-                        _era: f"data/jsonpog-integration/POG/TAU/{_campaign}/tau.json.gz"
-                        for _era, _campaign in CORRECTIONLIB_CAMPAIGNS.items()
-                        if _era in ERAS_RUN2
-                    },
+                    "2016preVFP": "/cvmfs/cms-griddata.cern.ch/cat/metadata/TAU/Run2-2016preVFP-UL-NanoAODv9/2024-07-02/tau.json.gz",
+                    "2016postVFP": "/cvmfs/cms-griddata.cern.ch/cat/metadata/TAU/Run2-2016postVFP-UL-NanoAODv9/2024-07-02/tau.json.gz",
+                    "2017": "/cvmfs/cms-griddata.cern.ch/cat/metadata/TAU/Run2-2017-UL-NanoAODv9/2024-07-02/tau.json.gz",
+                    "2018": "/cvmfs/cms-griddata.cern.ch/cat/metadata/TAU/Run2-2018-UL-NanoAODv9/2024-07-02/tau.json.gz",
                     "2022preEE": "/cvmfs/cms-griddata.cern.ch/cat/metadata/TAU/Run3-22CDSep23-Summer22-NanoAODv12/2025-10-01/tau_DeepTau2018v2p5_2022_preEE.json.gz",
                     "2022postEE": "/cvmfs/cms-griddata.cern.ch/cat/metadata/TAU/Run3-22EFGSep23-Summer22EE-NanoAODv12/2025-10-01/tau_DeepTau2018v2p5_2022_postEE.json.gz",
                     "2023preBPix": "/cvmfs/cms-griddata.cern.ch/cat/metadata/TAU/Run3-23CSep23-Summer23-NanoAODv12/2025-10-01/tau_DeepTau2018v2p5_2023_preBPix.json.gz",
@@ -1273,11 +1273,10 @@ def add_ak4jet_config(configuration: Configuration):
             "ak4jet_jer_shift": "nom",  # or '"up"', '"down"'
             "ak4jet_jec_file": EraModifier(
                 {
-                    **{
-                        _era: f'"data/jsonpog-integration/POG/JME/{_campaign}/jet_jerc.json.gz"'
-                        for _era, _campaign in CORRECTIONLIB_CAMPAIGNS.items()
-                        if _era in ERAS_RUN2
-                    },
+                    "2016preVFP": "/cvmfs/cms-griddata.cern.ch/cat/metadata/JME/Run2-2016preVFP-UL-NanoAODv9/2025-04-11/jet_jerc.json.gz",
+                    "2016postVFP": "/cvmfs/cms-griddata.cern.ch/cat/metadata/JME/Run2-2016postVFP-UL-NanoAODv9/2025-04-11/jet_jerc.json.gz",
+                    "2017": "/cvmfs/cms-griddata.cern.ch/cat/metadata/JME/Run2-2017-UL-NanoAODv9/2025-04-11/jet_jerc.json.gz",
+                    "2018": "/cvmfs/cms-griddata.cern.ch/cat/metadata/JME/Run2-2018-UL-NanoAODv9/2025-04-11/jet_jerc.json.gz",
                     "2022preEE": "/cvmfs/cms-griddata.cern.ch/cat/metadata/JME/Run3-22CDSep23-Summer22-NanoAODv12/2025-09-23/jet_jerc.json.gz",
                     "2022postEE": "/cvmfs/cms-griddata.cern.ch/cat/metadata/JME/Run3-22EFGSep23-Summer22EE-NanoAODv12/2025-10-07/jet_jerc.json.gz",
                     "2023preBPix": "/cvmfs/cms-griddata.cern.ch/cat/metadata/JME/Run3-23CSep23-Summer23-NanoAODv12/2025-10-07/jet_jerc.json.gz",
@@ -1338,11 +1337,10 @@ def add_ak4jet_config(configuration: Configuration):
         {
             "jet_veto_map_file": EraModifier(
                 {
-                    **{
-                        _era: f"data/jsonpog-integration/POG/JME/{_campaign}/jetvetomaps.json.gz"
-                        for _era, _campaign in CORRECTIONLIB_CAMPAIGNS.items()
-                        if _era in ERAS_RUN2
-                    },
+                    "2016preVFP": "/cvmfs/cms-griddata.cern.ch/cat/metadata/JME/Run2-2016preVFP-UL-NanoAODv9/2025-04-11/jetvetomaps.json.gz",
+                    "2016postVFP": "/cvmfs/cms-griddata.cern.ch/cat/metadata/JME/Run2-2016postVFP-UL-NanoAODv9/2025-04-11/jetvetomaps.json.gz",
+                    "2017": "/cvmfs/cms-griddata.cern.ch/cat/metadata/JME/Run2-2017-UL-NanoAODv9/2025-04-11/jetvetomaps.json.gz",
+                    "2018": "/cvmfs/cms-griddata.cern.ch/cat/metadata/JME/Run2-2018-UL-NanoAODv9/2025-04-11/jetvetomaps.json.gz",
                     "2022preEE": "/cvmfs/cms-griddata.cern.ch/cat/metadata/JME/Run3-22CDSep23-Summer22-NanoAODv12/2025-09-23/jetvetomaps.json.gz",
                     "2022postEE": "/cvmfs/cms-griddata.cern.ch/cat/metadata/JME/Run3-22EFGSep23-Summer22EE-NanoAODv12/2025-10-07/jetvetomaps.json.gz",
                     "2023preBPix": "/cvmfs/cms-griddata.cern.ch/cat/metadata/JME/Run3-23CSep23-Summer23-NanoAODv12/2025-10-07/jetvetomaps.json.gz",
@@ -1402,11 +1400,10 @@ def add_ak8jet_config(configuration: Configuration):
             "ak8jet_jer_shift": "nom",  # or '"up"', '"down"'
             "ak8jet_jec_file": EraModifier(  # TODO use AK4 file for fatjets because it either was is just copied and the fatjet file has no merged uncertainty scheme?
                 {
-                    **{
-                        _era: f"data/jsonpog-integration/POG/JME/{_campaign}/fatJet_jerc.json.gz"
-                        for _era, _campaign in CORRECTIONLIB_CAMPAIGNS.items()
-                        if _era in ERAS_RUN2
-                    },
+                    "2016preVFP": "/cvmfs/cms-griddata.cern.ch/cat/metadata/JME/Run2-2016preVFP-UL-NanoAODv9/2025-04-11/fatJet_jerc.json.gz",
+                    "2016postVFP": "/cvmfs/cms-griddata.cern.ch/cat/metadata/JME/Run2-2016postVFP-UL-NanoAODv9/2025-04-11/fatJet_jerc.json.gz",
+                    "2017": "/cvmfs/cms-griddata.cern.ch/cat/metadata/JME/Run2-2017-UL-NanoAODv9/2025-04-11/fatJet_jerc.json.gz",
+                    "2018": "/cvmfs/cms-griddata.cern.ch/cat/metadata/JME/Run2-2018-UL-NanoAODv9/2025-04-11/fatJet_jerc.json.gz",
                     "2022preEE": "/cvmfs/cms-griddata.cern.ch/cat/metadata/JME/Run3-22CDSep23-Summer22-NanoAODv12/2025-09-23/fatJet_jerc.json.gz",
                     "2022postEE": "/cvmfs/cms-griddata.cern.ch/cat/metadata/JME/Run3-22EFGSep23-Summer22EE-NanoAODv12/2025-10-07/fatJet_jerc.json.gz",
                     "2023preBPix": "/cvmfs/cms-griddata.cern.ch/cat/metadata/JME/Run3-23CSep23-Summer23-NanoAODv12/2025-10-07/fatJet_jerc.json.gz",
@@ -1513,11 +1510,10 @@ def add_bjet_config(configuration: Configuration):
         {
             "btag_sf_file": EraModifier(
                 {
-                    **{
-                        _era: f"data/jsonpog-integration/POG/BTV/{_campaign}/btagging.json.gz"
-                        for _era, _campaign in CORRECTIONLIB_CAMPAIGNS.items()
-                        if _era in ERAS_RUN2
-                    },
+                    "2016preVFP": "/cvmfs/cms-griddata.cern.ch/cat/metadata/BTV/Run2-2016preVFP-UL-NanoAODv9/2025-08-19/btagging.json.gz",
+                    "2016postVFP": "/cvmfs/cms-griddata.cern.ch/cat/metadata/BTV/Run2-2016postVFP-UL-NanoAODv9/2025-08-19/btagging.json.gz",
+                    "2017": "/cvmfs/cms-griddata.cern.ch/cat/metadata/BTV/Run2-2017-UL-NanoAODv9/2025-08-19/btagging.json.gz",
+                    "2018": "/cvmfs/cms-griddata.cern.ch/cat/metadata/BTV/Run2-2018-UL-NanoAODv9/2025-08-19/btagging.json.gz",
                     "2022preEE": "/cvmfs/cms-griddata.cern.ch/cat/metadata/BTV/Run3-22CDSep23-Summer22-NanoAODv12/2025-08-20/btagging.json.gz",
                     "2022postEE": "/cvmfs/cms-griddata.cern.ch/cat/metadata/BTV/Run3-22EFGSep23-Summer22EE-NanoAODv12/2025-08-20/btagging.json.gz",
                     "2023preBPix": "/cvmfs/cms-griddata.cern.ch/cat/metadata/BTV/Run3-23CSep23-Summer23-NanoAODv12/2025-08-20/btagging.json.gz",
