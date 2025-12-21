@@ -731,10 +731,11 @@ SingleEleTriggerSF = ExtendedVectorProducer(
 SingleMuTriggerSF = ExtendedVectorProducer(
     name="SingleMuTriggerSF",
     call='physicsobject::muon::scalefactor::Trigger({df}, correctionManager, {output}, {input}, "{m_trigger_flag}", "{muon_sf_file}", "{m_trigger_sf_name}", "{m_trigger_variation}")',
-    input=[
-        q.pt_1,
-        q.eta_1,
-    ],
+    input={
+        "mt": [q.pt_1, q.eta_1],
+        "mm": [q.pt_1, q.eta_1],
+        "em": [q.pt_2, q.eta_2],
+    },
     output="m_trigger_flagname",
     scope=MUON_SCOPES,
     vec_config="single_mu_trigger_sf",
