@@ -2513,7 +2513,7 @@ def build_config(
             electrons.NumberOfGoodElectrons,
             muons.NumberOfGoodMuons,
             pairselection.EMPairSelection,
-            pairselection.GoodEMPairFlag,
+            pairselection.GoodEMPairFilter,
             pairselection.LVEl1,
             pairselection.LVMu2,
             pairselection.LVEl1Uncorrected,
