@@ -903,7 +903,7 @@ def add_hadronic_tau_config(configuration: Configuration, era: str):
             "tau_id_sf_vsjet_tau_dm10_pt40toInf_shift": "nom",
             "tau_id_sf_vsjet_tau_dm11_pt20to40_shift": "nom",
             "tau_id_sf_vsjet_tau_dm11_pt40toInf_shift": "nom",
-            "tau_id_sf_vsjet_sf_dependence": "pt",  # or "dm", "eta"
+            "tau_id_sf_vsjet_sf_dependence": "pt",  # or "dm" ("pt" is both dm and pt dependent)
         },
     )
 
