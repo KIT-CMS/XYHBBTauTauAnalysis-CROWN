@@ -717,11 +717,14 @@ def setup_embedding(configuration: Configuration, scopes: List[str]):
                     "2018": "data/jsonpog-integration/POG/TAU/2018_UL/tau_embed.json.gz",
                 }
             ),
-            "tau_emb_sf_vsjet_tau20to25": "nom",
-            "tau_emb_sf_vsjet_tau25to30": "nom",
-            "tau_emb_sf_vsjet_tau30to35": "nom",
-            "tau_emb_sf_vsjet_tau35to40": "nom",
-            "tau_emb_sf_vsjet_tau40toInf": "nom",
+            "tau_emb_sf_vsjet_tauDM0_pt20to40": "nom",
+            "tau_emb_sf_vsjet_tauDM0_pt40toInf": "nom",
+            "tau_emb_sf_vsjet_tauDM1_pt20to40": "nom",
+            "tau_emb_sf_vsjet_tauDM1_pt40toInf": "nom",
+            "tau_emb_sf_vsjet_tauDM10_pt20to40": "nom",
+            "tau_emb_sf_vsjet_tauDM10_pt40toInf": "nom",
+            "tau_emb_sf_vsjet_tauDM11_pt20to40": "nom",
+            "tau_emb_sf_vsjet_tauDM11_pt40toInf": "nom",
             "tau_emb_id_sf_correctionset": "test_DeepTau2017v2p1VSjet_pt-dm",
             "tau_emb_vsjet_sf_dependence": "pt", 
             "vsjet_tau_id_sf_embedding": [
@@ -804,49 +807,77 @@ def setup_embedding(configuration: Configuration, scopes: List[str]):
     for variation in ["Up", "Down"]:
         configuration.add_shift(
             SystematicShift(
-                name=f"vsJetTau20to25{variation}",
+                name=f"vsJetTauDM0Pt20to40{variation}",
                 shift_config={
-                    ("et", "mt"): {"tau_emb_sf_vsjet_tau20to25": variation.lower()}
+                    ("et", "mt"): {"tau_emb_sf_vsjet_tauDM0_pt20to40": variation.lower()}
                 },
                 producers={("et", "mt"): embedding.Tau_2_VsJetTauID_lt_SF},
             )
         )
         configuration.add_shift(
             SystematicShift(
-                name=f"vsJetTau25to30{variation}",
+                name=f"vsJetTauDM0Pt40toInf{variation}",
                 shift_config={
-                    ("et", "mt"): {"tau_emb_sf_vsjet_tau25to30": variation.lower()}
+                    ("et", "mt"): {"tau_emb_sf_vsjet_tauDM0_pt40toInf": variation.lower()}
                 },
                 producers={("et", "mt"): embedding.Tau_2_VsJetTauID_lt_SF},
             )
         )
         configuration.add_shift(
             SystematicShift(
-                name=f"vsJetTau30to35{variation}",
+                name=f"vsJetTauDM1Pt20to40{variation}",
                 shift_config={
-                    ("et", "mt"): {"tau_emb_sf_vsjet_tau30to35": variation.lower()}
+                    ("et", "mt"): {"tau_emb_sf_vsjet_tauDM1_pt20to40": variation.lower()}
                 },
                 producers={("et", "mt"): embedding.Tau_2_VsJetTauID_lt_SF},
             )
         )
         configuration.add_shift(
             SystematicShift(
-                name=f"vsJetTau35to40{variation}",
+                name=f"vsJetTauDM1Pt40toInf{variation}",
                 shift_config={
-                    ("et", "mt"): {"tau_emb_sf_vsjet_tau35to40": variation.lower()}
+                    ("et", "mt"): {"tau_emb_sf_vsjet_tauDM1_pt40toInf": variation.lower()}
                 },
                 producers={("et", "mt"): embedding.Tau_2_VsJetTauID_lt_SF},
             )
         )
         configuration.add_shift(
             SystematicShift(
-                name=f"vsJetTau40toInf{variation}",
+                name=f"vsJetTauDM10Pt20to40{variation}",
                 shift_config={
-                    ("et", "mt"): {"tau_emb_sf_vsjet_tau40toInf": variation.lower()}
+                    ("et", "mt"): {"tau_emb_sf_vsjet_tauDM10_pt20to40": variation.lower()}
                 },
                 producers={("et", "mt"): embedding.Tau_2_VsJetTauID_lt_SF},
             )
         )
+        configuration.add_shift(
+            SystematicShift(
+                name=f"vsJetTauDM10Pt40toInf{variation}",
+                shift_config={
+                    ("et", "mt"): {"tau_emb_sf_vsjet_tauDM10_pt40toInf": variation.lower()}
+                },
+                producers={("et", "mt"): embedding.Tau_2_VsJetTauID_lt_SF},
+            )
+        )
+        configuration.add_shift(
+            SystematicShift(
+                name=f"vsJetTauDM11Pt20to40{variation}",
+                shift_config={
+                    ("et", "mt"): {"tau_emb_sf_vsjet_tauDM11_pt20to40": variation.lower()}
+                },
+                producers={("et", "mt"): embedding.Tau_2_VsJetTauID_lt_SF},
+            )
+        )
+        configuration.add_shift(
+            SystematicShift(
+                name=f"vsJetTauDM11Pt40toInf{variation}",
+                shift_config={
+                    ("et", "mt"): {"tau_emb_sf_vsjet_tauDM11_pt40toInf": variation.lower()}
+                },
+                producers={("et", "mt"): embedding.Tau_2_VsJetTauID_lt_SF},
+            )
+        )
+        
         # dm binned variations
         for dm in [0, 1, 10, 11]:
             configuration.add_shift(

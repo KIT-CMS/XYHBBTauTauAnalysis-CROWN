@@ -465,7 +465,7 @@ TTGenerateDoubleTauTriggerSF = ProducerGroup(
 
 Tau_2_VsJetTauID_lt_SF = ExtendedVectorProducer(
     name="Tau_2_VsJetTauID_lt_SF",
-    call="""embedding::tau::scalefactor::Id_vsJet_lt(
+    call="""embedding::tau::scalefactor::Id_vsJet(
         {df}, 
         correctionManager, 
         {output}, 
@@ -476,11 +476,14 @@ Tau_2_VsJetTauID_lt_SF = ExtendedVectorProducer(
         "{vsjet_tau_id_WP}", 
         "{tau_emb_vsele_WP_for_vsjet_sf}", 
         "{tau_emb_vsjet_sf_dependence}", 
-        "{tau_emb_sf_vsjet_tau20to25}", 
-        "{tau_emb_sf_vsjet_tau25to30}", 
-        "{tau_emb_sf_vsjet_tau30to35}", 
-        "{tau_emb_sf_vsjet_tau35to40}", 
-        "{tau_emb_sf_vsjet_tau40toInf}")
+        "{tau_emb_sf_vsjet_tauDM0_pt20to40}",
+        "{tau_emb_sf_vsjet_tauDM0_pt40toInf}",
+        "{tau_emb_sf_vsjet_tauDM1_pt20to40}",
+        "{tau_emb_sf_vsjet_tauDM1_pt40toInf}",
+        "{tau_emb_sf_vsjet_tauDM10_pt20to40}",
+        "{tau_emb_sf_vsjet_tauDM10_pt40toInf}",
+        "{tau_emb_sf_vsjet_tauDM11_pt20to40}",
+        "{tau_emb_sf_vsjet_tauDM11_pt40toInf}")
         """,
     input=[q.pt_2, q.tau_decaymode_2, q.gen_match_2],
     output="tau_2_vsjet_sf_outputname",
@@ -490,7 +493,7 @@ Tau_2_VsJetTauID_lt_SF = ExtendedVectorProducer(
 
 Tau_1_VsJetTauID_tt_SF = ExtendedVectorProducer(
     name="Tau_1_VsJetTauID_tt_SF",
-    call="""physicsobject::tau::scalefactor::Id_vsJet_tt(
+    call="""physicsobject::tau::scalefactor::Id_vsJet(
         {df}, 
         correctionManager, 
         {output}, 
@@ -513,7 +516,7 @@ Tau_1_VsJetTauID_tt_SF = ExtendedVectorProducer(
 
 Tau_2_VsJetTauID_tt_SF = ExtendedVectorProducer(
     name="Tau_2_VsJetTauID_tt_SF",
-    call="""physicsobject::tau::scalefactor::Id_vsJet_tt(
+    call="""physicsobject::tau::scalefactor::Id_vsJet(
         {df}, 
         correctionManager, 
         {output}, 
