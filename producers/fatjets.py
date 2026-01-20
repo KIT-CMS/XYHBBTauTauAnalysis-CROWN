@@ -16,37 +16,6 @@ from ..constants import SCOPES, GLOBAL_SCOPES
 # JET ENERGY SCALE AND RESOLUTION CORRECTIONS
 #
 
-
-# create jet energy correction producers for AK8 jets (Run 2)
-FatJetEnergyCorrection_data_Run2, FatJetEnergyCorrectionRun2, RenameFatJetsDataRun2 = jerc_producer_factory(
-    input={
-        "jet_pt": nanoAOD.FatJet_pt,
-        "jet_eta": nanoAOD.FatJet_eta,
-        "jet_phi": nanoAOD.FatJet_phi,
-        "jet_mass": nanoAOD.FatJet_mass,
-        "jet_area": nanoAOD.FatJet_area,
-        "jet_raw_factor": nanoAOD.FatJet_rawFactor,
-        "jet_id": nanoAOD.FatJet_jetId,
-        "gen_jet_pt": nanoAOD.GenJetAK8_pt,
-        "gen_jet_eta": nanoAOD.GenJetAK8_eta,
-        "gen_jet_phi": nanoAOD.GenJetAK8_phi,
-        "rho": nanoAOD.Rho_fixedGridRhoFastjetAll,
-        "luminosity_block": nanoAOD.luminosityBlock,
-        "run": nanoAOD.run,
-        "event": nanoAOD.event,
-    },
-    output={
-        "jet_pt_corrected": q.FatJet_pt_corrected,
-        "jet_mass_corrected": q.FatJet_mass_corrected,
-    },
-    scopes=GLOBAL_SCOPES,
-    producer_prefix="FatJet",
-    config_parameter_prefix="ak8jet",
-    lhc_run=2,
-)
-
-
-
 # create jet energy correction producers for AK8 jets
 FatJetEnergyCorrection_data, FatJetEnergyCorrection, RenameFatJetsData = jerc_producer_factory(
     input={
@@ -72,7 +41,6 @@ FatJetEnergyCorrection_data, FatJetEnergyCorrection, RenameFatJetsData = jerc_pr
     scopes=GLOBAL_SCOPES,
     producer_prefix="FatJet",
     config_parameter_prefix="ak8jet",
-    lhc_run=3,
 )
 
 
