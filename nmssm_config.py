@@ -3775,82 +3775,32 @@ def build_config(
     #########################
     # MET Recoil Shifts
     #########################
-    configuration.add_shift(
-        SystematicShift(
-            name="metRecoilResponseUp",
-            shift_config={
-                ("et", "mt", "tt", "mm"): {
-                    "apply_recoil_resolution_systematic": False,
-                    "apply_recoil_response_systematic": True,
-                    "recoil_systematic_shift_up": True,
-                    "recoil_systematic_shift_down": False,
-                },
-            },
-            producers={
-                ("et", "mt", "tt", "mm"): [
-                    met.ApplyRecoilCorrections,
+    for shift_name in ["Resp", "Resol"]:
+        for shift_direction in ["Up", "Down"]:
+            configuration.add_shift(
+                SystematicShift(
+                    name=f"metRecoil{shift_name}{shift_direction}",
+                    shift_config={
+                        tuple(SCOPES): {
+                            "recoil_correction_variation": f"{shift_name}{shift_direction}",
+                        },
+                    },
+                    producers={
+                        tuple(SCOPES): [
+                            met.RecoilCorrectionMET,
+                        ],
+                    },
+                ),
+                samples=[
+                    "dyjets",
+                    "dyjets_madgraph",
+                    "dyjets_amcatnlo_ll",
+                    "dyjets_amcatnlo_tt",
+                    "dyjets_powheg",
+                    "wjets_madgraph",
+                    "wjets_amcatnlo",
                 ],
-            },
-        ),
-        exclude_samples=["data", "embedding", "embedding_mc", "ttbar", "diboson", "singletop"],
-    )
-    configuration.add_shift(
-        SystematicShift(
-            name="metRecoilResponseDown",
-            shift_config={
-                ("et", "mt", "tt", "mm"): {
-                    "apply_recoil_resolution_systematic": False,
-                    "apply_recoil_response_systematic": True,
-                    "recoil_systematic_shift_up": False,
-                    "recoil_systematic_shift_down": True,
-                },
-            },
-            producers={
-                ("et", "mt", "tt", "mm"): [
-                    met.ApplyRecoilCorrections,
-                ],
-            },
-        ),
-        exclude_samples=["data", "embedding", "embedding_mc", "ttbar", "diboson", "singletop"],
-    )
-    configuration.add_shift(
-        SystematicShift(
-            name="metRecoilResolutionUp",
-            shift_config={
-                ("et", "mt", "tt", "mm"): {
-                    "apply_recoil_resolution_systematic": True,
-                    "apply_recoil_response_systematic": False,
-                    "recoil_systematic_shift_up": True,
-                    "recoil_systematic_shift_down": False,
-                },
-            },
-            producers={
-                ("et", "mt", "tt", "mm"): [
-                    met.ApplyRecoilCorrections,
-                ],
-            },
-        ),
-        exclude_samples=["data", "embedding", "embedding_mc", "ttbar", "diboson", "singletop"],
-    )
-    configuration.add_shift(
-        SystematicShift(
-            name="metRecoilResolutionDown",
-            shift_config={
-                ("et", "mt", "tt", "mm"): {
-                    "apply_recoil_resolution_systematic": True,
-                    "apply_recoil_response_systematic": False,
-                    "recoil_systematic_shift_up": False,
-                    "recoil_systematic_shift_down": True,
-                },
-            },
-            producers={
-                ("et", "mt", "tt", "mm"): [
-                    met.ApplyRecoilCorrections,
-                ],
-            },
-        ),
-        exclude_samples=["data", "embedding", "embedding_mc", "ttbar", "diboson", "singletop"],
-    )
+            )
 
     #########################
     # Pileup Shifts
