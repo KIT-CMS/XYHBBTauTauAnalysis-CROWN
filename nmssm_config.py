@@ -15,7 +15,6 @@ from .producers import pairquantities_bbpair as pairquantities_bbpair
 from .producers import pairselection as pairselection
 from .producers import scalefactors as scalefactors
 from .producers import taus as taus
-from .producers import puppimet as puppimet
 from .producers import triggers as triggers
 from .quantities import nanoAOD, nanoAOD_run2
 from .quantities import output as q
@@ -2336,7 +2335,7 @@ def build_config(
             muons.BaseMuons,
             fatjets.GoodFatJets,
             event.DiLeptonVeto,
-            puppimet.MetQuantitiesUncorrected,
+            met.MetQuantitiesUncorrected,
         ]
         + prefire_weight_producers
         + jet_selection_producers
@@ -2374,11 +2373,9 @@ def build_config(
             fatjets.LeadingFatJetQuantities,
             scalefactors.BJetShapeDeepJet_SF,
             scalefactors.BJetShapePNet_SF,
-            # TODO producers need to be refined for run 3, not considered at the moment
-            #met.MetCorrections,
-            #met.PFMetCorrections,
-            puppimet.RenameMet,  # dummy producer for samples, on which MET is not corrected via recoil corrections
-            puppimet.MetQuantities,
+            # TODO Need to properly handle producers for Run 2 (ROOT file-based)
+            met.METCorrections,
+            met.METQuantities,
             pairquantities.DiTauPairMETQuantities,
             genparticles.GenMatching,
         ]
@@ -2591,15 +2588,6 @@ def build_config(
         AppendProducer(
             z_pt_reweighting_producers,
             samples=["dyjets_madgraph", "dyjets_amcatnlo_ll", "dyjets_amcatnlo_tt", "dyjets_powheg"],
-        )
-    )
-
-    # For DY and W samples, apply Z pt reweighting
-    configuration.add_modification_rule(
-        SCOPES,
-        ReplaceProducer(
-            [puppimet.RenameMet, recoil_correction_producer],
-            samples=["dyjets_madgraph", "dyjets_amcatnlo_ll", "dyjets_amcatnlo_tt", "dyjets_powheg", "wjets_madgraph", "wjets_amcatnlo"],
         )
     )
 

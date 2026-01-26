@@ -106,11 +106,12 @@ MetQuantitiesUncorrected = ProducerGroup(
 
 
 #
-# PROPAGATION OF ENERGY SCALE CORRECTIONS
+# PROPAGATION OF ENERGY SCALE CORRECTIONS AND RECOIL CORRECTIONS
 #
 
 
-PropagateLeptonsToMet = Producer(
+# Correct MET for corrections in lepton energy scale
+PropagateLeptonsToMET = Producer(
     name="PropagateLeptonsToMet",
     call="lorentzvector::PropagateToMET({df}, {output}, {input}, {propagate_leptons_to_met})",
     input=[q.met_p4_uncorrected, q.p4_1_uncorrected, q.p4_2_uncorrected, q.p4_1, q.p4_2],
@@ -118,7 +119,8 @@ PropagateLeptonsToMet = Producer(
     scopes=SCOPES,
 )
 
-PropagateJetsToMet = Producer(
+# Correct MET for corrections in jet energy scale
+PropagateJetsToMET = Producer(
     name="PropagateJetsToMet",
     call="physicsobject::PropagateToMET({df}, {output}, {input}, {propagate_jets_to_met}, {jet_to_met_propagation_pt_min})",
     input=[
@@ -136,15 +138,9 @@ PropagateJetsToMet = Producer(
     scopes=["et", "mt", "tt", "em", "mm", "ee"],
 )
 
-
-#
-# RECOIL CORRECTIONS
-#
-
-
 # Recoil correction evaluation via correctionlib
-BosonRecoilCorrection = Producer(
-    name="BosonRecoilCorrection",
+RecoilCorrectionMET = Producer(
+    name="RecoilCorrectionMET",
     call=(
         """
         met::RecoilCorrection(
@@ -171,6 +167,19 @@ BosonRecoilCorrection = Producer(
     scopes=SCOPES,
 )
 
+# Producer group to trigger production of all MET corrections
+METCorrections = ProducerGroup(
+    name="METCorrections",
+    call=None,
+    input=None,
+    output=None,
+    scopes=SCOPES,
+    subproducers=[
+        PropagateLeptonsToMET,
+        PropagateJetsToMET,
+        RecoilCorrectionMET,
+    ],
+)
 
 #
 # RENAME PRODUCERS
@@ -209,7 +218,7 @@ MetPhi = Producer(
     scopes=SCOPES,
 )
 
-MetQuantities = ProducerGroup(
+METQuantities = ProducerGroup(
     name="MetQuantities",
     call=None,
     input=None,
