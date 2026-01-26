@@ -136,6 +136,42 @@ PropagateJetsToMet = Producer(
     scopes=["et", "mt", "tt", "em", "mm", "ee"],
 )
 
+
+#
+# RECOIL CORRECTIONS
+#
+
+
+# Recoil correction evaluation via correctionlib
+BosonRecoilCorrection = Producer(
+    name="BosonRecoilCorrection",
+    call=(
+        """
+        met::RecoilCorrection(
+            {df},
+            correctionManager,
+            {output},
+            {input},
+            \"{recoil_correction_file}\",
+            \"{recoil_correction_name}\",
+            \"{recoil_correction_method}\",
+            \"{recoil_correction_order}\",
+            \"{recoil_correction_variation}\",
+            {apply_recoil_correction}
+        )
+        """
+    ),
+    input=[
+        q.met_p4_jetcorrected,
+        q.gen_boson_p4,
+        q.gen_vis_boson_p4,
+        q.n_jets,
+    ],
+    output=[q.met_p4_recoilcorrected],
+    scopes=SCOPES,
+)
+
+
 #
 # RENAME PRODUCERS
 #

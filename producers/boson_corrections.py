@@ -1,4 +1,3 @@
-
 from code_generation.producer import Producer, ProducerGroup
 from ..quantities import output as q
 from ..quantities import nanoAOD
@@ -79,36 +78,3 @@ ZPtReweighting = Producer(
     scopes=SCOPES,
 )
 
-
-#
-# RECOIL CORRECTIONS
-#
-
-# Recoil correction evaluation via correctionlib
-BosonRecoilCorrection = Producer(
-    name="BosonRecoilCorrection",
-    call=(
-        """
-        met::RecoilCorrection(
-            {df},
-            correctionManager,
-            {output},
-            {input},
-            \"{recoil_correction_file}\",
-            \"{recoil_correction_name}\",
-            \"{recoil_correction_method}\",
-            \"{recoil_correction_order}\",
-            \"{recoil_correction_variation}\",
-            {recoil_correction_apply}
-        )
-        """
-    ),
-    input=[
-        q.met_p4_uncorrected,
-        q.gen_boson_p4,
-        q.gen_vis_boson_p4,
-        q.n_jets,
-    ],
-    output=[q.met_p4_recoilcorrected],
-    scopes=SCOPES,
-)
