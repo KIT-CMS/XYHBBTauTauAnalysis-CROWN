@@ -2591,6 +2591,16 @@ def build_config(
         )
     )
 
+    # For all samples that are not DY and W, replace recoil corrections with
+    # renaming operation
+    configuration.add_modification_rule(
+        SCOPES,
+        ReplaceProducer(
+            producers=[met.RecoilCorrectionMET, met.RenameMET],
+            exclude_samples=["dyjets_madgraph", "dyjets_amcatnlo_ll", "dyjets_amcatnlo_tt", "dyjets_powheg"],
+        ),
+    )
+
     # Remove tau ID scale factor producers from data samples in et scope
     configuration.add_modification_rule(
         ET_SCOPES,

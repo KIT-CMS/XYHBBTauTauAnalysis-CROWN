@@ -186,12 +186,12 @@ METCorrections = ProducerGroup(
 #
 
 
-# Dummy producer to rename the MET if no lepton and recoil corrections are
-# applied to the sample
-RenameMet = Producer(
-    name="RenameMet",
+# Dummy producer to rename the MET if recoil corrections are applied to the
+# sample
+RenameMET = Producer(
+    name="RenameMET",
     call="event::quantity::Rename<ROOT::Math::PtEtaPhiMVector>({df}, {output}, {input})",
-    input=[q.met_p4_uncorrected],
+    input=[q.met_p4_jetcorrected],
     output=[q.met_p4_recoilcorrected],
     scopes=SCOPES,
 )
