@@ -20,7 +20,7 @@ __all__ = [
     "HAD_TAU_SCOPES",
     "SCOPES",
     "ERAS",
-    "BJetIDAlgorithmEnum",
+    "AvailableBJetIDs",
     "BJET_ID_ALGORTHM",
 ]
 
@@ -59,7 +59,7 @@ CORRECTIONLIB_CAMPAIGNS = {
 }
 
 # b jet identification algorithms
-class BJetIDAlgorithmEnum(enum.Enum):
+class AvailableBJetIDs(enum.Enum):
     DEEPJET = enum.auto() 
     PNET = enum.auto()
-BJET_ID_ALGORTHM = BJetIDAlgorithmEnum.PNET
+BJET_ID_ALGORTHM = AvailableBJetIDs.PNET
