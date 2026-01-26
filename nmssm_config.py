@@ -10,6 +10,7 @@ from .producers import fatjets as fatjets
 from .producers import met as met
 from .producers import muons as muons
 from .producers import pairquantities as pairquantities
+from .producers import boson_corrections as boson_corrections
 from .producers import pairquantities_bbpair as pairquantities_bbpair
 from .producers import pairselection as pairselection
 from .producers import scalefactors as scalefactors
@@ -1548,7 +1549,123 @@ def add_bjet_config(configuration: Configuration):
     )
 
 
+def add_zpt_weight_config(configuration: Configuration):
+    """
+    Configuration parameters for Z boson pt reweighting.
+
+    This configuration applies to run 3 eras only. Corrections are read from `correctionlib` files
+    provided by the HLepRare group.
+    """
+    ## all scopes MET selection
+    configuration.add_config_parameters(
+        SCOPES,
+        {
+            "zpt_weight_order": SampleModifier(
+                {
+                    "dyjets": "LO",
+                    "dyjets_madgraph": "LO",
+                    "dyjets_amcatnlo_ll": "NLO",
+                    "dyjets_amcatnlo_tt": "NLO",
+                    "dyjets_powheg": "NNLO",
+                },
+                default="DOES_NOT_EXIST",  # placeholder for samples without z pt reweighting
+            ),
+            "zpt_weight_file": EraModifier(
+                {
+                    **{
+                        _era: f"data/hleprare/DYweightCorrlib/DY_pTll_weights_{_era}_v5.json.gz"
+                        for _era in ERAS_RUN3
+                    },
+                    **{
+                        _era: "DOES_NOT_EXIST"  # placeholder for Run 2, for which corrections are provided in a different way
+                        for _era in ERAS_RUN2
+                    },
+                },
+            ),
+            "zpt_weight_name": "DY_pTll_reweighting",
+            "zpt_weight_variation": "nom",
+        },
+    )
+
+
 def add_recoil_corrections_config(configuration: Configuration):
+    """
+    Configuration parameters for recoil corrections.
+
+    This configuration applies to Run 3 eras only. Corrections are read from `correctionlib` files
+    provided by the HLepRare group.
+    """
+
+    # Configuration of the recoil corrections producer
+    configuration.add_config_parameters(
+        SCOPES,
+        {
+            "recoil_correction_file": EraModifier(
+                {
+                    **{
+                        _era: f"data/hleprare/RecoilCorrlib/Recoil_corrections_{_era}_v5.json.gz"
+                        for _era in ERAS_RUN3
+                    },
+                    **{
+                        _era: "DOES_NOT_EXIST"  # placeholder for Run 2, for which corrections are provided in a different way
+                        for _era in ERAS_RUN2
+                    },
+                },
+            ),
+            "recoil_correction_name": "Recoil_correction",
+            "recoil_correction_order": SampleModifier(
+                {
+                    "dyjets": "LO",
+                    "dyjets_madgraph": "LO",
+                    "dyjets_amcatnlo_ll": "NLO",
+                    "dyjets_amcatnlo_tt": "NLO",
+                    "dyjets_powheg": "NNLO",
+                    "wjets_madgraph": "LO",
+                    "wjets_amcatnlo": "NLO",
+                },
+                default="DOES_NOT_EXIST",  # placeholder for samples without recoil corrections
+            ),
+            "recoil_correction_method": "QuantileMapHist",
+            "recoil_correction_variation": "nom",
+        },
+    )
+
+
+    # Declare types of corrections to apply to the MET
+    configuration.add_config_parameters(
+        SCOPES,
+        {
+            "propagate_leptons_to_met": SampleModifier(
+                {
+                    "data": False,
+                },
+                default=True,
+            ),
+            "propagate_jets_to_met": SampleModifier(
+                {
+                    "data": False,
+                    "embedding": False,
+                },
+                default=True,
+            ),
+            "apply_recoil_correction": SampleModifier(
+                {
+                    "dyjets": True,
+                    "dyjets_madgraph": True,
+                    "dyjets_amcatnlo_ll": True,
+                    "dyjets_amcatnlo_tt": True,
+                    "dyjets_powheg": True,
+                    "wjets_madgraph": True,
+                    "wjets_amcatnlo": True,
+                },
+                default=False,
+            ),
+            "jet_to_met_propagation_pt_min": 15,
+        },
+    )
+
+
+def add_recoil_corrections_config_run2(configuration: Configuration):
     ## all scopes MET selection
     configuration.add_config_parameters(
         SCOPES,
@@ -1605,7 +1722,7 @@ def add_recoil_corrections_config(configuration: Configuration):
     )
 
 
-def add_z_pt_reweighting_config(configuration: Configuration):
+def add_z_pt_reweighting_config_run2(configuration: Configuration):
     """
     Configuration for the Z boson pt reweighting.
 
@@ -1697,6 +1814,12 @@ def build_config(
 
     # b jet selection, identification, and corrections
     add_bjet_config(configuration)
+
+    # Z pt reweighting
+    add_zpt_weight_config(configuration)
+
+    # Recoil corrections
+    add_recoil_corrections_config(configuration)
 
     # recoil corrections
     # TODO needs to be refined for run 3, not considered at the moment(https://github.com/kit-cms/XYHBBTauTauAnalysis-CROWN/issues/6)
@@ -2087,6 +2210,30 @@ def build_config(
         era,
     )
 
+    # Z boson pt reweighting
+    # - TODO For Run 2, the corrections are provided in ROOT files and require a dedicated producer chain.
+    # - For Run 3, the corrections are provided in correctionlib files.
+    z_pt_reweighting_producers = get_for_era(
+        {
+            tuple(ERAS_RUN3): [
+                boson_corrections.ZPtReweighting,
+            ],
+        },
+        era,
+        default=[],
+    )
+
+    # Recoil corrections
+    # - TODO For Run 2, the corrections are provided in ROOT files and require a dedicated producer chain.
+    # - For Run 3, the corrections are provided in correctionlib files.
+    # recoil_correction_producer = get_for_era(
+    #     {
+    #         tuple(ERAS_RUN2): None,
+    #         tuple(ERAS_RUN3): boson_corrections.BosonRecoilCorrection,
+    #     },
+    #     era,
+    # )
+
     # Di-tau + jet trigger
     # - In Run 2, di-tau + jet triggers did not exist, so no producer is added.
     # - In Run 3, di-tau + jet triggers are available and the corresponding trigger flag producers
@@ -2188,7 +2335,7 @@ def build_config(
             muons.BaseMuons,
             fatjets.GoodFatJets,
             event.DiLeptonVeto,
-            met.MetBasics,
+            met.MetQuantitiesUncorrected,
         ]
         + prefire_weight_producers
         + jet_selection_producers
@@ -2226,10 +2373,9 @@ def build_config(
             fatjets.LeadingFatJetQuantities,
             scalefactors.BJetShapeDeepJet_SF,
             scalefactors.BJetShapePNet_SF,
-            # TODO producers need to be refined for run 3, not considered at the moment
-            #met.MetCorrections,
-            #met.PFMetCorrections,
-            met.RenameMet,
+            # TODO Need to properly handle producers for Run 2 (ROOT file-based)
+            met.METCorrections,
+            met.METQuantities,
             pairquantities.DiTauPairMETQuantities,
             genparticles.GenMatching,
         ]
@@ -2425,6 +2571,34 @@ def build_config(
             ],
             samples=["dyjets", "dyjets_madgraph", "dyjets_amcatnlo_ll", "dyjets_amcatnlo_tt", "dyjets_powheg"],
         )
+    )
+
+    # For DY and W samples, calculate the generator-level boson four-vector
+    configuration.add_modification_rule(
+        SCOPES,
+        AppendProducer(
+            [boson_corrections.GenBosonQuantities],
+            samples=["dyjets_madgraph", "dyjets_amcatnlo_ll", "dyjets_amcatnlo_tt", "dyjets_powheg", "wjets_madgraph", "wjets_amcatnlo"],
+        ),
+    )
+
+    # For DY samples, apply Z pt reweighting
+    configuration.add_modification_rule(
+        SCOPES,
+        AppendProducer(
+            z_pt_reweighting_producers,
+            samples=["dyjets_madgraph", "dyjets_amcatnlo_ll", "dyjets_amcatnlo_tt", "dyjets_powheg"],
+        )
+    )
+
+    # For all samples that are not DY and W, replace recoil corrections with
+    # renaming operation
+    configuration.add_modification_rule(
+        SCOPES,
+        ReplaceProducer(
+            producers=[met.RecoilCorrectionMET, met.RenameMET],
+            exclude_samples=["dyjets_madgraph", "dyjets_amcatnlo_ll", "dyjets_amcatnlo_tt", "dyjets_powheg"],
+        ),
     )
 
     # Remove tau ID scale factor producers from data samples in et scope
@@ -2855,8 +3029,7 @@ def build_config(
             q.genjet_mass_2,
             q.genjet_hadFlavour_2,
             q.genjet_m_inv,
-            q.n_jets_deepjet,
-            q.n_jets_pnet,
+            q.n_jets,
             q.jet_pt,
             q.jet_eta,
             q.jet_phi,
@@ -2883,8 +3056,7 @@ def build_config(
             q.m_vis,
             q.deltaR_ditaupair,
             q.pt_vis,
-            q.n_bjets_deepjet,
-            q.n_bjets_pnet,
+            q.n_bjets,
             # q.bpt_1,
             # q.bpt_2,
             # q.beta_1,
@@ -2938,7 +3110,6 @@ def build_config(
             q.pt_tautaubb,
             q.mass_tautaubb,
             q.mt_tot,
-            q.genbosonmass,
             q.gen_match_1,
             q.gen_match_2,
             # TODO remove these variables as PF MET is not used anymore by us
@@ -3614,82 +3785,32 @@ def build_config(
     #########################
     # MET Recoil Shifts
     #########################
-    configuration.add_shift(
-        SystematicShift(
-            name="metRecoilResponseUp",
-            shift_config={
-                ("et", "mt", "tt", "mm"): {
-                    "apply_recoil_resolution_systematic": False,
-                    "apply_recoil_response_systematic": True,
-                    "recoil_systematic_shift_up": True,
-                    "recoil_systematic_shift_down": False,
-                },
-            },
-            producers={
-                ("et", "mt", "tt", "mm"): [
-                    met.ApplyRecoilCorrections,
+    for shift_name in ["Resp", "Resol"]:
+        for shift_direction in ["Up", "Down"]:
+            configuration.add_shift(
+                SystematicShift(
+                    name=f"metRecoil{shift_name}{shift_direction}",
+                    shift_config={
+                        tuple(SCOPES): {
+                            "recoil_correction_variation": f"{shift_name}{shift_direction}",
+                        },
+                    },
+                    producers={
+                        tuple(SCOPES): [
+                            met.RecoilCorrectionMET,
+                        ],
+                    },
+                ),
+                samples=[
+                    "dyjets",
+                    "dyjets_madgraph",
+                    "dyjets_amcatnlo_ll",
+                    "dyjets_amcatnlo_tt",
+                    "dyjets_powheg",
+                    "wjets_madgraph",
+                    "wjets_amcatnlo",
                 ],
-            },
-        ),
-        exclude_samples=["data", "embedding", "embedding_mc", "ttbar", "diboson", "singletop"],
-    )
-    configuration.add_shift(
-        SystematicShift(
-            name="metRecoilResponseDown",
-            shift_config={
-                ("et", "mt", "tt", "mm"): {
-                    "apply_recoil_resolution_systematic": False,
-                    "apply_recoil_response_systematic": True,
-                    "recoil_systematic_shift_up": False,
-                    "recoil_systematic_shift_down": True,
-                },
-            },
-            producers={
-                ("et", "mt", "tt", "mm"): [
-                    met.ApplyRecoilCorrections,
-                ],
-            },
-        ),
-        exclude_samples=["data", "embedding", "embedding_mc", "ttbar", "diboson", "singletop"],
-    )
-    configuration.add_shift(
-        SystematicShift(
-            name="metRecoilResolutionUp",
-            shift_config={
-                ("et", "mt", "tt", "mm"): {
-                    "apply_recoil_resolution_systematic": True,
-                    "apply_recoil_response_systematic": False,
-                    "recoil_systematic_shift_up": True,
-                    "recoil_systematic_shift_down": False,
-                },
-            },
-            producers={
-                ("et", "mt", "tt", "mm"): [
-                    met.ApplyRecoilCorrections,
-                ],
-            },
-        ),
-        exclude_samples=["data", "embedding", "embedding_mc", "ttbar", "diboson", "singletop"],
-    )
-    configuration.add_shift(
-        SystematicShift(
-            name="metRecoilResolutionDown",
-            shift_config={
-                ("et", "mt", "tt", "mm"): {
-                    "apply_recoil_resolution_systematic": True,
-                    "apply_recoil_response_systematic": False,
-                    "recoil_systematic_shift_up": False,
-                    "recoil_systematic_shift_down": True,
-                },
-            },
-            producers={
-                ("et", "mt", "tt", "mm"): [
-                    met.ApplyRecoilCorrections,
-                ],
-            },
-        ),
-        exclude_samples=["data", "embedding", "embedding_mc", "ttbar", "diboson", "singletop"],
-    )
+            )
 
     #########################
     # Pileup Shifts

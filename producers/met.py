@@ -2,30 +2,24 @@ from ..quantities import output as q
 from ..quantities import nanoAOD as nanoAOD
 from code_generation.producer import Producer, ProducerGroup
 
-####################
-# Set of producers used for contruction of met related quantities
-####################
+from ..constants import GLOBAL_SCOPES, SCOPES
 
-BuildMetVector = Producer(
-    name="BuildMetVector",
+
+#
+# UNCORRECTED MET QUANTITIES
+#
+
+BuildMetVector_uncorrected = Producer(
+    name="BuildMetVector_uncorrected",
     call="lorentzvector::BuildMET({df}, {output}, {input})",
     input=[
         nanoAOD.PuppiMET_pt,
         nanoAOD.PuppiMET_phi,
     ],
-    output=[q.met_p4],
-    scopes=["global"],
+    output=[q.met_p4_uncorrected],
+    scopes=GLOBAL_SCOPES,
 )
-BuildPFMetVector = Producer(
-    name="BuildPFMetVector",
-    call="lorentzvector::BuildMET({df}, {output}, {input})",
-    input=[
-        nanoAOD.MET_pt,
-        nanoAOD.MET_phi,
-    ],
-    output=[q.pfmet_p4],
-    scopes=["global"],
-)
+
 MetCov00 = Producer(
     name="MetCov00",
     call="event::quantity::Rename<float>({df}, {output}, {input})",
@@ -33,8 +27,9 @@ MetCov00 = Producer(
         nanoAOD.MET_covXX,
     ],
     output=[q.metcov00],
-    scopes=["global"],
+    scopes=GLOBAL_SCOPES,
 )
+
 MetCov01 = Producer(
     name="MetCov01",
     call="event::quantity::Rename<float>({df}, {output}, {input})",
@@ -42,8 +37,9 @@ MetCov01 = Producer(
         nanoAOD.MET_covXY,
     ],
     output=[q.metcov01],
-    scopes=["global"],
+    scopes=GLOBAL_SCOPES,
 )
+
 MetCov10 = Producer(
     name="MetCov10",
     call="event::quantity::Rename<float>({df}, {output}, {input})",
@@ -51,8 +47,9 @@ MetCov10 = Producer(
         nanoAOD.MET_covXY,
     ],
     output=[q.metcov10],
-    scopes=["global"],
+    scopes=GLOBAL_SCOPES,
 )
+
 MetCov11 = Producer(
     name="MetCov11",
     call="event::quantity::Rename<float>({df}, {output}, {input})",
@@ -60,8 +57,9 @@ MetCov11 = Producer(
         nanoAOD.MET_covYY,
     ],
     output=[q.metcov11],
-    scopes=["global"],
+    scopes=GLOBAL_SCOPES,
 )
+
 MetSumEt = Producer(
     name="MetSumEt",
     call="event::quantity::Rename<float>({df}, {output}, {input})",
@@ -69,130 +67,62 @@ MetSumEt = Producer(
         nanoAOD.PuppiMET_sumEt,
     ],
     output=[q.metSumEt],
-    scopes=["global"],
+    scopes=GLOBAL_SCOPES,
 )
+
 MetPt_uncorrected = Producer(
     name="MetPt_uncorrected",
     call="lorentzvector::GetPt({df}, {output}, {input})",
-    input=[q.met_p4],
+    input=[q.met_p4_uncorrected],
     output=[q.met_uncorrected],
-    scopes=["global"],
+    scopes=GLOBAL_SCOPES,
 )
+
 MetPhi_uncorrected = Producer(
     name="MetPhi_uncorrected",
     call="lorentzvector::GetPhi({df}, {output}, {input})",
-    input=[q.met_p4],
+    input=[q.met_p4_uncorrected],
     output=[q.metphi_uncorrected],
-    scopes=["global"],
+    scopes=GLOBAL_SCOPES,
 )
-PFMetPt_uncorrected = Producer(
-    name="PFMetPt_uncorrected",
-    call="lorentzvector::GetPt({df}, {output}, {input})",
-    input=[q.pfmet_p4],
-    output=[q.pfmet_uncorrected],
-    scopes=["global"],
-)
-PFMetPhi_uncorrected = Producer(
-    name="PFMetPhi_uncorrected",
-    call="lorentzvector::GetPhi({df}, {output}, {input})",
-    input=[q.pfmet_p4],
-    output=[q.pfmetphi_uncorrected],
-    scopes=["global"],
-)
-CalculateGenBosonVector = Producer(
-    name="calculateGenBosonVector",
-    call="genparticles::GetBoson({df}, {output}, {input}, {is_data})",
-    input=[
-        nanoAOD.GenPart_pt,
-        nanoAOD.GenPart_eta,
-        nanoAOD.GenPart_phi,
-        nanoAOD.GenPart_mass,
-        nanoAOD.GenPart_pdgId,
-        nanoAOD.GenPart_status,
-        nanoAOD.GenPart_statusFlags,
-    ],
-    output=[q.recoil_genboson_p4],
-    scopes=["global"],
-)
-CalculateVisGenBosonVector = Producer(
-    name="calculateVisGenBosonVector",
-    call="genparticles::GetVisibleBoson({df}, {output}, {input}, {is_data})",
-    input=[
-        nanoAOD.GenPart_pt,
-        nanoAOD.GenPart_eta,
-        nanoAOD.GenPart_phi,
-        nanoAOD.GenPart_mass,
-        nanoAOD.GenPart_pdgId,
-        nanoAOD.GenPart_status,
-        nanoAOD.GenPart_statusFlags,
-    ],
-    output=[q.recoil_vis_genboson_p4],
-    scopes=["global"],
-)
-GenBosonMass = Producer(
-    name="GenBosonMass",
-    call="lorentzvector::GetMass({df}, {output}, {input})",
-    input=[q.recoil_genboson_p4],
-    output=[q.genbosonmass],
-    scopes=["global"],
-)
-MetBasics = ProducerGroup(
-    name="MetBasics",
+
+MetQuantitiesUncorrected = ProducerGroup(
+    name="MetQuantitiesUncorrected",
     call=None,
     input=None,
     output=None,
-    scopes=["global"],
+    scopes=GLOBAL_SCOPES,
     subproducers=[
-        BuildPFMetVector,
-        BuildMetVector,
+        BuildMetVector_uncorrected,
         MetPt_uncorrected,
         MetPhi_uncorrected,
-        PFMetPt_uncorrected,
-        PFMetPhi_uncorrected,
         MetCov00,
         MetCov01,
         MetCov10,
         MetCov11,
         MetSumEt,
-        CalculateGenBosonVector,
-        CalculateVisGenBosonVector,
-        GenBosonMass,
     ],
 )
 
 
-PropagateLeptonsToMet = Producer(
+#
+# PROPAGATION OF ENERGY SCALE CORRECTIONS AND RECOIL CORRECTIONS
+#
+
+
+# Correct MET for corrections in lepton energy scale
+PropagateLeptonsToMET = Producer(
     name="PropagateLeptonsToMet",
-    call="lorentzvector::PropagateToMET({df}, {output}, {input}, {propagateLeptons})",
-    input=[q.met_p4, q.p4_1_uncorrected, q.p4_2_uncorrected, q.p4_1, q.p4_2],
+    call="lorentzvector::PropagateToMET({df}, {output}, {input}, {propagate_leptons_to_met})",
+    input=[q.met_p4_uncorrected, q.p4_1_uncorrected, q.p4_2_uncorrected, q.p4_1, q.p4_2],
     output=[q.met_p4_leptoncorrected],
-    scopes=["et", "mt", "tt", "em", "mm", "ee"],
-)
-PropagateLeptonsToPFMet = Producer(
-    name="PropagateLeptonsToPFMet",
-    call="lorentzvector::PropagateToMET({df}, {output}, {input}, {propagateLeptons})",
-    input=[q.pfmet_p4, q.p4_1_uncorrected, q.p4_2_uncorrected, q.p4_1, q.p4_2],
-    output=[q.pfmet_p4_leptoncorrected],
-    scopes=["et", "mt", "tt", "em", "mm", "ee"],
-)
-PropagateLeptonsToMet_boosted = Producer(
-    name="PropagateLeptonsToMet_boosted",
-    call="lorentzvector::PropagateToMET({df}, {output}, {input}, {propagateLeptons})",
-    input=[q.met_p4, q.boosted_p4_1_uncorrected, q.boosted_p4_2_uncorrected, q.boosted_p4_1, q.boosted_p4_2],
-    output=[q.met_p4_boosted_leptoncorrected],
-    scopes=["et", "mt", "tt", "em", "mm", "ee"],
-)
-PropagateLeptonsToPFMet_boosted = Producer(
-    name="PropagateLeptonsToPFMet_boosted",
-    call="lorentzvector::PropagateToMET({df}, {output}, {input}, {propagateLeptons})",
-    input=[q.pfmet_p4, q.boosted_p4_1_uncorrected, q.boosted_p4_2_uncorrected, q.boosted_p4_1, q.boosted_p4_2],
-    output=[q.pfmet_p4_boosted_leptoncorrected],
-    scopes=["et", "mt", "tt", "em", "mm", "ee"],
+    scopes=SCOPES,
 )
 
-PropagateJetsToMet = Producer(
+# Correct MET for corrections in jet energy scale
+PropagateJetsToMET = Producer(
     name="PropagateJetsToMet",
-    call="physicsobject::PropagateToMET({df}, {output}, {input}, {propagateJets}, {min_jetpt_met_propagation})",
+    call="physicsobject::PropagateToMET({df}, {output}, {input}, {propagate_jets_to_met}, {jet_to_met_propagation_pt_min})",
     input=[
         q.met_p4_leptoncorrected,
         q.Jet_pt_corrected,
@@ -207,290 +137,95 @@ PropagateJetsToMet = Producer(
     output=[q.met_p4_jetcorrected],
     scopes=["et", "mt", "tt", "em", "mm", "ee"],
 )
-PropagateJetsToPFMet = Producer(
-    name="PropagateJetsToPFMet",
-    call="physicsobject::PropagateToMET({df}, {output}, {input}, {propagateJets}, {min_jetpt_met_propagation})",
-    input=[
-        q.pfmet_p4_leptoncorrected,
-        q.Jet_pt_corrected,
-        nanoAOD.Jet_eta,
-        nanoAOD.Jet_phi,
-        q.Jet_mass_corrected,
-        nanoAOD.Jet_pt,
-        nanoAOD.Jet_eta,
-        nanoAOD.Jet_phi,
-        nanoAOD.Jet_mass,
-    ],
-    output=[q.pfmet_p4_jetcorrected],
-    scopes=["et", "mt", "tt", "em", "mm", "ee"],
-)
 
-PropagateJetsToMet_boosted = Producer(
-    name="PropagateJetsToMet_boosted",
-    call="physicsobject::PropagateToMET({df}, {output}, {input}, {propagateJets}, {min_jetpt_met_propagation})",
-    input=[
-        q.met_p4_boosted_leptoncorrected,
-        q.Jet_pt_corrected,
-        nanoAOD.Jet_eta,
-        nanoAOD.Jet_phi,
-        q.Jet_mass_corrected,
-        nanoAOD.Jet_pt,
-        nanoAOD.Jet_eta,
-        nanoAOD.Jet_phi,
-        nanoAOD.Jet_mass,
-    ],
-    output=[q.met_p4_boosted_jetcorrected],
-    scopes=["et", "mt", "tt", "em", "mm", "ee"],
-)
-PropagateJetsToPFMet_boosted = Producer(
-    name="PropagateJetsToPFMet_boosted",
-    call="physicsobject::PropagateToMET({df}, {output}, {input}, {propagateJets}, {min_jetpt_met_propagation})",
-    input=[
-        q.pfmet_p4_boosted_leptoncorrected,
-        q.Jet_pt_corrected,
-        nanoAOD.Jet_eta,
-        nanoAOD.Jet_phi,
-        q.Jet_mass_corrected,
-        nanoAOD.Jet_pt,
-        nanoAOD.Jet_eta,
-        nanoAOD.Jet_phi,
-        nanoAOD.Jet_mass,
-    ],
-    output=[q.pfmet_p4_boosted_jetcorrected],
-    scopes=["et", "mt", "tt", "em", "mm", "ee"],
-)
-
-ApplyRecoilCorrections = Producer(
-    name="ApplyRecoilCorrections",
-    call='met::RecoilCorrections({df}, {input}, {output}, "{recoil_corrections_file}", "{recoil_systematics_file}", {applyRecoilCorrections}, {apply_recoil_resolution_systematic}, {apply_recoil_response_systematic}, {recoil_systematic_shift_up}, {recoil_systematic_shift_down}, {is_wjets})',
+# Recoil correction evaluation via correctionlib
+RecoilCorrectionMET = Producer(
+    name="RecoilCorrectionMET",
+    call=(
+        """
+        met::RecoilCorrection(
+            {df},
+            correctionManager,
+            {output},
+            {input},
+            \"{recoil_correction_file}\",
+            \"{recoil_correction_name}\",
+            \"{recoil_correction_method}\",
+            \"{recoil_correction_order}\",
+            \"{recoil_correction_variation}\",
+            {apply_recoil_correction}
+        )
+        """
+    ),
     input=[
         q.met_p4_jetcorrected,
-        q.recoil_genboson_p4,
-        q.recoil_vis_genboson_p4,
-        q.Jet_pt_corrected,
+        q.gen_boson_p4,
+        q.gen_vis_boson_p4,
+        q.n_jets,
     ],
     output=[q.met_p4_recoilcorrected],
-    scopes=["et", "mt", "tt", "em", "mm", "ee"],
-)
-ApplyRecoilCorrectionsPFMet = Producer(
-    name="ApplyRecoilCorrectionsPFMet",
-    call='met::RecoilCorrections({df}, {input}, {output}, "{recoil_corrections_file}", "{recoil_systematics_file}", {applyRecoilCorrections}, {apply_recoil_resolution_systematic}, {apply_recoil_response_systematic}, {recoil_systematic_shift_up}, {recoil_systematic_shift_down}, {is_wjets})',
-    input=[
-        q.pfmet_p4_jetcorrected,
-        q.recoil_genboson_p4,
-        q.recoil_vis_genboson_p4,
-        q.Jet_pt_corrected,
-    ],
-    output=[q.pfmet_p4_recoilcorrected],
-    scopes=["et", "mt", "tt", "em", "mm", "ee"],
+    scopes=SCOPES,
 )
 
-ApplyRecoilCorrections_boosted = Producer(
-    name="ApplyRecoilCorrections_boosted",
-    call='met::RecoilCorrections({df}, {input}, {output}, "{recoil_corrections_file}", "{recoil_systematics_file}", {applyRecoilCorrections}, {apply_recoil_resolution_systematic}, {apply_recoil_response_systematic}, {recoil_systematic_shift_up}, {recoil_systematic_shift_down}, {is_wjets})',
-    input=[
-        q.met_p4_boosted_jetcorrected,
-        q.recoil_genboson_p4,
-        q.recoil_vis_genboson_p4,
-        q.Jet_pt_corrected,
+# Producer group to trigger production of all MET corrections
+METCorrections = ProducerGroup(
+    name="METCorrections",
+    call=None,
+    input=None,
+    output=None,
+    scopes=SCOPES,
+    subproducers=[
+        PropagateLeptonsToMET,
+        PropagateJetsToMET,
+        RecoilCorrectionMET,
     ],
-    output=[q.met_p4_boosted_recoilcorrected],
-    scopes=["et", "mt", "tt", "em", "mm", "ee"],
 )
-ApplyRecoilCorrectionsPFMet_boosted = Producer(
-    name="ApplyRecoilCorrectionsPFMet_boosted",
-    call='met::RecoilCorrections({df}, {input}, {output}, "{recoil_corrections_file}", "{recoil_systematics_file}", {applyRecoilCorrections}, {apply_recoil_resolution_systematic}, {apply_recoil_response_systematic}, {recoil_systematic_shift_up}, {recoil_systematic_shift_down}, {is_wjets})',
-    input=[
-        q.pfmet_p4_boosted_jetcorrected,
-        q.recoil_genboson_p4,
-        q.recoil_vis_genboson_p4,
-        q.Jet_pt_corrected,
-    ],
-    output=[q.pfmet_p4_boosted_recoilcorrected],
-    scopes=["et", "mt", "tt", "em", "mm", "ee"],
+
+#
+# RENAME PRODUCERS
+#
+
+
+# Dummy producer to rename the MET if recoil corrections are applied to the
+# sample
+RenameMET = Producer(
+    name="RenameMET",
+    call="event::quantity::Rename<ROOT::Math::PtEtaPhiMVector>({df}, {output}, {input})",
+    input=[q.met_p4_jetcorrected],
+    output=[q.met_p4_recoilcorrected],
+    scopes=SCOPES,
 )
+
+
+#
+# CORRECTED MET QUANTITIES
+#
+
 
 MetPt = Producer(
     name="MetPt",
     call="lorentzvector::GetPt({df}, {output}, {input})",
     input=[q.met_p4_recoilcorrected],
     output=[q.met],
-    scopes=["et", "mt", "tt", "em", "mm", "ee"],
+    scopes=SCOPES,
 )
-PFMetPt = Producer(
-    name="PFMetPt",
-    call="lorentzvector::GetPt({df}, {output}, {input})",
-    input=[q.pfmet_p4_recoilcorrected],
-    output=[q.pfmet],
-    scopes=["et", "mt", "tt", "em", "mm", "ee"],
-)
+
 MetPhi = Producer(
     name="MetPhi",
     call="lorentzvector::GetPhi({df}, {output}, {input})",
     input=[q.met_p4_recoilcorrected],
     output=[q.metphi],
-    scopes=["et", "mt", "tt", "em", "mm", "ee"],
+    scopes=SCOPES,
 )
-PFMetPhi = Producer(
-    name="PFMetPhi",
-    call="lorentzvector::GetPhi({df}, {output}, {input})",
-    input=[q.pfmet_p4_recoilcorrected],
-    output=[q.pfmetphi],
-    scopes=["et", "mt", "tt", "em", "mm", "ee"],
-)
-MetCorrections = ProducerGroup(
-    name="MetCorrections",
+
+METQuantities = ProducerGroup(
+    name="MetQuantities",
     call=None,
     input=None,
     output=None,
-    scopes=["et", "mt", "tt", "em", "mm", "ee"],
+    scopes=SCOPES,
     subproducers=[
-        PropagateLeptonsToMet,
-        PropagateJetsToMet,
-        ApplyRecoilCorrections,
         MetPt,
         MetPhi,
-    ],
-)
-PFMetCorrections = ProducerGroup(
-    name="PFMetCorrections",
-    call=None,
-    input=None,
-    output=None,
-    scopes=["et", "mt", "tt", "em", "mm", "ee"],
-    subproducers=[
-        PropagateLeptonsToPFMet,
-        PropagateJetsToPFMet,
-        ApplyRecoilCorrectionsPFMet,
-        PFMetPt,
-        PFMetPhi,
-    ],
-)
-
-# dummy producer to rename MET pt if corrections are not available yet
-RenameMetPt = Producer(
-    name="RenameMetPt",
-    call="event::quantity::Rename<float>({df}, {output}, {input})",
-    input=[q.met_uncorrected],
-    output=[q.met],
-    scopes=["et", "mt", "tt", "em", "mm", "ee"],
-)
-
-# dummy producer to rename MET phi if corrections are not available yet
-RenameMetPhi = Producer(
-    name="RenameMetPhi",
-    call="event::quantity::Rename<float>({df}, {output}, {input})",
-    input=[q.metphi_uncorrected],
-    output=[q.metphi],
-    scopes=["et", "mt", "tt", "em", "mm", "ee"],
-)
-
-# dummy producer to rename MET pt for the boosted selection if corrections are not available yet
-RenameMetPtBoosted = Producer(
-    name="RenameMetPtBoosted",
-    call="event::quantity::Rename<float>({df}, {output}, {input})",
-    input=[q.met_uncorrected],
-    output=[q.met_boosted],
-    scopes=["et", "mt", "tt", "em", "mm", "ee"],
-)
-
-# dummy producer to rename MET phi for the boosted selection if corrections are not available yet
-RenameMetPhiBoosted = Producer(
-    name="RenameMetPhiBoosted",
-    call="event::quantity::Rename<float>({df}, {output}, {input})",
-    input=[q.metphi_uncorrected],
-    output=[q.metphi_boosted],
-    scopes=["et", "mt", "tt", "em", "mm", "ee"],
-)
-
-# dummy producer to rename MET vector if corrections are not available yet
-RenameMetP4RecoilCorrected = Producer(
-    name="RenameMetP4RecoilCorrected",
-    call="event::quantity::Rename<ROOT::Math::PtEtaPhiMVector>({df}, {output}, {input})",
-    input=[q.met_p4],
-    output=[q.met_p4_recoilcorrected],
-    scopes=["et", "mt", "tt", "em", "mm", "ee"],
-)
-
-# dummy producer to rename MET vector for boosted selection if corrections are not available yet
-RenameMetP4RecoilCorrectedBoosted = Producer(
-    name="RenameMetP4RecoilCorrectedBoosted",
-    call="event::quantity::Rename<ROOT::Math::PtEtaPhiMVector>({df}, {output}, {input})",
-    input=[q.met_p4],
-    output=[q.met_p4_boosted_recoilcorrected],
-    scopes=["et", "mt", "tt", "em", "mm", "ee"],
-)
-
-# group all rename producers
-RenameMet = ProducerGroup(
-    name="RenameMet",
-    call=None,
-    input=None,
-    output=None,
-    scopes=["et", "mt", "tt", "em", "mm", "ee"],
-    subproducers=[
-        RenameMetPt,
-        RenameMetPtBoosted,
-        RenameMetPhi,
-        RenameMetPhiBoosted,
-        RenameMetP4RecoilCorrected,
-        RenameMetP4RecoilCorrectedBoosted,
-    ],
-)
-
-MetPt_boosted = Producer(
-    name="MetPt_boosted",
-    call="lorentzvector::GetPt({df}, {output}, {input})",
-    input=[q.met_p4_boosted_recoilcorrected],
-    output=[q.met_boosted],
-    scopes=["et", "mt", "tt", "em", "mm", "ee"],
-)
-PFMetPt_boosted = Producer(
-    name="PFMetPt_boosted",
-    call="lorentzvector::GetPt({df}, {output}, {input})",
-    input=[q.pfmet_p4_boosted_recoilcorrected],
-    output=[q.pfmet_boosted],
-    scopes=["et", "mt", "tt", "em", "mm", "ee"],
-)
-MetPhi_boosted = Producer(
-    name="MetPhi_boosted",
-    call="lorentzvector::GetPhi({df}, {output}, {input})",
-    input=[q.met_p4_boosted_recoilcorrected],
-    output=[q.metphi_boosted],
-    scopes=["et", "mt", "tt", "em", "mm", "ee"],
-)
-PFMetPhi_boosted = Producer(
-    name="PFMetPhi_boosted",
-    call="lorentzvector::GetPhi({df}, {output}, {input})",
-    input=[q.pfmet_p4_boosted_recoilcorrected],
-    output=[q.pfmetphi_boosted],
-    scopes=["et", "mt", "tt", "em", "mm", "ee"],
-)
-MetCorrections_boosted = ProducerGroup(
-    name="MetCorrections_boosted",
-    call=None,
-    input=None,
-    output=None,
-    scopes=["et", "mt", "tt", "em", "mm", "ee"],
-    subproducers=[
-        PropagateLeptonsToMet_boosted,
-        PropagateJetsToMet_boosted,
-        ApplyRecoilCorrections_boosted,
-        MetPt_boosted,
-        MetPhi_boosted,
-    ],
-)
-PFMetCorrections_boosted = ProducerGroup(
-    name="PFMetCorrections_boosted",
-    call=None,
-    input=None,
-    output=None,
-    scopes=["et", "mt", "tt", "em", "mm", "ee"],
-    subproducers=[
-        PropagateLeptonsToPFMet_boosted,
-        PropagateJetsToPFMet_boosted,
-        ApplyRecoilCorrectionsPFMet_boosted,
-        PFMetPt_boosted,
-        PFMetPhi_boosted,
     ],
 )
