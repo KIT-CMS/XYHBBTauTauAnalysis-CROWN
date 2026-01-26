@@ -891,44 +891,21 @@ def add_hadronic_tau_config(configuration: Configuration, era: str):
     )
 
     # the SF dependence and the SF variations for the DeepTau discriminator vs jets are different
-    # for Run2 and Run3
-    if era in ERAS_RUN2:
-
-        # hadronic tau identification variations in semileptonic channels
-        configuration.add_config_parameters(
-            SL_SCOPES,
-            {
-                "tau_id_sf_vsjet_tau30to35_shift": "nom",
-                "tau_id_sf_vsjet_tau35to40_shift": "nom",
-                "tau_id_sf_vsjet_tau40to500_shift": "nom",
-                "tau_id_sf_vsjet_tau500to1000_shift": "nom",
-                "tau_id_sf_vsjet_tau1000toinf_shift": "nom",
-                "tau_id_sf_vsjet_shift": "nom",
-                "tau_id_sf_vsjet_sf_dependence": "dm",  # or "dm", "eta"
-            },
-        )
-
-        # hadronic tau identification variations in fullhadronic channels
-        configuration.add_config_parameters(
-            FH_SCOPES,
-            {
-                "tau_id_sf_vsjet_tau_dm0_shift": "nom",
-                "tau_id_sf_vsjet_tau_dm1_shift": "nom",
-                "tau_id_sf_vsjet_tau_dm10_shift": "nom",
-                "tau_id_sf_vsjet_tau_dm11_shift": "nom",
-                "tau_id_sf_vsjet_sf_dependence": "dm",  # or "dm", "eta"
-            },
-        )
-
-    elif era in ERAS_RUN3:
-        # hadronic tau identification variations in all channels
-        configuration.add_config_parameters(
-            HAD_TAU_SCOPES,
-            {
-                "tau_id_sf_vsjet_shift": "nom",
-                "tau_id_sf_vsjet_sf_dependence": "dm",  # or "dm", "eta"
-            },
-        )
+    # for Run2 and Run3 in all channels
+    configuration.add_config_parameters(
+        HAD_TAU_SCOPES,
+        {
+            "tau_id_sf_vsjet_tau_dm0_pt20to40_shift": "nom",
+            "tau_id_sf_vsjet_tau_dm0_pt40toInf_shift": "nom",
+            "tau_id_sf_vsjet_tau_dm1_pt20to40_shift": "nom",
+            "tau_id_sf_vsjet_tau_dm1_pt40toInf_shift": "nom",
+            "tau_id_sf_vsjet_tau_dm10_pt20to40_shift": "nom",
+            "tau_id_sf_vsjet_tau_dm10_pt40toInf_shift": "nom",
+            "tau_id_sf_vsjet_tau_dm11_pt20to40_shift": "nom",
+            "tau_id_sf_vsjet_tau_dm11_pt40toInf_shift": "nom",
+            "tau_id_sf_vsjet_sf_dependence": "pt",  # or "dm" ("pt" is both dm and pt dependent)
+        },
+    )
 
     # hadronic tau identification corrections for DeepTau discriminator vs electrons
     configuration.add_config_parameters(
@@ -2251,7 +2228,7 @@ def build_config(
     # Tau ID scale factors in the mt channel
     # - In Run 2, the scale factors are provided from own measurements with the same methods as for
     #   embedding.
-    # - In Run 3, the official measurements from the MUO POG are taken.
+    # - In Run 3, the official measurements from the TAU POG are taken.
     mt_tau_sf_producers = get_for_era(
         {
             tuple(ERAS_RUN2): [

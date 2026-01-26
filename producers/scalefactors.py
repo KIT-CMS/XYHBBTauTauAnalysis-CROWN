@@ -160,11 +160,9 @@ def _create_tau_id_vsjet_sf_producer(
     output: str,
     scopes: list[str],
     vec_config: str,
-    tautau_channel: str | None = None,
 ):
 
     # define names of common parameters
-    tight_tau_decay_modes = "tight_tau_decay_modes"
     vsjet_wp = "vsjet_wp"
     tau_ides_sf_vsele_wp = "tau_ides_sf_vsele_wp"
     tau_id_sf_vsjet_sf_dependence = "tau_id_sf_vsjet_sf_dependence"
@@ -178,41 +176,20 @@ def _create_tau_id_vsjet_sf_producer(
         "\"{tau_ides_sf_file}\"",
         "\"{discriminator}\"", 
     ]
-    if tautau_channel == "lt":
-        call_fn = f"physicsobject::tau::scalefactor::Id_vsJet_{tautau_channel}"
-        parameters.extend([
-            f"{{vec_open}}{{{tight_tau_decay_modes}}}{{vec_close}}", 
-            f"\"{{{vsjet_wp}}}\"", 
-            f"\"{{{tau_ides_sf_vsele_wp}}}\"", 
-            f"\"{{{tau_id_sf_vsjet_sf_dependence}}}\"", 
-            "\"{tau_id_sf_vsjet_tau30to35_shift}\"", 
-            "\"{tau_id_sf_vsjet_tau35to40_shift}\"", 
-            "\"{tau_id_sf_vsjet_tau40to500_shift}\"", 
-            "\"{tau_id_sf_vsjet_tau500to1000_shift}\"", 
-            "\"{tau_id_sf_vsjet_tau1000toinf_shift\"}",
-        ])
-
-    elif tautau_channel == "tt":
-        call_fn = f"physicsobject::tau::scalefactor::Id_vsJet_{tautau_channel}"
-        parameters.extend([
-            f"\"{{{vsjet_wp}}}\"", 
-            f"\"{{{tau_ides_sf_vsele_wp}}}\"", 
-            f"\"{{{tau_id_sf_vsjet_sf_dependence}}}\"", 
-            "\"{tau_id_sf_vsjet_taudm0_shift}\"", 
-            "\"{tau_id_sf_vsjet_taudm1_shift}\"", 
-            "\"{tau_id_sf_vsjet_taudm10_shift}\"", 
-            "\"{tau_id_sf_vsjet_taudm11_shift}\"", 
-        ])
-
-    else:
-        call_fn = "physicsobject::tau::scalefactor::Id_vsJet"
-        parameters.extend([
-            f"\"{{{vsjet_wp}}}\"", 
-            f"\"{{{tau_ides_sf_vsele_wp}}}\"", 
-            f"\"{{{tau_id_sf_vsjet_sf_dependence}}}\"", 
-            "\"{tau_id_sf_vsjet_shift}\"", 
-        ])
-
+    call_fn = f"physicsobject::tau::scalefactor::Id_vsJet"
+    parameters.extend([
+        f"\"{{{vsjet_wp}}}\"", 
+        f"\"{{{tau_ides_sf_vsele_wp}}}\"", 
+        f"\"{{{tau_id_sf_vsjet_sf_dependence}}}\"", 
+        "\"{tau_id_sf_vsjet_tau_dm0_pt20to40_shift}\"", 
+        "\"{tau_id_sf_vsjet_tau_dm0_pt40toInf_shift}\"", 
+        "\"{tau_id_sf_vsjet_tau_dm1_pt20to40_shift}\"", 
+        "\"{tau_id_sf_vsjet_tau_dm1_pt40toInf_shift}\"", 
+        "\"{tau_id_sf_vsjet_tau_dm10_pt20to40_shift}\"",
+        "\"{tau_id_sf_vsjet_tau_dm10_pt40toInf_shift}\"",
+        "\"{tau_id_sf_vsjet_tau_dm11_pt20to40_shift}\"",
+        "\"{tau_id_sf_vsjet_tau_dm11_pt40toInf_shift}\"",
+    ])
 
     return ExtendedVectorProducer(
         name=name,
@@ -294,7 +271,6 @@ Tau_1_VsJetTauID_tt_SF = _create_tau_id_vsjet_sf_producer(
     output="tau1_output_name",
     scopes=TT_SCOPES,
     vec_config="vsjet_tau_id_sf",
-    tautau_channel="tt",
 )
 
 Tau_1_VsJetTauID_SF = _create_tau_id_vsjet_sf_producer(
@@ -303,7 +279,6 @@ Tau_1_VsJetTauID_SF = _create_tau_id_vsjet_sf_producer(
     output="tau1_output_name",
     scopes=TT_SCOPES,
     vec_config="vsjet_tau_id_sf",
-    tautau_channel=None,
 )
 
 Tau_2_VsJetTauID_lt_SF = _create_tau_id_vsjet_sf_producer(
@@ -312,7 +287,6 @@ Tau_2_VsJetTauID_lt_SF = _create_tau_id_vsjet_sf_producer(
     output="tau2_output_name",
     scopes=SL_SCOPES,
     vec_config="vsjet_tau_id_sf",
-    tautau_channel="lt",
 )
 
 Tau_2_VsJetTauID_tt_SF = _create_tau_id_vsjet_sf_producer(
@@ -321,7 +295,6 @@ Tau_2_VsJetTauID_tt_SF = _create_tau_id_vsjet_sf_producer(
     output="tau2_output_name",
     scopes=TT_SCOPES,
     vec_config="vsjet_tau_id_sf",
-    tautau_channel="tt",
 )
 
 Tau_2_VsJetTauID_SF = _create_tau_id_vsjet_sf_producer(

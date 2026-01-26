@@ -44,6 +44,9 @@ namespace scalefactor {
  * For the `$` expressions, substitute, `$i = 1, 2`, `$DM = 0, 1, 10, 11`,
  * `$era = 2022_preEE, 2022_postEE, 2023_preBPix, 2023_postBPix`, `$updown = up, down`.
  * 
+ * @warning Since the latest update the general CROWN function can be used again and
+ * this one is outdated.
+ * 
  * @param df input dataframe
  * @param correction_manager correction manager responsible for loading the
  * tau scale factor file
