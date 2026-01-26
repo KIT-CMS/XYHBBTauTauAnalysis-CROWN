@@ -1648,7 +1648,7 @@ def add_recoil_corrections_config(configuration: Configuration):
                 },
                 default=True,
             ),
-            "apply_recoil_corrections": SampleModifier(
+            "apply_recoil_correction": SampleModifier(
                 {
                     "dyjets": True,
                     "dyjets_madgraph": True,
@@ -2226,13 +2226,13 @@ def build_config(
     # Recoil corrections
     # - TODO For Run 2, the corrections are provided in ROOT files and require a dedicated producer chain.
     # - For Run 3, the corrections are provided in correctionlib files.
-    recoil_correction_producer = get_for_era(
-        {
-            tuple(ERAS_RUN2): None,
-            tuple(ERAS_RUN3): boson_corrections.BosonRecoilCorrection,
-        },
-        era,
-    )
+    # recoil_correction_producer = get_for_era(
+    #     {
+    #         tuple(ERAS_RUN2): None,
+    #         tuple(ERAS_RUN3): boson_corrections.BosonRecoilCorrection,
+    #     },
+    #     era,
+    # )
 
     # Di-tau + jet trigger
     # - In Run 2, di-tau + jet triggers did not exist, so no producer is added.
