@@ -134,7 +134,7 @@ PropagateJetsToMET = Producer(
         nanoAOD.Jet_phi,
         nanoAOD.Jet_mass,
     ],
-    output=[q.pfmet_p4_jetcorrected],
+    output=[q.met_p4_jetcorrected],
     scopes=["et", "mt", "tt", "em", "mm", "ee"],
 )
 
