@@ -1484,7 +1484,7 @@ def add_bjet_config(configuration: Configuration):
         },
     )
 
-    # b jet identification
+    # b jet identification with DeepJet
     # recommendations: https://btv-wiki.docs.cern.ch/ScaleFactors
     configuration.add_config_parameters(
         GLOBAL_SCOPES + SCOPES,
@@ -1504,11 +1504,31 @@ def add_bjet_config(configuration: Configuration):
         },
     )
 
+    # b jet identification with ParticleNet
+    # recommendations: https://btv-wiki.docs.cern.ch/ScaleFactors
+    configuration.add_config_parameters(
+        GLOBAL_SCOPES + HAD_TAU_SCOPES,
+        {
+            "bjet_min_pnet_score": EraModifier(  # medium
+                {
+                    "2016preVFP": 0.0,
+                    "2016postVFPP": 0.0,
+                    "2017": 0.0,
+                    "2018": 0.0,
+                    "2022preEE": 0.245,
+                    "2022postEE": 0.2605,
+                    "2023preBPix": 0.3487,
+                    "2023postBPix": 0.3494,
+                },
+            ),
+        },
+    )
+
     # corrections for b jet identification
     configuration.add_config_parameters(
         SCOPES,
         {
-            "btag_sf_file": EraModifier(
+            "bjet_sf_file": EraModifier(
                 {
                     "2016preVFP": "/cvmfs/cms-griddata.cern.ch/cat/metadata/BTV/Run2-2016preVFP-UL-NanoAODv9/2025-08-19/btagging.json.gz",
                     "2016postVFP": "/cvmfs/cms-griddata.cern.ch/cat/metadata/BTV/Run2-2016postVFP-UL-NanoAODv9/2025-08-19/btagging.json.gz",
@@ -1520,8 +1540,10 @@ def add_bjet_config(configuration: Configuration):
                     "2023postBPix": "/cvmfs/cms-griddata.cern.ch/cat/metadata/BTV/Run3-23DSep23-Summer23BPix-NanoAODv12/2025-08-20/btagging.json.gz",
                 }
             ),
-            "btag_sf_variation": "central",
-            "btag_corr_algo": "deepJet_shape",
+            "bjet_sf_deepjet_shape_name": "deepJet_shape",
+            "bjet_sf_deepjet_shape_variation": "central",
+            "bjet_sf_pnet_shape_name": "particleNet_shape",
+            "bjet_sf_pnet_shape_variation": "central",
         },
     )
 
@@ -1980,8 +2002,7 @@ def build_config(
                 jets.JetIDRun3NanoV12Corrected,
                 jets.GoodJetsWithoutPUID,
                 jets.GoodBJetsWithoutPUID,
-                jets.GoodJetsCombinedWithoutPUID,
-            ],
+            ]
         },
         era,
     )
@@ -2186,8 +2207,9 @@ def build_config(
             fatjets.FatJetCollection,
             fatjets.FatJetCollectionWithoutVeto,
             fatjets.BasicFatJetQuantities,
+            jets.JetWithVetoMasks,
             jets.JetCollection,
-            jets.JetCombinedCollection,
+            jets.CombinedJetCollection,
             jets.JetColumns,
             jets.BasicJetQuantities,
             jets.BJetCollection,
@@ -2202,7 +2224,8 @@ def build_config(
             fatjets.FindXbbFatjet,
             fatjets.BasicXbbFatJetQuantities,
             fatjets.LeadingFatJetQuantities,
-            scalefactors.btagging_SF,
+            scalefactors.BJetShapeDeepJet_SF,
+            scalefactors.BJetShapePNet_SF,
             # TODO producers need to be refined for run 3, not considered at the moment
             #met.MetCorrections,
             #met.PFMetCorrections,
@@ -2501,7 +2524,8 @@ def build_config(
         SCOPES,
         RemoveProducer(
             producers=[
-                scalefactors.btagging_SF,
+                scalefactors.BJetShapeDeepJet_SF,
+                scalefactors.BJetShapePNet_SF,
             ],
             samples=["data", "embedding", "embedding_mc"],
         ),
@@ -2831,14 +2855,17 @@ def build_config(
             q.genjet_mass_2,
             q.genjet_hadFlavour_2,
             q.genjet_m_inv,
-            q.njets,
+            q.n_jets_deepjet,
+            q.n_jets_pnet,
             q.jet_pt,
             q.jet_eta,
             q.jet_phi,
             q.jet_mass,
             q.jet_id,
             q.jet_deepjet_b_score,
+            q.jet_pnet_b_score,
             q.jet_deepjet_b_tagged_medium,
+            q.jet_pnet_b_tagged_medium,
             q.jet_pt_pnet,
             q.jet_pt_pnet_with_neutrino,
             q.jet_pt_pnet_resolution,
@@ -2856,7 +2883,8 @@ def build_config(
             q.m_vis,
             q.deltaR_ditaupair,
             q.pt_vis,
-            q.nbtag,
+            q.n_bjets_deepjet,
+            q.n_bjets_pnet,
             # q.bpt_1,
             # q.bpt_2,
             # q.beta_1,
@@ -2865,7 +2893,8 @@ def build_config(
             # q.bphi_2,
             # q.btag_value_1,
             # q.btag_value_2,
-            q.btag_weight,
+            q.id_wgt_bjet_deepjet_shape,
+            q.id_wgt_bjet_pnet_shape,
             q.mass_1,
             q.mass_2,
             q.dxy_1,
@@ -3138,8 +3167,6 @@ def build_config(
             q.nmuons,
             triggers.SingleMuTriggerFlags.output_group,
             q.muon_veto_flag,
-            q.electron_veto_flag,
-            q.dielectron_veto,
         ] + scalefactors.MuonIDIso_SF.get_outputs("mm")
         + scalefactors.SingleMuTriggerSF.get_outputs("mm"),
     )
@@ -3150,9 +3177,7 @@ def build_config(
         [
             q.nelectrons,
             triggers.SingleEleTriggerFlags.output_group,
-            q.muon_veto_flag,
             q.electron_veto_flag,
-            q.dimuon_veto,
         ] + scalefactors.EleID_SF.get_outputs("ee")
         + scalefactors.SingleEleTriggerSF.get_outputs("ee"),
     )
