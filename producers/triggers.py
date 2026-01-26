@@ -73,17 +73,21 @@ SingleMuTriggerFlags = ExtendedVectorProducer(
 )
 
 # single muon trigger flags, including trigger object matching
+common_inputs = [
+    nanoAOD.TrigObj_pt,
+    nanoAOD.TrigObj_eta,
+    nanoAOD.TrigObj_phi,
+    nanoAOD.TrigObj_id,
+    nanoAOD.TrigObj_filterBits,
+]
 SingleMuTriggerFlags = ExtendedVectorProducer(
     name="SingleMuTriggerFlags",
     call='trigger::SingleObjectFlag({df}, {output}, {input}, "{hlt_path}", {min_pt}, {max_abs_eta}, {particle_id}, {filter_bit}, {match_max_delta_r})',
-    input=[
-        q.p4_1,
-        nanoAOD.TrigObj_pt,
-        nanoAOD.TrigObj_eta,
-        nanoAOD.TrigObj_phi,
-        nanoAOD.TrigObj_id,
-        nanoAOD.TrigObj_filterBits,
-    ],
+    input={
+        "mt": [q.p4_1, ] + common_inputs,
+        "mm": [q.p4_1, ] + common_inputs,
+        "em": [q.p4_2, ] + common_inputs,
+    },
     output="flagname",
     scope=MUON_SCOPES,
     vec_config="single_mu_trigger",
