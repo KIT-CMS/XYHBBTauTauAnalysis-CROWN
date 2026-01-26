@@ -106,11 +106,43 @@ MetQuantitiesUncorrected = ProducerGroup(
 
 
 #
+# PROPAGATION OF ENERGY SCALE CORRECTIONS
+#
+
+
+PropagateLeptonsToMet = Producer(
+    name="PropagateLeptonsToMet",
+    call="lorentzvector::PropagateToMET({df}, {output}, {input}, {propagate_leptons_to_met})",
+    input=[q.met_p4_uncorrected, q.p4_1_uncorrected, q.p4_2_uncorrected, q.p4_1, q.p4_2],
+    output=[q.met_p4_leptoncorrected],
+    scopes=SCOPES,
+)
+
+PropagateJetsToMet = Producer(
+    name="PropagateJetsToMet",
+    call="physicsobject::PropagateToMET({df}, {output}, {input}, {propagate_jets_to_met}, {jet_to_met_propagation_pt_min})",
+    input=[
+        q.met_p4_leptoncorrected,
+        q.Jet_pt_corrected,
+        nanoAOD.Jet_eta,
+        nanoAOD.Jet_phi,
+        q.Jet_mass_corrected,
+        nanoAOD.Jet_pt,
+        nanoAOD.Jet_eta,
+        nanoAOD.Jet_phi,
+        nanoAOD.Jet_mass,
+    ],
+    output=[q.pfmet_p4_jetcorrected],
+    scopes=["et", "mt", "tt", "em", "mm", "ee"],
+)
+
+#
 # RENAME PRODUCERS
 #
 
 
-# Dummy producer to rename the MET if no recoil corrections are applied to the sample
+# Dummy producer to rename the MET if no lepton and recoil corrections are
+# applied to the sample
 RenameMet = Producer(
     name="RenameMet",
     call="event::quantity::Rename<ROOT::Math::PtEtaPhiMVector>({df}, {output}, {input})",

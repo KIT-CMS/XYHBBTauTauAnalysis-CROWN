@@ -1597,6 +1597,7 @@ def add_recoil_corrections_config(configuration: Configuration):
     provided by the HLepRare group.
     """
 
+    # Configuration of the recoil corrections producer
     configuration.add_config_parameters(
         SCOPES,
         {
@@ -1626,7 +1627,29 @@ def add_recoil_corrections_config(configuration: Configuration):
                 default="DOES_NOT_EXIST",  # placeholder for samples without recoil corrections
             ),
             "recoil_correction_method": "QuantileMapHist",
-            "recoil_correction_apply": SampleModifier(
+            "recoil_correction_variation": "nom",
+        },
+    )
+
+
+    # Declare types of corrections to apply to the MET
+    configuration.add_config_parameters(
+        SCOPES,
+        {
+            "propagate_leptons_to_met": SampleModifier(
+                {
+                    "data": False,
+                },
+                default=True,
+            ),
+            "propagate_jets_to_met": SampleModifier(
+                {
+                    "data": False,
+                    "embedding": False,
+                },
+                default=True,
+            ),
+            "apply_recoil_corrections": SampleModifier(
                 {
                     "dyjets": True,
                     "dyjets_madgraph": True,
@@ -1638,14 +1661,7 @@ def add_recoil_corrections_config(configuration: Configuration):
                 },
                 default=False,
             ),
-            "recoil_correction_is_wjets": SampleModifier(
-                {
-                    "wjets_madgraph": True,
-                    "wjets_amcatnlo": True,
-                },
-                default=False,
-            ),
-            "recoil_correction_variation": "nom",
+            "jet_to_met_propagation_pt_min": 15,
         },
     )
 
