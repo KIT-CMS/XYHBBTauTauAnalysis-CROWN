@@ -1278,6 +1278,7 @@ def add_ak4jet_config(configuration: Configuration):
                     "2022postEE": "/cvmfs/cms-griddata.cern.ch/cat/metadata/JME/Run3-22EFGSep23-Summer22EE-NanoAODv12/2025-10-07/jet_jerc.json.gz",
                     "2023preBPix": "/cvmfs/cms-griddata.cern.ch/cat/metadata/JME/Run3-23CSep23-Summer23-NanoAODv12/2025-10-07/jet_jerc.json.gz",
                     "2023postBPix": "/cvmfs/cms-griddata.cern.ch/cat/metadata/JME/Run3-23DSep23-Summer23BPix-NanoAODv12/2025-10-07/jet_jerc.json.gz",
+                    "2024": "/cvmfs/cms-griddata.cern.ch/cat/metadata/JME/Run3-24CDEReprocessingFGHIPrompt-Summer24-NanoAODv15/2025-12-02/jet_jerc.json.gz",
                 },
             ),
             "ak4jet_jer_tag": EraModifier(
@@ -1290,6 +1291,7 @@ def add_ak4jet_config(configuration: Configuration):
                     "2022postEE": "Summer22EE_22Sep2023_JRV1_MC",
                     "2023preBPix": "Summer23Prompt23_RunCv1234_JRV1_MC",
                     "2023postBPix": "Summer23BPixPrompt23_RunD_JRV1_MC",
+                    "2024": "Summer23BPixPrompt23_RunD_JRV1_MC",  # copied from 2023postBPix
                 }
             ),
             "ak4jet_jes_tag_data": "\"\"",
@@ -1303,6 +1305,7 @@ def add_ak4jet_config(configuration: Configuration):
                     "2022postEE": "Summer22EE_22Sep2023_V3_MC",
                     "2023preBPix": "Summer23Prompt23_V2_MC",
                     "2023postBPix": "Summer23BPixPrompt23_V3_MC",
+                    "2024": "Summer24Prompt24_V2_MC",
                 }
             ),
             "ak4jet_jec_algo": EraModifier(
@@ -1342,6 +1345,7 @@ def add_ak4jet_config(configuration: Configuration):
                     "2022postEE": "/cvmfs/cms-griddata.cern.ch/cat/metadata/JME/Run3-22EFGSep23-Summer22EE-NanoAODv12/2025-10-07/jetvetomaps.json.gz",
                     "2023preBPix": "/cvmfs/cms-griddata.cern.ch/cat/metadata/JME/Run3-23CSep23-Summer23-NanoAODv12/2025-10-07/jetvetomaps.json.gz",
                     "2023postBPix": "/cvmfs/cms-griddata.cern.ch/cat/metadata/JME/Run3-23DSep23-Summer23BPix-NanoAODv12/2025-10-07/jetvetomaps.json.gz",
+                    "2024": "/cvmfs/cms-griddata.cern.ch/cat/metadata/JME/Run3-24CDEReprocessingFGHIPrompt-Summer24-NanoAODv15/2025-12-02/jetvetomaps.json.gz",
                 },
             ),
             "jet_veto_map_name": EraModifier(
@@ -1354,6 +1358,7 @@ def add_ak4jet_config(configuration: Configuration):
                     "2022postEE": "Summer22EE_23Sep2023_RunEFG_V1",
                     "2023preBPix": "Summer23Prompt23_RunC_V1",
                     "2023postBPix": "Summer23BPixPrompt23_RunD_V1",
+                    "2024": "Summer24Prompt24_RunBCDEFGHI_V1",
                 },
             ),
             "jet_veto_map_type": "jetvetomap",
@@ -1405,6 +1410,7 @@ def add_ak8jet_config(configuration: Configuration):
                     "2022postEE": "/cvmfs/cms-griddata.cern.ch/cat/metadata/JME/Run3-22EFGSep23-Summer22EE-NanoAODv12/2025-10-07/fatJet_jerc.json.gz",
                     "2023preBPix": "/cvmfs/cms-griddata.cern.ch/cat/metadata/JME/Run3-23CSep23-Summer23-NanoAODv12/2025-10-07/fatJet_jerc.json.gz",
                     "2023postBPix": "/cvmfs/cms-griddata.cern.ch/cat/metadata/JME/Run3-23DSep23-Summer23BPix-NanoAODv12/2025-10-07/fatJet_jerc.json.gz",
+                    "2024": "/cvmfs/cms-griddata.cern.ch/cat/metadata/JME/Run3-24CDEReprocessingFGHIPrompt-Summer24-NanoAODv15/2025-12-02/fatJet_jerc.json.gz",
                 },
             ),
             "ak8jet_jer_tag": EraModifier(
@@ -1417,6 +1423,7 @@ def add_ak8jet_config(configuration: Configuration):
                     "2022postEE": "Summer22EE_22Sep2023_JRV1_MC",
                     "2023preBPix": "Summer23Prompt23_RunCv1234_JRV1_MC",
                     "2023postBPix": "Summer23BPixPrompt23_RunD_JRV1_MC",
+                    "2024": "Summer24Prompt24_V2_MC",
                 }
             ),
             "ak8jet_jes_tag_data": "\"\"",
@@ -1430,6 +1437,7 @@ def add_ak8jet_config(configuration: Configuration):
                     "2022postEE": "Summer22EE_22Sep2023_V3_MC",
                     "2023preBPix": "Summer23Prompt23_V2_MC",
                     "2023postBPix": "Summer23BPixPrompt23_V3_MC",
+                    "2024": "Summer23BPixPrompt23_RunD_JRV1_MC",  # copied from 2023postBPix
                 }
             ),
             "ak8jet_jec_algo": "AK8PFPuppi",  # TODO normally "AK8PFPuppi" would be used -> change to AK4 naming to get merged uncertainty scheme?
