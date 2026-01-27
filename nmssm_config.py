@@ -2384,6 +2384,21 @@ def build_config(
         era,
     )
 
+    # The MET covariance matrix producer is different for 2024 compared to all
+    # other eras, since in NanoAOD v15, also PuppiMET covariance matrix elements
+    # exist.
+    met_cov_producers = get_for_era(
+        {
+            tuple(ERAS_RUN2) + ("2022preEE", "2022postEE", "2023preBPix", "2023postBPix"): [
+                met.MetCov,
+            ],
+            "2024": [
+                met.PuppiMetCov,
+            ],
+        },
+        era,
+    )
+
     #
     # PRODUCER DEFINITIONS
     #
@@ -2407,6 +2422,7 @@ def build_config(
             event.DiLeptonVeto,
             met.MetQuantitiesUncorrected,
         ]
+        + met_cov_producers
         + prefire_weight_producers
         + jet_selection_producers
         + fat_jet_id_producers
@@ -2631,20 +2647,6 @@ def build_config(
     # 
     # Remove, append, or modify producers in specific cases.
     #
-
-    # For 2024 samples, replace the MET covariance producer group with the 
-    # PUPPI MET version
-    if era == "2024":
-        configuration.add_modification_rule(
-            GLOBAL_SCOPES,
-            ReplaceProducer(
-                producers=[
-                    met.MetCov,
-                    met.PuppiMetCov,
-                ],
-                samples=available_sample_types,
-            ),
-        )
 
     # For DY samples, add producer for flag indicating the flavor of the decay products
     configuration.add_modification_rule(

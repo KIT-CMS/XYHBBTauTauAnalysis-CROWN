@@ -160,7 +160,6 @@ MetQuantitiesUncorrected = ProducerGroup(
         BuildMetVector_uncorrected,
         MetPt_uncorrected,
         MetPhi_uncorrected,
-        MetCov,
         MetSumEt,
     ],
 )
