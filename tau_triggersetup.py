@@ -27,7 +27,7 @@ def add_diTauTriggerSetup(configuration: Configuration):
                                 "match_max_delta_r": 0.4,
                             },
                         ]
-                        for _era in ["2022preEE", "2022postEE", "2023preBPix", "2023postBPix"]
+                        for _era in ["2022preEE", "2022postEE", "2023preBPix", "2023postBPix", "2024"]
                     },
                     "2018": [
                         {
@@ -237,6 +237,30 @@ def add_diTauTriggerSetup(configuration: Configuration):
         {
             "double_mutau_trigger": EraModifier(
                 {
+                    **{
+                        _era: [
+                            # trigger:            HLT_IsoMu20_eta2p1_LooseDeepTauPFTauHPS27_eta2p1_CrossL1
+                            # final filter muon:  hltL3crIsoBigORMu18erTauXXer2p1L1f0L2f10QL3f20QL3trkIsoFiltered
+                            # filter bit muon:    1
+                            # final filter tau:   hltHpsOverlapFilterIsoMu20LooseMuTauWPDeepTauPFTau27L1Seeded
+                            # filter bit tau:     0, 4, 13  TODO implement matching to multiple filters
+                            # documentation:      https://twiki.cern.ch/twiki/bin/view/CMS/TauTrigger#Trigger_Table_for_2024
+                            {
+                                "flagname": "trg_double_mu20tau27",
+                                "hlt_path": "HLT_IsoMu20_eta2p1_PNetTauhPFJet27_Loose_eta2p3_CrossL1",
+                                "p1_min_pt": 22.,
+                                "p1_max_abs_eta": 2.1,
+                                "p1_particle_id": 13,
+                                "p1_filter_bit": 1,
+                                "p2_min_pt": 29.,
+                                "p2_max_abs_eta": 2.1,
+                                "p2_particle_id": 15,
+                                "p2_filter_bit": 13,
+                                "match_max_delta_r": 0.4,
+                            }
+                        ]
+                        for _era in ["2024"]
+                    },
                     **{
                         _era: [
                             # trigger:            HLT_IsoMu20_eta2p1_LooseDeepTauPFTauHPS27_eta2p1_CrossL1
@@ -1069,7 +1093,7 @@ def add_diTauTriggerSetup(configuration: Configuration):
                                 "match_max_delta_r": 0.4,
                             },
                         ]
-                        for _era in ["2022preEE", "2022postEE", "2023preBPix", "2023postBPix"]
+                        for _era in ["2022preEE", "2022postEE", "2023preBPix", "2023postBPix", "2024"]
                     },
                 }
             ),
