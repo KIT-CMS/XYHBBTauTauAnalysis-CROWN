@@ -21,7 +21,7 @@ __all__ = [
     "SCOPES",
     "ERAS",
     "AvailableBJetIDs",
-    "BJET_ID_ALGORTHM",
+    "BJET_ID_ALGORITHM",
 ]
 
 
@@ -63,4 +63,5 @@ CORRECTIONLIB_CAMPAIGNS = {
 class AvailableBJetIDs(enum.Enum):
     DEEPJET = enum.auto()
     PNET = enum.auto()
-BJET_ID_ALGORITHM = AvailableBJetIDs.PNET
+    UPART = enum.auto()
+BJET_ID_ALGORITHM = AvailableBJetIDs.UPART

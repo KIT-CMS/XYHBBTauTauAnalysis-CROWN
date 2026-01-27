@@ -1504,6 +1504,7 @@ def add_bjet_config(configuration: Configuration):
                     "2022postEE": 0.3196,
                     "2023preBPix": 0.2431,
                     "2023postBPix": 0.2435,
+                    "2024": 0.0,  # does not exist
                 },
             ),
         },
@@ -1516,14 +1517,36 @@ def add_bjet_config(configuration: Configuration):
         {
             "bjet_min_pnet_score": EraModifier(  # medium
                 {
-                    "2016preVFP": 0.0,
-                    "2016postVFPP": 0.0,
-                    "2017": 0.0,
-                    "2018": 0.0,
+                    "2016preVFP": 0.0,  # does not exist
+                    "2016postVFPP": 0.0,  # does not exist
+                    "2017": 0.0,  # does not exist
+                    "2018": 0.0,  # does not exist
                     "2022preEE": 0.245,
                     "2022postEE": 0.2605,
-                    "2023preBPix": 0.3487,
-                    "2023postBPix": 0.3494,
+                    "2023preBPix": 0.1917,
+                    "2023postBPix": 0.1919,
+                    "2024": 0.0,  # does not exist
+                },
+            ),
+        },
+    )
+
+    # b jet identification with UParT
+    # recommendations: https://btv-wiki.docs.cern.ch/ScaleFactors
+    configuration.add_config_parameters(
+        GLOBAL_SCOPES + HAD_TAU_SCOPES,
+        {
+            "bjet_min_upart_score": EraModifier(  # medium
+                {
+                    "2016preVFP": 0.0,  # does not exist
+                    "2016postVFP": 0.0,  # does not exist
+                    "2017": 0.0,  # does not exist
+                    "2018": 0.0,  # does not exist
+                    "2022preEE": 0.0,  # does not exist
+                    "2022postEE": 0.0,  # does not exist
+                    "2023preBPix": 0.0,  # does not exist
+                    "2023postBPix": 0.0,  # does not exist
+                    "2024": 0.1272,
                 },
             ),
         },
@@ -1543,6 +1566,7 @@ def add_bjet_config(configuration: Configuration):
                     "2022postEE": "/cvmfs/cms-griddata.cern.ch/cat/metadata/BTV/Run3-22EFGSep23-Summer22EE-NanoAODv12/2025-08-20/btagging.json.gz",
                     "2023preBPix": "/cvmfs/cms-griddata.cern.ch/cat/metadata/BTV/Run3-23CSep23-Summer23-NanoAODv12/2025-08-20/btagging.json.gz",
                     "2023postBPix": "/cvmfs/cms-griddata.cern.ch/cat/metadata/BTV/Run3-23DSep23-Summer23BPix-NanoAODv12/2025-08-20/btagging.json.gz",
+                    "2024": "/cvmfs/cms-griddata.cern.ch/cat/metadata/BTV/Run3-24CDEReprocessingFGHIPrompt-Summer24-NanoAODv15/2025-12-03/btagging.json.gz",
                 }
             ),
             "bjet_sf_deepjet_shape_name": "deepJet_shape",

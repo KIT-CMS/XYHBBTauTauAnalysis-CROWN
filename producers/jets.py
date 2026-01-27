@@ -17,6 +17,8 @@ if BJET_ID_ALGORITHM == AvailableBJetIDs.DEEPJET:
     good_bjets_with_veto_mask = q.good_bjets_deepjet_with_veto_mask
 elif BJET_ID_ALGORITHM == AvailableBJetIDs.PNET:
     good_bjets_with_veto_mask = q.good_bjets_pnet_with_veto_mask
+elif BJET_ID_ALGORITHM == AvailableBJetIDs.UPART:
+    good_bjets_with_veto_mask = q.good_bjets_upart_with_veto_mask
 
 # Get the nanoAOD b jet tagging column, according to the default b jet identification algorithm
 # selected with BJET_ID_ALGORITHM
@@ -25,6 +27,8 @@ if BJET_ID_ALGORITHM == AvailableBJetIDs.DEEPJET:
     nanoaod_btag_score = nanoAOD_run2.Jet_btagDeepFlavB
 elif BJET_ID_ALGORITHM == AvailableBJetIDs.PNET:
     nanoaod_btag_score = nanoAOD.Jet_btagPNetB
+elif BJET_ID_ALGORITH == AvailableBJetIDs.UPART:
+    nanoaod_btag_score = nanoAOD.Jet_btagUParTAK4B
 
 
 
@@ -205,7 +209,6 @@ GoodBJetsWithoutPUIDDeepJet = ProducerGroup(
     scopes=GLOBAL_SCOPES,
 )
 
-# Apply ParticleNet b jet tagging
 GoodBJetsDeepJet = ProducerGroup(
     name="GoodBJetsWithPUIDDeepJet",
     call='physicsobject::CombineMasks({df}, {output}, {input}, "all_of")',
@@ -229,6 +232,18 @@ GoodBJetsPNet = ProducerGroup(
     scopes=GLOBAL_SCOPES,
 )
 
+# b jet selection combining the base b jet selection and the b tagging requirement not applying the pileup ID (for PUPPI jets)
+GoodBJetsUParT = ProducerGroup(
+    name="GoodBJetsWithoutPUIDPNet",
+    call='physicsobject::CombineMasks({df}, {output}, {input}, "all_of")',
+    input=[q.base_bjets_mask],
+    output=[q.good_bjets_upart_mask],
+    subproducers=[
+        BTagCutPNet,
+    ],
+    scopes=GLOBAL_SCOPES,
+)
+
 GoodBJetsWithPUID = ProducerGroup(
     name="GoodBJetsWithPUIDPNet",
     call=None,
@@ -239,6 +254,7 @@ GoodBJetsWithPUID = ProducerGroup(
         GoodBJetsBaseWithPUID,
         GoodBJetsDeepJet,
         GoodBJetsPNet,
+        GoodBJetsUParT,
     ],
 )
 
@@ -252,6 +268,7 @@ GoodBJetsWithoutPUID = ProducerGroup(
         GoodBJetsBaseWithoutPUID,
         GoodBJetsDeepJet,
         GoodBJetsPNet,
+        GoodBJetsUParT,
     ],
 )
 
@@ -303,6 +320,15 @@ GoodBJetsPNetWithVeto = Producer(
     scopes=SCOPES,
 )
 
+# create a mask that includes selected jets that do not overlap with the lepton candidates from the resolved selection
+GoodBJetsPNetWithVeto = Producer(
+    name="GoodBJetsPNetWithVeto",
+    call='physicsobject::CombineMasks({df}, {output}, {input}, "all_of")',
+    input=[q.good_bjets_upart_mask, q.jet_overlap_veto_mask],
+    output=[q.good_bjets_upart_with_veto_mask],
+    scopes=SCOPES,
+)
+
 JetWithVetoMasks = ProducerGroup(
     name="JetWithVetoMasks",
     call=None,
@@ -314,6 +340,7 @@ JetWithVetoMasks = ProducerGroup(
         GoodJetsWithVeto,
         GoodBJetsDeepJetWithVeto,
         GoodBJetsPNetWithVeto,
+        GoodBJetsUParTWithVeto,
     ]
 )
 
@@ -321,7 +348,7 @@ JetWithVetoMasks = ProducerGroup(
 CombinedGoodJetsWithVetoMask = Producer(
     name="CombinedGoodJetsWithVetoMask",
     call='physicsobject::CombineMasks({df}, {output}, {input}, "any_of")',
-    input=[q.good_jets_with_veto_mask, q.good_bjets_deepjet_with_veto_mask, q.good_bjets_pnet_with_veto_mask],
+    input=[q.good_jets_with_veto_mask, q.good_bjets_deepjet_with_veto_mask, q.good_bjets_pnet_with_veto_mask, q.good_bjets_upart_with_veto_mask],
     output=[],
     scopes=SCOPES,
 )
