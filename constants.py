@@ -61,6 +61,6 @@ CORRECTIONLIB_CAMPAIGNS = {
 
 # b jet identification algorithms
 class AvailableBJetIDs(enum.Enum):
-    DEEPJET = enum.auto() 
+    DEEPJET = enum.auto()
     PNET = enum.auto()
-BJET_ID_ALGORTHM = AvailableBJetIDs.PNET
+BJET_ID_ALGORITHM = AvailableBJetIDs.PNET
