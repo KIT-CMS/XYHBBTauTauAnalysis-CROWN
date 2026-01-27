@@ -2642,6 +2642,7 @@ def build_config(
                     met.MetCov,
                     met.PuppiMetCov,
                 ],
+                samples=available_sample_types,
             ),
         )
 
@@ -2718,24 +2719,28 @@ def build_config(
             SCOPES,
             ReplaceProducer(
                 producers=[fatjets.fj_Xbb_nBhad, fatjets.fj_Xbb_nBhad_v15],
+                samples=available_sample_types,
             ),
         )
         configuration.add_modification_rule(
             SCOPES,
             ReplaceProducer(
                 producers=[fatjets.fj_Xbb_nBhad_boosted, fatjets.fj_Xbb_nBhad_boosted_v15],
+                samples=available_sample_types,
             ),
         )
         configuration.add_modification_rule(
             SCOPES,
             ReplaceProducer(
                 producers=[fatjets.fj_Xbb_nChad, fatjets.fj_Xbb_nChad_v15],
+                samples=available_sample_types,
             ),
         )
         configuration.add_modification_rule(
             SCOPES,
             ReplaceProducer(
                 producers=[fatjets.fj_Xbb_nChad_boosted, fatjets.fj_Xbb_nChad_boosted_v15],
+                samples=available_sample_types,
             ),
         )
 
