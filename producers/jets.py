@@ -99,7 +99,6 @@ JetEnergyCorrection_data, JetEnergyCorrection, RenameJetsData = jerc_producer_fa
 # AK4 JET SELECTION
 #
 
-
 # correct the jet ID value for Run3 samples
 JetIDRun3NanoV12Corrected = Producer(
     name="JetIDRun3NanoV12Corrected",
@@ -120,7 +119,7 @@ JetIDRun3NanoV12Corrected = Producer(
 # Calculate the jet ID values for run 3 (nanoAOD v15, 2024)
 JetIDRun3NanoV15 = Producer(
     name="JetIDRun3",
-    call="jet::ID({df}, correctionManager, {output}, {input}, \"{ak4jet_id_file}\", \"{ak4jet_id_name}\")",
+    call="physicsobject::jet::quantity::ID({df}, correctionManager, {output}, {input}, \"{ak4jet_id_file}\", \"{ak4jet_id_name}\")",
     input=[
         nanoAOD.Jet_eta,
         nanoAOD.Jet_chHEF,

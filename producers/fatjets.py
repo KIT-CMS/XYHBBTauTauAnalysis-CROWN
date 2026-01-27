@@ -6,6 +6,7 @@ Producers for AK8 jet energy scale and resolution corrections, object selections
 
 from ..quantities import output as q
 from ..quantities import nanoAOD as nanoAOD
+from analysis_configurations.quantities import nanoAODv12_run3
 from code_generation.producer import Producer, ProducerGroup
 
 from ._helpers import jerc_producer_factory
@@ -26,7 +27,7 @@ FatJetEnergyCorrection_data_Run2, FatJetEnergyCorrectionRun2, RenameFatJetsDataR
         "jet_mass": nanoAOD.FatJet_mass,
         "jet_area": nanoAOD.FatJet_area,
         "jet_raw_factor": nanoAOD.FatJet_rawFactor,
-        "jet_id": nanoAOD.FatJet_jetId,
+        "jet_id": q.FatJet_ID_corrected,
         "gen_jet_pt": nanoAOD.GenJetAK8_pt,
         "gen_jet_eta": nanoAOD.GenJetAK8_eta,
         "gen_jet_phi": nanoAOD.GenJetAK8_phi,
@@ -56,7 +57,7 @@ FatJetEnergyCorrection_data, FatJetEnergyCorrection, RenameFatJetsData = jerc_pr
         "jet_mass": nanoAOD.FatJet_mass,
         "jet_area": nanoAOD.FatJet_area,
         "jet_raw_factor": nanoAOD.FatJet_rawFactor,
-        "jet_id": nanoAOD.FatJet_jetId,
+        "jet_id": q.FatJet_ID_corrected,
         "gen_jet_pt": nanoAOD.GenJetAK8_pt,
         "gen_jet_eta": nanoAOD.GenJetAK8_eta,
         "gen_jet_phi": nanoAOD.GenJetAK8_phi,
@@ -80,6 +81,48 @@ FatJetEnergyCorrection_data, FatJetEnergyCorrection, RenameFatJetsData = jerc_pr
 # AK8 JET SELECTION
 #
 
+# correct the jet ID value for Run3 samples
+FatJetIDRun3NanoV12Corrected = Producer(
+    name="FatJetIDRun3NanoV12Corrected",
+    call="physicsobject::jet::quantities::CorrectJetIDRun3NanoV12({df}, {output}, {input})",
+    input=[
+        nanoAOD.FatJet_pt,
+        nanoAOD.FatJet_eta,
+        q.FatJet_ID_corrected,
+        nanoAOD.FatJet_neHEF,
+        nanoAOD.FatJet_neEmEF,
+        nanoAOD.FatJet_muEF,
+        nanoAOD.FatJet_chEmEF,
+    ],
+    output=[q.FatJet_ID_corrected],
+    scopes=GLOBAL_SCOPES,
+)
+
+# Calculate the jet ID values for run 3 (nanoAOD v15, 2024)
+FatJetIDRun3NanoV15 = Producer(
+    name="FatJetIDRun3",
+    call="physicsobject::fatjet::quantity::ID({df}, correctionManager, {output}, {input}, \"{ak8jet_id_file}\", \"{ak8jet_id_name}\")",
+    input=[
+        nanoAOD.FatJet_eta,
+        nanoAOD.FatJet_chHEF,
+        nanoAOD.FatJet_neHEF,
+        nanoAOD.FatJet_chEmEF,
+        nanoAOD.FatJet_neEmEF,
+        nanoAOD.FatJet_chMultiplicity,
+        nanoAOD.FatJet_neMultiplicity,
+    ],
+    output=[q.FatJet_ID_corrected],
+    scopes=GLOBAL_SCOPES,
+)
+
+# for Run 2, the Jet ID implementation is correct, just rename the column
+FatJetIDRun2 = Producer(
+    name="JetIDRun2",
+    call="event::quantity::Rename<ROOT::RVec<UChar_t>>({df}, {output}, {input})",
+    input=[nanoAODv12_run3.FatJet_jetId],
+    output=[q.FatJet_ID_corrected],
+    scopes=GLOBAL_SCOPES,
+)
 
 # jet selection not applying the pileup ID (for PUPPI jets)
 GoodFatJetsWithoutPUID = Producer(
@@ -88,7 +131,7 @@ GoodFatJetsWithoutPUID = Producer(
     input=[
         q.FatJet_pt_corrected,
         nanoAOD.FatJet_eta,
-        nanoAOD.FatJet_jetId,
+        q.FatJet_ID_corrected,
     ],
     output=[q.good_fatjets_mask],
     scopes=GLOBAL_SCOPES,

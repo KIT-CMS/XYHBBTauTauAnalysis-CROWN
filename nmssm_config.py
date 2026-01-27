@@ -1328,7 +1328,7 @@ def add_ak4jet_config(configuration: Configuration):
     configuration.add_config_parameters(
         "global",
         {
-            "ak4jet_id_file": "/cvmfs/cms-griddata.cern.ch/cat/metadata/JME/Run3-24Prompt-Winter24-NanoAODv14/2025-06-09/jetid.json.gz"  # only needed for 2024
+            "ak4jet_id_file": "/cvmfs/cms-griddata.cern.ch/cat/metadata/JME/Run3-24Prompt-Winter24-NanoAODv14/2025-06-09/jetid.json.gz",  # only needed for 2024
             "ak4jet_id_name": "AK4PUPPI",
         },
     )
@@ -1451,6 +1451,16 @@ def add_ak8jet_config(configuration: Configuration):
                 }
             ),
             "ak8jet_jec_algo": "AK8PFPuppi",  # TODO normally "AK8PFPuppi" would be used -> change to AK4 naming to get merged uncertainty scheme?
+        },
+    )
+
+    # AK4 jet ID
+    # Evaluated with correctionlib files in 2024
+    configuration.add_config_parameters(
+        "global",
+        {
+            "ak8jet_id_file": "/cvmfs/cms-griddata.cern.ch/cat/metadata/JME/Run3-24Prompt-Winter24-NanoAODv14/2025-06-09/jetid.json.gz",  # only needed for 2024
+            "ak8jet_id_name": "AK8PUPPI",
         },
     )
 
@@ -2173,6 +2183,22 @@ def build_config(
         era,
     )
 
+    # AK8 jet ID producers
+    fat_jet_id_producers = get_for_era(
+        {
+            tuple(ERAS_RUN2): [
+                fatjets.FatJetIDRun2,
+            ],
+            ("2022preEE", "2022postEE", "2023preBPix", "2023postBPix"): [
+                fatjets.FatJetIDRun3NanoV12Corrected,
+            ],
+            "2024": [
+                fatjets.FatJetIDRun3NanoV15,
+            ],
+        },
+        era,
+    )
+
     # Jet energy corrections for AK4 jets
     # Different producers are used for Run 2 and Run 3 due to minor differences in the parameters
     # that the corrections depend on.
@@ -2382,6 +2408,7 @@ def build_config(
         ]
         + prefire_weight_producers
         + jet_selection_producers
+        + fat_jet_id_producers
         + jet_veto_map_producers
         + [
             electron_pt_correction_mc_producer,
