@@ -321,8 +321,8 @@ GoodBJetsPNetWithVeto = Producer(
 )
 
 # create a mask that includes selected jets that do not overlap with the lepton candidates from the resolved selection
-GoodBJetsPNetWithVeto = Producer(
-    name="GoodBJetsPNetWithVeto",
+GoodBJetsUParTWithVeto = Producer(
+    name="GoodBJetsUParTWithVeto",
     call='physicsobject::CombineMasks({df}, {output}, {input}, "all_of")',
     input=[q.good_bjets_upart_mask, q.jet_overlap_veto_mask],
     output=[q.good_bjets_upart_with_veto_mask],

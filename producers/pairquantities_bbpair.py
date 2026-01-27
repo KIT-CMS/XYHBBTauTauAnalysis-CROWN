@@ -12,6 +12,8 @@ if BJET_ID_ALGORITHM == AvailableBJetIDs.DEEPJET:
     nanoaod_btag_score = nanoAOD_run2.Jet_btagDeepFlavB
 elif BJET_ID_ALGORITHM == AvailableBJetIDs.PNET:
     nanoaod_btag_score = nanoAOD.Jet_btagPNetB
+elif BJET_ID_ALGORITHM == AvailableBJetIDs.UPART:
+    nanoaod_btag_score = nanoAOD.Jet_btagUParTAK4B
 
 
 ####################
