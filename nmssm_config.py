@@ -2698,6 +2698,34 @@ def build_config(
         ),
     )
 
+    # For 2024, replace the nBHadrons and nCHadrons producers, as they must be
+    # accessed via the GenJetAK8 collection
+    if era == "2024":
+        configuration.add_modification_rule(
+            SCOPES,
+            ReplaceProducer(
+                producers=[fatjets.fj_Xbb_nBhad, fatjets.fj_Xbb_nBhad_v15],
+            ),
+        )
+        configuration.add_modification_rule(
+            SCOPES,
+            ReplaceProducer(
+                producers=[fatjets.fj_Xbb_nBhad_boosted, fatjets.fj_Xbb_nBhad_boosted_v15],
+            ),
+        )
+        configuration.add_modification_rule(
+            SCOPES,
+            ReplaceProducer(
+                producers=[fatjets.fj_Xbb_nChad, fatjets.fj_Xbb_nChad_v15],
+            ),
+        )
+        configuration.add_modification_rule(
+            SCOPES,
+            ReplaceProducer(
+                producers=[fatjets.fj_Xbb_nChad_boosted, fatjets.fj_Xbb_nChad_boosted_v15],
+            ),
+        )
+
     # Remove trigger scale factor producers from data and embedding samples in mt scope
     configuration.add_modification_rule(
         ELECTRON_SCOPES,
