@@ -215,6 +215,15 @@ BTagCutPNet = Producer(
     scopes=GLOBAL_SCOPES,
 )
 
+# requirement on b tagging score (ParticleNet)
+BTagCutUParT = Producer(
+    name="BTagCutUParT",
+    call="physicsobject::CutMin<float>({df}, {output}, {input}, {bjet_min_pnet_score})",
+    input=[nanoAOD.Jet_btagUParTAK4B],
+    output=[q.Jet_upart_b_tagged_medium],
+    scopes=GLOBAL_SCOPES,
+)
+
 # b jet selection combining the base b jet selection and the b tagging requirement not applying the pileup ID (for PUPPI jets)
 GoodBJetsWithoutPUIDDeepJet = ProducerGroup(
     name="GoodBJetsWithoutPUIDDeepJet",
@@ -257,7 +266,7 @@ GoodBJetsUParT = ProducerGroup(
     input=[q.base_bjets_mask],
     output=[q.good_bjets_upart_mask],
     subproducers=[
-        BTagCutPNet,
+        BTagCutUParT,
     ],
     scopes=GLOBAL_SCOPES,
 )
