@@ -821,6 +821,7 @@ def add_hadronic_tau_config(configuration: Configuration, era: str):
                     "2022postEE": "/cvmfs/cms-griddata.cern.ch/cat/metadata/TAU/Run3-22EFGSep23-Summer22EE-NanoAODv12/2025-10-01/tau_DeepTau2018v2p5_2022_postEE.json.gz",
                     "2023preBPix": "/cvmfs/cms-griddata.cern.ch/cat/metadata/TAU/Run3-23CSep23-Summer23-NanoAODv12/2025-10-01/tau_DeepTau2018v2p5_2023_preBPix.json.gz",
                     "2023postBPix": "/cvmfs/cms-griddata.cern.ch/cat/metadata/TAU/Run3-23DSep23-Summer23BPix-NanoAODv12/2025-10-01/tau_DeepTau2018v2p5_2023_postBPix.json.gz",
+                    "2024": "/cvmfs/cms-griddata.cern.ch/cat/metadata/TAU/Run3-24CDEReprocessingFGHIPrompt-Summer24-NanoAODv15/2026-01-14/tau.json.gz",
                 }
             ),
             "tau_trigger_sf_file": EraModifier(
@@ -833,6 +834,7 @@ def add_hadronic_tau_config(configuration: Configuration, era: str):
                     "2022postEE": "/cvmfs/cms-griddata.cern.ch/cat/metadata/TAU/Run3-22EFGSep23-Summer22EE-NanoAODv12/2025-10-01/tau_DeepTau2018v2p5_2022_postEE.json.gz",
                     "2023preBPix": "/cvmfs/cms-griddata.cern.ch/cat/metadata/TAU/Run3-23CSep23-Summer23-NanoAODv12/2025-10-01/tau_DeepTau2018v2p5_2023_preBPix.json.gz",
                     "2023postBPix": "/cvmfs/cms-griddata.cern.ch/cat/metadata/TAU/Run3-23DSep23-Summer23BPix-NanoAODv12/2025-10-01/tau_DeepTau2018v2p5_2023_postBPix.json.gz",
+                    "2024": "/cvmfs/cms-griddata.cern.ch/cat/metadata/TAU/Run3-24CDEReprocessingFGHIPrompt-Summer24-NanoAODv15/2026-01-14/tau.json.gz",
                 }
             ),
             "tau_ES_json_name": "tau_energy_scale",
