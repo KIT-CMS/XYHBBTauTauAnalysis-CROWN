@@ -138,6 +138,16 @@ def add_noise_filters_config(configuration: Configuration):
                         "Flag_eeBadScFilter",
                         "Flag_ecalBadCalibFilter",  # marked as "yellow" in TWiki
                     ],
+                    "2024": [
+                        "Flag_goodVertices",
+                        "Flag_globalSuperTightHalo2016Filter",
+                        "Flag_EcalDeadCellTriggerPrimitiveFilter",
+                        "Flag_BadPFMuonFilter",
+                        "Flag_BadPFMuonDzFilter",
+                        "Flag_hfNoisyHitsFilter",
+                        "Flag_eeBadScFilter",
+                        "Flag_ecalBadCalibFilter",
+                    ],
                 },
             ),
         },
@@ -250,7 +260,8 @@ def add_golden_json_config(configuration: Configuration):
                     "2022postEE": "data/golden_json/Cert_Collisions2022_355100_362760_Golden.json",
                     "2023preBPix": "data/golden_json/Cert_Collisions2023_366442_370790_Golden.json",
                     "2023postBPix": "data/golden_json/Cert_Collisions2023_366442_370790_Golden.json",
-                }
+                    "2024": "data/golden_json/Cert_Collisions2024_378981_386951_Golden.json",
+                },
             ),
         },
     )
