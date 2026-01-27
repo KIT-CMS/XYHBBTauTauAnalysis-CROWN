@@ -306,7 +306,7 @@ def add_electron_config(configuration: Configuration):
     :param configuration: the main configuration object
     :type configuration: Configuration
 
-    :param electron_id_loose: name of the electron ID for the loose electron collection; default: `"Electron_mvaNoIso_WP90"`.
+    :param electron_id_loose: name of the electron ID for the loose electron collection; default: `"Electron_mvaIso_WP90"`.
     :type electron_id_loose: str
 
     :param electron_id_loose_corrlib: name of the electron ID for the loose electron collection in the EGM correctionlib file; default: `"wp90noiso"`.
@@ -322,7 +322,7 @@ def add_electron_config(configuration: Configuration):
             "loose_electron_max_abs_dxy": 0.045,
             "loose_electron_max_abs_dz": 0.2,
             "loose_electron_max_iso": 0.25,
-            "loose_electron_id": "Electron_mvaNoIso_WP90",  # NanoAOD v9: Electron_mvaFall17V2noIso_WP90
+            "loose_electron_id": "Electron_mvaIso_WP90",  # NanoAOD v9: Electron_mvaFall17V2noIso_WP90
         },
     )
 
@@ -349,7 +349,7 @@ def add_electron_config(configuration: Configuration):
             "tight_electron_max_abs_dxy": 0.045,
             "tight_electron_max_abs_dz": 0.2,
             "tight_electron_max_iso": 0.4,
-            "tight_electron_id": "Electron_mvaNoIso_WP90",  # NanoAOD v9: Electron_mvaFall17V2noIso_WP90,
+            "tight_electron_id": "Electron_mvaIso_WP90",  # NanoAOD v9: Electron_mvaFall17V2noIso_WP90,
         },
     )
 
@@ -411,7 +411,7 @@ def add_electron_config(configuration: Configuration):
                 }
             ),
             "ele_reco_sf_name": "RecoAbove20",  # TODO needs to be modified for 2022 and 2023
-            "ele_id_sf_name": "wp90noiso",
+            "ele_id_sf_name": "wp90iso",
             "ele_reco_sf_variation": "sf",  # "sf" is nominal, "sfup"/"sfdown" are up/down variations
             "ele_id_sf_variation": "sf",  # "sf" is nominal, "sfup"/"sfdown" are up/down variations
         },
@@ -529,7 +529,6 @@ def add_muon_config(configuration: Configuration):
             "tight_muon_max_abs_dz": 0.2,
             "tight_muon_max_iso": 0.4,
             "tight_muon_id": "Muon_mediumId",
-            "muon_index_in_pair": 0,
         },
     )
 
@@ -541,7 +540,7 @@ def add_muon_config(configuration: Configuration):
         },
     )
 
-    # In the em scope, the first lepton is a muon
+    # In the em scope, the second lepton is a muon
     configuration.add_config_parameters(
         EM_SCOPES,
         {
@@ -2514,7 +2513,7 @@ def build_config(
             electrons.NumberOfGoodElectrons,
             muons.NumberOfGoodMuons,
             pairselection.EMPairSelection,
-            pairselection.GoodEMPairFlag,
+            pairselection.GoodEMPairFilter,
             pairselection.LVEl1,
             pairselection.LVMu2,
             pairselection.LVEl1Uncorrected,
