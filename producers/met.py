@@ -1,8 +1,78 @@
 from ..quantities import output as q
 from ..quantities import nanoAOD as nanoAOD
+from analysis_configurations.quantities import nanoAODv12_run3
 from code_generation.producer import Producer, ProducerGroup
 
 from ..constants import GLOBAL_SCOPES, SCOPES
+
+
+#
+# HELPER FUNCTIONS
+#
+
+
+def met_cov_producers(
+    name: str,
+    input_quantities: dict[str, str],
+    output_quantities: dict[str, str],
+    scopes: list[str],
+):
+    """
+    Generic function that generates a producer group for MET covariance matrix
+    elements.
+
+    The `input_quantities` dictionary must contain the input `NANOAOD` columns:
+    - `met_cov_xx`: The $xx$ component of the MET covariance matrix.
+    - `met_cov_xy`: The $xy$ component of the MET covariance matrix.
+    - `met_cov_yy`: The $yy$ component of the MET covariance matrix.
+
+    The `output_quantities` dictionary must contain the output columns in the
+    NTuple:
+
+    - `met_cov_00`: The $xx$ component of the MET covariance matrix.
+    - `met_cov_01`: The $xy$ component of the MET covariance matrix.
+    - `met_cov_10`: The $xy$ component of the MET covariance matrix.
+    - `met_cov_11`: The $yy$ component of the MET covariance matrix.
+    """
+
+    # Get the input and output quantities
+    met_cov_xx = input_quantities["met_cov_xx"]
+    met_cov_xy = input_quantities["met_cov_xy"]
+    met_cov_yy = input_quantities["met_cov_yy"]
+    met_cov_00 = output_quantities["met_cov_00"]
+    met_cov_01 = output_quantities["met_cov_01"]
+    met_cov_10 = output_quantities["met_cov_10"]
+    met_cov_11 = output_quantities["met_cov_11"]
+
+    # Create the MET covariance matrix producers
+    producers = []
+    for input, output, subproducer_name in [
+        (met_cov_xx, met_cov_00, "Cov00"),
+        (met_cov_xy, met_cov_01, "Cov01"),
+        (met_cov_xy, met_cov_10, "Cov10"),
+        (met_cov_yy, met_cov_11, "Cov11"),
+    ]:
+        producers.append(
+            Producer(
+                name=f"{name}_{subproducer_name}",
+                call="event::quantity::Rename<float>({df}, {output}, {input})",
+                input=[input],
+                output=[output],
+                scopes=scopes,
+            )
+        )
+
+    # Create a producer group for the MET covariance matrix elements
+    producer_group = ProducerGroup(
+        name=name,
+        call=None,
+        input=None,
+        output=None,
+        scopes=scopes,
+        subproducers=producers,
+    )
+
+    return producer_group
 
 
 #
@@ -20,43 +90,37 @@ BuildMetVector_uncorrected = Producer(
     scopes=GLOBAL_SCOPES,
 )
 
-MetCov00 = Producer(
-    name="MetCov00",
-    call="event::quantity::Rename<float>({df}, {output}, {input})",
-    input=[
-        nanoAOD.MET_covXX,
-    ],
-    output=[q.metcov00],
+# PF MET covariance matrix elements (2016-2018 v9+v12, 2022-2023 v12)
+MetCov = met_cov_producers(
+    name="MetCov",
+    input_quantities={
+        "met_cov_xx": nanoAODv12_run3.MET_covXX,
+        "met_cov_xy": nanoAODv12_run3.MET_covXX,
+        "met_cov_yy": nanoAODv12_run3.MET_covYY,
+    },
+    output_quantities={
+        "met_cov_00": q.metcov00,
+        "met_cov_01": q.metcov01,
+        "met_cov_10": q.metcov10,
+        "met_cov_11": q.metcov11,
+    },
     scopes=GLOBAL_SCOPES,
 )
 
-MetCov01 = Producer(
-    name="MetCov01",
-    call="event::quantity::Rename<float>({df}, {output}, {input})",
-    input=[
-        nanoAOD.MET_covXY,
-    ],
-    output=[q.metcov01],
-    scopes=GLOBAL_SCOPES,
-)
-
-MetCov10 = Producer(
-    name="MetCov10",
-    call="event::quantity::Rename<float>({df}, {output}, {input})",
-    input=[
-        nanoAOD.MET_covXY,
-    ],
-    output=[q.metcov10],
-    scopes=GLOBAL_SCOPES,
-)
-
-MetCov11 = Producer(
-    name="MetCov11",
-    call="event::quantity::Rename<float>({df}, {output}, {input})",
-    input=[
-        nanoAOD.MET_covYY,
-    ],
-    output=[q.metcov11],
+# PUPPI MET covariance matrix elements (2024 v15)
+PuppiMetCov = met_cov_producers(
+    name="PuppiMetCov",
+    input_quantities={
+        "met_cov_xx": nanoAOD.PuppiMET_covXX,
+        "met_cov_xy": nanoAOD.PuppiMET_covXX,
+        "met_cov_yy": nanoAOD.PuppiMET_covYY,
+    },
+    output_quantities={
+        "met_cov_00": q.metcov00,
+        "met_cov_01": q.metcov01,
+        "met_cov_10": q.metcov10,
+        "met_cov_11": q.metcov11,
+    },
     scopes=GLOBAL_SCOPES,
 )
 
@@ -96,10 +160,7 @@ MetQuantitiesUncorrected = ProducerGroup(
         BuildMetVector_uncorrected,
         MetPt_uncorrected,
         MetPhi_uncorrected,
-        MetCov00,
-        MetCov01,
-        MetCov10,
-        MetCov11,
+        MetCov,
         MetSumEt,
     ],
 )

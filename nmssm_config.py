@@ -2631,6 +2631,18 @@ def build_config(
     # Remove, append, or modify producers in specific cases.
     #
 
+    # For 2024 samples, replace the MET covariance producer group with the 
+    # PUPPI MET version
+    if era == "2024":
+        configuration.add_modification_rule(
+            GLOBAL_SCOPES,
+            ReplaceProducer(
+                producers=[
+                    met.MetCov,
+                    met.PuppiMetCov,
+                ],
+            ),
+        )
 
     # For DY samples, add producer for flag indicating the flavor of the decay products
     configuration.add_modification_rule(
