@@ -1114,6 +1114,7 @@ def add_diTauTriggerSetup(configuration: Configuration):
                     "2022postEE": "/cvmfs/cms-griddata.cern.ch/cat/metadata/EGM/Run3-22EFGSep23-Summer22EE-NanoAODv12/2025-12-03/electronHlt.json.gz",
                     "2023preBPix": "/cvmfs/cms-griddata.cern.ch/cat/metadata/EGM/Run3-23CSep23-Summer23-NanoAODv12/2025-12-03/electronHlt.json.gz",
                     "2023postBPix": "/cvmfs/cms-griddata.cern.ch/cat/metadata/EGM/Run3-23DSep23-Summer23BPix-NanoAODv12/2025-12-03/electronHlt.json.gz",
+                    "2024": "/cvmfs/cms-griddata.cern.ch/cat/metadata/EGM/Run3-24CDEReprocessingFGHIPrompt-Summer24-NanoAODv15/2025-12-15/electronHlt.json.gz",
                 }
             ),
             "single_ele_trigger_sf": [
@@ -1130,6 +1131,7 @@ def add_diTauTriggerSetup(configuration: Configuration):
                             "2022postEE": "2022Re-recoE+PromptFG",
                             "2023preBPix": "2023PromptC",
                             "2023postBPix": "2023PromptD",
+                            "2024": "2024Prompt",
                         }
                     ),
                     "e_trigger_sf_name": "Electron-HLT-SF",
@@ -1156,7 +1158,11 @@ def add_diTauTriggerSetup(configuration: Configuration):
                             },
                             **{
                                 _era: f"data/hleprare/TriggerScaleFactors/{_era}/CrossEleTauHlt_EleLeg_v1.json"
-                                for _era in ERAS_RUN3
+                                for _era in ["2022preEE", "2022postEE", "2023preBPix", "2023postBPix"]
+                            },
+                            **{
+                                _era: f"data/hleprare/TriggerScaleFactors/2023postBPix/CrossEleTauHlt_EleLeg_v1.json"  # use 2023preBPix for now, as scale factors do not exist yet for 2024
+                                for _era in ["2024"]
                             },
                         }
                     ),
@@ -1170,6 +1176,7 @@ def add_diTauTriggerSetup(configuration: Configuration):
                             "2022postEE": "2022Re-recoE+PromptFG",
                             "2023preBPix": "2023PromptC",
                             "2023postBPix": "2023PromptD",
+                            "2024": "2023PromptD",  # use 2023preBPix for now, as scale factors do not exist yet for 2024
                         }
                     ),
                     "et_trigger_leg1_sf_name": "Electron-HLT-SF",
@@ -1217,7 +1224,11 @@ def add_diTauTriggerSetup(configuration: Configuration):
                             },
                             **{
                                 _era: f"data/hleprare/TriggerScaleFactors/{_era}/CrossMuTauHlt_MuLeg_v1.json"
-                                for _era in ERAS_RUN3
+                                for _era in ["2022preEE", "2022postEE", "2023preBPix", "2023postBPix"]
+                            },
+                            **{
+                                _era: f"data/hleprare/TriggerScaleFactors/2023postBPix/CrossMuTauHlt_MuLeg_v1.json"  # use 2023preBPix for now, as scale factors do not exist yet for 2024
+                                for _era in ["2024"]
                             },
                         }
                     ),
