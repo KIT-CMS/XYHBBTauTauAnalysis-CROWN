@@ -197,6 +197,7 @@ def add_pileup_reweighting_config(configuration: Configuration):
                     "2022postEE": "/cvmfs/cms-griddata.cern.ch/cat/metadata/LUM/Run3-22EFGSep23-Summer22EE-NanoAODv12/2024-01-31/puWeights.json.gz",
                     "2023preBPix": "/cvmfs/cms-griddata.cern.ch/cat/metadata/LUM/Run3-23CSep23-Summer23-NanoAODv12/2024-01-31/puWeights.json.gz",
                     "2023postBPix": "/cvmfs/cms-griddata.cern.ch/cat/metadata/LUM/Run3-23DSep23-Summer23BPix-NanoAODv12/2024-01-31/puWeights.json.gz",
+                    "2024": "/cvmfs/cms-griddata.cern.ch/cat/metadata/LUM/Run3-24CDEReprocessingFGHIPrompt-Summer24-NanoAODv15/2025-12-02/puWeights_BCDEFGHI.json.gz",
                 },
             ),
             "PU_reweighting_era": EraModifier(
@@ -209,6 +210,7 @@ def add_pileup_reweighting_config(configuration: Configuration):
                     "2022postEE": "Collisions2022_359022_362760_eraEFG_GoldenJson",
                     "2023preBPix": "Collisions2023_366403_369802_eraBC_GoldenJson",
                     "2023postBPix": "Collisions2023_369803_370790_eraD_GoldenJson",
+                    "2024": "Collisions24_BCDEFGHI_goldenJSON",
                 }
             ),
             "PU_reweighting_variation": "nominal",
