@@ -1323,6 +1323,16 @@ def add_ak4jet_config(configuration: Configuration):
         },
     )
 
+    # AK4 jet ID
+    # Evaluated with correctionlib files in 2024
+    configuration.add_config_parameters(
+        "global",
+        {
+            "ak4jet_id_file": "/cvmfs/cms-griddata.cern.ch/cat/metadata/JME/Run3-24Prompt-Winter24-NanoAODv14/2025-06-09/jetid.json.gz"  # only needed for 2024
+            "ak4jet_id_name": "AK4PUPPI",
+        },
+    )
+
     # lepton/tau-jet overlap removal
     configuration.add_config_parameters(
         SCOPES,
