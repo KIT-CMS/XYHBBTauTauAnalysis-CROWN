@@ -2149,11 +2149,16 @@ def build_config(
                 jets.GoodJetsWithPUID,
                 jets.GoodBJetsWithPUID,
             ],
-            tuple(ERAS_RUN3): [
+            ("2022preEE", "2022postEE", "2023preBPix", "2023postBPix"): [
                 jets.JetIDRun3NanoV12Corrected,
                 jets.GoodJetsWithoutPUID,
                 jets.GoodBJetsWithoutPUID,
-            ]
+            ],
+            "2024": [
+                jets.JetIDRun3NanoV15,
+                jets.GoodJetsWithoutPUID,
+                jets.GoodBJetsWithoutPUID,
+            ],
         },
         era,
     )
