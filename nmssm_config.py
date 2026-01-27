@@ -397,6 +397,7 @@ def add_electron_config(configuration: Configuration):
                     "2022postEE": "/cvmfs/cms-griddata.cern.ch/cat/metadata/EGM/Run3-22EFGSep23-Summer22EE-NanoAODv12/2025-12-03/electron.json.gz",
                     "2023preBPix": "/cvmfs/cms-griddata.cern.ch/cat/metadata/EGM/Run3-23CSep23-Summer23-NanoAODv12/2025-12-03/electron.json.gz",
                     "2023postBPix": "/cvmfs/cms-griddata.cern.ch/cat/metadata/EGM/Run3-23DSep23-Summer23BPix-NanoAODv12/2025-12-03/electron.json.gz",
+                    "2024": "/cvmfs/cms-griddata.cern.ch/cat/metadata/EGM/Run3-24CDEReprocessingFGHIPrompt-Summer24-NanoAODv15/2025-12-15/electron.json.gz",
                 },
             ),
             "ele_sf_cset_name": EraModifier(
@@ -421,6 +422,7 @@ def add_electron_config(configuration: Configuration):
                     "2022postEE": "2022Re-recoE+PromptFG",
                     "2023preBPix": "2023PromptC",
                     "2023postBPix": "2023PromptD",
+                    "2024": "2024Prompt",
                 }
             ),
             "ele_reco_sf_name": "RecoAbove20",  # TODO needs to be modified for 2022 and 2023
@@ -444,6 +446,7 @@ def add_electron_config(configuration: Configuration):
                     "2022postEE": "DOES_NOT_EXIST",  # TODO to be added when available
                     "2023preBPix": "DOES_NOT_EXIST",  # TODO to be added when available
                     "2023postBPix": "DOES_NOT_EXIST",  # TODO to be added when available
+                    "2024": "DOES_NOT_EXIST",  # TODO to be added when available
                 },
             ),
             "mc_electron_id_sf": "ID90_pt_eta_bins",
