@@ -1328,7 +1328,7 @@ def add_ak4jet_config(configuration: Configuration):
     configuration.add_config_parameters(
         "global",
         {
-            "ak4jet_id_file": "/cvmfs/cms-griddata.cern.ch/cat/metadata/JME/Run3-24Prompt-Winter24-NanoAODv14/2025-06-09/jetid.json.gz",  # only needed for 2024
+            "ak4jet_id_file": "/cvmfs/cms-griddata.cern.ch/cat/metadata/JME/Run3-24CDEReprocessingFGHIPrompt-Summer24-NanoAODv15/2025-12-02/jetid.json.gz",  # only needed for 2024
             "ak4jet_id_name": "AK4PUPPI",
         },
     )
@@ -1459,7 +1459,7 @@ def add_ak8jet_config(configuration: Configuration):
     configuration.add_config_parameters(
         "global",
         {
-            "ak8jet_id_file": "/cvmfs/cms-griddata.cern.ch/cat/metadata/JME/Run3-24Prompt-Winter24-NanoAODv14/2025-06-09/jetid.json.gz",  # only needed for 2024
+            "ak8jet_id_file": "/cvmfs/cms-griddata.cern.ch/cat/metadata/JME/Run3-24CDEReprocessingFGHIPrompt-Summer24-NanoAODv15/2025-12-02/jetid.json.gz",  # only needed for 2024
             "ak8jet_id_name": "AK8PUPPI",
         },
     )
