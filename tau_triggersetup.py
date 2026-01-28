@@ -1158,11 +1158,7 @@ def add_diTauTriggerSetup(configuration: Configuration):
                             },
                             **{
                                 _era: f"data/hleprare/TriggerScaleFactors/{_era}/CrossEleTauHlt_EleLeg_v1.json"
-                                for _era in ["2022preEE", "2022postEE", "2023preBPix", "2023postBPix"]
-                            },
-                            **{
-                                _era: f"data/hleprare/TriggerScaleFactors/2023postBPix/CrossEleTauHlt_EleLeg_v1.json"  # use 2023preBPix for now, as scale factors do not exist yet for 2024
-                                for _era in ["2024"]
+                                for _era in ["2022preEE", "2022postEE", "2023preBPix", "2023postBPix", "2024"]
                             },
                         }
                     ),
@@ -1224,11 +1220,7 @@ def add_diTauTriggerSetup(configuration: Configuration):
                             },
                             **{
                                 _era: f"data/hleprare/TriggerScaleFactors/{_era}/CrossMuTauHlt_MuLeg_v1.json"
-                                for _era in ["2022preEE", "2022postEE", "2023preBPix", "2023postBPix"]
-                            },
-                            **{
-                                _era: f"data/hleprare/TriggerScaleFactors/2023postBPix/CrossMuTauHlt_MuLeg_v1.json"  # use 2023preBPix for now, as scale factors do not exist yet for 2024
-                                for _era in ["2024"]
+                                for _era in ["2022preEE", "2022postEE", "2023preBPix", "2023postBPix", "2024"]
                             },
                         }
                     ),
