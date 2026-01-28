@@ -88,7 +88,7 @@ FatJetIDRun3NanoV12Corrected = Producer(
     input=[
         nanoAOD.FatJet_pt,
         nanoAOD.FatJet_eta,
-        q.FatJet_ID_corrected,
+        nanoAODv12_run3.FatJet_jetId,
         nanoAOD.FatJet_neHEF,
         nanoAOD.FatJet_neEmEF,
         nanoAOD.FatJet_muEF,
@@ -101,13 +101,14 @@ FatJetIDRun3NanoV12Corrected = Producer(
 # Calculate the jet ID values for run 3 (nanoAOD v15, 2024)
 FatJetIDRun3NanoV15 = Producer(
     name="FatJetIDRun3",
-    call="physicsobject::fatjet::quantity::ID({df}, correctionManager, {output}, {input}, \"{ak8jet_id_file}\", \"{ak8jet_id_name}\")",
+    call="physicsobject::jet::quantity::ID({df}, correctionManager, {output}, {input}, \"{ak8jet_id_file}\", \"{ak8jet_id_name}\")",
     input=[
         nanoAOD.FatJet_eta,
         nanoAOD.FatJet_chHEF,
         nanoAOD.FatJet_neHEF,
         nanoAOD.FatJet_chEmEF,
         nanoAOD.FatJet_neEmEF,
+        nanoAOD.FatJet_muEF,
         nanoAOD.FatJet_chMultiplicity,
         nanoAOD.FatJet_neMultiplicity,
     ],
@@ -615,14 +616,14 @@ fj_Xbb_nChad = Producer(
 )
 fj_Xbb_nBhad_v15 = Producer(
     name="fj_Xbb_nBhad_v15",
-    call="physicsobject::jet::quantity::GetGenQuantity<UChar_t>({df}, {output}, {input}, 0)",
+    call="event::quantity::GetFromGenObject<UChar_t>({df}, {output}, {input}, 0)",
     input=[nanoAOD.FatJet_genJetAK8Idx, nanoAOD.GenJetAK8_nBHadrons, q.Xbb_fatjet],
     output=[q.fj_Xbb_nBhad],
     scopes=SCOPES,
 )
 fj_Xbb_nChad_v15 = Producer(
     name="fj_Xbb_nChad_v15",
-    call="physicsobject::jet::quantity::GetGenQuantity<UChar_t>({df}, {output}, {input}, 0)",
+    call="event::quantity::GetFromGenObject<UChar_t>({df}, {output}, {input}, 0)",
     input=[nanoAOD.FatJet_genJetAK8Idx, nanoAOD.GenJetAK8_nCHadrons, q.Xbb_fatjet],
     output=[q.fj_Xbb_nChad],
     scopes=SCOPES,
@@ -752,14 +753,14 @@ fj_Xbb_nChad_boosted = Producer(
 )
 fj_Xbb_nBhad_boosted_v15 = Producer(
     name="fj_Xbb_nBhad_boosted_v15",
-    call="physicsobject::jet::quantity::GetGenQuantity<UChar_t>({df}, {output}, {input}, 0)",
+    call="event::quantity::GetFromGenObject<UChar_t>({df}, {output}, {input}, 0)",
     input=[nanoAOD.FatJet_genJetAK8Idx, nanoAOD.GenJetAK8_nBHadrons, q.Xbb_fatjet_boosted],
     output=[q.fj_Xbb_nBhad],
     scopes=SCOPES,
 )
 fj_Xbb_nChad_boosted_v15 = Producer(
     name="fj_Xbb_nChad_boosted_v15",
-    call="physicsobject::jet::quantity::GetGenQuantity<UChar_t>({df}, {output}, {input}, 0)",
+    call="event::quantity::GetFromGenObject<UChar_t>({df}, {output}, {input}, 0)",
     input=[nanoAOD.FatJet_genJetAK8Idx, nanoAOD.GenJetAK8_nCHadrons, q.Xbb_fatjet_boosted],
     output=[q.fj_Xbb_nChad],
     scopes=SCOPES,
