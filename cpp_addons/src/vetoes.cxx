@@ -4,6 +4,7 @@
 
 #include "../../../../include/utility/CorrectionManager.hxx"
 #include "../../../../include/utility/Logger.hxx"
+#include "../../../../include/utility/utility.hxx"
 #include "../include/vetoes.hxx"
 #include "ROOT/RDataFrame.hxx"
 #include "ROOT/RVec.hxx"
@@ -290,6 +291,12 @@ namespace xyh {
             const int &id_wp,
             const float &max_em_frac
         ) {
+            // In nanoAODv12 the type of jet/fatjet ID was changed to UChar_t
+            // For v9 compatibility a type casting is applied
+            auto [df1, jet_id_v12] = utility::Cast<ROOT::RVec<UChar_t>, ROOT::RVec<Int_t>>(
+                df, jet_id+"_v12", "ROOT::VecOps::RVec<UChar_t>", jet_id
+            );
+
             // load the veto map evaluator
             auto evaluator = correctionManager.loadCorrection(jet_vetomap_file, jet_vetomap_name);
 
@@ -351,14 +358,14 @@ namespace xyh {
                 return event_veto;
             };
 
-            return df.Define(
+            return df1.Define(
                 output_mask,
                 select,
                 {
                     jet_pt,
                     jet_eta,
                     jet_phi,
-                    jet_id,
+                    jet_id_v12,
                     jet_ch_em_ef,
                     jet_n_em_ef
                 }

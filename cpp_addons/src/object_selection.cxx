@@ -3,6 +3,7 @@
 
 
 #include "../../../../include/utility/Logger.hxx"
+#include "../../../../include/utility/utility.hxx"
 #include "../include/object_selection.hxx"
 #include "ROOT/RDataFrame.hxx"
 #include "ROOT/RVec.hxx"
@@ -335,6 +336,12 @@ namespace xyh {
             const int &id_wp,
             const bool &apply_jet_horn_veto
         ) {
+            // In nanoAODv12 the type of jet/fatjet ID was changed to UChar_t
+            // For v9 compatibility a type casting is applied
+            auto [df1, jet_id_v12] = utility::Cast<ROOT::RVec<UChar_t>, ROOT::RVec<Int_t>>(
+                df, jet_id+"_v12", "ROOT::VecOps::RVec<UChar_t>", jet_id
+            );
+
             auto select = [
                 min_pt, abs_max_eta, id_wp, apply_jet_horn_veto
             ] (
@@ -358,13 +365,13 @@ namespace xyh {
                 return mask;
             };
 
-            return df.Define(
+            return df1.Define(
                 output_mask,
                 select,
                 {
                     jet_pt,
                     jet_eta,
-                    jet_id
+                    jet_id_v12
                 }
             );
         }
@@ -412,6 +419,12 @@ namespace xyh {
             const int &puid_wp,
             const float &puid_max_pt
         ) {
+            // In nanoAODv12 the type of jet/fatjet ID was changed to UChar_t
+            // For v9 compatibility a type casting is applied
+            auto [df1, jet_id_v12] = utility::Cast<ROOT::RVec<UChar_t>, ROOT::RVec<Int_t>>(
+                df, jet_id+"_v12", "ROOT::VecOps::RVec<UChar_t>", jet_id
+            );
+
             auto select = [
                 min_pt, abs_max_eta, id_wp, puid_wp, puid_max_pt, apply_jet_horn_veto
             ] (
@@ -437,13 +450,13 @@ namespace xyh {
                 return mask;
             };
 
-            return df.Define(
+            return df1.Define(
                 output_mask,
                 select,
                 {
                     jet_pt,
                     jet_eta,
-                    jet_id,
+                    jet_id_v12,
                     jet_puid
                 }
             );
