@@ -46,7 +46,7 @@ ROOT::RDF::RNode GetGenJetQuantity(
 
         // Get the index to access in the fatjet list
         if (position >= 0 && position < index_vector.size()) {
-            auto index = indices.at(position);
+            auto index = index_vector.at(position);
             if (index >= 0 && index < genjet_idx.size()) {
                 auto gen_index = genjet_idx.at(index);
                 result = gen_quantity.at(gen_index);
@@ -66,14 +66,6 @@ ROOT::RDF::RNode GetGenJetQuantity(
         {genjet_idx, gen_quantity, index_vector}
     );
 }
-
-}
-
-}
-
-}
-
-
 
 
 ROOT::RDF::RNode
