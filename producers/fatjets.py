@@ -645,8 +645,6 @@ BasicXbbFatJetQuantities = ProducerGroup(
         fj_Xbb_nsubjettiness_2over1,
         fj_Xbb_nsubjettiness_3over2,
         fj_Xbb_hadflavor,
-        fj_Xbb_nBhad,
-        fj_Xbb_nChad,
     ],
 )
 
@@ -782,8 +780,6 @@ BasicXbbFatJetQuantities_boosted = ProducerGroup(
         fj_Xbb_nsubjettiness_2over1_boosted,
         fj_Xbb_nsubjettiness_3over2_boosted,
         fj_Xbb_hadflavor_boosted,
-        fj_Xbb_nBhad_boosted,
-        fj_Xbb_nChad_boosted,
     ],
 )
 LVLeadingFatJet = Producer(

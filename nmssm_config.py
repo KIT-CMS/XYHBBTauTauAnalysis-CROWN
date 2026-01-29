@@ -2399,6 +2399,23 @@ def build_config(
         era,
     )
 
+    # For 2024, replace the nBHadrons and nCHadrons producers, as they are not
+    # stored in the jet collection, but must be accessed via the associated
+    # GenJetAK8 collection
+    fj_genjet_producers = get_for_era(
+        {
+            tuple(ERAS_RUN2) + ("2022preEE", "2022postEE", "2023preBPix", "2023postBPix"): [
+                fatjets.fj_Xbb_nBhad,
+                fatjets.fj_Xbb_nChad,
+            ],
+            "2024": [
+                fatjets.fj_Xbb_nBhad_v15,
+                fatjets.fj_Xbb_nChad_v15,
+            ],
+        },
+        era,
+    )
+
     #
     # PRODUCER DEFINITIONS
     #
@@ -2467,6 +2484,7 @@ def build_config(
             genparticles.GenMatching,
         ]
         + xbb_sf_producers
+        + fj_genjet_producers
         + bb_jet_pair_quantity_producers,
     )
 
@@ -2714,38 +2732,6 @@ def build_config(
         ),
     )
 
-    # For 2024, replace the nBHadrons and nCHadrons producers, as they must be
-    # accessed via the GenJetAK8 collection
-    if era == "2024":
-        configuration.add_modification_rule(
-            SCOPES,
-            ReplaceProducer(
-                producers=[fatjets.fj_Xbb_nBhad, fatjets.fj_Xbb_nBhad_v15],
-                exclude_samples=["data", "embedding"],
-            ),
-        )
-        configuration.add_modification_rule(
-            SCOPES,
-            ReplaceProducer(
-                producers=[fatjets.fj_Xbb_nBhad_boosted, fatjets.fj_Xbb_nBhad_boosted_v15],
-                exclude_samples=["data", "embedding"],
-            ),
-        )
-        configuration.add_modification_rule(
-            SCOPES,
-            ReplaceProducer(
-                producers=[fatjets.fj_Xbb_nChad, fatjets.fj_Xbb_nChad_v15],
-                exclude_samples=["data", "embedding"],
-            ),
-        )
-        configuration.add_modification_rule(
-            SCOPES,
-            ReplaceProducer(
-                producers=[fatjets.fj_Xbb_nChad_boosted, fatjets.fj_Xbb_nChad_boosted_v15],
-                exclude_samples=["data", "embedding"],
-            ),
-        )
-
     # Remove trigger scale factor producers from data and embedding samples in mt scope
     configuration.add_modification_rule(
         ELECTRON_SCOPES,
@@ -2829,9 +2815,7 @@ def build_config(
         RemoveProducer(
             producers=[
                 fatjets.fj_Xbb_hadflavor,
-                fatjets.fj_Xbb_nBhad,
-                fatjets.fj_Xbb_nChad,
-            ],
+            ] + fj_genjet_producers,
             samples=["data", "embedding", "embedding_mc"],
         ),
     )
@@ -3152,7 +3136,8 @@ def build_config(
             q.jet_eta,
             q.jet_phi,
             q.jet_mass,
-            q.jet_id,
+            # TODO fix jet ID type
+            # q.jet_id,
             q.jet_deepjet_b_score,
             q.jet_pnet_b_score,
             q.jet_deepjet_b_tagged_medium,

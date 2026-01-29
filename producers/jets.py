@@ -439,7 +439,8 @@ for q_input, q_output, data_type in [
     (nanoAOD.Jet_eta, q.jet_eta, "float"),
     (nanoAOD.Jet_phi, q.jet_phi, "float"),
     (q.Jet_mass_corrected, q.jet_mass, "float"),
-    (q.Jet_ID_corrected, q.jet_id, "UChar_t"),
+    # TODO Jet_ID_corrected has type int in 2024
+    # (q.Jet_ID_corrected, q.jet_id, "UChar_t"),
     (nanoAOD.Jet_btagDeepFlavB, q.jet_deepjet_b_score, "float"),
     (nanoAOD.Jet_btagPNetB, q.jet_pnet_b_score, "float"),
     (q.good_jets_with_veto_mask, q.jet_standard_selected, "int"),
