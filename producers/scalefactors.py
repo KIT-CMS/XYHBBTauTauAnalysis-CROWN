@@ -610,7 +610,7 @@ Ele_1_IDWP90_SF = Producer(
         "{ele_id_sf_variation}")
         """,
     input=[q.pt_1, q.eta_1, q.phi_1],
-    output=[q.id_wgt_ele_wp90nonIso_1],
+    output=[q.id_wgt_ele_1],
     scopes=["em", "ee", "et"],
 )
 Ele_2_IDWP90_SF = Producer(
@@ -627,7 +627,7 @@ Ele_2_IDWP90_SF = Producer(
         "{ele_id_sf_variation}")
         """,
     input=[q.pt_2, q.eta_2, q.phi_2],
-    output=[q.id_wgt_ele_wp90nonIso_2],
+    output=[q.id_wgt_ele_2],
     scopes=["ee"],
 )
 EleID_SF = ProducerGroup(
