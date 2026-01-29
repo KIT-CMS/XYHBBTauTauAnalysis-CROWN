@@ -1622,13 +1622,15 @@ def add_bjet_config(configuration: Configuration):
                     "2022postEE": "/cvmfs/cms-griddata.cern.ch/cat/metadata/BTV/Run3-22EFGSep23-Summer22EE-NanoAODv12/2025-08-20/btagging.json.gz",
                     "2023preBPix": "/cvmfs/cms-griddata.cern.ch/cat/metadata/BTV/Run3-23CSep23-Summer23-NanoAODv12/2025-08-20/btagging.json.gz",
                     "2023postBPix": "/cvmfs/cms-griddata.cern.ch/cat/metadata/BTV/Run3-23DSep23-Summer23BPix-NanoAODv12/2025-08-20/btagging.json.gz",
-                    "2024": "/cvmfs/cms-griddata.cern.ch/cat/metadata/BTV/Run3-24CDEReprocessingFGHIPrompt-Summer24-NanoAODv15/2025-12-03/btagging.json.gz",
+                    "2024": "/cvmfs/cms-griddata.cern.ch/cat/metadata/BTV/Run3-23DSep23-Summer23BPix-NanoAODv12/2025-08-20/btagging.json.gz",  # TODO shape corrections not available yet
                 }
             ),
             "bjet_sf_deepjet_shape_name": "deepJet_shape",
             "bjet_sf_deepjet_shape_variation": "central",
             "bjet_sf_pnet_shape_name": "particleNet_shape",
             "bjet_sf_pnet_shape_variation": "central",
+            "bjet_sf_upart_shape_name": "particleNet_shape",  # TODO change this when shape corrections are available
+            "bjet_sf_upart_shape_variation": "central",
         },
     )
 
