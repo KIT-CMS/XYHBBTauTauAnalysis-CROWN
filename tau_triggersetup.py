@@ -1172,7 +1172,7 @@ def add_diTauTriggerSetup(configuration: Configuration):
                             "2022postEE": "2022Re-recoE+PromptFG",
                             "2023preBPix": "2023PromptC",
                             "2023postBPix": "2023PromptD",
-                            "2024": "2023PromptD",  # use 2023preBPix for now, as scale factors do not exist yet for 2024
+                            "2024": "2024Prompt",
                         }
                     ),
                     "et_trigger_leg1_sf_name": "Electron-HLT-SF",
