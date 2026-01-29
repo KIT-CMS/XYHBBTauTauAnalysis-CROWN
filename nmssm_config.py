@@ -967,7 +967,7 @@ def add_hadronic_tau_config(configuration: Configuration, era: str):
 
     # hadronic tau identification corrections for DeepTau discriminator vs muons
     configuration.add_config_parameters(
-        HAD_TAU_SCOPES,
+        SL_SCOPES,
         {
             # scale factors
             "vsmu_tau_id_sf": [
@@ -978,13 +978,11 @@ def add_hadronic_tau_config(configuration: Configuration, era: str):
                             for _era, _tau_id in tau_id.modifier_dict.items()
                         }
                     ),
-                    "tau1_output_name": "id_wgt_tau_vsMu_{wp}_1".format(
-                        wp=wp
-                    ),
-                    "tau2_output_name": "id_wgt_tau_vsMu_{wp}_2".format(
-                        wp=wp
-                    ),
-                    "vsmu_wp": "{wp}".format(wp=wp),
+                    "tau1_output_name": f"id_wgt_tau_vsMu_{vsmu_wp}_1",
+                    "tau2_output_name": f"id_wgt_tau_vsMu_{vsmu_wp}_2",
+                    "vsmu_wp": f"{vsmu_wp}",
+                    "vsmu_vsele_wp": f"{vsele_wp}",
+                    "vsmu_vsjet_wp": "Medium",
                     "max_abs_eta": EraModifier(
                         {
                             **{
@@ -998,14 +996,52 @@ def add_hadronic_tau_config(configuration: Configuration, era: str):
                         }
                     )
                 }
-                for wp, bit in {
-                    "VLoose": 1,
-                    # "Loose": 2,
-                    # "Medium": 3,
-                    "Tight": 4,
-                }.items()
+                for vsmu_wp, vsele_wp in [
+                    ("VLoose", "Tight"),
+                    ("Tight", "VVLoose"),
+                ]
             ],
-
+        },
+    )
+    configuration.add_config_parameters(
+        TT_SCOPES,
+        {
+            # scale factors
+            "vsmu_tau_id_sf": [
+                {
+                    "discriminator": EraModifier(
+                        {
+                            _era: f"{_tau_id}VSmu"
+                            for _era, _tau_id in tau_id.modifier_dict.items()
+                        }
+                    ),
+                    "tau1_output_name": f"id_wgt_tau_vsMu_{vsmu_wp}_1",
+                    "tau2_output_name": f"id_wgt_tau_vsMu_{vsmu_wp}_2",
+                    "vsmu_wp": f"{vsmu_wp}",
+                    "vsmu_vsele_wp": f"{vsele_wp}",
+                    "vsmu_vsjet_wp": "Medium",
+                    "max_abs_eta": EraModifier(
+                        {
+                            **{
+                                _era: 2.3
+                                for _era in ERAS_RUN2
+                            },
+                            **{
+                                _era: 2.4
+                                for _era in ERAS_RUN3
+                            }
+                        }
+                    )
+                }
+                for vsmu_wp, vsele_wp in [
+                    ("VLoose", "VVLoose"),
+                ]
+            ],
+        },
+    )
+    configuration.add_config_parameters(
+        HAD_TAU_SCOPES,
+        {
             # systematic variations
             "tau_id_sf_vsmu_wheel1_shift": "nom",  # or "up"/"down" for up/down variation
             "tau_id_sf_vsmu_wheel2_shift": "nom",  # or "up"/"down" for up/down variation
@@ -2200,48 +2236,6 @@ def build_config(
         era,
     )
 
-    # Jet energy corrections for AK4 jets
-    # Different producers are used for Run 2 and Run 3 due to minor differences in the parameters
-    # that the corrections depend on.
-    jet_energy_correction_producer = get_for_era(
-        {
-            tuple(ERAS_RUN2): jets.JetEnergyCorrectionRun2,
-            tuple(ERAS_RUN3): jets.JetEnergyCorrection,
-        },
-        era,
-    )
-
-    # Jet energy corrections for AK8 jets
-    # Different producers are used for Run 2 and Run 3 due to minor differences in the parameters
-    # that the corrections depend on.
-    fat_jet_energy_correction_producer = get_for_era(
-        {
-            tuple(ERAS_RUN2): fatjets.FatJetEnergyCorrectionRun2,
-            tuple(ERAS_RUN3): fatjets.FatJetEnergyCorrection,
-        },
-        era,
-    )
-
-    # Jet rename for embedding
-    # In embedding, the full JEC has already been applied, so no further correction is needed.
-    rename_jets_data_producer = get_for_era(
-        {
-            tuple(ERAS_RUN2): jets.RenameJetsDataRun2,
-            tuple(ERAS_RUN3): jets.RenameJetsData,
-        },
-        era,
-    )
-
-    # Fat jet rename for embedding
-    # In embedding, the full JEC has already been applied, so no further correction is needed.
-    rename_fatjets_data_producer = get_for_era(
-        {
-            tuple(ERAS_RUN2): fatjets.RenameFatJetsDataRun2,
-            tuple(ERAS_RUN3): fatjets.RenameFatJetsData,
-        },
-        era,
-    )
-
     # Jet vetomaps
     # Vetoing events with jets in regions with known issues is only applied to Run 3 data/MC
     jet_veto_map_producers = get_for_era(
@@ -2446,8 +2440,8 @@ def build_config(
         + jet_veto_map_producers
         + [
             electron_pt_correction_mc_producer,
-            jet_energy_correction_producer,
-            fat_jet_energy_correction_producer,
+            jets.JetEnergyCorrection,
+            fatjets.FatJetEnergyCorrection,
         ]
     )
 
@@ -2842,7 +2836,7 @@ def build_config(
     configuration.add_modification_rule(
         GLOBAL_SCOPES,
         ReplaceProducer(
-            producers=[jet_energy_correction_producer, jets.JetEnergyCorrection_data_Run2],
+            producers=[jets.JetEnergyCorrection, jets.JetEnergyCorrection_data],
             samples=["data"],
         ),
     )
@@ -2852,8 +2846,8 @@ def build_config(
         GLOBAL_SCOPES,
         ReplaceProducer(
             producers=[
-                fat_jet_energy_correction_producer,
-                fatjets.FatJetEnergyCorrection_data_Run2,
+                fatjets.FatJetEnergyCorrection,
+                fatjets.FatJetEnergyCorrection_data,
             ],
             samples=["data"],
         ),
@@ -2863,7 +2857,7 @@ def build_config(
     configuration.add_modification_rule(
         GLOBAL_SCOPES,
         ReplaceProducer(
-            producers=[jet_energy_correction_producer, rename_jets_data_producer],
+            producers=[jets.JetEnergyCorrection, jets.RenameJetsData],
             samples=["embedding", "embedding_mc"],
         ),
     )
@@ -2872,7 +2866,7 @@ def build_config(
     configuration.add_modification_rule(
         GLOBAL_SCOPES,
         ReplaceProducer(
-            producers=[fat_jet_energy_correction_producer, rename_fatjets_data_producer],
+            producers=[fatjets.FatJetEnergyCorrection, fatjets.RenameFatJetsData],
             samples=["embedding", "embedding_mc"],
         ),
     )

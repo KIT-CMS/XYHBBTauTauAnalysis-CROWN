@@ -9,7 +9,6 @@ def jerc_producer_factory(
     scopes: list[str],
     producer_prefix: str = "Jet",
     config_parameter_prefix: str = "jet",
-    lhc_run: int = 2,
 ) -> Tuple[ProducerGroup, ProducerGroup, ProducerGroup]:
     """
     Factory function to create producers needed for jet energy corrections.
@@ -72,8 +71,6 @@ def jerc_producer_factory(
         - `{config_parameter_prefix}_jer_shift`: Name of the systematic shift that should be applied to the JER.
         - `{config_parameter_prefix}_jer_master_seed`: Master seed for generating the seeds for JER smearing.
 
-    lhc_run: int, default: 2
-
         LHC run number for which the JEC/JER corrections should be applied. Must be either `2` or `3`.
 
     Returns
@@ -119,15 +116,18 @@ def jerc_producer_factory(
                 "{input}, "
                 f"\"{{{config_parameter_prefix}_jec_file}}\", "
                 f"\"{{{config_parameter_prefix}_jec_algo}}\", "
-                f"{{{config_parameter_prefix}_jes_tag_data}}"
+                f"{{{config_parameter_prefix}_jes_tag_data}}, "
+                "\"{era}\""
             ")"
         ),
         input=[
             jet_pt,
             jet_eta,
+            jet_phi,
             jet_area,
             jet_raw_factor,
             rho,
+            run,
         ],
         output=[jet_pt_corrected],
         scopes=scopes,
@@ -148,7 +148,7 @@ def jerc_producer_factory(
 
     # jet pt correction for MC jets
     jet_pt_correction_mc = ProducerGroup(
-        name=f"{producer_prefix}PtCorrectionMCRun{lhc_run}",
+        name=f"{producer_prefix}PtCorrectionMC",
         call=(
             "physicsobject::jet::PtCorrectionMC("
                 "{df}, "
@@ -163,7 +163,7 @@ def jerc_producer_factory(
                 f"{{{config_parameter_prefix}_reapplyJES}}, "
                 f"{{{config_parameter_prefix}_jes_shift}}, "
                 f"\"{{{config_parameter_prefix}_jer_shift}}\", "
-                f"{lhc_run}, "
+                "\"{era}\", "
                 f"{{{config_parameter_prefix}_apply_jet_horn_veto}}"
             ")"
         ),
