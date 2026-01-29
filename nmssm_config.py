@@ -1469,7 +1469,7 @@ def add_ak8jet_config(configuration: Configuration):
                     "2022postEE": "Summer22EE_22Sep2023_JRV1_MC",
                     "2023preBPix": "Summer23Prompt23_RunCv1234_JRV1_MC",
                     "2023postBPix": "Summer23BPixPrompt23_RunD_JRV1_MC",
-                    "2024": "Summer24Prompt24_V2_MC",
+                    "2024": "Summer23BPixPrompt23_RunD_JRV1_MC",  # copied from 2023postBPix
                 }
             ),
             "ak8jet_jes_tag_data": "\"\"",
@@ -1483,7 +1483,7 @@ def add_ak8jet_config(configuration: Configuration):
                     "2022postEE": "Summer22EE_22Sep2023_V3_MC",
                     "2023preBPix": "Summer23Prompt23_V2_MC",
                     "2023postBPix": "Summer23BPixPrompt23_V3_MC",
-                    "2024": "Summer23BPixPrompt23_RunD_JRV1_MC",  # copied from 2023postBPix
+                    "2024": "Summer24Prompt24_V2_MC",
                 }
             ),
             "ak8jet_jec_algo": "AK8PFPuppi",  # TODO normally "AK8PFPuppi" would be used -> change to AK4 naming to get merged uncertainty scheme?
