@@ -64,4 +64,4 @@ class AvailableBJetIDs(enum.Enum):
     DEEPJET = enum.auto()
     PNET = enum.auto()
     UPART = enum.auto()
-BJET_ID_ALGORITHM = AvailableBJetIDs.UPART
+BJET_ID_ALGORITHM = AvailableBJetIDs.PNET
