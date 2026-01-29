@@ -1035,6 +1035,7 @@ def add_hadronic_tau_config(configuration: Configuration, era: str):
                 }
                 for vsmu_wp, vsele_wp in [
                     ("VLoose", "VVLoose"),
+                    ("Tight", "VVLoose"),  # dummy, as id_wgt_tau_vsMu_Tight_2 column must also be produced in tt channel
                 ]
             ],
         },
