@@ -1651,6 +1651,7 @@ def add_zpt_weight_config(configuration: Configuration):
                 {
                     "dyjets": "LO",
                     "dyjets_madgraph": "LO",
+                    "dyjets_amcatnlo": "NLO",
                     "dyjets_amcatnlo_ll": "NLO",
                     "dyjets_amcatnlo_tt": "NLO",
                     "dyjets_powheg": "NNLO",
@@ -1704,6 +1705,7 @@ def add_recoil_corrections_config(configuration: Configuration):
                 {
                     "dyjets": "LO",
                     "dyjets_madgraph": "LO",
+                    "dyjets_amcatnlo": "NLO",
                     "dyjets_amcatnlo_ll": "NLO",
                     "dyjets_amcatnlo_tt": "NLO",
                     "dyjets_powheg": "NNLO",
@@ -1739,6 +1741,7 @@ def add_recoil_corrections_config(configuration: Configuration):
                 {
                     "dyjets": True,
                     "dyjets_madgraph": True,
+                    "dyjets_amcatnlo": True,
                     "dyjets_amcatnlo_ll": True,
                     "dyjets_amcatnlo_tt": True,
                     "dyjets_powheg": True,
@@ -2670,7 +2673,7 @@ def build_config(
             [
                 event.LHEDrellYanDecayFlavor,
             ],
-            samples=["dyjets", "dyjets_madgraph", "dyjets_amcatnlo_ll", "dyjets_amcatnlo_tt", "dyjets_powheg"],
+            samples=["dyjets", "dyjets_madgraph", "dyjets_amcatnlo", "dyjets_amcatnlo_ll", "dyjets_amcatnlo_tt", "dyjets_powheg"],
         )
     )
 
@@ -2679,7 +2682,7 @@ def build_config(
         SCOPES,
         AppendProducer(
             [boson_corrections.GenBosonQuantities],
-            samples=["dyjets_madgraph", "dyjets_amcatnlo_ll", "dyjets_amcatnlo_tt", "dyjets_powheg", "wjets_madgraph", "wjets_amcatnlo"],
+            samples=["dyjets_madgraph", "dyjets_amcatnlo", "dyjets_amcatnlo_ll", "dyjets_amcatnlo_tt", "dyjets_powheg", "wjets_madgraph", "wjets_amcatnlo"],
         ),
     )
 
@@ -2688,7 +2691,7 @@ def build_config(
         SCOPES,
         AppendProducer(
             z_pt_reweighting_producers,
-            samples=["dyjets_madgraph", "dyjets_amcatnlo_ll", "dyjets_amcatnlo_tt", "dyjets_powheg"],
+            samples=["dyjets_madgraph", "dyjets_amcatnlo", "dyjets_amcatnlo_ll", "dyjets_amcatnlo_tt", "dyjets_powheg"],
         )
     )
 
@@ -2698,7 +2701,7 @@ def build_config(
         SCOPES,
         ReplaceProducer(
             producers=[met.RecoilCorrectionMET, met.RenameMET],
-            exclude_samples=["dyjets_madgraph", "dyjets_amcatnlo_ll", "dyjets_amcatnlo_tt", "dyjets_powheg"],
+            exclude_samples=["dyjets_madgraph", "dyjets_amcatnlo", "dyjets_amcatnlo_ll", "dyjets_amcatnlo_tt", "dyjets_powheg"],
         ),
     )
 
@@ -2906,6 +2909,7 @@ def build_config(
                 "dyjets",
                 "dyjets_madgraph",
                 "dyjets_powheg",
+                "dyjets_amcatnlo",
                 "dyjets_amcatnlo_ll",
                 "dyjets_amcatnlo_tt",
                 "wjets",
@@ -3234,7 +3238,7 @@ def build_config(
             ],
         )
 
-    if sample in ["dyjets", "dyjets_madgraph", "dyjets_powheg", "dyjets_amcatnlo_ll", "dyjets_amcatnlo_tt"]:
+    if sample in ["dyjets", "dyjets_madgraph", "dyjets_powheg", "dyjets_amcatnlo", "dyjets_amcatnlo_ll", "dyjets_amcatnlo_tt"]:
         configuration.add_outputs(
             SCOPES,
             [
@@ -3904,6 +3908,7 @@ def build_config(
                 samples=[
                     "dyjets",
                     "dyjets_madgraph",
+                    "dyjets_amcatnlo",
                     "dyjets_amcatnlo_ll",
                     "dyjets_amcatnlo_tt",
                     "dyjets_powheg",
