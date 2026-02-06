@@ -20,15 +20,22 @@ def _add_muon_triggers(
     configuration: Configuration,
 ):
     """
-    Add configuration of muon trigger producers.
+    Add configuration of muon trigger producers. The configuration adds
+    single-muon triggers to scopes with at least one muon (`mt`, `em`, `mm`).
 
-    The configuration adds single-muon triggers to scopes with at least one
-    muon (`mt`, `em`, `mm`). The following isolated muon triggers are added,
-    according to the recommendations of the MUO POG:
+    The use of the following isolated muon triggers is recommended by the MUO
+    POG:
 
     - 2016: `HLT_IsoMu24 || HLT_IsoTkMu24`
     - 2017: `HLT_IsoMu27`
-    - 2018: `HLT_IsoMu24`
+    - 2018, 2022, 2023, 2024: `HLT_IsoMu24`
+
+    The use of the following non-isolated muon triggers is recommended by the
+    MUO POG:
+
+    - 2016: `HLT_Mu50 || HLT_TkMu50`
+    - 2017, 2018: `HLT_Mu50 || HLT_OldMu100 || HLT_TkMu100`
+    - 2022, 2023, 2024: `HLT_Mu50 || HLT_CascadeMu100 || HLT_HighPtTkMu100`
 
     The single-muon trigger recommendations can be found at the following MUO
     POG TWiki pages:
@@ -111,6 +118,66 @@ def _add_muon_triggers(
             "flagname": "trg_single_mu24_tk",
             "hlt_path": "HLT_IsoTkMu24",
             "filter_bit": 3,
+        },
+    )
+
+    ## High-pt-muon triggers
+
+    # HLT_Mu50 parameters
+    mu_50_parameters = {
+        "flagname": "trg_single_mu50",
+        "hlt_path": "HLT_Mu50",
+        "min_pt": 55.,
+        "max_abs_eta": 2.4,
+        "filter_bit": 10,
+        "particle_id": 13,
+        "match_max_delta_r": 0.4,
+    }
+
+    # HLT_TkMu50 parameters
+    tk_mu_50_parameters = _get_updated_dict(
+        mu_50_parameters,
+        {
+            "flagname": "trg_single_mu50_tk",
+            "hlt_path": "HLT_TkMu50",
+        },
+    )
+
+    # HLT_CascadeMu100 parameters
+    cascade_mu_100_parameters = _get_updated_dict(
+        mu_50_parameters,
+        {
+            "flagname": "trg_single_mu100_cascade",
+            "hlt_path": "HLT_CascadeMu100",
+            "min_pt": 105.,
+            "filter_bit": 11,
+        },
+    )
+
+    # HLT_HighPtTkMu100 parameters
+    high_pt_tk_mu_100_parameters = _get_updated_dict(
+        cascade_mu_100_parameters,
+        {
+            "flagname": "trg_single_mu100_tk",
+            "hlt_path": "HLT_HighPtTkMu100",
+        },
+    )
+
+    # HLT_OldMu100 parameters
+    old_mu_100_parameters = _get_updated_dict(
+        cascade_mu_100_parameters,
+        {
+            "flagname": "trg_single_mu100_old",
+            "hlt_path": "HLT_OldMu100",
+        },
+    )
+
+    # HLT_TkMu100 parameters
+    tk_mu_100_parameters = _get_updated_dict(
+        cascade_mu_100_parameters,
+        {
+            "flagname": "trg_single_mu100_tk",
+            "hlt_path": "HLT_TkMu100",
         },
     )
 
