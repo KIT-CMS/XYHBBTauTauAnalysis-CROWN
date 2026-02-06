@@ -41,6 +41,8 @@ def _add_muon_triggers(
     - https://twiki.cern.ch/twiki/bin/view/CMS/MuonHLT2024
     """
 
+    ## Isolated-muon triggers
+
     # HLT_IsoMu24 parameters
     iso_mu_24_parameters = {
         "flagname": "trg_single_mu24",
@@ -57,7 +59,8 @@ def _add_muon_triggers(
         iso_mu_24_parameters,
         {
             "flagname": "trg_single_mu27",
-            "min_pt": 28.,
+            "hlt_path": "HLT_IsoMu27",
+            "min_pt": 29.,
         },
     )
 
@@ -66,38 +69,38 @@ def _add_muon_triggers(
         iso_mu_24_parameters,
         {
             "flagname": "trg_single_mu22",
-            "min_pt": 23.,
+            "hlt_path": "HLT_IsoMu22",
+            "min_pt": 24.,
         },
     )
 
     # HLT_IsoTkMu22 parameters
     iso_tk_mu_22_parameters = _get_updated_dict(
-        iso_mu_24_parameters,
+        iso_mu_22_parameters,
         {
             "flagname": "trg_single_mu22_tk",
-            "min_pt": 23.,
+            "hlt_path": "HLT_IsoTkMu22",
             "filter_bit": 3,
         },
     )
 
     # HLT_IsoMu22_eta2p1 parameters
     iso_mu_22_eta2p1_parameters = _get_updated_dict(
-        iso_mu_24_parameters,
+        iso_mu_22_parameters,
         {
             "flagname": "trg_single_mu22_eta2p1",
-            "min_pt": 23.,
+            "hlt_path": "HLT_IsoMu22_eta2p1",
             "max_abs_eta": 2.1,
         },
     )
 
     # HLT_IsoTkMu22_eta2p1 parameters
     iso_tk_mu_22_eta2p1_parameters = _get_updated_dict(
-        iso_mu_24_parameters,
+        iso_tk_mu_22_parameters,
         {
             "flagname": "trg_single_mu22_eta2p1_tk",
-            "min_pt": 23.,
+            "hlt_path": "HLT_IsoTkMu22_eta2p1",
             "max_abs_eta": 2.1,
-            "filter_bit": 3,
         },
     )
 
@@ -106,6 +109,7 @@ def _add_muon_triggers(
         iso_mu_24_parameters,
         {
             "flagname": "trg_single_mu24_tk",
+            "hlt_path": "HLT_IsoTkMu24",
             "filter_bit": 3,
         },
     )
