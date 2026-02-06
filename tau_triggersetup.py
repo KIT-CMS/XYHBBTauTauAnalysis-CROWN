@@ -560,6 +560,15 @@ def add_diTauTriggerSetup(configuration: Configuration):
             ),
         },
     )
+
+
+
+def add_diTauTriggerSetup(configuration: Configuration):
+
+    # Add isolated single-muon triggers to the mt, em, and mm scopes
+    _add_muon_triggers(configuration)
+
+    # mu-tau trigger
     configuration.add_config_parameters(
         MT_SCOPES,
         {
