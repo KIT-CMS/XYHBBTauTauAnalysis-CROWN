@@ -4,6 +4,63 @@ from code_generation.modifiers import EraModifier
 from .constants import EM_SCOPES, ET_SCOPES, MT_SCOPES, TT_SCOPES, ELECTRON_SCOPES, MUON_SCOPES, ERAS_RUN2, ERAS_RUN3, CORRECTIONLIB_CAMPAIGNS
 
 
+def _add_muon_triggers(
+    configuration: Configuration,
+):
+    """
+    Add configuration of muon trigger producers.
+
+    The configuration adds single-muon triggers to scopes with at least one
+    muon (`mt`, `em`, `mm`). The following isolated muon triggers are added,
+    according to the recommendations of the MUO POG:
+
+    - 2016: `HLT_IsoMu24 || HLT_IsoTkMu24`
+    - 2017: `HLT_IsoMu27`
+    - 2018: `HLT_IsoMu24`
+
+    The single-muon trigger recommendations can be found at the following MUO
+    POG TWiki pages:
+
+    - https://twiki.cern.ch/twiki/bin/view/CMS/MuonHLT2016
+    - https://twiki.cern.ch/twiki/bin/view/CMS/MuonHLT2017
+    - https://twiki.cern.ch/twiki/bin/view/CMS/MuonHLT2018
+    - https://twiki.cern.ch/twiki/bin/view/CMS/MuonHLT2022
+    - https://twiki.cern.ch/twiki/bin/view/CMS/MuonHLT2023
+    - https://twiki.cern.ch/twiki/bin/view/CMS/MuonHLT2024
+    """
+
+    iso_mu_24_parameters = {
+        "flagname": "trg_single_mu24",
+        "hlt_path": "HLT_IsoMu24",
+        "min_pt": 26.,
+        "max_abs_eta": 2.4,
+        "filter_bit": 1,
+        "particle_id": 13,
+        "match_max_delta_r": 0.4,
+    }
+
+    configuration.add_config_parameters(
+        MUON_SCOPES,
+        {
+            "single_mu_trigger": EraModifier(
+                {
+                    **{
+                        _era: [
+                            # trigger:            HLT_IsoMu24
+                            # final filter:       - hltL3crIsoL1sSingleMu22L1f0L2f10QL3f24QL3trkIsoFiltered0p08
+                            #                     - hltL3crIsoL1sSingleMu22L1f0L2f10QL3f24QL3trkIsoFiltered
+                            # filter bit:         1
+                            # documentation:      - https://twiki.cern.ch/twiki/bin/view/CMS/MuonHLT2022
+                            #                     - https://twiki.cern.ch/twiki/bin/view/CMS/MuonHLT2023
+                            #                     - https://twiki.cern.ch/twiki/bin/view/CMS/MuonHLT2024
+                            iso_mu_24_parameters,
+                        ]
+                        for _era in ["2022preEE", "2022postEE", "2023preBPix", "2023postBPix", "2024"]
+                    },
+                },
+            ),
+        },
+    )
 def add_diTauTriggerSetup(configuration: Configuration):
     ## MT, MM scope trigger setup
     configuration.add_config_parameters(
