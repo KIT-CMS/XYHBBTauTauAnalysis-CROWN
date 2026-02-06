@@ -181,6 +181,7 @@ def _add_muon_triggers(
         },
     )
 
+    # Add triggers to the configuration
     configuration.add_config_parameters(
         MUON_SCOPES,
         {
@@ -196,6 +197,30 @@ def _add_muon_triggers(
                             #                     - https://twiki.cern.ch/twiki/bin/view/CMS/MuonHLT2023
                             #                     - https://twiki.cern.ch/twiki/bin/view/CMS/MuonHLT2024
                             iso_mu_24_parameters,
+
+                            # trigger:            HLT_Mu50
+                            # final filter:       hltL3fL1sMu22Or25L1f0L2f10QL3Filtered50Q
+                            # filter bit:         10
+                            # documentation:      - https://twiki.cern.ch/twiki/bin/view/CMS/MuonHLT2022
+                            #                     - https://twiki.cern.ch/twiki/bin/view/CMS/MuonHLT2023
+                            #                     - https://twiki.cern.ch/twiki/bin/view/CMS/MuonHLT2024
+                            mu_50_parameters,
+
+                            # trigger:            HLT_CascadeMu100
+                            # final filter:       hltL3fL1sMu22Or25L1f0L2f10QL3Filtered100Q
+                            # filter bit:         11
+                            # documentation:      - https://twiki.cern.ch/twiki/bin/view/CMS/MuonHLT2022
+                            #                     - https://twiki.cern.ch/twiki/bin/view/CMS/MuonHLT2023
+                            #                     - https://twiki.cern.ch/twiki/bin/view/CMS/MuonHLT2024
+                            cascade_mu_100_parameters,
+
+                            # trigger:            HLT_HighPtTkMu100
+                            # final filter:       hltL3fL1sMu25f0TkFiltered100Q
+                            # filter bit:         11
+                            # documentation:      - https://twiki.cern.ch/twiki/bin/view/CMS/MuonHLT2022
+                            #                     - https://twiki.cern.ch/twiki/bin/view/CMS/MuonHLT2023
+                            #                     - https://twiki.cern.ch/twiki/bin/view/CMS/MuonHLT2024
+                            high_pt_tk_mu_100_parameters,
                         ]
                         for _era in ["2022preEE", "2022postEE", "2023preBPix", "2023postBPix", "2024"]
                     },
@@ -205,7 +230,25 @@ def _add_muon_triggers(
                         # filter bit:         1
                         # documentation:      https://twiki.cern.ch/twiki/bin/view/CMS/MuonHLT2018
                         iso_mu_24_parameters,
-                        ],
+
+                        # trigger:            HLT_Mu50
+                        # final filter:       hltL3fL1sMu22Or25L1f0L2f10QL3Filtered50Q
+                        # filter bit:         10
+                        # documentation:      https://twiki.cern.ch/twiki/bin/view/CMS/MuonHLT2018
+                        mu_50_parameters,
+
+                        # trigger:            HLT_OldMu100
+                        # final filter:       hltL3fL1sMu22Or25L1f0L2f10QL3Filtered100Q
+                        # filter bit:         11
+                        # documentation:      https://twiki.cern.ch/twiki/bin/view/CMS/MuonHLT2018
+                        old_mu_100_parameters,
+
+                        # trigger:            HLT_TkMu100
+                        # final filter:       hltL3fL1sMu25f0TkFiltered100Q
+                        # filter bit:         11
+                        # documentation:      https://twiki.cern.ch/twiki/bin/view/CMS/MuonHLT2018
+                        tk_mu_100_parameters,
+                    ],
                     "2017": [
                         # trigger:            HLT_IsoMu24
                         # final filter:       hltL3crIsoL1sSingleMu22L1f0L2f10QL3f24QL3trkIsoFiltered0p07
@@ -219,6 +262,24 @@ def _add_muon_triggers(
                         # filter bit:         1
                         # documentation:      https://twiki.cern.ch/twiki/bin/view/CMS/MuonHLT2017
                         iso_mu_27_parameters,
+
+                        # trigger:            HLT_Mu50
+                        # final filter:       hltL3fL1sMu22Or25L1f0L2f10QL3Filtered50Q
+                        # filter bit:         10
+                        # documentation:      https://twiki.cern.ch/twiki/bin/view/CMS/MuonHLT2017
+                        mu_50_parameters,
+
+                        # trigger:            HLT_OldMu100
+                        # final filter:       hltL3fL1sMu22Or25L1f0L2f10QL3Filtered100Q
+                        # filter bit:         11
+                        # documentation:      https://twiki.cern.ch/twiki/bin/view/CMS/MuonHLT2017
+                        old_mu_100_parameters,
+
+                        # trigger:            HLT_TkMu100
+                        # final filter:       hltL3fL1sMu25f0TkFiltered100Q
+                        # filter bit:         11
+                        # documentation:      https://twiki.cern.ch/twiki/bin/view/CMS/MuonHLT2017
+                        tk_mu_100_parameters,
                     ],
                     **{
                         _era: [
@@ -261,6 +322,18 @@ def _add_muon_triggers(
                             # filter bit:         3
                             # documentation:      https://twiki.cern.ch/twiki/bin/view/CMS/MuonHLT2016
                             iso_tk_mu_24_2016_parameters,
+
+                            # trigger:            HLT_Mu50
+                            # final filter:       hltL3fL1sMu22Or25L1f0L2f10QL3Filtered50Q
+                            # filter bit:         10
+                            # documentation:      https://twiki.cern.ch/twiki/bin/view/CMS/MuonHLT2016
+                            mu_50_parameters,
+
+                            # trigger:            HLT_TkMu50
+                            # final filter:       hltL3fL1sMu25f0TkFiltered50Q
+                            # filter bit:         10
+                            # documentation:      https://twiki.cern.ch/twiki/bin/view/CMS/MuonHLT2016
+                            tk_mu_50_parameters,
                         ]
                         for _era in ["2016preVFP", "2016postVFP"]
                     },
