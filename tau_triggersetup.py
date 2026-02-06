@@ -128,6 +128,71 @@ def _add_muon_triggers(
                         ]
                         for _era in ["2022preEE", "2022postEE", "2023preBPix", "2023postBPix", "2024"]
                     },
+                    "2018": [
+                        # trigger:            HLT_IsoMu24
+                        # final filter:       hltL3crIsoL1sSingleMu22L1f0L2f10QL3f24QL3trkIsoFiltered0p07
+                        # filter bit:         1
+                        # documentation:      https://twiki.cern.ch/twiki/bin/view/CMS/MuonHLT2018
+                        iso_mu_24_parameters,
+                        ],
+                    "2017": [
+                        # trigger:            HLT_IsoMu24
+                        # final filter:       hltL3crIsoL1sSingleMu22L1f0L2f10QL3f24QL3trkIsoFiltered0p07
+                        # filter bit:         1
+                        # documentation:      https://twiki.cern.ch/twiki/bin/view/CMS/MuonHLT2017
+                        # comment:            Prescaled for ~4 fb^{-1}
+                        iso_mu_24_parameters,
+
+                        # trigger:            HLT_IsoMu27
+                        # final filter:       hltL3crIsoL1sMu22Or25L1f0L2f10QL3f27QL3trkIsoFiltered0p07
+                        # filter bit:         1
+                        # documentation:      https://twiki.cern.ch/twiki/bin/view/CMS/MuonHLT2017
+                        iso_mu_27_parameters,
+                    ],
+                    **{
+                        _era: [
+                            # trigger:            HLT_IsoMu22
+                            # final filter:       hltL3crIsoL1sMu20L1f0L2f10QL3f22QL3trkIsoFiltered0p09
+                            # filter bit:         1
+                            # documentation:      https://twiki.cern.ch/twiki/bin/view/CMS/MuonHLT2016
+                            # comment:            Unclear whether this trigger is prescaled
+                            iso_mu_22_parameters,
+
+                            # trigger:            HLT_IsoTkMu22
+                            # final filter:       hltL3fL1sMu20L1f0Tkf22QL3trkIsoFiltered0p09
+                            # filter bit:         3
+                            # documentation:      https://twiki.cern.ch/twiki/bin/view/CMS/MuonHLT2016
+                            # comment:            Unclear whether this trigger is prescaled
+                            iso_tk_mu_22_parameters,
+
+                            # trigger:            HLT_IsoMu22_eta2p1
+                            # final filter:       hltL3crIsoL1sSingleMu20erL1f0L2f10QL3f22QL3trkIsoFiltered0p09
+                            # filter bit:         1
+                            # documentation:      https://twiki.cern.ch/twiki/bin/view/CMS/MuonHLT2016
+                            # comment:            Unclear whether this trigger is prescaled
+                            iso_mu_22_eta2p1_parameters,
+
+                            # trigger:            HLT_IsoTkMu22_eta2p1
+                            # final filter:       hltL3fL1sMu20erL1f0Tkf22QL3trkIsoFiltered0p09
+                            # filter bit:         3
+                            # documentation:      https://twiki.cern.ch/twiki/bin/view/CMS/MuonHLT2016
+                            # comment:            Unclear whether this trigger is prescaled
+                            iso_tk_mu_22_eta2p1_parameters,
+
+                            # trigger:            HLT_IsoMu24
+                            # final filter:       hltL3crIsoL1sMu22L1f0L2f10QL3f24QL3trkIsoFiltered0p09
+                            # filter bit:         1
+                            # documentation:      https://twiki.cern.ch/twiki/bin/view/CMS/MuonHLT2016
+                            iso_mu_24_parameters,
+
+                            # trigger:            HLT_IsoTkMu24
+                            # final filter:       hltL3fL1sMu22L1f0Tkf24QL3trkIsoFiltered0p09
+                            # filter bit:         3
+                            # documentation:      https://twiki.cern.ch/twiki/bin/view/CMS/MuonHLT2016
+                            iso_tk_mu_24_2016_parameters,
+                        ]
+                        for _era in ["2016preVFP", "2016postVFP"]
+                    },
                 },
             ),
         },
