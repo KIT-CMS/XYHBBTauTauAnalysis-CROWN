@@ -41,6 +41,7 @@ def _add_muon_triggers(
     - https://twiki.cern.ch/twiki/bin/view/CMS/MuonHLT2024
     """
 
+    # HLT_IsoMu24 parameters
     iso_mu_24_parameters = {
         "flagname": "trg_single_mu24",
         "hlt_path": "HLT_IsoMu24",
@@ -50,6 +51,64 @@ def _add_muon_triggers(
         "particle_id": 13,
         "match_max_delta_r": 0.4,
     }
+
+    # HLT_IsoMu27 parameters
+    iso_mu_27_parameters = _get_updated_dict(
+        iso_mu_24_parameters,
+        {
+            "flagname": "trg_single_mu27",
+            "min_pt": 28.,
+        },
+    )
+
+    # HLT_IsoMu22 parameters
+    iso_mu_22_parameters = _get_updated_dict(
+        iso_mu_24_parameters,
+        {
+            "flagname": "trg_single_mu22",
+            "min_pt": 23.,
+        },
+    )
+
+    # HLT_IsoTkMu22 parameters
+    iso_tk_mu_22_parameters = _get_updated_dict(
+        iso_mu_24_parameters,
+        {
+            "flagname": "trg_single_mu22_tk",
+            "min_pt": 23.,
+            "filter_bit": 3,
+        },
+    )
+
+    # HLT_IsoMu22_eta2p1 parameters
+    iso_mu_22_eta2p1_parameters = _get_updated_dict(
+        iso_mu_24_parameters,
+        {
+            "flagname": "trg_single_mu22_eta2p1",
+            "min_pt": 23.,
+            "max_abs_eta": 2.1,
+        },
+    )
+
+    # HLT_IsoTkMu22_eta2p1 parameters
+    iso_tk_mu_22_eta2p1_parameters = _get_updated_dict(
+        iso_mu_24_parameters,
+        {
+            "flagname": "trg_single_mu22_eta2p1_tk",
+            "min_pt": 23.,
+            "max_abs_eta": 2.1,
+            "filter_bit": 3,
+        },
+    )
+
+    # HLT_IsoTkMu24 parameters
+    iso_tk_mu_24_2016_parameters = _get_updated_dict(
+        iso_mu_24_parameters,
+        {
+            "flagname": "trg_single_mu24_tk",
+            "filter_bit": 3,
+        },
+    )
 
     configuration.add_config_parameters(
         MUON_SCOPES,
