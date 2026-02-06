@@ -8,9 +8,17 @@ def _get_updated_dict(
     orig_dict: dict,
     update: dict,
 ):
-    # Copy the dictionary `orig_dict`, update its entries with the `update`
-    # dictionary, and return the result. The function does not modify the
-    # content of `orig_dict`.
+    """
+    Copy the dictionary `orig_dict`, update its entries with the `update`
+    dictionary, and return the result. The function does not modify the
+    content of `orig_dict`.
+
+    :param orig_dict: The original dictionary which is copied and modified.
+
+    :param update: The key-value pairs to be added or updated.
+
+    :returns: A copy of the originalt dictionary with its contents updated.
+    """
     modified_dict = orig_dict.copy()
     modified_dict.update(update)
     return modified_dict
@@ -539,9 +547,22 @@ def _add_muon_triggers(
     )
 
 
-def add_tautau_trigger(
+def _add_tautau_triggers(
     configuration: Configuration,
 ):
+    """
+    Add configuration of tau-tau trigger producers. The configuration adds
+    tau-tau and tau-tau-jet triggers to the `tt` scope.
+
+    The use of the following isolated electron triggers is recommended by the
+    TAU POG:
+
+    The tau trigger recommendations can be found at the following TAU POG TWiki
+    page:
+
+    - https://twiki.cern.ch/twiki/bin/view/CMS/TauTrigger
+    """
+
     ## DeepTau trigger
 
     # HLT_DoubleMediumDeepTauPFTauHPS35_L2NN_eta2p1
