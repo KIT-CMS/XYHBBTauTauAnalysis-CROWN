@@ -1324,16 +1324,64 @@ def add_diTauTriggerSetup(configuration: Configuration):
         {
             "double_tautau_trigger_leg1_sf": [
                 {
-                    "tt_trigger_leg1_flagname": "trg_wgt_double_tau35_leg1",
-                    "tt_trigger_flag": "trg_double_tau35",
+                    "tt_trigger_leg1_flagname": EraModifier(
+                        {
+                            "2024": "trg_wgt_double_tau35_mediumpnet_leg1",
+                            **{
+                                _era: "trg_wgt_double_tau35_mediumdeeptau_leg1"
+                                for _era in ["2022preEE", "2022postEE", "2023preBPix", "2023postBPix"]
+                            },
+                            **{
+                                _era: "DOES_NOT_EXIST"  # TODO placeholder, to be filled
+                                for _era in ERAS_RUN2
+                            },
+                        },
+                    ),
+                    "tt_trigger_leg1_flag": EraModifier(
+                        {
+                            "2024": "trg_wgt_double_tau35_mediumpnet",
+                            **{
+                                _era: "trg_wgt_double_tau35_mediumdeeptau"
+                                for _era in ["2022preEE", "2022postEE", "2023preBPix", "2023postBPix"]
+                            },
+                            **{
+                                _era: "DOES_NOT_EXIST"  # TODO placeholder, to be filled
+                                for _era in ERAS_RUN2
+                            },
+                        },
+                    ),
                     "tt_trigger_leg1_sf_name": "ditau",
                     "tt_trigger_leg1_variation": "nom",
                 },
             ],
             "double_tautau_trigger_leg2_sf": [
                 {
-                    "tt_trigger_leg2_flagname": "trg_wgt_double_tau35_leg2",
-                    "tt_trigger_flag": "trg_double_tau35",
+                    "tt_trigger_leg2_flagname": EraModifier(
+                        {
+                            "2024": "trg_wgt_double_tau35_mediumpnet_leg2",
+                            **{
+                                _era: "trg_wgt_double_tau35_mediumdeeptau_leg2"
+                                for _era in ["2022preEE", "2022postEE", "2023preBPix", "2023postBPix"]
+                            },
+                            **{
+                                _era: "DOES_NOT_EXIST"  # TODO placeholder, to be filled
+                                for _era in ERAS_RUN2
+                            },
+                        },
+                    ),
+                    "tt_trigger_leg2_flag": EraModifier(
+                        {
+                            "2024": "trg_wgt_double_tau35_mediumpnet",
+                            **{
+                                _era: "trg_wgt_double_tau35_mediumdeeptau"
+                                for _era in ["2022preEE", "2022postEE", "2023preBPix", "2023postBPix"]
+                            },
+                            **{
+                                _era: "DOES_NOT_EXIST"  # TODO placeholder, to be filled
+                                for _era in ERAS_RUN2
+                            },
+                        },
+                    ),
                     "tt_trigger_leg2_sf_name": "ditau",
                     "tt_trigger_leg2_variation": "nom",
                 },
