@@ -539,6 +539,315 @@ def _add_muon_triggers(
     )
 
 
+def add_tautau_trigger(
+    configuration: Configuration,
+):
+    ## DeepTau trigger
+
+    # HLT_DoubleMediumDeepTauPFTauHPS35_L2NN_eta2p1
+    double_medium_deeptau_35_eta_2p1_parameters = {
+        "flagname": "trg_double_tau35_mediumdeeptau",
+        "hlt_path": "HLT_DoubleMediumDeepTauPFTauHPS35_L2NN_eta2p1",
+        "p1_min_pt": 40.,
+        "p1_max_abs_eta": 2.1,
+        "p1_filter_bit": 7,
+        "p1_particle_id": 15,
+        "p2_min_pt": 40.,
+        "p2_max_abs_eta": 2.1,
+        "p2_filter_bit": 7,
+        "p2_particle_id": 15,
+        "match_max_delta_r": 0.4,
+    }
+
+    # HLT_DoubleMediumDeepTauPFTauHPS35_L2NN_eta2p1
+    double_medium_deeptau_35_eta_2p1_2024_parameters = _get_updated_dict(
+        double_medium_deeptau_35_eta_2p1_parameters,
+        {
+            "flagname": "trg_double_tau35",
+            "hlt_path": "HLT_DoubleMediumDeepTauPFTauHPS35_L2NN_eta2p1",
+            "p1_filter_bit": 11,
+            "p2_filter_bit": 11,
+        },
+    )
+
+    ## ParticleNet trigger
+
+    # HLT_DoublePNetTauhPFJet30_Medium_L2NN_eta2p3
+    double_medium_pnet_35_eta_2p3_parameters = _get_updated_dict(
+        double_medium_deeptau_35_eta_2p1_parameters,
+        {
+            "flagname": "trg_double_tau35_mediumpnet",
+            "hlt_path": "HLT_DoublePNetTauhPFJet30_Medium_L2NN_eta2p3",
+            "p1_max_abs_eta": 2.3,
+            "p2_max_abs_eta": 2.3,
+        },
+    )
+
+    # HLT_DoublePNetTauhPFJet30_Tight_L2NN_eta2p3
+    double_tight_pnet_35_eta_2p3_parameters = _get_updated_dict(
+        double_medium_pnet_35_eta_2p3_parameters,
+        {
+            "flagname": "trg_double_tau35_tightpnet",
+            "hlt_path": "HLT_DoublePNetTauhPFJet30_Tight_L2NN_eta2p3",
+        },
+    )
+
+    ## MVA-ID trigger
+
+    # HLT_DoubleMediumChargedIsoPFTauHPS35_Trk1_eta2p1_Reg
+    double_medium_chargediso_hps_35_eta_2p1_parameters = _get_updated_dict(
+        double_medium_deeptau_35_eta_2p1_parameters,
+        {
+            "flagname": "trg_double_tau35_mediumiso",
+            "hlt_path": "HLT_DoubleMediumChargedIsoPFTauHPS35_Trk1_eta2p1_Reg",
+            "p1_filter_bit": 6,
+            "p2_filter_bit": 6,
+        },
+    )
+
+    # HLT_DoubleTightChargedIsoPFTau35_Trk1_TightID_eta2p1_Reg
+    double_tight_chargediso_35_eta_2p1_parameters = _get_updated_dict(
+        double_medium_chargediso_hps_35_eta_2p1_parameters,
+        {
+            "flagname": "trg_double_tau35_tightiso",
+            "hlt_path": "HLT_DoubleTightChargedIsoPFTau35_Trk1_TightID_eta2p1_Reg",
+        },
+    )
+
+    # HLT_DoubleMediumChargedIsoPFTau40_Trk1_TightID_eta2p1_Reg
+    double_medium_chargediso_40_eta_2p1_parameters = _get_updated_dict(
+        double_medium_chargediso_hps_35_eta_2p1_parameters,
+        {
+            "flagname": "trg_double_tau40_mediumiso",
+            "hlt_path": "HLT_DoubleMediumChargedIsoPFTau40_Trk1_TightID_eta2p1_Reg",
+        },
+    )
+
+    # HLT_DoubleTightChargedIsoPFTau40_Trk1_eta2p1_Reg
+    double_tight_chargediso_40_eta_2p1_parameters = _get_updated_dict(
+        double_medium_chargediso_hps_35_eta_2p1_parameters,
+        {
+            "flagname": "trg_double_tau40_tightiso",
+            "hlt_path": "HLT_DoubleTightChargedIsoPFTau40_Trk1_eta2p1_Reg",
+        },
+    )
+
+    # HLT_DoubleMediumIsoPFTau35_Trk1_eta2p1_Reg
+    double_medium_iso_35_eta_2p1_parameters = _get_updated_dict(
+        double_medium_chargediso_hps_35_eta_2p1_parameters,
+        {
+            "flagname": "trg_double_tau35_mediumiso",
+            "hlt_path": "HLT_DoubleMediumIsoPFTau35_Trk1_eta2p1_Reg",
+            "p1_filter_bit": 17,
+            "p2_filter_bit": 17,
+        },
+    )
+
+    # HLT_DoubleMediumCombinedIsoPFTau35_Trk1_eta2p1_Reg
+    double_medium_iso_35_eta_2p1_parameters = _get_updated_dict(
+        double_medium_chargediso_hps_35_eta_2p1_parameters,
+        {
+            "flagname": "trg_double_tau35_mediumcombinediso",
+            "hlt_path": "HLT_DoubleMediumCombinedIsoPFTau35_Trk1_eta2p1_Reg",
+            "p1_filter_bit": 17,
+            "p2_filter_bit": 17,
+        },
+    )
+
+    ## double-tau + jet triggers
+
+    # HLT_DoubleMediumDeepTauPFTauHPS30_L2NN_eta2p1_PFJet60
+    double_medium_deeptau_30_eta2p1_jet_60_parameters = {
+        "flagname": "trg_double_tau30_jet60_deeptau",
+        "hlt_path": "HLT_DoubleMediumDeepTauPFTauHPS30_L2NN_eta2p1_PFJet60",
+        "p1_min_pt": 35.,
+        "p1_max_abs_eta": 2.1,
+        "p1_filter_bit": 14,
+        "p1_particle_id": 15,
+        "p2_min_pt": 35.,
+        "p2_max_abs_eta": 2.1,
+        "p2_filter_bit": 14,
+        "p2_particle_id": 15,
+        "match_max_delta_r": 0.4,
+    }
+
+    # HLT_DoubleMediumDeepTauPFTauHPS30_L2NN_eta2p1_PFJet75
+    double_medium_deeptau_30_eta2p1_jet_75_parameters = _get_updated_dict(
+        double_medium_deeptau_30_eta2p1_jet_60_parameters,
+        {
+            "flagname": "trg_double_tau30_jet75_deeptau",
+            "hlt_path": "HLT_DoubleMediumDeepTauPFTauHPS30_L2NN_eta2p1_PFJet75",
+        },
+    )
+
+    # HLT_DoublePNetTauhPFJet26_L2NN_eta2p3_PFJet60
+    double_pnet_26_eta2p3_jet_60_parameters = _get_updated_dict(
+        double_medium_deeptau_30_eta2p1_jet_60_parameters,
+        {
+            "flagname": "trg_double_tau26_jet60_pnet",
+            "hlt_path": "HLT_DoublePNetTauhPFJet26_L2NN_eta2p3_PFJet60",
+            "p1_min_pt": 30.,
+            "p1_max_abs_eta": 2.3,
+            "p2_min_pt": 30.,
+            "p2_max_abs_eta": 2.3,
+        },
+    )
+
+    # HLT_DoublePNetTauhPFJet26_L2NN_eta2p3_PFJet75
+    double_pnet_26_eta2p3_jet_75_parameters = _get_updated_dict(
+        double_pnet_26_eta2p3_jet_60_parameters,
+        {
+            "flagname": "trg_double_tau26_jet75_pnet",
+            "hlt_path": "HLT_DoublePNetTauhPFJet26_L2NN_eta2p3_PFJet75",
+        },
+    )
+
+    {
+    configuration.add_config_parameters(
+        TT_SCOPES,
+        {
+            "tautau_trigger": EraModifier(
+                {
+                    "2024": [
+                        # trigger:          HLT_DoubleMediumDeepTauPFTauHPS35_L2NN_eta2p1
+                        # final tau filter: hltHpsDoublePFTau35MediumDitauWPDeepTauL1HLTMatched
+                        # tau filter bit:   11 (for NANOAODv15)
+                        # documentation:    https://twiki.cern.ch/twiki/bin/view/CMS/TauTrigger#Trigger_Table_for_2024
+                        double_medium_deeptau_35_eta_2p1_2024_parameters,
+
+                        # trigger:          HLT_DoublePNetTauhPFJet30_Medium_L2NN_eta2p3
+                        # final tau filter: hltDoublePFJets30PNetTauhTagMediumWPL2DoubleTau
+                        # tau filter bit:   11 (for NANOAODv15)
+                        # documentation:    https://twiki.cern.ch/twiki/bin/view/CMS/TauTrigger#Trigger_Table_for_2024
+                        double_medium_pnet_35_eta_2p3_parameters,
+
+                        # trigger:          HLT_DoublePNetTauhPFJet30_Tight_L2NN_eta2p3
+                        # final tau filter: hltDoublePFJets30PNetTauhTagTightWPL2DoubleTau
+                        # tau filter bit:   11 (for NANOAODv15)
+                        # documentation:    https://twiki.cern.ch/twiki/bin/view/CMS/TauTrigger#Trigger_Table_for_2024
+                        double_tight_pnet_35_eta_2p3_parameters,
+
+                        # trigger:          HLT_DoubleMediumDeepTauPFTauHPS30_L2NN_eta2p1_PFJet60
+                        # final tau filter: hltHpsOverlapFilterDeepTauDoublePFTau30PFJet60
+                        # tau filter bit:   14
+                        # documentation:    https://twiki.cern.ch/twiki/bin/view/CMS/TauTrigger#Trigger_Table_for_2024
+                        double_medium_deeptau_30_eta2p1_jet_60_parameters,
+
+                        # trigger:          HLT_DoubleMediumDeepTauPFTauHPS30_L2NN_eta2p1_PFJet75
+                        # final tau filter: hltHpsOverlapFilterDeepTauDoublePFTau30PFJet75
+                        # tau filter bit:   14
+                        # documentation:    https://twiki.cern.ch/twiki/bin/view/CMS/TauTrigger#Trigger_Table_for_2024
+                        double_medium_deeptau_30_eta2p1_jet_75_parameters,
+
+                        # trigger:          HLT_DoublePNetTauhPFJet26_L2NN_eta2p3_PFJet60
+                        # final tau filter: hltHpsOverlapFilterDoublePNetTauh26PFJet60
+                        # tau filter bit:   14
+                        # documentation:    https://twiki.cern.ch/twiki/bin/view/CMS/TauTrigger#Trigger_Table_for_2024
+                        double_pnet_26_eta2p3_jet_60_parameters,
+
+                        # trigger:          HLT_DoublePNetTauhPFJet26_L2NN_eta2p3_PFJet75
+                        # final tau filter: hltHpsOverlapFilterDoublePNetTauh26PFJet75
+                        # tau filter bit:   14
+                        # documentation:    https://twiki.cern.ch/twiki/bin/view/CMS/TauTrigger#Trigger_Table_for_2024
+                        double_pnet_26_eta2p3_jet_75_parameters,
+                    ],
+                    **{
+                        _era: [
+                            # trigger:          HLT_DoubleMediumDeepTauPFTauHPS35_L2NN_eta2p1
+                            # final tau filter: hltHpsDoublePFTau35MediumDitauWPDeepTauDz02
+                            # tau filter bit:   7
+                            # documentation:    - https://twiki.cern.ch/twiki/bin/view/CMS/TauTrigger#Trigger_Table_for_2022
+                            #                   - https://twiki.cern.ch/twiki/bin/view/CMS/TauTrigger#Trigger_Table_for_2023
+                            double_medium_deeptau_35_eta_2p1_parameters,
+
+                            # trigger:          HLT_DoubleMediumDeepTauPFTauHPS30_L2NN_eta2p1_PFJet60
+                            # final tau filter: hltHpsOverlapFilterDeepTauDoublePFTau30PFJet60
+                            # tau filter bit:   14
+                            # documentation:    - https://twiki.cern.ch/twiki/bin/view/CMS/TauTrigger#Trigger_Table_for_2022
+                            #                   - https://twiki.cern.ch/twiki/bin/view/CMS/TauTrigger#Trigger_Table_for_2023
+                            double_medium_deeptau_30_eta2p1_jet_60_parameters,
+
+                            # trigger:          HLT_DoubleMediumDeepTauPFTauHPS30_L2NN_eta2p1_PFJet75
+                            # final tau filter: hltHpsOverlapFilterDeepTauDoublePFTau30PFJet75
+                            # tau filter bit:   14
+                            # documentation:    - https://twiki.cern.ch/twiki/bin/view/CMS/TauTrigger#Trigger_Table_for_2022
+                            #                   - https://twiki.cern.ch/twiki/bin/view/CMS/TauTrigger#Trigger_Table_for_2023
+                            double_medium_deeptau_30_eta2p1_jet_75_parameters,
+                        ]
+                        for _era in ["2022preEE", "2022postEE", "2023preBPix", "2023preBPix"]
+                    },
+                    "2018": [
+                        # trigger:          HLT_DoubleMediumChargedIsoPFTauHPS35_Trk1_eta2p1_Reg
+                        # final tau filter: hltHpsDoublePFTau35TrackPt1MediumChargedIsolationDz02Reg
+                        # tau filter bit:   6
+                        # documentation:    https://twiki.cern.ch/twiki/bin/view/CMS/TauTrigger#Trigger_Table_for_2018
+                        # comment:          Filter bits do not work in NANOAOD v9; data run >= 317509 and MC
+                        double_medium_chargediso_hps_35_eta_2p1_parameters,
+
+                        # trigger:          HLT_DoubleTightChargedIsoPFTau35_Trk1_TightID_eta2p1_Reg
+                        # final tau filter: hltDoublePFTau35TrackPt1TightChargedIsolationAndTightOOSCPhotonsDz02Reg
+                        # tau filter bit:   6
+                        # documentation:    https://twiki.cern.ch/twiki/bin/view/CMS/TauTrigger#Trigger_Table_for_2018
+                        # comment:          data run < 317509
+                        double_tight_chargediso_35_eta_2p1_parameters,
+
+                        # trigger:          HLT_DoubleMediumChargedIsoPFTau40_Trk1_TightID_eta2p1_Reg
+                        # final tau filter: hltDoublePFTau40TrackPt1MediumChargedIsolationAndTightOOSCPhotonsDz02Reg
+                        # tau filter bit:   6
+                        # documentation:    https://twiki.cern.ch/twiki/bin/view/CMS/TauTrigger#Trigger_Table_for_2018
+                        # comment:          data run < 317509
+                        double_medium_chargediso_40_eta_2p1_parameters,
+
+                        # trigger:          HLT_DoubleTightChargedIsoPFTau40_Trk1_eta2p1_Reg
+                        # final tau filter: hltDoublePFTau40TrackPt1TightChargedIsolationDz02Reg
+                        # tau filter bit:   6
+                        # documentation:    https://twiki.cern.ch/twiki/bin/view/CMS/TauTrigger#Trigger_Table_for_2018
+                        # comment:          data run < 317509
+                        double_tight_chargediso_40_eta_2p1_parameters,
+                    ],
+                    "2017": [
+                        # trigger:          HLT_DoubleTightChargedIsoPFTau35_Trk1_TightID_eta2p1_Reg
+                        # final tau filter: hltDoublePFTau35TrackPt1TightChargedIsolationAndTightOOSCPhotonsDz02Reg
+                        # tau filter bit:   6
+                        # documentation:    https://twiki.cern.ch/twiki/bin/view/CMS/TauTrigger#Trigger_Table_for_2017
+                        double_tight_chargediso_35_eta_2p1_parameters,
+
+                        # trigger:          HLT_DoubleMediumChargedIsoPFTau40_Trk1_TightID_eta2p1_Reg
+                        # final tau filter: hltDoublePFTau40TrackPt1MediumChargedIsolationAndTightOOSCPhotonsDz02Reg
+                        # tau filter bit:   6
+                        # documentation:    https://twiki.cern.ch/twiki/bin/view/CMS/TauTrigger#Trigger_Table_for_2017
+                        double_medium_chargediso_40_eta_2p1_parameters,
+
+                        # trigger:          HLT_DoubleTightChargedIsoPFTau40_Trk1_eta2p1_Reg
+                        # final tau filter: hltDoublePFTau40TrackPt1TightChargedIsolationDz02Reg
+                        # tau filter bit:   6
+                        # documentation:    https://twiki.cern.ch/twiki/bin/view/CMS/TauTrigger#Trigger_Table_for_2017
+                        double_tight_chargediso_40_eta_2p1_parameters,
+                    ],
+                    **{
+                        _era: [
+                            # trigger:          HLT_DoubleMediumIsoPFTau35_Trk1_eta2p1_Reg
+                            # final tau filter: hltDoublePFTau35TrackPt1MediumIsolationDz02Reg
+                            # tau filter bit:   17
+                            # documentation:    https://twiki.cern.ch/twiki/bin/view/CMS/TauTrigger#Trigger_Table_for_2016
+                            # comment:          data Run2016B-F, MC; exact filter cannot be catched with filter bit
+                            double_medium_iso_35_eta_2p1_parameters,
+
+                            # trigger:          HLT_DoubleMediumCombinedIsoPFTau35_Trk1_eta2p1_Reg
+                            # final tau filter: hltDoublePFTau35TrackPt1MediumIsolationDz02Reg
+                            # tau filter bit:   17
+                            # documentation:    https://twiki.cern.ch/twiki/bin/view/CMS/TauTrigger#Trigger_Table_for_2016
+                            # comment:          data Run 2016G; exact filter cannot be catched with filter bit
+                            double_medium_iso_35_eta_2p1_parameters,
+                        ]
+                        for _era in ["2016preVFP", "2016postVFP"]
+                    },
+                },
+            ),
+        },
+    )
+
+
 def add_diTauTriggerSetup(configuration: Configuration):
 
     # Add isolated and non-isolated single-electron triggers to the et, em, and 
