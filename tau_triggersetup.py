@@ -702,7 +702,7 @@ def add_tautau_trigger(
         },
     )
 
-    {
+    # Add triggers to the configuration
     configuration.add_config_parameters(
         TT_SCOPES,
         {
