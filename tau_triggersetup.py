@@ -96,15 +96,6 @@ def add_diTauTriggerSetup(configuration: Configuration):
                             "particle_id": 13,
                             "match_max_delta_r": 0.4,
                         },
-                        {
-                            "flagname": "trg_single_mu27",
-                            "hlt_path": "HLT_IsoMu27",
-                            "min_pt": 28,
-                            "max_abs_eta": 2.1,
-                            "filter_bit": -1,
-                            "particle_id": 13,
-                            "match_max_delta_r": 0.4,
-                        },
                         # {
                         #     "flagname": "trg_single_mu50",
                         #     "hlt_path": "HLT_Mu50",
