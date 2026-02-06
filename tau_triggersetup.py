@@ -4,6 +4,18 @@ from code_generation.modifiers import EraModifier
 from .constants import EM_SCOPES, ET_SCOPES, MT_SCOPES, TT_SCOPES, ELECTRON_SCOPES, MUON_SCOPES, ERAS_RUN2, ERAS_RUN3, CORRECTIONLIB_CAMPAIGNS
 
 
+def _get_updated_dict(
+    orig_dict: dict,
+    update: dict,
+):
+    # Copy the dictionary `orig_dict`, update its entries with the `update`
+    # dictionary, and return the result. The function does not modify the
+    # content of `orig_dict`.
+    modified_dict = orig_dict.copy()
+    modified_dict.update(update)
+    return modified_dict
+
+
 def _add_muon_triggers(
     configuration: Configuration,
 ):
