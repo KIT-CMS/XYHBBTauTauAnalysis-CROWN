@@ -1,7 +1,15 @@
 from code_generation.configuration import Configuration
 from code_generation.modifiers import EraModifier
 
-from .constants import EM_SCOPES, ET_SCOPES, MT_SCOPES, TT_SCOPES, ELECTRON_SCOPES, MUON_SCOPES, ERAS_RUN2, ERAS_RUN3, CORRECTIONLIB_CAMPAIGNS
+from .constants import (
+    ET_SCOPES,
+    MT_SCOPES,
+    TT_SCOPES,
+    ELECTRON_SCOPES,
+    MUON_SCOPES,
+    ERAS_RUN2,
+    ERAS_RUN3,
+)
 
 
 def _get_updated_dict(
