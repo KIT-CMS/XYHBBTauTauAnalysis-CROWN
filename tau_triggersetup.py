@@ -16,6 +16,202 @@ def _get_updated_dict(
     return modified_dict
 
 
+def _add_electron_triggers(
+    configuration: Configuration,
+):
+    """
+    Add configuration of electron trigger producers. The configuration adds
+    single-electron triggers to scopes with at least one electron (`et`, `em`,
+    `ee`).
+
+    The use of the following isolated electron triggers is recommended by the
+    EGM POG:
+
+    - 2016: `HLT_Ele27_WPTight_Gsf`
+    - 2017: `HLT_Ele35_WPTight_Gsf || (HLT_Ele32_WPTight_Gsf && L1 seeds of HLT_Ele35_WPTight_Gsf)`
+    - 2018: `HLT_Ele32_WPTight_Gsf`
+    - 2022, 2023, 2024: `HLT_Ele30_WPTight_Gsf`
+
+    The use of the following non-isolated electron triggers is recommended by
+    the EGM POG:
+
+    - 2016: `HLT_Ele115_CaloIdVT_GsfTrkIdT || HLT_Photon175`
+    - 2017: `HLT_Ele115_CaloIdVT_GsfTrkIdT || HLT_Photon200`
+    - 2018, 2022, 2023, 2024: `HLT_Ele115_CaloIdVT_GsfTrkIdT`
+
+    The single-electron trigger recommendations can be found at the following
+    EGM POG TWiki pages:
+
+    - https://twiki.cern.ch/twiki/bin/view/CMS/EgHLTRunIISummary
+    - https://twiki.cern.ch/twiki/bin/view/CMS/EgHLTRunIIISummary
+    """
+
+    ## Isolated-electron triggers
+
+    # HLT_Ele27_WPTight_Gsf parameters
+    ele_27_wptight_gsf_parameters = {
+        "flagname": "trg_single_ele27",
+        "hlt_path": "HLT_Ele27_WPTight_Gsf",
+        "min_pt": 29.,
+        "max_abs_eta": 2.5,
+        "filter_bit": 1,
+        "particle_id": 11,
+        "match_max_delta_r": 0.4,
+    }
+
+    # HLT_Ele30_WPTight_Gsf parameters
+    ele_30_wptight_gsf_parameters = _get_updated_dict(
+        ele_27_wptight_gsf_parameters,
+        {
+            "flagname": "trg_single_ele30",
+            "hlt_path": "HLT_Ele30_WPTight_Gsf",
+            "min_pt": 32.,
+        },
+    )
+
+    # HLT_Ele32_WPTight_Gsf parameters
+    ele_32_wptight_gsf_parameters = _get_updated_dict(
+        ele_27_wptight_gsf_parameters,
+        {
+            "flagname": "trg_single_ele32",
+            "hlt_path": "HLT_Ele32_WPTight_Gsf",
+            "min_pt": 34.,
+        },
+    )
+
+    # HLT_Ele35_WPTight_Gsf parameters
+    ele_35_wptight_gsf_parameters = _get_updated_dict(
+        ele_27_wptight_gsf_parameters,
+        {
+            "flagname": "trg_single_ele35",
+            "hlt_path": "HLT_Ele35_WPTight_Gsf",
+            "min_pt": 37.,
+        },
+    )
+
+    ## High-pt-electron triggers
+
+    # HLT_Ele115_CaloIdVT_GsfTrkIdT
+    ele_115_caloidvt_gsftrkidt_parameters = {
+        "flagname": "trg_single_ele115",
+        "hlt_path": "HLT_Ele115_CaloIdVT_GsfTrkIdT",
+        "min_pt": 120.,
+        "max_abs_eta": 2.5,
+        "filter_bit": 11,
+        "particle_id": 11,
+        "match_max_delta_r": 0.4,
+    }
+
+    # HLT_Photon_175
+    photon_175_parameters = _get_updated_dict(
+        ele_115_caloidvt_gsftrkidt_parameters,
+        {
+            "flagname": "trg_single_photon175",
+            "hlt_path": "HLT_Photon175",
+            "min_pt": 180.,
+            "filter_bit": 13,
+        }
+    )
+
+    # HLT_Photon_200
+    photon_200_parameters = _get_updated_dict(
+        photon_175_parameters,
+        {
+            "flagname": "trg_single_photon200",
+            "hlt_path": "HLT_Photon200",
+            "min_pt": 205.,
+        }
+    )
+
+    # Add triggers to the configuration
+    configuration.add_config_parameters(
+        ELECTRON_SCOPES,
+        {
+            "single_mu_trigger": EraModifier(
+                {
+                    **{
+                        _era: [
+                            # trigger:            HLT_Ele30_WPTight_Gsf
+                            # final filter:       hltEle30WPTightGsfTrackIsoFilter
+                            # filter bit:         1
+                            # documentation:      https://twiki.cern.ch/twiki/bin/view/CMS/EgHLTRunIIISummary
+                            ele_30_wptight_gsf_parameters,
+
+                            # trigger:            HLT_Ele115_CaloIdVT_GsfTrkIdT
+                            # final filter:       hltEle115CaloIdVTGsfTrkIdTGsfDphiFilter
+                            # filter bit:         11
+                            # documentation:      https://twiki.cern.ch/twiki/bin/view/CMS/EgHLTRunIIISummary
+                            ele_115_caloidvt_gsftrkidt_parameters,
+                        ]
+                        for _era in ["2022preEE", "2022postEE", "2023preBPix", "2023postBPix", "2024"]
+                    },
+                    "2018": [
+                            # trigger:            HLT_Ele32_WPTight_Gsf
+                            # final filter:       hltEle32WPTightGsfTrackIsoFilter
+                            # filter bit:         1
+                            # documentation:      https://twiki.cern.ch/twiki/bin/view/CMS/EgHLTRunIISummary
+                            ele_32_wptight_gsf_parameters,
+
+                            # trigger:            HLT_Ele115_CaloIdVT_GsfTrkIdT
+                            # final filter:       hltEle115CaloIdVTGsfTrkIdTGsfDphiFilter
+                            # filter bit:         11
+                            # documentation:      https://twiki.cern.ch/twiki/bin/view/CMS/EgHLTRunIISummary
+                            ele_115_caloidvt_gsftrkidt_parameters,
+                    ],
+                    "2017": [
+                            # trigger:            HLT_Ele32_WPTight_Gsf
+                            # final filter:       hltEle32WPTightGsfTrackIsoFilter
+                            # filter bit:         1
+                            # documentation:      https://twiki.cern.ch/twiki/bin/view/CMS/EgHLTRunIISummary
+                            # comment:            Events must pass the L1 seed of HLT_Ele35_WPTight_Gsf
+                            ele_32_wptight_gsf_parameters,
+
+                            # trigger:            HLT_Ele35_WPTight_Gsf
+                            # final filter:       hltEle35noerWPTightGsfTrackIsoFilter
+                            # filter bit:         1
+                            # documentation:      https://twiki.cern.ch/twiki/bin/view/CMS/EgHLTRunIISummary
+                            ele_35_wptight_gsf_parameters,
+
+                            # trigger:            HLT_Ele115_CaloIdVT_GsfTrkIdT
+                            # final filter:       hltEle115CaloIdVTGsfTrkIdTGsfDphiFilter
+                            # filter bit:         11
+                            # documentation:      https://twiki.cern.ch/twiki/bin/view/CMS/EgHLTRunIISummary
+                            ele_115_caloidvt_gsftrkidt_parameters,
+
+                            # trigger:            HLT_Photon200
+                            # final filter:       hltEG200HEFilter
+                            # filter bit:         13
+                            # documentation:      https://twiki.cern.ch/twiki/bin/view/CMS/EgHLTRunIISummary
+                            photon_200_parameters,
+                    ],
+                    **{
+                        _era: [
+                            # trigger:            HLT_Ele27_WPTight_Gsf
+                            # final filter:       hltEle27WPTightGsfTrackIsoFilter
+                            # filter bit:         1
+                            # documentation:      https://twiki.cern.ch/twiki/bin/view/CMS/EgHLTRunIISummary
+                            ele_27_wptight_gsf_parameters,
+
+                            # trigger:            HLT_Ele115_CaloIdVT_GsfTrkIdT
+                            # final filter:       hltEle115CaloIdVTGsfTrkIdTGsfDphiFilter
+                            # filter bit:         11
+                            # documentation:      https://twiki.cern.ch/twiki/bin/view/CMS/EgHLTRunIISummary
+                            ele_115_caloidvt_gsftrkidt_parameters,
+
+                            # trigger:            HLT_Photon200
+                            # final filter:       hltEG175HEFilter
+                            # filter bit:         13
+                            # documentation:      https://twiki.cern.ch/twiki/bin/view/CMS/EgHLTRunIISummary
+                            photon_175_parameters,
+                        ]
+                        for _era in ["2016preVFP", "2016postVFP"]
+                    },
+                },
+            ),
+        },
+    )
+
+
 def _add_muon_triggers(
     configuration: Configuration,
 ):
