@@ -2172,26 +2172,24 @@ def build_config(
         era,
     )
 
-    # Jet selection
+    # Base jet selection
     # - In Run 2, the CHS collection is used and pileup ID is applied.
     # - In Run 3, the PUPPI collection is used and no pileup ID is applied; the jet ID needs to
     #   be corrected in 2022 and 2023 due to a bug.
-    jet_selection_producers = get_for_era(
+    # - In 2024, the jet ID must be calculated from base NANOAOD variables and a correction JSON
+    base_jet_selection_producers = get_for_era(
         {
             tuple(ERAS_RUN2): [
                 jets.JetIDRun2,
-                jets.GoodJetsWithPUID,
-                jets.GoodBJetsWithPUID,
+                jets.BaseJetSelectionWithPUID,
             ],
             ("2022preEE", "2022postEE", "2023preBPix", "2023postBPix"): [
-                jets.JetIDRun3NanoV12Corrected,
-                jets.GoodJetsWithoutPUID,
-                jets.GoodBJetsWithoutPUID,
+                jets.JetIDRun3NanoV12,
+                jets.BaseJetSelectionWithoutPUID,
             ],
             "2024": [
                 jets.JetIDRun3NanoV15,
-                jets.GoodJetsWithoutPUID,
-                jets.GoodBJetsWithoutPUID,
+                jets.BaseJetSelectionWithoutPUID,
             ],
         },
         era,
@@ -2429,12 +2427,8 @@ def build_config(
             fatjets.FatJetCollection,
             fatjets.FatJetCollectionWithoutVeto,
             fatjets.BasicFatJetQuantities,
-            jets.JetWithVetoMasks,
-            jets.JetCollection,
-            jets.CombinedJetCollection,
-            jets.JetColumns,
+            jets.JetSelection,
             jets.BasicJetQuantities,
-            jets.BJetCollection,
             jets.BasicBJetQuantities,
             pairselection.BBPairSelection,
             # pairselection.GoodBBPairFilter,
