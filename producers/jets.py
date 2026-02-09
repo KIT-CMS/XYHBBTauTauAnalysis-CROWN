@@ -113,7 +113,12 @@ JetIDRun2 = Producer(
     scopes=GLOBAL_SCOPES,
 )
 
-# jet selection including the pileup ID (for CHS jets)
+
+#
+# AK4 JET SELECTION
+#
+
+# Jet selection for run 2 (CHS jets)
 GoodJetsWithPUID = Producer(
     name="GoodJetsWithPUID",
     call="xyh::object_selection::jet({df}, {output}, {input}, {ak4jet_min_pt}, {ak4jet_max_abs_eta}, {ak4jet_id_wp}, {ak4jet_apply_jet_horn_veto}, {ak4jet_puid_wp}, {ak4jet_puid_max_pt})",
@@ -127,7 +132,7 @@ GoodJetsWithPUID = Producer(
     scopes=GLOBAL_SCOPES,
 )
 
-# jet selection not applying the pileup ID (for PUPPI jets)
+# Jet selection for run 3 (PUPPI jets)
 GoodJetsWithoutPUID = Producer(
     name="GoodJetsWithoutPUID",
     call="xyh::object_selection::jet({df}, {output}, {input}, {ak4jet_min_pt}, {ak4jet_max_abs_eta}, {ak4jet_id_wp}, {ak4jet_apply_jet_horn_veto})",
@@ -140,7 +145,7 @@ GoodJetsWithoutPUID = Producer(
     scopes=GLOBAL_SCOPES,
 )
 
-# base jet selection for b jets including the pileup ID (for CHS jets)
+# Kinematic b jet selection for run 2 (CHS jets)
 GoodBJetsBaseWithPUID = Producer(
     name="GoodBJetsBaseWithPUID",
     call="xyh::object_selection::jet({df}, {output}, {input}, {bjet_min_pt}, {bjet_max_abs_eta}, {ak4jet_id_wp}, {ak4jet_apply_jet_horn_veto}, {ak4jet_puid_wp}, {ak4jet_puid_max_pt})",
@@ -154,7 +159,7 @@ GoodBJetsBaseWithPUID = Producer(
     scopes=GLOBAL_SCOPES,
 )
 
-# base jet selection for b jets not applying the pileup ID (for PUPPI jets)
+# Kinematic b jet selection for run 3 (PUPPI jets)
 GoodBJetsBaseWithoutPUID = Producer(
     name="GoodBJetsBaseWithoutPUID",
     call="xyh::object_selection::jet({df}, {output}, {input}, {bjet_min_pt}, {bjet_max_abs_eta}, {ak4jet_id_wp}, {ak4jet_apply_jet_horn_veto})",
@@ -167,105 +172,66 @@ GoodBJetsBaseWithoutPUID = Producer(
     scopes=GLOBAL_SCOPES,
 )
 
-# requirement on b tagging score (DeepJet)
-BTagCutDeepJet = Producer(
+# Tag whether a jet is b-tagged.
+# The NANOAOD column for the b tagging score is taken from the analysis
+# configuration.
+BTagCut = Producer(
     name="BTagCut",
-    call="physicsobject::CutMin<float>({df}, {output}, {input}, {bjet_min_deepjet_score})",
-    input=[nanoAOD.Jet_btagDeepFlavB],
-    output=[q.Jet_deepjet_b_tagged_medium],
+    call="physicsobject::CutMin<float>({df}, {output}, {input}, \"{bjet_score_column}\", {bjet_min_score})",
+    input=[],
+    output=[q.Jet_is_btagged],
     scopes=GLOBAL_SCOPES,
 )
 
-# requirement on b tagging score (ParticleNet)
-BTagCutPNet = Producer(
-    name="BTagCutPNet",
-    call="physicsobject::CutMin<float>({df}, {output}, {input}, {bjet_min_pnet_score})",
-    input=[nanoAOD.Jet_btagPNetB],
-    output=[q.Jet_pnet_b_tagged_medium],
-    scopes=GLOBAL_SCOPES,
-)
-
-# requirement on b tagging score (ParticleNet)
-BTagCutUParT = Producer(
-    name="BTagCutUParT",
-    call="physicsobject::CutMin<float>({df}, {output}, {input}, {bjet_min_pnet_score})",
-    input=[nanoAOD.Jet_btagUParTAK4B],
-    output=[q.Jet_upart_b_tagged_medium],
-    scopes=GLOBAL_SCOPES,
-)
-
-# b jet selection combining the base b jet selection and the b tagging requirement not applying the pileup ID (for PUPPI jets)
-GoodBJetsWithoutPUIDDeepJet = ProducerGroup(
-    name="GoodBJetsWithoutPUIDDeepJet",
-    call='physicsobject::CombineMasks({df}, {output}, {input}, "all_of")',
-    input=[q.base_bjets_mask],
-    output=[q.good_bjets_deepjet_mask],
-    subproducers=[
-        BTagCutDeepJet,
-    ],
-    scopes=GLOBAL_SCOPES,
-)
-
-GoodBJetsDeepJet = ProducerGroup(
-    name="GoodBJetsWithPUIDDeepJet",
-    call='physicsobject::CombineMasks({df}, {output}, {input}, "all_of")',
-    input=[q.base_bjets_mask],
-    output=[q.good_bjets_deepjet_mask],
-    subproducers=[
-        BTagCutDeepJet,
-    ],
-    scopes=GLOBAL_SCOPES,
-)
-
-# b jet selection combining the base b jet selection and the b tagging requirement not applying the pileup ID (for PUPPI jets)
-GoodBJetsPNet = ProducerGroup(
-    name="GoodBJetsWithoutPUIDPNet",
-    call='physicsobject::CombineMasks({df}, {output}, {input}, "all_of")',
-    input=[q.base_bjets_mask],
-    output=[q.good_bjets_pnet_mask],
-    subproducers=[
-        BTagCutPNet,
-    ],
-    scopes=GLOBAL_SCOPES,
-)
-
-# b jet selection combining the base b jet selection and the b tagging requirement not applying the pileup ID (for PUPPI jets)
-GoodBJetsUParT = ProducerGroup(
-    name="GoodBJetsWithoutPUIDPNet",
-    call='physicsobject::CombineMasks({df}, {output}, {input}, "all_of")',
-    input=[q.base_bjets_mask],
-    output=[q.good_bjets_upart_mask],
-    subproducers=[
-        BTagCutUParT,
-    ],
-    scopes=GLOBAL_SCOPES,
-)
-
+# Full b jet selection for run 2, including the b tagging requirement (CHS jets)
 GoodBJetsWithPUID = ProducerGroup(
-    name="GoodBJetsWithPUIDPNet",
-    call=None,
-    input=None,
-    output=None,
-    scopes=GLOBAL_SCOPES,
+    name="GoodBJetsWithPUID",
+    call='physicsobject::CombineMasks({df}, {output}, {input}, "all_of")',
+    input=[],
+    output=[q.good_bjets_mask],
     subproducers=[
         GoodBJetsBaseWithPUID,
-        GoodBJetsDeepJet,
-        GoodBJetsPNet,
-        GoodBJetsUParT,
+        BTagCut,
     ],
+    scopes=GLOBAL_SCOPES,
 )
 
+# Full b jet selection for run 3, including the b tagging requirement (PUPPI jets)
 GoodBJetsWithoutPUID = ProducerGroup(
-    name="GoodBJetsWithoutPUIDPNet",
+    name="GoodBJetsWithoutPUID",
+    call='physicsobject::CombineMasks({df}, {output}, {input}, "all_of")',
+    input=[],
+    output=[q.good_bjets_mask],
+    subproducers=[
+        GoodBJetsBaseWithoutPUID,
+        BTagCut,
+    ],
+    scopes=GLOBAL_SCOPES,
+)
+
+# Producer group for jet and b jet selection in run 2 (CHS jets)
+BaseJetSelectionWithPUID = ProducerGroup(
+    name="GoodJetSelectionWithPUID",
     call=None,
     input=None,
     output=None,
     scopes=GLOBAL_SCOPES,
     subproducers=[
-        GoodBJetsBaseWithoutPUID,
-        GoodBJetsDeepJet,
-        GoodBJetsPNet,
-        GoodBJetsUParT,
+        GoodJetsWithPUID,
+        GoodBJetsWithPUID,
+    ],
+)
+
+# Producer group for jet and b jet selection in run 3 (PUPPI jets)
+BaseJetSelectionWithoutPUID = ProducerGroup(
+    name="GoodJetSelectionWithoutPUID",
+    call=None,
+    input=None,
+    output=None,
+    scopes=GLOBAL_SCOPES,
+    subproducers=[
+        GoodJetsWithoutPUID,
+        GoodBJetsWithoutPUID,
     ],
 )
 
