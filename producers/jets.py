@@ -238,11 +238,9 @@ BaseJetSelectionWithoutPUID = ProducerGroup(
 
 #
 # OVERLAP VETOES
-# TODO could be simplified by designing a generic function
 #
 
-
-# check whether a jet is overlapping with the tight lepton candidates from resolved selection
+# Check whether a jet is overlapping with the tight lepton candidates from resolved selection
 VetoOverlappingJets = Producer(
     name="VetoOverlappingJets",
     call="physicsobject::jet::VetoOverlappingJets({df}, {output}, {input}, {ak4jet_veto_min_delta_r})",
@@ -256,7 +254,7 @@ VetoOverlappingJets = Producer(
     scopes=SCOPES,
 )
 
-# create a mask that includes selected jets that do not overlap with the lepton candidates from the resolved selection
+# Create a mask that includes selected jets that do not overlap with the lepton candidates from the resolved selection
 GoodJetsWithVeto = Producer(
     name="GoodJetsWithVeto",
     call='physicsobject::CombineMasks({df}, {output}, {input}, "all_of")',
@@ -265,99 +263,57 @@ GoodJetsWithVeto = Producer(
     scopes=SCOPES,
 )
 
-# create a mask that includes selected jets that do not overlap with the lepton candidates from the resolved selection
-GoodBJetsDeepJetWithVeto = Producer(
-    name="GoodBJetsDeepJetWithVeto",
+# Create a mask that includes selected b jets that do not overlap with the lepton candidates from the resolved selection
+GoodBJetsWithVeto = Producer(
+    name="GoodBJetsWithVeto",
     call='physicsobject::CombineMasks({df}, {output}, {input}, "all_of")',
-    input=[q.good_bjets_deepjet_mask, q.jet_overlap_veto_mask],
-    output=[q.good_bjets_deepjet_with_veto_mask],
+    input=[q.good_bjets_mask, q.jet_overlap_veto_mask],
+    output=[q.good_bjets_with_veto_mask],
     scopes=SCOPES,
 )
 
-# create a mask that includes selected jets that do not overlap with the lepton candidates from the resolved selection
-GoodBJetsPNetWithVeto = Producer(
-    name="GoodBJetsPNetWithVeto",
-    call='physicsobject::CombineMasks({df}, {output}, {input}, "all_of")',
-    input=[q.good_bjets_pnet_mask, q.jet_overlap_veto_mask],
-    output=[q.good_bjets_pnet_with_veto_mask],
+# Create a mask that merged the masks for the selected jets and b jets after overlap cleaning
+GoodJetsOrBJetsWithVeto = Producer(
+    name="GoodJetsOrBJetsWithVeto",
+    call='physicsobject::CombineMasks({df}, {output}, {input}, "any_of")',
+    input=[q.good_jets_with_veto_mask, q.good_bjets_with_veto_mask],
+    output=[],
     scopes=SCOPES,
 )
 
-# create a mask that includes selected jets that do not overlap with the lepton candidates from the resolved selection
-GoodBJetsUParTWithVeto = Producer(
-    name="GoodBJetsUParTWithVeto",
-    call='physicsobject::CombineMasks({df}, {output}, {input}, "all_of")',
-    input=[q.good_bjets_upart_mask, q.jet_overlap_veto_mask],
-    output=[q.good_bjets_upart_with_veto_mask],
+# Final jet collection as list of indices of selected jets, ordered by pt for the resolved selection
+JetCollection = ProducerGroup(
+    name="JetCollection",
+    call="physicsobject::OrderByPt({df}, {output}, {input})",
+    input=[q.Jet_pt_corrected, q.good_jets_and_bjets_with_veto_mask],
+    output=[q.good_jet_collection],
+    scopes=SCOPES,
+    subproducers=[GoodJetsOrBJetsWithVeto],
+)
+
+# Final b jet collection as list of indices of selected jets, ordered by pt for the resolved selection
+BJetCollection = Producer(
+    name="BJetCollection",
+    call="physicsobject::OrderByPt({df}, {output}, {input})",
+    input=[q.Jet_pt_corrected, q.good_bjets_with_veto_mask],
+    output=[q.good_bjet_collection],
     scopes=SCOPES,
 )
 
-JetWithVetoMasks = ProducerGroup(
-    name="JetWithVetoMasks",
+# Producer group for the jet selection in the scopes after cleaning against leptons
+JetSelection = ProducerGroup(
+    name="JetSelection",
     call=None,
-    input=None,
-    output=None,
+    input=[],
+    output=[],
     scopes=SCOPES,
     subproducers=[
         VetoOverlappingJets,
         GoodJetsWithVeto,
-        GoodBJetsDeepJetWithVeto,
-        GoodBJetsPNetWithVeto,
-        GoodBJetsUParTWithVeto,
-    ]
-)
-
-# This collection considers all jets and tagged b jets (DeepJet + PNet)
-CombinedGoodJetsWithVetoMask = Producer(
-    name="CombinedGoodJetsWithVetoMask",
-    call='physicsobject::CombineMasks({df}, {output}, {input}, "any_of")',
-    input=[q.good_jets_with_veto_mask, q.good_bjets_deepjet_with_veto_mask, q.good_bjets_pnet_with_veto_mask, q.good_bjets_upart_with_veto_mask],
-    output=[],
-    scopes=SCOPES,
-)
-
-# Jet collection containing the indices of selected jets, ordered by pt for the resolved selection
-# This collection considers b jets that pass any of the selected b jet identification algorithms
-CombinedJetCollection = ProducerGroup(
-    name="CombinedJetCollection",
-    call="physicsobject::OrderByPt({df}, {output}, {input})",
-    input=[q.Jet_pt_corrected],
-    output=[q.good_jet_combined_collection],
-    scopes=SCOPES,
-    subproducers=[CombinedGoodJetsWithVetoMask],
-)
-
-# This collection considers all jets and tagged b jets with the default algorithm selected with
-# BJET_ID_ALGORITHM
-GoodJetsWithVetoMask = Producer(
-    name="GoodJetsDeepJetWithVetoMask",
-    call='physicsobject::CombineMasks({df}, {output}, {input}, "any_of")',
-    input=[
-        q.good_jets_with_veto_mask,
-        good_bjets_with_veto_mask,
+        GoodBJetsWithVeto,
+        JetCollection,
+        BJetCollection,
     ],
-    output=[],
-    scopes=SCOPES,
-)
-
-# final jet collection as list of indices of selected jets, ordered by pt for the resolved selection
-# only b jets selected with the default algorithm BJET_ID_ALGORITHM are considered
-JetCollection = ProducerGroup(
-    name="JetCollection",
-    call="physicsobject::OrderByPt({df}, {output}, {input})",
-    input=[q.Jet_pt_corrected],
-    output=[q.good_jet_collection],
-    scopes=SCOPES,
-    subproducers=[GoodJetsWithVetoMask],
-)
-
-# final b jet collection as list of indices of selected jets, ordered by pt for the resolved selection
-BJetCollection = Producer(
-    name="BJetCollection",
-    call="physicsobject::OrderByPt({df}, {output}, {input})",
-    input=[q.Jet_pt_corrected, good_bjets_with_veto_mask],
-    output=[q.good_bjet_collection],
-    scopes=SCOPES,
 )
 
 
