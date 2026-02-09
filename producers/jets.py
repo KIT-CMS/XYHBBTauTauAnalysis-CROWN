@@ -32,12 +32,60 @@ elif BJET_ID_ALGORITHM == AvailableBJetIDs.UPART:
     nanoaod_btag_score = nanoAOD.Jet_btagUParTAK4B
 
 
+#
+# JET ID
+#
+
+# Rename the jet ID stored in the NANOAOD samples for run 2 samples
+JetIDRun2 = Producer(
+    name="JetIDRun2",
+    call="event::quantity::Rename<ROOT::RVec<UChar_t>>({df}, {output}, {input})",
+    input=[nanoAODv12_run3.Jet_jetId],
+    output=[q.Jet_ID_corrected],
+    scopes=GLOBAL_SCOPES,
+)
+
+# Correct the jet ID stored in run 3 NANOAODv12 samples
+JetIDRun3NanoV12 = Producer(
+    name="JetIDRun3NanoV12Corrected",
+    call="physicsobject::jet::quantities::CorrectJetIDRun3NanoV12({df}, {output}, {input})",
+    input=[
+        nanoAOD.Jet_pt,
+        nanoAOD.Jet_eta,
+        nanoAODv12_run3.Jet_jetId,
+        nanoAOD.Jet_neHEF,
+        nanoAOD.Jet_neEmEF,
+        nanoAOD.Jet_muEF,
+        nanoAOD.Jet_chEmEF,
+    ],
+    output=[q.Jet_ID_corrected],
+    scopes=GLOBAL_SCOPES,
+)
+
+# Calculate the jet ID from a correction JSON for run 3 NANOAODv15 samples
+JetIDRun3NanoV15 = Producer(
+    name="JetIDRun3",
+    call="physicsobject::jet::quantity::ID({df}, correctionManager, {output}, {input}, \"{ak4jet_id_file}\", \"{ak4jet_id_name}\")",
+    input=[
+        nanoAOD.Jet_eta,
+        nanoAOD.Jet_chHEF,
+        nanoAOD.Jet_neHEF,
+        nanoAOD.Jet_chEmEF,
+        nanoAOD.Jet_neEmEF,
+        nanoAOD.Jet_muEF,
+        nanoAOD.Jet_chMultiplicity,
+        nanoAOD.Jet_neMultiplicity,
+    ],
+    output=[q.Jet_ID_corrected],
+    scopes=GLOBAL_SCOPES,
+)
+
 
 #
 # JET ENERGY SCALE AND RESOLUTION CORRECTIONS
 #
 
-# create jet energy correction producers for AK4 jets
+# Create jet energy correction producers for AK4 jets
 JetEnergyCorrection_data, JetEnergyCorrection, RenameJetsData = jerc_producer_factory(
     input={
         "jet_pt": nanoAOD.Jet_pt,
@@ -62,55 +110,6 @@ JetEnergyCorrection_data, JetEnergyCorrection, RenameJetsData = jerc_producer_fa
     scopes=GLOBAL_SCOPES,
     producer_prefix="Jet",
     config_parameter_prefix="ak4jet",
-)
-
-
-#
-# AK4 JET SELECTION
-#
-
-# correct the jet ID value for Run3 samples
-JetIDRun3NanoV12Corrected = Producer(
-    name="JetIDRun3NanoV12Corrected",
-    call="physicsobject::jet::quantities::CorrectJetIDRun3NanoV12({df}, {output}, {input})",
-    input=[
-        nanoAOD.Jet_pt,
-        nanoAOD.Jet_eta,
-        nanoAODv12_run3.Jet_jetId,
-        nanoAOD.Jet_neHEF,
-        nanoAOD.Jet_neEmEF,
-        nanoAOD.Jet_muEF,
-        nanoAOD.Jet_chEmEF,
-    ],
-    output=[q.Jet_ID_corrected],
-    scopes=GLOBAL_SCOPES,
-)
-
-# Calculate the jet ID values for run 3 (nanoAOD v15, 2024)
-JetIDRun3NanoV15 = Producer(
-    name="JetIDRun3",
-    call="physicsobject::jet::quantity::ID({df}, correctionManager, {output}, {input}, \"{ak4jet_id_file}\", \"{ak4jet_id_name}\")",
-    input=[
-        nanoAOD.Jet_eta,
-        nanoAOD.Jet_chHEF,
-        nanoAOD.Jet_neHEF,
-        nanoAOD.Jet_chEmEF,
-        nanoAOD.Jet_neEmEF,
-        nanoAOD.Jet_muEF,
-        nanoAOD.Jet_chMultiplicity,
-        nanoAOD.Jet_neMultiplicity,
-    ],
-    output=[q.Jet_ID_corrected],
-    scopes=GLOBAL_SCOPES,
-)
-
-# for Run 2, the Jet ID implementation is correct, just rename the column
-JetIDRun2 = Producer(
-    name="JetIDRun2",
-    call="event::quantity::Rename<ROOT::RVec<UChar_t>>({df}, {output}, {input})",
-    input=[nanoAODv12_run3.Jet_jetId],
-    output=[q.Jet_ID_corrected],
-    scopes=GLOBAL_SCOPES,
 )
 
 
