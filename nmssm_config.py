@@ -1546,64 +1546,35 @@ def add_bjet_config(configuration: Configuration):
         },
     )
 
-    # b jet identification with DeepJet
+    # b jet identification
     # recommendations: https://btv-wiki.docs.cern.ch/ScaleFactors
     configuration.add_config_parameters(
         GLOBAL_SCOPES + SCOPES,
         {
-            "bjet_min_deepjet_score": EraModifier(  # medium
+            "bjet_score_column": EraModifier(
                 {
-                    "2016preVFP": 0.2598,
-                    "2016postVFPP": 0.2489,
-                    "2017": 0.3040,
-                    "2018": 0.2783,
-                    "2022preEE": 0.3086,
-                    "2022postEE": 0.3196,
-                    "2023preBPix": 0.2431,
-                    "2023postBPix": 0.2435,
-                    "2024": 0.0,  # does not exist
+                    **{
+                        _era: nanoAOD.Jet_btagDeepFlavB.name
+                        for _era in ERAS_RUN2
+                    },
+                    **{
+                        _era: nanoAOD.Jet_btagPNetB.name
+                        for _era in ["2022preEE", "2022postEE", "2023preBPix", "2023postBPix"]
+                    },
+                    "2024": nanoAOD.Jet_btagUParTAK4B.name,
                 },
             ),
-        },
-    )
-
-    # b jet identification with ParticleNet
-    # recommendations: https://btv-wiki.docs.cern.ch/ScaleFactors
-    configuration.add_config_parameters(
-        GLOBAL_SCOPES + HAD_TAU_SCOPES,
-        {
-            "bjet_min_pnet_score": EraModifier(  # medium
+            "bjet_min_score": EraModifier(  # medium WP
                 {
-                    "2016preVFP": 0.0,  # does not exist
-                    "2016postVFPP": 0.0,  # does not exist
-                    "2017": 0.0,  # does not exist
-                    "2018": 0.0,  # does not exist
-                    "2022preEE": 0.245,
-                    "2022postEE": 0.2605,
-                    "2023preBPix": 0.1917,
-                    "2023postBPix": 0.1919,
-                    "2024": 0.0,  # does not exist
-                },
-            ),
-        },
-    )
-
-    # b jet identification with UParT
-    # recommendations: https://btv-wiki.docs.cern.ch/ScaleFactors
-    configuration.add_config_parameters(
-        GLOBAL_SCOPES + HAD_TAU_SCOPES,
-        {
-            "bjet_min_upart_score": EraModifier(  # medium
-                {
-                    "2016preVFP": 0.0,  # does not exist
-                    "2016postVFP": 0.0,  # does not exist
-                    "2017": 0.0,  # does not exist
-                    "2018": 0.0,  # does not exist
-                    "2022preEE": 0.0,  # does not exist
-                    "2022postEE": 0.0,  # does not exist
-                    "2023preBPix": 0.0,  # does not exist
-                    "2023postBPix": 0.0,  # does not exist
-                    "2024": 0.1272,
+                    "2016preVFP": 0.2598,  # DeepJet
+                    "2016postVFPP": 0.2489,  # DeepJet
+                    "2017": 0.3040,  # DeepJet
+                    "2018": 0.2783,  # DeepJet
+                    "2022preEE": 0.245,  # ParticleNet
+                    "2022postEE": 0.2605,  # ParticleNet
+                    "2023preBPix": 0.1917,  # ParticleNet
+                    "2023postBPix": 0.1919,  # ParticleNet
+                    "2024": 0.1272,  # UParT
                 },
             ),
         },
