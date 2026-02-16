@@ -591,7 +591,7 @@ def _add_tautau_triggers(
     double_medium_deeptau_35_eta_2p1_2024_parameters = _get_updated_dict(
         double_medium_deeptau_35_eta_2p1_parameters,
         {
-            "flagname": "trg_double_tau35",
+            "flagname": "trg_double_tau35_mediumdeeptau",
             "hlt_path": "HLT_DoubleMediumDeepTauPFTauHPS35_L2NN_eta2p1",
             "p1_filter_bit": 11,
             "p2_filter_bit": 11,
@@ -602,7 +602,7 @@ def _add_tautau_triggers(
 
     # HLT_DoublePNetTauhPFJet30_Medium_L2NN_eta2p3
     double_medium_pnet_35_eta_2p3_parameters = _get_updated_dict(
-        double_medium_deeptau_35_eta_2p1_parameters,
+        double_medium_deeptau_35_eta_2p1_2024_parameters,
         {
             "flagname": "trg_double_tau35_mediumpnet",
             "hlt_path": "HLT_DoublePNetTauhPFJet30_Medium_L2NN_eta2p3",
@@ -686,7 +686,7 @@ def _add_tautau_triggers(
 
     # HLT_DoubleMediumDeepTauPFTauHPS30_L2NN_eta2p1_PFJet60
     double_medium_deeptau_30_eta2p1_jet_60_parameters = {
-        "flagname": "trg_double_tau30_jet60_deeptau",
+        "flagname": "trg_double_tau30_jet60_mediumdeeptau",
         "hlt_path": "HLT_DoubleMediumDeepTauPFTauHPS30_L2NN_eta2p1_PFJet60",
         "p1_min_pt": 35.,
         "p1_max_abs_eta": 2.1,
@@ -703,7 +703,7 @@ def _add_tautau_triggers(
     double_medium_deeptau_30_eta2p1_jet_75_parameters = _get_updated_dict(
         double_medium_deeptau_30_eta2p1_jet_60_parameters,
         {
-            "flagname": "trg_double_tau30_jet75_deeptau",
+            "flagname": "trg_double_tau30_jet75_mediumdeeptau",
             "hlt_path": "HLT_DoubleMediumDeepTauPFTauHPS30_L2NN_eta2p1_PFJet75",
         },
     )
@@ -734,27 +734,9 @@ def _add_tautau_triggers(
     configuration.add_config_parameters(
         TT_SCOPES,
         {
-            "tautau_trigger": EraModifier(
+            "tautaujet_trigger": EraModifier(
                 {
                     "2024": [
-                        # trigger:          HLT_DoubleMediumDeepTauPFTauHPS35_L2NN_eta2p1
-                        # final tau filter: hltHpsDoublePFTau35MediumDitauWPDeepTauL1HLTMatched
-                        # tau filter bit:   11 (for NANOAODv15)
-                        # documentation:    https://twiki.cern.ch/twiki/bin/view/CMS/TauTrigger#Trigger_Table_for_2024
-                        double_medium_deeptau_35_eta_2p1_2024_parameters,
-
-                        # trigger:          HLT_DoublePNetTauhPFJet30_Medium_L2NN_eta2p3
-                        # final tau filter: hltDoublePFJets30PNetTauhTagMediumWPL2DoubleTau
-                        # tau filter bit:   11 (for NANOAODv15)
-                        # documentation:    https://twiki.cern.ch/twiki/bin/view/CMS/TauTrigger#Trigger_Table_for_2024
-                        double_medium_pnet_35_eta_2p3_parameters,
-
-                        # trigger:          HLT_DoublePNetTauhPFJet30_Tight_L2NN_eta2p3
-                        # final tau filter: hltDoublePFJets30PNetTauhTagTightWPL2DoubleTau
-                        # tau filter bit:   11 (for NANOAODv15)
-                        # documentation:    https://twiki.cern.ch/twiki/bin/view/CMS/TauTrigger#Trigger_Table_for_2024
-                        double_tight_pnet_35_eta_2p3_parameters,
-
                         # trigger:          HLT_DoubleMediumDeepTauPFTauHPS30_L2NN_eta2p1_PFJet60
                         # final tau filter: hltHpsOverlapFilterDeepTauDoublePFTau30PFJet60
                         # tau filter bit:   14
@@ -781,26 +763,50 @@ def _add_tautau_triggers(
                     ],
                     **{
                         _era: [
-                            # trigger:          HLT_DoubleMediumDeepTauPFTauHPS35_L2NN_eta2p1
-                            # final tau filter: hltHpsDoublePFTau35MediumDitauWPDeepTauDz02
-                            # tau filter bit:   7
-                            # documentation:    - https://twiki.cern.ch/twiki/bin/view/CMS/TauTrigger#Trigger_Table_for_2022
-                            #                   - https://twiki.cern.ch/twiki/bin/view/CMS/TauTrigger#Trigger_Table_for_2023
-                            double_medium_deeptau_35_eta_2p1_parameters,
-
-                            # trigger:          HLT_DoubleMediumDeepTauPFTauHPS30_L2NN_eta2p1_PFJet60
-                            # final tau filter: hltHpsOverlapFilterDeepTauDoublePFTau30PFJet60
-                            # tau filter bit:   14
-                            # documentation:    - https://twiki.cern.ch/twiki/bin/view/CMS/TauTrigger#Trigger_Table_for_2022
-                            #                   - https://twiki.cern.ch/twiki/bin/view/CMS/TauTrigger#Trigger_Table_for_2023
-                            double_medium_deeptau_30_eta2p1_jet_60_parameters,
-
                             # trigger:          HLT_DoubleMediumDeepTauPFTauHPS30_L2NN_eta2p1_PFJet75
                             # final tau filter: hltHpsOverlapFilterDeepTauDoublePFTau30PFJet75
                             # tau filter bit:   14
                             # documentation:    - https://twiki.cern.ch/twiki/bin/view/CMS/TauTrigger#Trigger_Table_for_2022
                             #                   - https://twiki.cern.ch/twiki/bin/view/CMS/TauTrigger#Trigger_Table_for_2023
                             double_medium_deeptau_30_eta2p1_jet_75_parameters,
+                        ]
+                        for _era in ["2022preEE", "2022postEE", "2023preBPix", "2023preBPix"]
+                    },
+                    **{
+                        _era: []
+                        for _era in ERAS_RUN2
+                    },
+                },
+            ),
+            "tautau_trigger": EraModifier(
+                {
+                    "2024": [
+                        # trigger:          HLT_DoubleMediumDeepTauPFTauHPS35_L2NN_eta2p1
+                        # final tau filter: hltHpsDoublePFTau35MediumDitauWPDeepTauL1HLTMatched
+                        # tau filter bit:   11 (for NANOAODv15)
+                        # documentation:    https://twiki.cern.ch/twiki/bin/view/CMS/TauTrigger#Trigger_Table_for_2024
+                        double_medium_deeptau_35_eta_2p1_2024_parameters,
+
+                        # trigger:          HLT_DoublePNetTauhPFJet30_Medium_L2NN_eta2p3
+                        # final tau filter: hltDoublePFJets30PNetTauhTagMediumWPL2DoubleTau
+                        # tau filter bit:   11 (for NANOAODv15)
+                        # documentation:    https://twiki.cern.ch/twiki/bin/view/CMS/TauTrigger#Trigger_Table_for_2024
+                        double_medium_pnet_35_eta_2p3_parameters,
+
+                        # trigger:          HLT_DoublePNetTauhPFJet30_Tight_L2NN_eta2p3
+                        # final tau filter: hltDoublePFJets30PNetTauhTagTightWPL2DoubleTau
+                        # tau filter bit:   11 (for NANOAODv15)
+                        # documentation:    https://twiki.cern.ch/twiki/bin/view/CMS/TauTrigger#Trigger_Table_for_2024
+                        double_tight_pnet_35_eta_2p3_parameters,
+                    ],
+                    **{
+                        _era: [
+                            # trigger:          HLT_DoubleMediumDeepTauPFTauHPS35_L2NN_eta2p1
+                            # final tau filter: hltHpsDoublePFTau35MediumDitauWPDeepTauDz02
+                            # tau filter bit:   7
+                            # documentation:    - https://twiki.cern.ch/twiki/bin/view/CMS/TauTrigger#Trigger_Table_for_2022
+                            #                   - https://twiki.cern.ch/twiki/bin/view/CMS/TauTrigger#Trigger_Table_for_2023
+                            double_medium_deeptau_35_eta_2p1_parameters,
                         ]
                         for _era in ["2022preEE", "2022postEE", "2023preBPix", "2023preBPix"]
                     },
@@ -1345,11 +1351,11 @@ def add_diTauTriggerSetup(configuration: Configuration):
                             },
                         },
                     ),
-                    "tt_trigger_leg1_flag": EraModifier(
+                    "tt_trigger_flag": EraModifier(
                         {
-                            "2024": "trg_wgt_double_tau35_mediumpnet",
+                            "2024": "trg_double_tau35_mediumpnet",
                             **{
-                                _era: "trg_wgt_double_tau35_mediumdeeptau"
+                                _era: "trg_double_tau35_mediumdeeptau"
                                 for _era in ["2022preEE", "2022postEE", "2023preBPix", "2023postBPix"]
                             },
                             **{
@@ -1377,11 +1383,11 @@ def add_diTauTriggerSetup(configuration: Configuration):
                             },
                         },
                     ),
-                    "tt_trigger_leg2_flag": EraModifier(
+                    "tt_trigger_flag": EraModifier(
                         {
-                            "2024": "trg_wgt_double_tau35_mediumpnet",
+                            "2024": "trg_double_tau35_mediumpnet",
                             **{
-                                _era: "trg_wgt_double_tau35_mediumdeeptau"
+                                _era: "trg_double_tau35_mediumdeeptau"
                                 for _era in ["2022preEE", "2022postEE", "2023preBPix", "2023postBPix"]
                             },
                             **{
