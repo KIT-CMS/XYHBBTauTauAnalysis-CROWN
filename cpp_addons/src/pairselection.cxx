@@ -482,9 +482,9 @@ auto BBPairSelectionAlgo(
                            const ROOT::RVec<float> &jet_eta,
                            const ROOT::RVec<float> &jet_phi,
                            const ROOT::RVec<float> &jet_mass,
-                           const ROOT::RVec<float> &jet_btag_discr,
                            const ROOT::RVec<int> &good_bjet_collection,
-                           const ROOT::RVec<int> &good_jet_collection) {
+                           const ROOT::RVec<int> &good_jet_collection,
+                           const ROOT::RVec<float> &jet_btag_discr) {
         // first entry is index of the leading bjet,
         // second entry is the index of the subleading bjet or non b-tagged jet
         // with the highest btag value
@@ -598,14 +598,17 @@ auto BBPairSelectionAlgo(
  */
 ROOT::RDF::RNode PairSelection(ROOT::RDF::RNode df,
                                const std::vector<std::string> &input_vector,
+                               const std::string &jet_btag_score,
                                const std::string &pairname,
                                const float &mindeltaR,
                                const float &btag_WP_value) {
     Logger::get("bb::PairSelection")->debug("Setting up bb pair building");
+    auto inputs = std::vector<std::string>(input_vector);
+    inputs.push_back(jet_btag_score);
     auto df1 = df.Define(
         pairname,
         bb_pairselection::BBPairSelectionAlgo(mindeltaR, btag_WP_value),
-        input_vector);
+        inputs);
     return df1;
 }
 
