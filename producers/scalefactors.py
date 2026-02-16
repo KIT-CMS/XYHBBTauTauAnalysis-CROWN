@@ -841,7 +841,7 @@ DoubleEleTauTriggerSF = ProducerGroup(
 
 
 # muon leg scale factor
-DoubleTauTauTriggerLeg1SF = ExtendedVectorProducer(
+TauTauTriggerLeg1SF = ExtendedVectorProducer(
     name="DoubleTauTauTriggerLeg1SF",
     call='physicsobject::tau::scalefactor::Trigger({df}, correctionManager, {output}, {input}, "{tt_trigger_flag}", "{tau_trigger_sf_file}", "tau_trigger", "{tt_trigger_leg1_sf_name}", "Medium", "sf", "{tt_trigger_leg1_variation}")',
     input=[
@@ -854,7 +854,7 @@ DoubleTauTauTriggerLeg1SF = ExtendedVectorProducer(
 )
 
 # tau leg scale factor (for the Medium DeepTau WP)
-DoubleTauTauTriggerLeg2SF = ExtendedVectorProducer(
+TauTauTriggerLeg2SF = ExtendedVectorProducer(
     name="DoubleTauTauTriggerLeg2SF",
     call='physicsobject::tau::scalefactor::Trigger({df}, correctionManager, {output}, {input}, "{tt_trigger_flag}", "{tau_trigger_sf_file}", "tau_trigger", "{tt_trigger_leg2_sf_name}", "Medium", "sf", "{tt_trigger_leg2_variation}")',
     input=[
@@ -867,15 +867,15 @@ DoubleTauTauTriggerLeg2SF = ExtendedVectorProducer(
 )
 
 # producer group containing the scale factors for both legs of the double electron-tau trigger
-DoubleTauTauTriggerSF = ProducerGroup(
+TauTauTriggerSF = ProducerGroup(
     name="DoubleTauTauTriggerSF",
     call=None,
     input=None,
     output=None,
     scopes=TT_SCOPES,
     subproducers=[
-        DoubleTauTauTriggerLeg1SF,
-        DoubleTauTauTriggerLeg2SF,
+        TauTauTriggerLeg1SF,
+        TauTauTriggerLeg2SF,
     ],
 )
 
@@ -1173,33 +1173,11 @@ TauEmbeddingBoostedElectronIsoSF_1_MC = Producer(
     scopes=["et", "ee", "em"],
 )
 
-#########################
-# b-tagging SF
-#########################
-btagging_SF = Producer(
-    name="btagging_SF",
-    call="""physicsobject::jet::scalefactor::BtaggingShape(
-        {df}, 
-        correctionManager, 
-        {output}, 
-        {input}, 
-        "{btag_sf_file}", 
-        "{btag_corr_algo}", 
-        "{btag_sf_variation}")
-        """,
-    input=[
-        q.Jet_pt_corrected,
-        nanoAOD.Jet_eta,
-        nanoAOD.Jet_btagDeepFlavB,
-        nanoAOD.Jet_hadronFlavour,
-        q.good_jets_mask,
-        q.good_bjets_mask,
-        q.jet_overlap_veto_mask,
-    ],
-    output=[q.btag_weight],
-    scopes=["tt", "mt", "et", "mm", "em", "ee"],
-)
+#
+# B JET ID
+#
 
+# B jet identification scale factor for DeepJet
 BJetShapeDeepJet_SF = Producer(
     name="BJetShapeDeepJet_SF",
     call="""
@@ -1209,8 +1187,8 @@ BJetShapeDeepJet_SF = Producer(
         {output},
         {input},
         "{bjet_sf_file}",
-        "{bjet_sf_deepjet_shape_name}",
-        "{bjet_sf_deepjet_shape_variation}"
+        "{bjet_sf_name}",
+        "{bjet_sf_variation}"
     )
     """,
     input=[
@@ -1219,13 +1197,14 @@ BJetShapeDeepJet_SF = Producer(
         nanoAOD.Jet_btagDeepFlavB,
         nanoAOD.Jet_hadronFlavour,
         q.good_jets_mask,
-        q.good_bjets_deepjet_mask,
+        q.good_bjets_mask,
         q.jet_overlap_veto_mask,
     ],
-    output=[q.id_wgt_bjet_deepjet_shape],
+    output=[q.id_wgt_bjet],
     scopes=SCOPES,
 )
 
+# B jet identification scale factor for ParticleNet
 BJetShapePNet_SF = Producer(
     name="BJetShapePNet_SF",
     call="""
@@ -1235,8 +1214,8 @@ BJetShapePNet_SF = Producer(
         {output},
         {input},
         "{bjet_sf_file}",
-        "{bjet_sf_pnet_shape_name}",
-        "{bjet_sf_pnet_shape_variation}"
+        "{bjet_sf_name}",
+        "{bjet_sf_variation}"
     )
     """,
     input=[
@@ -1245,10 +1224,37 @@ BJetShapePNet_SF = Producer(
         nanoAOD.Jet_btagPNetB,
         nanoAOD.Jet_hadronFlavour,
         q.good_jets_mask,
-        q.good_bjets_pnet_mask,
+        q.good_bjets_mask,
         q.jet_overlap_veto_mask,
     ],
-    output=[q.id_wgt_bjet_pnet_shape],
+    output=[q.id_wgt_bjet],
+    scopes=SCOPES,
+)
+
+# B jet identification scale factor for UParT (WP-based)
+BJetWPUParT_SF = Producer(
+    name="BJetWPUParT_SF",
+    call="""
+    physicsobject::jet::scalefactor::BtaggingWP(
+        {df},
+        correctionManager,
+        {output},
+        {input},
+        "{bjet_sf_file}",
+        "{bjet_sf_name}",
+        "{bjet_sf_variation}",
+        "{bjet_sf_wp}"
+    )
+    """,
+    input=[
+        q.Jet_pt_corrected,
+        nanoAOD.Jet_eta,
+        nanoAOD.Jet_hadronFlavour,
+        q.good_jets_mask,
+        q.good_bjets_mask,
+        q.jet_overlap_veto_mask,
+    ],
+    output=[q.id_wgt_bjet],
     scopes=SCOPES,
 )
 

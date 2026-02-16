@@ -367,13 +367,12 @@ GoodEMPairFilter = Filter(
 
 BBPairSelection = Producer(
     name="BBPairSelection",
-    call="bb_pairselection::PairSelection({df}, {input_vec}, {output}, {bb_pairselection_min_dR}, {bjet_min_deepjet_score})",
+    call="bb_pairselection::PairSelection({df}, {input_vec}, \"{bjet_score_column}\", {output}, {bb_pairselection_min_dR}, {bjet_min_score})",
     input=[
         q.Jet_pt_corrected,
         nanoAOD.Jet_eta,
         nanoAOD.Jet_phi,
         q.Jet_mass_corrected,
-        nanoaod_btag_score,
         q.good_bjet_collection,
         q.good_jet_collection,
     ],
@@ -382,13 +381,12 @@ BBPairSelection = Producer(
 )
 BBPairSelection_boosted = Producer(
     name="BBPairSelection_boosted",
-    call="bb_pairselection::PairSelection({df}, {input_vec}, {output}, {bb_pairselection_min_dR}, {bjet_min_deepjet_score})",
+    call="bb_pairselection::PairSelection({df}, {input_vec}, \"{bjet_score_column}\", {output}, {bb_pairselection_min_dR}, {bjet_min_score})",
     input=[
         q.Jet_pt_corrected,
         nanoAOD.Jet_eta,
         nanoAOD.Jet_phi,
         q.Jet_mass_corrected,
-        nanoaod_btag_score,
         q.good_bjet_collection_boosted,
         q.good_jet_collection_boosted,
     ],

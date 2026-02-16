@@ -11,27 +11,6 @@ from ._helpers import jerc_producer_factory
 from ..constants import GLOBAL_SCOPES, SCOPES, AvailableBJetIDs, BJET_ID_ALGORITHM
 
 
-# Choose the default b jet mask according to the selected b jet identification algorithm in
-# BJET_ID_ALGORITHM
-good_bjets_with_veto_mask = None
-if BJET_ID_ALGORITHM == AvailableBJetIDs.DEEPJET:
-    good_bjets_with_veto_mask = q.good_bjets_deepjet_with_veto_mask
-elif BJET_ID_ALGORITHM == AvailableBJetIDs.PNET:
-    good_bjets_with_veto_mask = q.good_bjets_pnet_with_veto_mask
-elif BJET_ID_ALGORITHM == AvailableBJetIDs.UPART:
-    good_bjets_with_veto_mask = q.good_bjets_upart_with_veto_mask
-
-# Get the nanoAOD b jet tagging column, according to the default b jet identification algorithm
-# selected with BJET_ID_ALGORITHM
-nanoaod_btag_score = None
-if BJET_ID_ALGORITHM == AvailableBJetIDs.DEEPJET:
-    nanoaod_btag_score = nanoAOD_run2.Jet_btagDeepFlavB
-elif BJET_ID_ALGORITHM == AvailableBJetIDs.PNET:
-    nanoaod_btag_score = nanoAOD.Jet_btagPNetB
-elif BJET_ID_ALGORITHM == AvailableBJetIDs.UPART:
-    nanoaod_btag_score = nanoAOD.Jet_btagUParTAK4B
-
-
 #
 # JET ID
 #
@@ -176,7 +155,7 @@ GoodBJetsBaseWithoutPUID = Producer(
 # configuration.
 BTagCut = Producer(
     name="BTagCut",
-    call="physicsobject::CutMin<float>({df}, {output}, {input}, \"{bjet_score_column}\", {bjet_min_score})",
+    call="physicsobject::CutMin<float>({df}, {output}, \"{bjet_score_column}\", {bjet_min_score})",
     input=[],
     output=[q.Jet_is_btagged],
     scopes=GLOBAL_SCOPES,
@@ -284,7 +263,7 @@ GoodJetsOrBJetsWithVeto = Producer(
 JetCollection = ProducerGroup(
     name="JetCollection",
     call="physicsobject::OrderByPt({df}, {output}, {input})",
-    input=[q.Jet_pt_corrected, q.good_jets_and_bjets_with_veto_mask],
+    input=[q.Jet_pt_corrected],
     output=[q.good_jet_collection],
     scopes=SCOPES,
     subproducers=[GoodJetsOrBJetsWithVeto],
@@ -320,35 +299,7 @@ JetSelection = ProducerGroup(
 # JET QUANTITIES
 #
 
-# Columns with _vectors_ of jet quantities, considering all selected jets and multiple b jet
-# identification algorithms
-jet_column_producers = []
-for q_input, q_output, data_type in [
-    (nanoAOD.Jet_pt, q.jet_pt_nanoaod, "float"),
-    (nanoAOD.Jet_rawFactor, q.jet_pt_raw_factor, "float"),
-    (q.Jet_pt_corrected, q.jet_pt, "float"),
-    (nanoAOD.Jet_eta, q.jet_eta, "float"),
-    (nanoAOD.Jet_phi, q.jet_phi, "float"),
-    (q.Jet_mass_corrected, q.jet_mass, "float"),
-    # TODO Jet_ID_corrected has type int in 2024
-    # (q.Jet_ID_corrected, q.jet_id, "UChar_t"),
-    (nanoAOD.Jet_btagDeepFlavB, q.jet_deepjet_b_score, "float"),
-    (nanoAOD.Jet_btagPNetB, q.jet_pnet_b_score, "float"),
-    (q.good_jets_with_veto_mask, q.jet_standard_selected, "int"),
-    (q.Jet_deepjet_b_tagged_medium, q.jet_deepjet_b_tagged_medium, "int"),
-    (q.Jet_pnet_b_tagged_medium, q.jet_pnet_b_tagged_medium, "int"),
-]:
-    jet_column_producers.append(
-        Producer(
-            name=f"JetColumn_{q_output.name}",
-            call=f"event::quantity::Take<{data_type}>({{df}}, {{output}}, {{input}})",
-            input=[q_input, q.good_jet_combined_collection],
-            output=[q_output],
-            scopes=SCOPES,
-        )
-    )
-
-
+"""
 # columns for jet pt regression with PNet
 jet_column_producers.extend(
     [
@@ -391,16 +342,7 @@ jet_column_producers.extend(
         ),
     ]
 )
-
-
-JetColumns = ProducerGroup(
-    name="JetColumns",
-    call=None,
-    input=None,
-    output=None,
-    scopes=SCOPES,
-    subproducers=jet_column_producers,
-)
+"""
 
 
 #
@@ -420,7 +362,6 @@ NumberOfJets = Producer(
 # Quantities for the two leading jets
 #
 
-
 LVJet1 = Producer(
     name="LVJet1",
     call="lorentzvector::Build({df}, {output}, {input}, 0)",
@@ -434,6 +375,7 @@ LVJet1 = Producer(
     output=[q.jet_p4_1],
     scopes=SCOPES,
 )
+
 LVJet2 = Producer(
     name="LVJet2",
     call="lorentzvector::Build({df}, {output}, {input}, 1)",
@@ -447,6 +389,7 @@ LVJet2 = Producer(
     output=[q.jet_p4_2],
     scopes=SCOPES,
 )
+
 NumberOfJets = Producer(
     name="NumberOfJets",
     call="physicsobject::Size<Int_t>({df}, {output}, {input})",
@@ -454,6 +397,7 @@ NumberOfJets = Producer(
     output=[q.n_jets],
     scopes=SCOPES,
 )
+
 NumberOfJets_boosted = Producer(
     name="NumberOfJets_boosted",
     call="physicsobject::Size<Int_t>({df}, {output}, {input})",
@@ -461,6 +405,7 @@ NumberOfJets_boosted = Producer(
     output=[q.n_jets_boosted],
     scopes=SCOPES,
 )
+
 jpt_1 = Producer(
     name="jpt_1",
     call="lorentzvector::GetPt({df}, {output}, {input})",
@@ -505,15 +450,15 @@ jphi_2 = Producer(
 )
 jtag_value_1 = Producer(
     name="jtag_value_1",
-    call="event::quantity::Get<float>({df}, {output}, {input}, 0)",
-    input=[nanoaod_btag_score, q.good_jet_collection],
+    call="event::quantity::Get<float>({df}, {output}, \"{bjet_score_column}\", {input}, 0)",
+    input=[q.good_jet_collection],
     output=[q.jtag_value_1],
     scopes=SCOPES,
 )
 jtag_value_2 = Producer(
     name="jtag_value_2",
-    call="event::quantity::Get<float>({df}, {output}, {input}, 1)",
-    input=[nanoaod_btag_score, q.good_jet_collection],
+    call="event::quantity::Get<float>({df}, {output}, \"{bjet_score_column}\", {input}, 1)",
+    input=[q.good_jet_collection],
     output=[q.jtag_value_2],
     scopes=SCOPES,
 )
@@ -594,62 +539,90 @@ NumberOfBJets_boosted = Producer(
     scopes=SCOPES,
 )
 
-bpt_1 = Producer(
-    name="bpt_1",
-    call="lorentzvector::GetPt({df}, {output}, {input})",
-    input=[q.bjet_p4_1],
-    output=[q.bpt_1],
-    scopes=SCOPES,
-)
-bpt_2 = Producer(
-    name="bpt_2",
-    call="lorentzvector::GetPt({df}, {output}, {input})",
-    input=[q.bjet_p4_2],
-    output=[q.bpt_2],
-    scopes=SCOPES,
-)
-beta_1 = Producer(
-    name="beta_1",
-    call="lorentzvector::GetEta({df}, {output}, {input})",
-    input=[q.bjet_p4_1],
-    output=[q.beta_1],
-    scopes=SCOPES,
-)
-beta_2 = Producer(
-    name="beta_2",
-    call="lorentzvector::GetEta({df}, {output}, {input})",
-    input=[q.bjet_p4_2],
-    output=[q.beta_2],
-    scopes=SCOPES,
-)
-bphi_1 = Producer(
-    name="bphi_1",
-    call="lorentzvector::GetPhi({df}, {output}, {input})",
-    input=[q.bjet_p4_1],
-    output=[q.bphi_1],
-    scopes=SCOPES,
-)
-bphi_2 = Producer(
-    name="bphi_2",
-    call="lorentzvector::GetPhi({df}, {output}, {input})",
-    input=[q.bjet_p4_2],
-    output=[q.bphi_2],
-    scopes=SCOPES,
-)
-btag_value_1 = Producer(
-    name="btag_value_1",
-    call="event::quantity::Get<float>({df}, {output}, {input}, 0)",
-    input=[nanoaod_btag_score, q.good_bjet_collection],
-    output=[q.btag_value_1],
-    scopes=SCOPES,
-)
-btag_value_2 = Producer(
-    name="btag_value_2",
-    call="event::quantity::Get<float>({df}, {output}, {input}, 1)",
-    input=[nanoaod_btag_score, q.good_bjet_collection],
-    output=[q.btag_value_2],
-    scopes=SCOPES,
-)
+# bpt_1 = Producer(
+#     name="bpt_1",
+#     call="lorentzvector::GetPt({df}, {output}, {input})",
+#     input=[q.bjet_p4_1],
+#     output=[q.bpt_1],
+#     scopes=SCOPES,
+# )
+# bpt_2 = Producer(
+#     name="bpt_2",
+#     call="lorentzvector::GetPt({df}, {output}, {input})",
+#     input=[q.bjet_p4_2],
+#     output=[q.bpt_2],
+#     scopes=SCOPES,
+# )
+# beta_1 = Producer(
+#     name="beta_1",
+#     call="lorentzvector::GetEta({df}, {output}, {input})",
+#     input=[q.bjet_p4_1],
+#     output=[q.beta_1],
+#     scopes=SCOPES,
+# )
+# beta_2 = Producer(
+#     name="beta_2",
+#     call="lorentzvector::GetEta({df}, {output}, {input})",
+#     input=[q.bjet_p4_2],
+#     output=[q.beta_2],
+#     scopes=SCOPES,
+# )
+# bphi_1 = Producer(
+#     name="bphi_1",
+#     call="lorentzvector::GetPhi({df}, {output}, {input})",
+#     input=[q.bjet_p4_1],
+#     output=[q.bphi_1],
+#     scopes=SCOPES,
+# )
+# bphi_2 = Producer(
+#     name="bphi_2",
+#     call="lorentzvector::GetPhi({df}, {output}, {input})",
+#     input=[q.bjet_p4_2],
+#     output=[q.bphi_2],
+#     scopes=SCOPES,
+# )
+# btag_value_deepjet_1 = Producer(
+#     name="btag_value_deepjet_1",
+#     call="event::quantity::Get<float>({df}, {output}, {input}, 0)",
+#     input=[nanoAOD.Jet_btagDeepFlavB, q.good_bjet_collection],
+#     output=[q.btag_value_1],
+#     scopes=SCOPES,
+# )
+# btag_value_deepjet_2 = Producer(
+#     name="btag_value_deepjet_1",
+#     call="event::quantity::Get<float>({df}, {output}, {input}, 0)",
+#     input=[nanoAOD.Jet_btagDeepFlavB, q.good_bjet_collection],
+#     output=[q.btag_value_2],
+#     scopes=SCOPES,
+# )
+# btag_value_pnet_1 = Producer(
+#     name="btag_value_pnet_1",
+#     call="event::quantity::Get<float>({df}, {output}, {input}, 1)",
+#     input=[nanoAOD.Jet_btagPNetB, q.good_bjet_collection],
+#     output=[q.btag_value_1],
+#     scopes=SCOPES,
+# )
+# btag_value_pnet_2 = Producer(
+#     name="btag_value_pnet_2",
+#     call="event::quantity::Get<float>({df}, {output}, {input}, 1)",
+#     input=[nanoAOD.Jet_btagPNetB, q.good_bjet_collection],
+#     output=[q.btag_value_2],
+#     scopes=SCOPES,
+# )
+# btag_value_upart_1 = Producer(
+#     name="btag_value_upart_1",
+#     call="event::quantity::Get<float>({df}, {output}, {input}, 1)",
+#     input=[nanoAOD.Jet_btagUParTAK4B, q.good_bjet_collection],
+#     output=[q.btag_value_1],
+#     scopes=SCOPES,
+# )
+# btag_value_pnet_2 = Producer(
+#     name="btag_value_upart_2",
+#     call="event::quantity::Get<float>({df}, {output}, {input}, 1)",
+#     input=[nanoAOD.Jet_btagUParTAK4B, q.good_bjet_collection],
+#     output=[q.btag_value_2],
+#     scopes=SCOPES,
+# )
 BasicBJetQuantities = ProducerGroup(
     name="BasicBJetQuantities",
     call=None,
