@@ -1594,15 +1594,24 @@ def add_bjet_config(configuration: Configuration):
                     "2022postEE": "/cvmfs/cms-griddata.cern.ch/cat/metadata/BTV/Run3-22EFGSep23-Summer22EE-NanoAODv12/2025-08-20/btagging.json.gz",
                     "2023preBPix": "/cvmfs/cms-griddata.cern.ch/cat/metadata/BTV/Run3-23CSep23-Summer23-NanoAODv12/2025-08-20/btagging.json.gz",
                     "2023postBPix": "/cvmfs/cms-griddata.cern.ch/cat/metadata/BTV/Run3-23DSep23-Summer23BPix-NanoAODv12/2025-08-20/btagging.json.gz",
-                    "2024": "/cvmfs/cms-griddata.cern.ch/cat/metadata/BTV/Run3-23DSep23-Summer23BPix-NanoAODv12/2025-08-20/btagging.json.gz",  # TODO shape corrections not available yet
+                    "2024": "/cvmfs/cms-griddata.cern.ch/cat/metadata/BTV/Run3-24CDEReprocessingFGHIPrompt-Summer24-NanoAODv15/2026-01-30/btagging_preliminary.json.gz",
                 }
             ),
-            "bjet_sf_deepjet_shape_name": "deepJet_shape",
-            "bjet_sf_deepjet_shape_variation": "central",
-            "bjet_sf_pnet_shape_name": "particleNet_shape",
-            "bjet_sf_pnet_shape_variation": "central",
-            "bjet_sf_upart_shape_name": "particleNet_shape",  # TODO change this when shape corrections are available
-            "bjet_sf_upart_shape_variation": "central",
+            "bjet_sf_name": EraModifier(
+                {
+                    **{
+                        _era: "deepJet_shape"  # DeepJet
+                        for _era in ERAS_RUN2
+                    },
+                    **{
+                        _era: "particleNet_shape"  # ParticleNet
+                        for _era in ERAS_RUN2
+                    },
+                    "2024": "UParTAK4_kinfit",  # UParT
+                },
+            ),
+            "bjet_sf_variation": "central",
+            "bjet_sf_wp": "M",  # for UParT WP-based SFs in 2024
         },
     )
 
@@ -2234,6 +2243,17 @@ def build_config(
         default=[]
     )
 
+    # b jet identification scale factors
+    bjet_id_sf_producer = get_for_era(
+        {
+            tuple(ERAS_RUN2): scalefactors.BJetShapeDeepJet_SF,
+            tuple(["2022preEE", "2022postEE", "2023preBPix", "2023postBPix"]): scalefactors.BJetShapePNet_SF,
+            "2024": scalefactors.BJetWPUParT_SF,
+        },
+        era,
+        default=[]
+    )
+
     # B jet pair quantities
     # Run 3 does not include b jet regression variables, so the producers for the b jet pair
     # quantities differ for both eras.
@@ -2277,10 +2297,10 @@ def build_config(
     # - In Run 2, di-tau + jet triggers did not exist, so no producer is added.
     # - In Run 3, di-tau + jet triggers are available and the corresponding trigger flag producers
     #   are added to the tt scope.
-    double_tau_jet_trigger_producers = get_for_era(
+    tautaujet_trigger_producers = get_for_era(
         {
             tuple(ERAS_RUN3): [
-                triggers.DoubleTauTauJetTriggerFlags,
+                triggers.TauTauJetTriggerFlags,
             ],
         },
         era,
@@ -2410,7 +2430,7 @@ def build_config(
         ]
         + met_cov_producers
         + prefire_weight_producers
-        + jet_selection_producers
+        + base_jet_selection_producers
         + fat_jet_id_producers
         + jet_veto_map_producers
         + [
@@ -2440,8 +2460,7 @@ def build_config(
             fatjets.FindXbbFatjet,
             fatjets.BasicXbbFatJetQuantities,
             fatjets.LeadingFatJetQuantities,
-            scalefactors.BJetShapeDeepJet_SF,
-            scalefactors.BJetShapePNet_SF,
+            bjet_id_sf_producer,
             # TODO Need to properly handle producers for Run 2 (ROOT file-based)
             met.METCorrections,
             met.METQuantities,
@@ -2538,13 +2557,13 @@ def build_config(
             pairselection.LVTau2Uncorrected,
             pairquantities.TTDiTauPairQuantities,
             genparticles.TTGenDiTauPairQuantities,
-            triggers.DoubleTauTauTriggerFlags,
-            scalefactors.DoubleTauTauTriggerSF,
+            triggers.TauTauTriggerFlags,
+            scalefactors.TauTauTriggerSF,
             # TODO rework trigger setup before enabling this
             # triggers.GenerateSingleTrailingTauTriggerFlags,
             # triggers.GenerateSingleLeadingTauTriggerFlags,
         ]
-        + double_tau_jet_trigger_producers
+        + tautaujet_trigger_producers
         + tt_tau_sf_producers
     )
 
@@ -2743,7 +2762,7 @@ def build_config(
         TT_SCOPES,
         RemoveProducer(
             producers=[
-                scalefactors.DoubleTauTauTriggerSF,
+                scalefactors.TauTauTriggerSF,
             ],
             samples=["data", "embedding", "embedding_mc"],
         ),
@@ -2767,8 +2786,7 @@ def build_config(
         SCOPES,
         RemoveProducer(
             producers=[
-                scalefactors.BJetShapeDeepJet_SF,
-                scalefactors.BJetShapePNet_SF,
+                bjet_id_sf_producer,
             ],
             samples=["data", "embedding", "embedding_mc"],
         ),
@@ -3098,21 +3116,21 @@ def build_config(
             q.genjet_hadFlavour_2,
             q.genjet_m_inv,
             q.n_jets,
-            q.jet_pt,
-            q.jet_eta,
-            q.jet_phi,
-            q.jet_mass,
+            # q.jet_pt,
+            # q.jet_eta,
+            # q.jet_phi,
+            # q.jet_mass,
             # TODO fix jet ID type
             # q.jet_id,
-            q.jet_deepjet_b_score,
-            q.jet_pnet_b_score,
-            q.jet_deepjet_b_tagged_medium,
-            q.jet_pnet_b_tagged_medium,
-            q.jet_pt_pnet,
-            q.jet_pt_pnet_with_neutrino,
-            q.jet_pt_pnet_resolution,
-            q.jet_pt_nanoaod,
-            q.jet_pt_raw_factor,
+            # q.jet_deepjet_b_score,
+            # q.jet_pnet_b_score,
+            # q.jet_deepjet_b_tagged_medium,
+            # q.jet_pnet_b_tagged_medium,
+            # q.jet_pt_pnet,
+            # q.jet_pt_pnet_with_neutrino,
+            # q.jet_pt_pnet_resolution,
+            # q.jet_pt_nanoaod,
+            # q.jet_pt_raw_factor,
             q.jpt_1,
             q.jpt_2,
             q.jeta_1,
@@ -3134,8 +3152,7 @@ def build_config(
             # q.bphi_2,
             # q.btag_value_1,
             # q.btag_value_2,
-            q.id_wgt_bjet_deepjet_shape,
-            q.id_wgt_bjet_pnet_shape,
+            q.id_wgt_bjet,
             q.mass_1,
             q.mass_2,
             q.dxy_1,
@@ -3346,10 +3363,10 @@ def build_config(
             pairquantities.VsJetTauIDFlag_2.output_group,
             pairquantities.VsEleTauIDFlag_2.output_group,
             pairquantities.VsMuTauIDFlag_2.output_group,
-            triggers.DoubleTauTauTriggerFlags.output_group,
+            triggers.TauTauTriggerFlags.output_group,
         ] + [
                 producer.output_group
-                for producer in double_tau_jet_trigger_producers
+                for producer in tautaujet_trigger_producers
         ] + [
             # q.taujet_pt_1,
             # q.taujet_pt_2,
@@ -3381,7 +3398,7 @@ def build_config(
             "tt",
             [
                 p
-                for p in scalefactors.DoubleTauTauTriggerSF.get_outputs("tt")
+                for p in scalefactors.TauTauTriggerSF.get_outputs("tt")
             ] + [
                 scalefactors.Tau_1_VsJetTauID_SF.output_group,
                 scalefactors.Tau_2_VsJetTauID_SF.output_group,
@@ -4225,12 +4242,12 @@ def build_config(
     #########################
     # Jet energy resolution and jet energy scale
     #########################
-    add_jetVariations(configuration, era)
+    add_jetVariations(configuration, era, bjet_id_sf_producer)
 
     #########################
     # btagging scale factor shape variation
     #########################
-    add_btagVariations(configuration)
+    add_btagVariations(configuration, bjet_id_sf_producer)
 
     #########################
     # Jet energy correction for data
