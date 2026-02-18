@@ -1605,7 +1605,7 @@ def add_bjet_config(configuration: Configuration):
                     },
                     **{
                         _era: "particleNet_shape"  # ParticleNet
-                        for _era in ERAS_RUN2
+                        for _era in ["2022preEE", "2022postEE", "2023preBPix", "2023postBPix"]
                     },
                     "2024": "UParTAK4_kinfit",  # UParT
                 },
@@ -2207,11 +2207,8 @@ def build_config(
     # AK8 jet ID producers
     fat_jet_id_producers = get_for_era(
         {
-            tuple(ERAS_RUN2): [
+            tuple(ERAS_RUN2) + ("2022preEE", "2022postEE", "2023preBPix", "2023postBPix"): [
                 fatjets.FatJetIDRun2,
-            ],
-            ("2022preEE", "2022postEE", "2023preBPix", "2023postBPix"): [
-                fatjets.FatJetIDRun3NanoV12Corrected,
             ],
             "2024": [
                 fatjets.FatJetIDRun3NanoV15,
@@ -2637,7 +2634,6 @@ def build_config(
             scalefactors.MuonIDIso_SF,
             triggers.SingleEleTriggerFlags,
             triggers.SingleMuTriggerFlags,
-            triggers.DoubleEleMuTriggerFlags,
             scalefactors.SingleEleTriggerSF,
             scalefactors.SingleMuTriggerSF,
         ],
@@ -3447,7 +3443,6 @@ def build_config(
             q.nmuons,
             triggers.SingleEleTriggerFlags.output_group,
             triggers.SingleMuTriggerFlags.output_group,
-            triggers.DoubleEleMuTriggerFlags.output_group,
             q.electron_veto_flag,
             q.muon_veto_flag,
             q.dilepton_veto,
@@ -4047,7 +4042,7 @@ def build_config(
                     name=f"singleEleTriggerSF{_variation.upper()}",
                     shift_config={
                         ("et"): {
-                            "single_ele_trigger_sf": [
+                            "ele_trigger_sf": [
                                 {
                                     "e_trigger_flagname": "trg_wgt_single_ele30",
                                     "e_trigger_sf_name": "HLT_SF_Ele30_MVAiso90ID",
@@ -4134,7 +4129,7 @@ def build_config(
                     name=f"singleMuTriggerSF{_variation.upper()}",
                     shift_config={
                         ("mt"): {
-                            "single_mu_trigger_sf": [
+                            "mu_trigger_sf": [
                                 {
                                     "m_trigger_flagname": "trg_wgt_single_mu24",
                                     "m_trigger_sf_name": "NUM_IsoMu24_DEN_CutBasedIdTight_and_PFIsoTight",

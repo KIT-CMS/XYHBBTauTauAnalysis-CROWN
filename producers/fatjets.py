@@ -49,23 +49,6 @@ FatJetEnergyCorrection_data, FatJetEnergyCorrection, RenameFatJetsData = jerc_pr
 # AK8 JET SELECTION
 #
 
-# correct the jet ID value for Run3 samples
-FatJetIDRun3NanoV12Corrected = Producer(
-    name="FatJetIDRun3NanoV12Corrected",
-    call="physicsobject::jet::quantities::CorrectJetIDRun3NanoV12({df}, {output}, {input})",
-    input=[
-        nanoAOD.FatJet_pt,
-        nanoAOD.FatJet_eta,
-        nanoAODv12_run3.FatJet_jetId,
-        nanoAOD.FatJet_neHEF,
-        nanoAOD.FatJet_neEmEF,
-        nanoAOD.FatJet_muEF,
-        nanoAOD.FatJet_chEmEF,
-    ],
-    output=[q.FatJet_ID_corrected],
-    scopes=GLOBAL_SCOPES,
-)
-
 # Calculate the jet ID values for run 3 (nanoAOD v15, 2024)
 FatJetIDRun3NanoV15 = Producer(
     name="FatJetIDRun3",
