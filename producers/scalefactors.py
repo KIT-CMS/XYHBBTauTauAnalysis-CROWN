@@ -721,7 +721,7 @@ SingleEleTriggerSF = ExtendedVectorProducer(
     ],
     output="e_trigger_flagname",
     scope=ELECTRON_SCOPES,
-    vec_config="single_ele_trigger_sf",
+    vec_config="ele_trigger_sf",
 )
 
 
@@ -741,7 +741,7 @@ SingleMuTriggerSF = ExtendedVectorProducer(
     },
     output="m_trigger_flagname",
     scope=MUON_SCOPES,
-    vec_config="single_mu_trigger_sf",
+    vec_config="mu_trigger_sf",
 )
 
 

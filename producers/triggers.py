@@ -24,7 +24,7 @@ SingleEleTriggerFlags = ExtendedVectorProducer(
     ],
     output="flagname",
     scope=ELECTRON_SCOPES,
-    vec_config="single_ele_trigger",
+    vec_config="ele_trigger",
 )
 
 # double electron-tau trigger flags, including trigger object matching
@@ -69,7 +69,7 @@ SingleMuTriggerFlags = ExtendedVectorProducer(
     },
     output="flagname",
     scope=MUON_SCOPES,
-    vec_config="single_mu_trigger",
+    vec_config="mu_trigger",
 )
 
 # double muon-tau trigger flags, including trigger object matching

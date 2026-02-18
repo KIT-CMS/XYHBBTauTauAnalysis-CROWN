@@ -143,7 +143,7 @@ def _add_electron_triggers(
     configuration.add_config_parameters(
         ELECTRON_SCOPES,
         {
-            "single_mu_trigger": EraModifier(
+            "ele_trigger": EraModifier(
                 {
                     **{
                         _era: [
@@ -397,7 +397,7 @@ def _add_muon_triggers(
     configuration.add_config_parameters(
         MUON_SCOPES,
         {
-            "single_mu_trigger": EraModifier(
+            "mu_trigger": EraModifier(
                 {
                     **{
                         _era: [
@@ -770,7 +770,7 @@ def _add_tautau_triggers(
                             #                   - https://twiki.cern.ch/twiki/bin/view/CMS/TauTrigger#Trigger_Table_for_2023
                             double_medium_deeptau_30_eta2p1_jet_75_parameters,
                         ]
-                        for _era in ["2022preEE", "2022postEE", "2023preBPix", "2023preBPix"]
+                        for _era in ["2022preEE", "2022postEE", "2023preBPix", "2023postBPix"]
                     },
                     **{
                         _era: []
@@ -808,7 +808,7 @@ def _add_tautau_triggers(
                             #                   - https://twiki.cern.ch/twiki/bin/view/CMS/TauTrigger#Trigger_Table_for_2023
                             double_medium_deeptau_35_eta_2p1_parameters,
                         ]
-                        for _era in ["2022preEE", "2022postEE", "2023preBPix", "2023preBPix"]
+                        for _era in ["2022preEE", "2022postEE", "2023preBPix", "2023postBPix"]
                     },
                     "2018": [
                         # trigger:          HLT_DoubleMediumChargedIsoPFTauHPS35_Trk1_eta2p1_Reg
@@ -1208,7 +1208,7 @@ def add_diTauTriggerSetup(configuration: Configuration):
                     "2024": "/cvmfs/cms-griddata.cern.ch/cat/metadata/EGM/Run3-24CDEReprocessingFGHIPrompt-Summer24-NanoAODv15/2025-12-15/electronHlt.json.gz",
                 }
             ),
-            "single_ele_trigger_sf": [
+            "ele_trigger_sf": [
                 {
                     "e_trigger_flagname": "trg_wgt_single_ele30",
                     "e_trigger_flag": "trg_single_ele30",
@@ -1286,7 +1286,7 @@ def add_diTauTriggerSetup(configuration: Configuration):
     configuration.add_config_parameters(
         MUON_SCOPES,
         {
-            "single_mu_trigger_sf": [
+            "mu_trigger_sf": [
                 {
                     "m_trigger_flagname": "trg_wgt_single_mu24",
                     "m_trigger_flag": "trg_single_mu24",
