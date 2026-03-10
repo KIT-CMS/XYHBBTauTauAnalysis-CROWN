@@ -2385,6 +2385,16 @@ def build_config(
         era,
     )
 
+    # The jet energy corrections are propagated in a different way in Run 2 and
+    # Run 3, so different producer groups are needed for the MET corrections.
+    met_corrections_producers = get_for_era(
+        {
+            tuple(ERAS_RUN2): [met.METCorrectionsRun2],
+            tuple(ERAS_RUN3): [met.METCorrectionsRun3],
+        },
+        era,
+    )
+
     # For 2024, replace the nBHadrons and nCHadrons producers, as they are not
     # stored in the jet collection, but must be accessed via the associated
     # GenJetAK8 collection
@@ -2459,7 +2469,7 @@ def build_config(
             fatjets.LeadingFatJetQuantities,
             bjet_id_sf_producer,
             # TODO Need to properly handle producers for Run 2 (ROOT file-based)
-            met.METCorrections,
+        ] + met_corrections_producers + [
             met.METQuantities,
             pairquantities.DiTauPairMETQuantities,
             genparticles.GenMatching,

@@ -169,13 +169,52 @@ MetQuantitiesUncorrected = ProducerGroup(
 # PROPAGATION OF ENERGY SCALE CORRECTIONS AND RECOIL CORRECTIONS
 #
 
-
-# Correct MET for corrections in lepton energy scale
-PropagateLeptonsToMET = Producer(
-    name="PropagateLeptonsToMet",
-    call="lorentzvector::PropagateToMET({df}, {output}, {input}, {propagate_leptons_to_met})",
-    input=[q.met_p4_uncorrected, q.p4_1_uncorrected, q.p4_2_uncorrected, q.p4_1, q.p4_2],
-    output=[q.met_p4_leptoncorrected],
+# Type-1 MET correction to propagate JEC to the MET
+TypeICorrectionsToMET = Producer(
+    name="TypeICorrectionsToMET",
+    call="""
+    TypeIMET(
+        {df},
+        {correctionManager},
+        {output},
+        {input},
+        "{ak4jet_jec_file}",
+        "{ak4jet_jec_algo}",
+        "{ak4jet_jes_tag}",
+        {ak4jet_jes_sources},
+        "{ak4jet_jer_tag}",
+        {ak4jet_jes_shift_factor},
+        "{ak4jet_jer_shift}",
+        "{era}",
+        {is_data}
+    )
+    """,
+    input=[
+        q.met_p4_uncorrected,
+        nanoAOD.Jet_pt,
+        nanoAOD.Jet_eta,
+        nanoAOD.Jet_phi,
+        nanoAOD.Jet_area,
+        nanoAOD.Jet_rawFactor,
+        nanoAOD.Jet_muonSubtrFactor,
+        nanoAOD.Jet_chEmEF,
+        nanoAOD.Jet_neEmEF,
+        nanoAOD.CorrT1METJet_rawPt,
+        nanoAOD.CorrT1METJet_eta,
+        nanoAOD.CorrT1METJet_phi,
+        nanoAOD.CorrT1METJet_area,
+        nanoAOD.CorrT1METJet_muonSubtrFactor,
+        nanoAOD.CorrT1METJet_EmEF,
+        nanoAOD.GenJet_pt,
+        nanoAOD.GenJet_eta,
+        nanoAOD.GenJet_phi,
+        nanoAOD.rho_fixedGridRhoFastjetAll,
+        q.jet_seed,
+        nanoAOD.run,
+    ],
+    output=[
+        q.met_p4_jetcorrected,
+    ],
     scopes=SCOPES,
 )
 
@@ -184,7 +223,7 @@ PropagateJetsToMET = Producer(
     name="PropagateJetsToMet",
     call="physicsobject::PropagateToMET({df}, {output}, {input}, {propagate_jets_to_met}, {jet_to_met_propagation_pt_min})",
     input=[
-        q.met_p4_leptoncorrected,
+        q.met_p4_uncorrected,
         q.Jet_pt_corrected,
         nanoAOD.Jet_eta,
         nanoAOD.Jet_phi,
@@ -197,6 +236,16 @@ PropagateJetsToMET = Producer(
     output=[q.met_p4_jetcorrected],
     scopes=["et", "mt", "tt", "em", "mm", "ee"],
 )
+
+# Correct MET for corrections in lepton energy scale
+PropagateLeptonsToMET = Producer(
+    name="PropagateLeptonsToMET",
+    call="lorentzvector::PropagateToMET({df}, {output}, {input}, {propagate_leptons_to_met})",
+    input=[q.met_p4_jetcorrected, q.p4_1_uncorrected, q.p4_2_uncorrected, q.p4_1, q.p4_2],
+    output=[q.met_p4_leptoncorrected],
+    scopes=SCOPES,
+)
+
 
 # Recoil correction evaluation via correctionlib
 RecoilCorrectionMET = Producer(
@@ -218,7 +267,7 @@ RecoilCorrectionMET = Producer(
         """
     ),
     input=[
-        q.met_p4_jetcorrected,
+        q.met_p4_leptoncorrected,
         q.gen_boson_p4,
         q.gen_vis_boson_p4,
         q.n_jets,
@@ -228,7 +277,7 @@ RecoilCorrectionMET = Producer(
 )
 
 # Producer group to trigger production of all MET corrections
-METCorrections = ProducerGroup(
+METCorrectionsRun2 = ProducerGroup(
     name="METCorrections",
     call=None,
     input=None,
@@ -237,6 +286,20 @@ METCorrections = ProducerGroup(
     subproducers=[
         PropagateLeptonsToMET,
         PropagateJetsToMET,
+        RecoilCorrectionMET,
+    ],
+)
+
+# Producer group to trigger production of all MET corrections
+METCorrectionsRun3 = ProducerGroup(
+    name="METCorrections",
+    call=None,
+    input=None,
+    output=None,
+    scopes=SCOPES,
+    subproducers=[
+        PropagateLeptonsToMET,
+        TypeICorrectionsToMET,
         RecoilCorrectionMET,
     ],
 )
