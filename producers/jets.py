@@ -8,7 +8,7 @@ from analysis_configurations.quantities import nanoAODv12_run3
 from code_generation.producer import Producer, ProducerGroup
 
 from ._helpers import jerc_producer_factory
-from ..constants import GLOBAL_SCOPES, SCOPES, AvailableBJetIDs, BJET_ID_ALGORITHM
+from ..constants import GLOBAL_SCOPES, SCOPES
 
 
 #
@@ -83,6 +83,7 @@ JetEnergyCorrection_data, JetEnergyCorrection, RenameJetsData = jerc_producer_fa
         "event": nanoAOD.event,
     },
     output={
+        "jet_seed": q.jet_seed,
         "jet_pt_corrected": q.Jet_pt_corrected,
         "jet_mass_corrected": q.Jet_mass_corrected,
     },

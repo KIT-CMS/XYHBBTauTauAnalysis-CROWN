@@ -102,6 +102,7 @@ def jerc_producer_factory(
     event = input["event"]
 
     # get outputs
+    jet_seed = output["jet_seed"]
     jet_pt_corrected = output["jet_pt_corrected"]
     jet_mass_corrected = output["jet_mass_corrected"]
 
@@ -134,7 +135,7 @@ def jerc_producer_factory(
     )
 
     # initialize seed for jet energy resolution smearing
-    jer_smearing_seed = Producer(
+    jet_smearing_seed = Producer(
         name=f"{producer_prefix}SmearingSeed",
         call=f"event::quantity::GenerateSeed({{df}}, {{output}}, {{input}}, {{{config_parameter_prefix}_jer_master_seed}})",
         input=[
@@ -142,7 +143,7 @@ def jerc_producer_factory(
             run,
             event,
         ],
-        output=[],
+        output=[jet_seed],
         scopes=["global"],
     )
 
@@ -178,10 +179,10 @@ def jerc_producer_factory(
             gen_jet_eta,
             gen_jet_phi,
             rho,
+            jet_seed,
         ],
         output=[jet_pt_corrected],
         scopes=scopes,
-        subproducers=[jer_smearing_seed],
     )
 
     # jet pt correction for jets in embedded events (just rename column)
@@ -250,7 +251,7 @@ def jerc_producer_factory(
         input=None,
         output=None,
         scopes=scopes,
-        subproducers=[jet_pt_correction_mc, jet_mass_correction],
+        subproducers=[jet_smearing_seed, jet_pt_correction_mc, jet_mass_correction],
     )
 
     # create jet energy correction group (embedding, just rename columns)

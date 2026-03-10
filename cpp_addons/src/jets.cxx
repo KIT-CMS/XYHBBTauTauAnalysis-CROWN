@@ -92,7 +92,7 @@ ROOT::RDF::RNode CorrectJetIDRun3NanoV12(
         }
 
         // convert the data type to default in NanoAOD v12 (UChar_t)
-        auto jet_id_corrected_v12 = static_cast<ROOT::RVec<UChar_t>>(jet_id_corrected);
+        auto jet_id_corrected_v12 = static_cast<ROOT::RVec<Int_t>>(jet_id_corrected);
 
         return jet_id_corrected_v12;
     };

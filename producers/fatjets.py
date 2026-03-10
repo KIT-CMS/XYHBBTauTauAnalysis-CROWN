@@ -36,6 +36,7 @@ FatJetEnergyCorrection_data, FatJetEnergyCorrection, RenameFatJetsData = jerc_pr
         "event": nanoAOD.event,
     },
     output={
+        "jet_seed": q.fatjet_seed,
         "jet_pt_corrected": q.FatJet_pt_corrected,
         "jet_mass_corrected": q.FatJet_mass_corrected,
     },
@@ -70,7 +71,7 @@ FatJetIDRun3NanoV15 = Producer(
 # for Run 2, the Jet ID implementation is correct, just rename the column
 FatJetIDRun2 = Producer(
     name="JetIDRun2",
-    call="event::quantity::Rename<ROOT::RVec<UChar_t>>({df}, {output}, {input})",
+    call="event::quantity::Rename<ROOT::RVec<Int_t>>({df}, {output}, {input})",
     input=[nanoAODv12_run3.FatJet_jetId],
     output=[q.FatJet_ID_corrected],
     scopes=GLOBAL_SCOPES,
