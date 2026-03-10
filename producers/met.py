@@ -112,7 +112,7 @@ PuppiMetCov = met_cov_producers(
     name="PuppiMetCov",
     input_quantities={
         "met_cov_xx": nanoAOD.PuppiMET_covXX,
-        "met_cov_xy": nanoAOD.PuppiMET_covXX,
+        "met_cov_xy": nanoAOD.PuppiMET_covXY,
         "met_cov_yy": nanoAOD.PuppiMET_covYY,
     },
     output_quantities={
