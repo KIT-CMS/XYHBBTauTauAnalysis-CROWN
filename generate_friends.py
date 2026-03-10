@@ -30,6 +30,7 @@ def run(args):
         "diboson",
         "dyjets",
         "dyjets_madgraph",
+        "dyjets_amcatnlo",
         "dyjets_amcatnlo_ll",
         "dyjets_amcatnlo_tt",
         "dyjets_powheg",

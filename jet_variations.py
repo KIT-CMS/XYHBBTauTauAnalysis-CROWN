@@ -65,9 +65,9 @@ def add_jetVariations(
             name="jesUncTotalUp",
             shift_config={
                 "global": {
-                    "jet_jes_shift": 1,
+                    "ak4jet_jes_shift_factor": 1,
                     "jet_jes_sources": JEC_sources,
-                    "fatjet_jes_shift": 1,
+                    "ak8jet_jes_shift_factor": 1,
                     "fatjet_jes_sources": JEC_sources,
                 },
                 ("mt", "et", "tt"): {"bjet_sf_variation": "up_jes"},
@@ -87,9 +87,9 @@ def add_jetVariations(
             name="jesUncTotalDown",
             shift_config={
                 "global": {
-                    "jet_jes_shift": -1,
+                    "ak4jet_jes_shift_factor": -1,
                     "jet_jes_sources": JEC_sources,
-                    "fatjet_jes_shift": -1,
+                    "ak8jet_jes_shift_factor": -1,
                     "fatjet_jes_sources": JEC_sources,
                 },
                 ("mt", "et", "tt"): {"bjet_sf_variation": "down_jes"},
@@ -114,9 +114,9 @@ def add_jetVariations(
                 name="jesUncHEMIssueUp",
                 shift_config={
                     "global": {
-                        "jet_jes_shift": 1,
+                        "ak4jet_jes_shift_factor": 1,
                         "jet_jes_sources": JEC_sources,
-                        "fatjet_jes_shift": 1,
+                        "ak8jet_jes_shift_factor": 1,
                         "fatjet_jes_sources": JEC_sources,
                     }
                 },
@@ -134,9 +134,9 @@ def add_jetVariations(
                 name="jesUncHEMIssueDown",
                 shift_config={
                     "global": {
-                        "jet_jes_shift": -1,
+                        "ak4jet_jes_shift_factor": -1,
                         "jet_jes_sources": JEC_sources,
-                        "fatjet_jes_shift": -1,
+                        "ak8jet_jes_shift_factor": -1,
                         "fatjet_jes_sources": JEC_sources,
                     }
                 },
@@ -159,9 +159,9 @@ def add_jetVariations(
             name="jesUncAbsoluteUp",
             shift_config={
                 "global": {
-                    "jet_jes_shift": 1,
+                    "ak4jet_jes_shift_factor": 1,
                     "jet_jes_sources": JEC_sources,
-                    "fatjet_jes_shift": 1,
+                    "ak8jet_jes_shift_factor": 1,
                     "fatjet_jes_sources": JEC_sources,
                 },
                 ("mt", "et", "tt"): {"bjet_sf_variation": "up_jesAbsolute"},
@@ -183,9 +183,9 @@ def add_jetVariations(
             name="jesUncAbsoluteDown",
             shift_config={
                 "global": {
-                    "jet_jes_shift": -1,
+                    "ak4jet_jes_shift_factor": -1,
                     "jet_jes_sources": JEC_sources,
-                    "fatjet_jes_shift": -1,
+                    "ak8jet_jes_shift_factor": -1,
                     "fatjet_jes_sources": JEC_sources,
                 },
                 ("mt", "et", "tt"): {"bjet_sf_variation": "down_jesAbsolute"},
@@ -209,9 +209,9 @@ def add_jetVariations(
             name="jesUncAbsolute{}Up".format(era),
             shift_config={
                 "global": {
-                    "jet_jes_shift": 1,
+                    "ak4jet_jes_shift_factor": 1,
                     "jet_jes_sources": JEC_sources,
-                    "fatjet_jes_shift": 1,
+                    "ak8jet_jes_shift_factor": 1,
                     "fatjet_jes_sources": JEC_sources,
                 },
                 ("mt", "et", "tt"): {
@@ -235,9 +235,9 @@ def add_jetVariations(
             name="jesUncAbsolute{}Down".format(era),
             shift_config={
                 "global": {
-                    "jet_jes_shift": -1,
+                    "ak4jet_jes_shift_factor": -1,
                     "jet_jes_sources": JEC_sources,
-                    "fatjet_jes_shift": -1,
+                    "ak8jet_jes_shift_factor": -1,
                     "fatjet_jes_sources": JEC_sources,
                 },
                 ("mt", "et", "tt"): {
@@ -263,9 +263,9 @@ def add_jetVariations(
             name="jesUncFlavorQCDUp",
             shift_config={
                 "global": {
-                    "jet_jes_shift": 1,
+                    "ak4jet_jes_shift_factor": 1,
                     "jet_jes_sources": JEC_sources,
-                    "fatjet_jes_shift": 1,
+                    "ak8jet_jes_shift_factor": 1,
                     "fatjet_jes_sources": JEC_sources,
                 },
                 ("mt", "et", "tt"): {"bjet_sf_variation": "up_jesFlavorQCD"},
@@ -287,9 +287,9 @@ def add_jetVariations(
             name="jesUncFlavorQCDDown",
             shift_config={
                 "global": {
-                    "jet_jes_shift": -1,
+                    "ak4jet_jes_shift_factor": -1,
                     "jet_jes_sources": JEC_sources,
-                    "fatjet_jes_shift": -1,
+                    "ak8jet_jes_shift_factor": -1,
                     "fatjet_jes_sources": JEC_sources,
                 },
                 ("mt", "et", "tt"): {"bjet_sf_variation": "down_jesFlavorQCD"},
@@ -313,9 +313,9 @@ def add_jetVariations(
             name="jesUncBBEC1Up",
             shift_config={
                 "global": {
-                    "jet_jes_shift": 1,
+                    "ak4jet_jes_shift_factor": 1,
                     "jet_jes_sources": JEC_sources,
-                    "fatjet_jes_shift": 1,
+                    "ak8jet_jes_shift_factor": 1,
                     "fatjet_jes_sources": JEC_sources,
                 },
                 ("mt", "et", "tt"): {"bjet_sf_variation": "up_jesBBEC1"},
@@ -337,9 +337,9 @@ def add_jetVariations(
             name="jesUncBBEC1Down",
             shift_config={
                 "global": {
-                    "jet_jes_shift": -1,
+                    "ak4jet_jes_shift_factor": -1,
                     "jet_jes_sources": JEC_sources,
-                    "fatjet_jes_shift": -1,
+                    "ak8jet_jes_shift_factor": -1,
                     "fatjet_jes_sources": JEC_sources,
                 },
                 ("mt", "et", "tt"): {"bjet_sf_variation": "down_jesBBEC1"},
@@ -363,9 +363,9 @@ def add_jetVariations(
             name="jesUncBBEC1{}Up".format(era),
             shift_config={
                 "global": {
-                    "jet_jes_shift": 1,
+                    "ak4jet_jes_shift_factor": 1,
                     "jet_jes_sources": JEC_sources,
-                    "fatjet_jes_shift": 1,
+                    "ak8jet_jes_shift_factor": 1,
                     "fatjet_jes_sources": JEC_sources,
                 },
                 ("mt", "et", "tt"): {"bjet_sf_variation": "up_jesBBEC1_{}".format(era)},
@@ -387,9 +387,9 @@ def add_jetVariations(
             name="jesUncBBEC1{}Down".format(era),
             shift_config={
                 "global": {
-                    "jet_jes_shift": -1,
+                    "ak4jet_jes_shift_factor": -1,
                     "jet_jes_sources": JEC_sources,
-                    "fatjet_jes_shift": -1,
+                    "ak8jet_jes_shift_factor": -1,
                     "fatjet_jes_sources": JEC_sources,
                 },
                 ("mt", "et", "tt"): {
@@ -415,9 +415,9 @@ def add_jetVariations(
             name="jesUncHFUp",
             shift_config={
                 "global": {
-                    "jet_jes_shift": 1,
+                    "ak4jet_jes_shift_factor": 1,
                     "jet_jes_sources": JEC_sources,
-                    "fatjet_jes_shift": 1,
+                    "ak8jet_jes_shift_factor": 1,
                     "fatjet_jes_sources": JEC_sources,
                 },
                 ("mt", "et", "tt"): {"bjet_sf_variation": "up_jesHF"},
@@ -439,9 +439,9 @@ def add_jetVariations(
             name="jesUncHFDown",
             shift_config={
                 "global": {
-                    "jet_jes_shift": -1,
+                    "ak4jet_jes_shift_factor": -1,
                     "jet_jes_sources": JEC_sources,
-                    "fatjet_jes_shift": -1,
+                    "ak8jet_jes_shift_factor": -1,
                     "fatjet_jes_sources": JEC_sources,
                 },
                 ("mt", "et", "tt"): {"bjet_sf_variation": "down_jesHF"},
@@ -465,9 +465,9 @@ def add_jetVariations(
             name="jesUncHF{}Up".format(era),
             shift_config={
                 "global": {
-                    "jet_jes_shift": 1,
+                    "ak4jet_jes_shift_factor": 1,
                     "jet_jes_sources": JEC_sources,
-                    "fatjet_jes_shift": 1,
+                    "ak8jet_jes_shift_factor": 1,
                     "fatjet_jes_sources": JEC_sources,
                 },
                 ("mt", "et", "tt"): {"bjet_sf_variation": "up_jesHF_{}".format(era)},
@@ -489,9 +489,9 @@ def add_jetVariations(
             name="jesUncHF{}Down".format(era),
             shift_config={
                 "global": {
-                    "jet_jes_shift": -1,
+                    "ak4jet_jes_shift_factor": -1,
                     "jet_jes_sources": JEC_sources,
-                    "fatjet_jes_shift": -1,
+                    "ak8jet_jes_shift_factor": -1,
                     "fatjet_jes_sources": JEC_sources,
                 },
                 ("mt", "et", "tt"): {"bjet_sf_variation": "down_jesHF_{}".format(era)},
@@ -515,9 +515,9 @@ def add_jetVariations(
             name="jesUncEC2Up",
             shift_config={
                 "global": {
-                    "jet_jes_shift": 1,
+                    "ak4jet_jes_shift_factor": 1,
                     "jet_jes_sources": JEC_sources,
-                    "fatjet_jes_shift": 1,
+                    "ak8jet_jes_shift_factor": 1,
                     "fatjet_jes_sources": JEC_sources,
                 },
                 ("mt", "et", "tt"): {"bjet_sf_variation": "up_jesEC2"},
@@ -539,9 +539,9 @@ def add_jetVariations(
             name="jesUncEC2Down",
             shift_config={
                 "global": {
-                    "jet_jes_shift": -1,
+                    "ak4jet_jes_shift_factor": -1,
                     "jet_jes_sources": JEC_sources,
-                    "fatjet_jes_shift": -1,
+                    "ak8jet_jes_shift_factor": -1,
                     "fatjet_jes_sources": JEC_sources,
                 },
                 ("mt", "et", "tt"): {"bjet_sf_variation": "down_jesEC2"},
@@ -565,9 +565,9 @@ def add_jetVariations(
             name="jesUncEC2{}Up".format(era),
             shift_config={
                 "global": {
-                    "jet_jes_shift": 1,
+                    "ak4jet_jes_shift_factor": 1,
                     "jet_jes_sources": JEC_sources,
-                    "fatjet_jes_shift": 1,
+                    "ak8jet_jes_shift_factor": 1,
                     "fatjet_jes_sources": JEC_sources,
                 },
                 ("mt", "et", "tt"): {"bjet_sf_variation": "up_jesEC2_{}".format(era)},
@@ -589,9 +589,9 @@ def add_jetVariations(
             name="jesUncEC2{}Down".format(era),
             shift_config={
                 "global": {
-                    "jet_jes_shift": -1,
+                    "ak4jet_jes_shift_factor": -1,
                     "jet_jes_sources": JEC_sources,
-                    "fatjet_jes_shift": -1,
+                    "ak8jet_jes_shift_factor": -1,
                     "fatjet_jes_sources": JEC_sources,
                 },
                 ("mt", "et", "tt"): {"bjet_sf_variation": "down_jesEC2_{}".format(era)},
@@ -615,9 +615,9 @@ def add_jetVariations(
             name="jesUncRelativeBalUp",
             shift_config={
                 "global": {
-                    "jet_jes_shift": 1,
+                    "ak4jet_jes_shift_factor": 1,
                     "jet_jes_sources": JEC_sources,
-                    "fatjet_jes_shift": 1,
+                    "ak8jet_jes_shift_factor": 1,
                     "fatjet_jes_sources": JEC_sources,
                 },
                 ("mt", "et", "tt"): {"bjet_sf_variation": "up_jesRelativeBal"},
@@ -639,9 +639,9 @@ def add_jetVariations(
             name="jesUncRelativeBalDown",
             shift_config={
                 "global": {
-                    "jet_jes_shift": -1,
+                    "ak4jet_jes_shift_factor": -1,
                     "jet_jes_sources": JEC_sources,
-                    "fatjet_jes_shift": -1,
+                    "ak8jet_jes_shift_factor": -1,
                     "fatjet_jes_sources": JEC_sources,
                 },
                 ("mt", "et", "tt"): {"bjet_sf_variation": "down_jesRelativeBal"},
@@ -665,9 +665,9 @@ def add_jetVariations(
             name="jesUncRelativeSample{}Up".format(era),
             shift_config={
                 "global": {
-                    "jet_jes_shift": 1,
+                    "ak4jet_jes_shift_factor": 1,
                     "jet_jes_sources": JEC_sources,
-                    "fatjet_jes_shift": 1,
+                    "ak8jet_jes_shift_factor": 1,
                     "fatjet_jes_sources": JEC_sources,
                 },
                 ("mt", "et", "tt"): {
@@ -691,9 +691,9 @@ def add_jetVariations(
             name="jesUncRelativeSample{}Down".format(era),
             shift_config={
                 "global": {
-                    "jet_jes_shift": -1,
+                    "ak4jet_jes_shift_factor": -1,
                     "jet_jes_sources": JEC_sources,
-                    "fatjet_jes_shift": -1,
+                    "ak8jet_jes_shift_factor": -1,
                     "fatjet_jes_sources": JEC_sources,
                 },
                 ("mt", "et", "tt"): {
@@ -722,7 +722,7 @@ def add_jetVariations(
     #         name="jesUncAbsoluteStatUp",
     #         shift_config={
     #             "global": {
-    #                 "jet_jes_shift": 1,
+    #                 "ak4jet_jes_shift_factor": 1,
     #                 "jet_jes_sources": JEC_sources,
     #                 "bjet_sf_variation": "up_jesAbsoluteStat",
     #             }
@@ -736,7 +736,7 @@ def add_jetVariations(
     #         name="jesUncAbsoluteStatDown",
     #         shift_config={
     #             "global": {
-    #                 "jet_jes_shift": -1,
+    #                 "ak4jet_jes_shift_factor": -1,
     #                 "jet_jes_sources": JEC_sources,
     #                 "bjet_sf_variation": "down_jesAbsoluteStat",
     #             }
@@ -752,7 +752,7 @@ def add_jetVariations(
     #         name="jesUncAbsoluteScaleUp",
     #         shift_config={
     #             "global": {
-    #                 "jet_jes_shift": 1,
+    #                 "ak4jet_jes_shift_factor": 1,
     #                 "jet_jes_sources": JEC_sources,
     #                 "bjet_sf_variation": "up_jesAbsoluteScale",
     #             }
@@ -766,7 +766,7 @@ def add_jetVariations(
     #         name="jesUncAbsoluteScaleDown",
     #         shift_config={
     #             "global": {
-    #                 "jet_jes_shift": -1,
+    #                 "ak4jet_jes_shift_factor": -1,
     #                 "jet_jes_sources": JEC_sources,
     #                 "bjet_sf_variation": "down_jesAbsoluteScale",
     #             }
@@ -782,7 +782,7 @@ def add_jetVariations(
     #         name="jesUncAbsoluteMPFBiasUp",
     #         shift_config={
     #             "global": {
-    #                 "jet_jes_shift": 1,
+    #                 "ak4jet_jes_shift_factor": 1,
     #                 "jet_jes_sources": JEC_sources,
     #                 "bjet_sf_variation": "up_jesAbsoluteMPFBias",
     #             }
@@ -796,7 +796,7 @@ def add_jetVariations(
     #         name="jesUncAbsoluteMPFBiasDown",
     #         shift_config={
     #             "global": {
-    #                 "jet_jes_shift": -1,
+    #                 "ak4jet_jes_shift_factor": -1,
     #                 "jet_jes_sources": JEC_sources,
     #                 "bjet_sf_variation": "down_jesAbsoluteMPFBias",
     #             }
@@ -812,7 +812,7 @@ def add_jetVariations(
     #         name="jesUncFragmentationUp",
     #         shift_config={
     #             "global": {
-    #                 "jet_jes_shift": 1,
+    #                 "ak4jet_jes_shift_factor": 1,
     #                 "jet_jes_sources": JEC_sources,
     #                 "bjet_sf_variation": "up_jesFragmentation",
     #             }
@@ -826,7 +826,7 @@ def add_jetVariations(
     #         name="jesUncFragmentationDown",
     #         shift_config={
     #             "global": {
-    #                 "jet_jes_shift": -1,
+    #                 "ak4jet_jes_shift_factor": -1,
     #                 "jet_jes_sources": JEC_sources,
     #                 "bjet_sf_variation": "down_jesFragmentation",
     #             }
@@ -842,7 +842,7 @@ def add_jetVariations(
     #         name="jesUncSinglePionECALUp",
     #         shift_config={
     #             "global": {
-    #                 "jet_jes_shift": 1,
+    #                 "ak4jet_jes_shift_factor": 1,
     #                 "jet_jes_sources": JEC_sources,
     #                 "bjet_sf_variation": "up_jesSinglePionECAL",
     #             }
@@ -856,7 +856,7 @@ def add_jetVariations(
     #         name="jesUncSinglePionECALDown",
     #         shift_config={
     #             "global": {
-    #                 "jet_jes_shift": -1,
+    #                 "ak4jet_jes_shift_factor": -1,
     #                 "jet_jes_sources": JEC_sources,
     #                 "bjet_sf_variation": "down_jesSinglePionECAL",
     #             }
@@ -872,7 +872,7 @@ def add_jetVariations(
     #         name="jesUncSinglePionHCALUp",
     #         shift_config={
     #             "global": {
-    #                 "jet_jes_shift": 1,
+    #                 "ak4jet_jes_shift_factor": 1,
     #                 "jet_jes_sources": JEC_sources,
     #                 "bjet_sf_variation": "up_jesSinglePionHCAL",
     #             }
@@ -886,7 +886,7 @@ def add_jetVariations(
     #         name="jesUncSinglePionHCALDown",
     #         shift_config={
     #             "global": {
-    #                 "jet_jes_shift": -1,
+    #                 "ak4jet_jes_shift_factor": -1,
     #                 "jet_jes_sources": JEC_sources,
     #                 "bjet_sf_variation": "down_jesSinglePionHCAL",
     #             }
@@ -902,7 +902,7 @@ def add_jetVariations(
     #         name="jesUncFlavorQCDUp",
     #         shift_config={
     #             "global": {
-    #                 "jet_jes_shift": 1,
+    #                 "ak4jet_jes_shift_factor": 1,
     #                 "jet_jes_sources": JEC_sources,
     #                 "bjet_sf_variation": "up_jesFlavorQCD",
     #             }
@@ -916,7 +916,7 @@ def add_jetVariations(
     #         name="jesUncFlavorQCDDown",
     #         shift_config={
     #             "global": {
-    #                 "jet_jes_shift": -1,
+    #                 "ak4jet_jes_shift_factor": -1,
     #                 "jet_jes_sources": JEC_sources,
     #                 "bjet_sf_variation": "down_jesFlavorQCD",
     #             }
@@ -932,7 +932,7 @@ def add_jetVariations(
     #         name="jesUncTimePtEtaUp",
     #         shift_config={
     #             "global": {
-    #                 "jet_jes_shift": 1,
+    #                 "ak4jet_jes_shift_factor": 1,
     #                 "jet_jes_sources": JEC_sources,
     #                 "bjet_sf_variation": "up_jesTimePtEta",
     #             }
@@ -946,7 +946,7 @@ def add_jetVariations(
     #         name="jesUncTimePtEtaDown",
     #         shift_config={
     #             "global": {
-    #                 "jet_jes_shift": -1,
+    #                 "ak4jet_jes_shift_factor": -1,
     #                 "jet_jes_sources": JEC_sources,
     #                 "bjet_sf_variation": "down_jesTimePtEta",
     #             }
@@ -962,7 +962,7 @@ def add_jetVariations(
     #         name="jesUncRelativeJEREC1Up",
     #         shift_config={
     #             "global": {
-    #                 "jet_jes_shift": 1,
+    #                 "ak4jet_jes_shift_factor": 1,
     #                 "jet_jes_sources": JEC_sources,
     #                 "bjet_sf_variation": "up_jesRelativeJEREC1",
     #             }
@@ -976,7 +976,7 @@ def add_jetVariations(
     #         name="jesUncRelativeJEREC1Down",
     #         shift_config={
     #             "global": {
-    #                 "jet_jes_shift": -1,
+    #                 "ak4jet_jes_shift_factor": -1,
     #                 "jet_jes_sources": JEC_sources,
     #                 "bjet_sf_variation": "down_jesRelativeJEREC1",
     #             }
@@ -992,7 +992,7 @@ def add_jetVariations(
     #         name="jesUncRelativeJEREC2Up",
     #         shift_config={
     #             "global": {
-    #                 "jet_jes_shift": 1,
+    #                 "ak4jet_jes_shift_factor": 1,
     #                 "jet_jes_sources": JEC_sources,
     #                 "bjet_sf_variation": "up_jesRelativeJEREC2",
     #             }
@@ -1006,7 +1006,7 @@ def add_jetVariations(
     #         name="jesUncRelativeJEREC2Down",
     #         shift_config={
     #             "global": {
-    #                 "jet_jes_shift": -1,
+    #                 "ak4jet_jes_shift_factor": -1,
     #                 "jet_jes_sources": JEC_sources,
     #                 "bjet_sf_variation": "down_jesRelativeJEREC2",
     #             }
@@ -1022,7 +1022,7 @@ def add_jetVariations(
     #         name="jesUncRelativeJERHFUp",
     #         shift_config={
     #             "global": {
-    #                 "jet_jes_shift": 1,
+    #                 "ak4jet_jes_shift_factor": 1,
     #                 "jet_jes_sources": JEC_sources,
     #                 "bjet_sf_variation": "up_jesRelativeJERHF",
     #             }
@@ -1036,7 +1036,7 @@ def add_jetVariations(
     #         name="jesUncRelativeJERHFDown",
     #         shift_config={
     #             "global": {
-    #                 "jet_jes_shift": -1,
+    #                 "ak4jet_jes_shift_factor": -1,
     #                 "jet_jes_sources": JEC_sources,
     #                 "bjet_sf_variation": "down_jesRelativeJERHF",
     #             }
@@ -1052,7 +1052,7 @@ def add_jetVariations(
     #         name="jesUncRelativePtBBUp",
     #         shift_config={
     #             "global": {
-    #                 "jet_jes_shift": 1,
+    #                 "ak4jet_jes_shift_factor": 1,
     #                 "jet_jes_sources": JEC_sources,
     #                 "bjet_sf_variation": "up_jesRelativePtBB",
     #             }
@@ -1066,7 +1066,7 @@ def add_jetVariations(
     #         name="jesUncRelativePtBBDown",
     #         shift_config={
     #             "global": {
-    #                 "jet_jes_shift": -1,
+    #                 "ak4jet_jes_shift_factor": -1,
     #                 "jet_jes_sources": JEC_sources,
     #                 "bjet_sf_variation": "down_jesRelativePtBB",
     #             }
@@ -1082,7 +1082,7 @@ def add_jetVariations(
     #         name="jesUncRelativePtEC1Up",
     #         shift_config={
     #             "global": {
-    #                 "jet_jes_shift": 1,
+    #                 "ak4jet_jes_shift_factor": 1,
     #                 "jet_jes_sources": JEC_sources,
     #                 "bjet_sf_variation": "up_jesRelativePtEC1",
     #             }
@@ -1096,7 +1096,7 @@ def add_jetVariations(
     #         name="jesUncRelativePtEC1Down",
     #         shift_config={
     #             "global": {
-    #                 "jet_jes_shift": -1,
+    #                 "ak4jet_jes_shift_factor": -1,
     #                 "jet_jes_sources": JEC_sources,
     #                 "bjet_sf_variation": "down_jesRelativePtEC1",
     #             }
@@ -1112,7 +1112,7 @@ def add_jetVariations(
     #         name="jesUncRelativePtEC2Up",
     #         shift_config={
     #             "global": {
-    #                 "jet_jes_shift": 1,
+    #                 "ak4jet_jes_shift_factor": 1,
     #                 "jet_jes_sources": JEC_sources,
     #                 "bjet_sf_variation": "up_jesRelativePtEC2",
     #             }
@@ -1126,7 +1126,7 @@ def add_jetVariations(
     #         name="jesUncRelativePtEC2Down",
     #         shift_config={
     #             "global": {
-    #                 "jet_jes_shift": -1,
+    #                 "ak4jet_jes_shift_factor": -1,
     #                 "jet_jes_sources": JEC_sources,
     #                 "bjet_sf_variation": "down_jesRelativePtEC2",
     #             }
@@ -1142,7 +1142,7 @@ def add_jetVariations(
     #         name="jesUncRelativePtHFUp",
     #         shift_config={
     #             "global": {
-    #                 "jet_jes_shift": 1,
+    #                 "ak4jet_jes_shift_factor": 1,
     #                 "jet_jes_sources": JEC_sources,
     #                 "bjet_sf_variation": "up_jesRelativePtHF",
     #             }
@@ -1156,7 +1156,7 @@ def add_jetVariations(
     #         name="jesUncRelativePtHFDown",
     #         shift_config={
     #             "global": {
-    #                 "jet_jes_shift": -1,
+    #                 "ak4jet_jes_shift_factor": -1,
     #                 "jet_jes_sources": JEC_sources,
     #                 "bjet_sf_variation": "down_jesRelativePtHF",
     #             }
@@ -1172,7 +1172,7 @@ def add_jetVariations(
     #         name="jesUncRelativeBalUp",
     #         shift_config={
     #             "global": {
-    #                 "jet_jes_shift": 1,
+    #                 "ak4jet_jes_shift_factor": 1,
     #                 "jet_jes_sources": JEC_sources,
     #                 "bjet_sf_variation": "up_jesRelativeBal",
     #             }
@@ -1186,7 +1186,7 @@ def add_jetVariations(
     #         name="jesUncRelativeBalDown",
     #         shift_config={
     #             "global": {
-    #                 "jet_jes_shift": -1,
+    #                 "ak4jet_jes_shift_factor": -1,
     #                 "jet_jes_sources": JEC_sources,
     #                 "bjet_sf_variation": "down_jesRelativeBal",
     #             }
@@ -1202,7 +1202,7 @@ def add_jetVariations(
     #         name="jesUncRelativeSampleUp",
     #         shift_config={
     #             "global": {
-    #                 "jet_jes_shift": 1,
+    #                 "ak4jet_jes_shift_factor": 1,
     #                 "jet_jes_sources": JEC_sources,
     #                 "bjet_sf_variation": "up_jesRelativeSample",
     #             }
@@ -1216,7 +1216,7 @@ def add_jetVariations(
     #         name="jesUncRelativeSampleDown",
     #         shift_config={
     #             "global": {
-    #                 "jet_jes_shift": -1,
+    #                 "ak4jet_jes_shift_factor": -1,
     #                 "jet_jes_sources": JEC_sources,
     #                 "bjet_sf_variation": "down_jesRelativeSample",
     #             }
@@ -1232,7 +1232,7 @@ def add_jetVariations(
     #         name="jesUncRelativeFSRUp",
     #         shift_config={
     #             "global": {
-    #                 "jet_jes_shift": 1,
+    #                 "ak4jet_jes_shift_factor": 1,
     #                 "jet_jes_sources": JEC_sources,
     #                 "bjet_sf_variation": "up_jesRelativeFSR",
     #             }
@@ -1246,7 +1246,7 @@ def add_jetVariations(
     #         name="jesUncRelativeFSRDown",
     #         shift_config={
     #             "global": {
-    #                 "jet_jes_shift": -1,
+    #                 "ak4jet_jes_shift_factor": -1,
     #                 "jet_jes_sources": JEC_sources,
     #                 "bjet_sf_variation": "down_jesRelativeFSR",
     #             }
@@ -1262,7 +1262,7 @@ def add_jetVariations(
     #         name="jesUncRelativeStatFSRUp",
     #         shift_config={
     #             "global": {
-    #                 "jet_jes_shift": 1,
+    #                 "ak4jet_jes_shift_factor": 1,
     #                 "jet_jes_sources": JEC_sources,
     #                 "bjet_sf_variation": "up_jesRelativeStatFSR",
     #             }
@@ -1276,7 +1276,7 @@ def add_jetVariations(
     #         name="jesUncRelativeStatFSRDown",
     #         shift_config={
     #             "global": {
-    #                 "jet_jes_shift": -1,
+    #                 "ak4jet_jes_shift_factor": -1,
     #                 "jet_jes_sources": JEC_sources,
     #                 "bjet_sf_variation": "down_jesRelativeStatFSR",
     #             }
@@ -1292,7 +1292,7 @@ def add_jetVariations(
     #         name="jesUncRelativeStatECUp",
     #         shift_config={
     #             "global": {
-    #                 "jet_jes_shift": 1,
+    #                 "ak4jet_jes_shift_factor": 1,
     #                 "jet_jes_sources": JEC_sources,
     #                 "bjet_sf_variation": "up_jesRelativeStatEC",
     #             }
@@ -1306,7 +1306,7 @@ def add_jetVariations(
     #         name="jesUncRelativeStatECDown",
     #         shift_config={
     #             "global": {
-    #                 "jet_jes_shift": -1,
+    #                 "ak4jet_jes_shift_factor": -1,
     #                 "jet_jes_sources": JEC_sources,
     #                 "bjet_sf_variation": "down_jesRelativeStatEC",
     #             }
@@ -1322,7 +1322,7 @@ def add_jetVariations(
     #         name="jesUncRelativeStatHFUp",
     #         shift_config={
     #             "global": {
-    #                 "jet_jes_shift": 1,
+    #                 "ak4jet_jes_shift_factor": 1,
     #                 "jet_jes_sources": JEC_sources,
     #                 "bjet_sf_variation": "up_jesRelativeStatHF",
     #             }
@@ -1336,7 +1336,7 @@ def add_jetVariations(
     #         name="jesUncRelativeStatHFDown",
     #         shift_config={
     #             "global": {
-    #                 "jet_jes_shift": -1,
+    #                 "ak4jet_jes_shift_factor": -1,
     #                 "jet_jes_sources": JEC_sources,
     #                 "bjet_sf_variation": "down_jesRelativeStatHF",
     #             }
@@ -1352,7 +1352,7 @@ def add_jetVariations(
     #         name="jesUncPileUpDataMCUp",
     #         shift_config={
     #             "global": {
-    #                 "jet_jes_shift": 1,
+    #                 "ak4jet_jes_shift_factor": 1,
     #                 "jet_jes_sources": JEC_sources,
     #                 "bjet_sf_variation": "up_jesPileUpDataMC",
     #             }
@@ -1366,7 +1366,7 @@ def add_jetVariations(
     #         name="jesUncPileUpDataMCDown",
     #         shift_config={
     #             "global": {
-    #                 "jet_jes_shift": -1,
+    #                 "ak4jet_jes_shift_factor": -1,
     #                 "jet_jes_sources": JEC_sources,
     #                 "bjet_sf_variation": "down_jesPileUpDataMC",
     #             }
@@ -1382,7 +1382,7 @@ def add_jetVariations(
     #         name="jesUncPileUpPtRefUp",
     #         shift_config={
     #             "global": {
-    #                 "jet_jes_shift": 1,
+    #                 "ak4jet_jes_shift_factor": 1,
     #                 "jet_jes_sources": JEC_sources,
     #                 "bjet_sf_variation": "up_jesPileUpPtRef",
     #             }
@@ -1396,7 +1396,7 @@ def add_jetVariations(
     #         name="jesUncPileUpPtRefDown",
     #         shift_config={
     #             "global": {
-    #                 "jet_jes_shift": -1,
+    #                 "ak4jet_jes_shift_factor": -1,
     #                 "jet_jes_sources": JEC_sources,
     #                 "bjet_sf_variation": "down_jesPileUpPtRef",
     #             }
@@ -1412,7 +1412,7 @@ def add_jetVariations(
     #         name="jesUncPileUpPtBBUp",
     #         shift_config={
     #             "global": {
-    #                 "jet_jes_shift": 1,
+    #                 "ak4jet_jes_shift_factor": 1,
     #                 "jet_jes_sources": JEC_sources,
     #                 "bjet_sf_variation": "up_jesPileUpPtBB",
     #             }
@@ -1426,7 +1426,7 @@ def add_jetVariations(
     #         name="jesUncPileUpPtBBDown",
     #         shift_config={
     #             "global": {
-    #                 "jet_jes_shift": -1,
+    #                 "ak4jet_jes_shift_factor": -1,
     #                 "jet_jes_sources": JEC_sources,
     #                 "bjet_sf_variation": "down_jesPileUpPtBB",
     #             }
@@ -1442,7 +1442,7 @@ def add_jetVariations(
     #         name="jesUncPileUpPtEC1Up",
     #         shift_config={
     #             "global": {
-    #                 "jet_jes_shift": 1,
+    #                 "ak4jet_jes_shift_factor": 1,
     #                 "jet_jes_sources": JEC_sources,
     #                 "bjet_sf_variation": "up_jesPileUpPtEC1",
     #             }
@@ -1456,7 +1456,7 @@ def add_jetVariations(
     #         name="jesUncPileUpPtEC1Down",
     #         shift_config={
     #             "global": {
-    #                 "jet_jes_shift": -1,
+    #                 "ak4jet_jes_shift_factor": -1,
     #                 "jet_jes_sources": JEC_sources,
     #                 "bjet_sf_variation": "down_jesPileUpPtEC1",
     #             }
@@ -1472,7 +1472,7 @@ def add_jetVariations(
     #         name="jesUncPileUpPtEC2Up",
     #         shift_config={
     #             "global": {
-    #                 "jet_jes_shift": 1,
+    #                 "ak4jet_jes_shift_factor": 1,
     #                 "jet_jes_sources": JEC_sources,
     #                 "bjet_sf_variation": "up_jesPileUpPtEC2",
     #             }
@@ -1486,7 +1486,7 @@ def add_jetVariations(
     #         name="jesUncPileUpPtEC2Down",
     #         shift_config={
     #             "global": {
-    #                 "jet_jes_shift": -1,
+    #                 "ak4jet_jes_shift_factor": -1,
     #                 "jet_jes_sources": JEC_sources,
     #                 "bjet_sf_variation": "down_jesPileUpPtEC2",
     #             }
@@ -1502,7 +1502,7 @@ def add_jetVariations(
     #         name="jesUncPileUpPtHFUp",
     #         shift_config={
     #             "global": {
-    #                 "jet_jes_shift": 1,
+    #                 "ak4jet_jes_shift_factor": 1,
     #                 "jet_jes_sources": JEC_sources,
     #                 "bjet_sf_variation": "up_jesPileUpPtHF",
     #             }
@@ -1516,7 +1516,7 @@ def add_jetVariations(
     #         name="jesUncPileUpPtHFDown",
     #         shift_config={
     #             "global": {
-    #                 "jet_jes_shift": -1,
+    #                 "ak4jet_jes_shift_factor": -1,
     #                 "jet_jes_sources": JEC_sources,
     #                 "bjet_sf_variation": "down_jesPileUpPtHF",
     #             }

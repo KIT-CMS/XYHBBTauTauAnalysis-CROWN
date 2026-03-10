@@ -162,7 +162,7 @@ def jerc_producer_factory(
                 f"{{{config_parameter_prefix}_jes_sources}}, "
                 f"\"{{{config_parameter_prefix}_jer_tag}}\", "
                 f"{{{config_parameter_prefix}_reapplyJES}}, "
-                f"{{{config_parameter_prefix}_jes_shift}}, "
+                f"{{{config_parameter_prefix}_jes_shift_factor}}, "
                 f"\"{{{config_parameter_prefix}_jer_shift}}\", "
                 "\"{era}\", "
                 f"{{{config_parameter_prefix}_apply_jet_horn_veto}}"
