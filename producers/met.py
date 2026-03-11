@@ -173,9 +173,9 @@ MetQuantitiesUncorrected = ProducerGroup(
 TypeICorrectionsToMET = Producer(
     name="TypeICorrectionsToMET",
     call="""
-    TypeIMET(
+    met::TypeIMET(
         {df},
-        {correctionManager},
+        correctionManager,
         {output},
         {input},
         "{ak4jet_jec_file}",
@@ -208,7 +208,7 @@ TypeICorrectionsToMET = Producer(
         nanoAOD.GenJet_pt,
         nanoAOD.GenJet_eta,
         nanoAOD.GenJet_phi,
-        nanoAOD.rho_fixedGridRhoFastjetAll,
+        nanoAOD.Rho_fixedGridRhoFastjetAll,
         q.jet_seed,
         nanoAOD.run,
     ],

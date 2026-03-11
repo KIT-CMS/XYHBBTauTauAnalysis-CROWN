@@ -148,7 +148,7 @@ def jerc_producer_factory(
     )
 
     # jet pt correction for MC jets
-    jet_pt_correction_mc = ProducerGroup(
+    jet_pt_correction_mc = Producer(
         name=f"{producer_prefix}PtCorrectionMC",
         call=(
             "physicsobject::jet::PtCorrectionMC("
