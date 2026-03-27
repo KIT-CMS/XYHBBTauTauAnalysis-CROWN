@@ -233,35 +233,95 @@ JECSimulation = ProducerGroup(
 
 
 #
-# JET ENERGY SCALE AND RESOLUTION CORRECTIONS
+# JETS AND JET ENERGY CALIBRATION FOR MET TYPE-I CORRECTIONS
 #
 
-# Create jet energy correction producers for AK4 jets
-JetEnergyCorrection_data, JetEnergyCorrection, RenameJetsData = jerc_producer_factory(
+# Concatenate Jet and CorrT1METJet collections for MET type-I corrections
+Type1JetCollection = type1_jet_collection_producer_factory(
     input={
         "jet_pt": nanoAOD.Jet_pt,
         "jet_eta": nanoAOD.Jet_eta,
         "jet_phi": nanoAOD.Jet_phi,
-        "jet_mass": nanoAOD.Jet_mass,
+        "jet_id": q.Jet_ID,
         "jet_area": nanoAOD.Jet_area,
         "jet_raw_factor": nanoAOD.Jet_rawFactor,
-        "jet_id": q.Jet_ID_corrected,
-        "gen_jet_pt": nanoAOD.GenJet_pt,
-        "gen_jet_eta": nanoAOD.GenJet_eta,
-        "gen_jet_phi": nanoAOD.GenJet_phi,
-        "rho": nanoAOD.Rho_fixedGridRhoFastjetAll,
-        "luminosity_block": nanoAOD.luminosityBlock,
-        "run": nanoAOD.run,
-        "event": nanoAOD.event,
+        "jet_muon_subtr_factor": nanoAOD.Jet_muonSubtrFactor,
+        "jet_ch_em_ef": nanoAOD.Jet_chEmEF,
+        "jet_ne_em_ef": nanoAOD.Jet_neEmEF,
+        "corrt1metjet_raw_pt": nanoAOD.CorrT1METJet_rawPt,
+        "corrt1metjet_eta": nanoAOD.CorrT1METJet_eta,
+        "corrt1metjet_phi": nanoAOD.CorrT1METJet_phi,
+        "corrt1metjet_area": nanoAOD.CorrT1METJet_area,
+        "corrt1metjet_muon_subtr_factor": nanoAOD.CorrT1METJet_muonSubtrFactor,
+        "corrt1metjet_em_ef": nanoAOD.CorrT1METJet_EmEF,
+        "n_corrt1metjet": nanoAOD.nCorrT1METJet,
     },
     output={
-        "jet_seed": q.jet_seed,
-        "jet_pt_corrected": q.Jet_pt_corrected,
-        "jet_mass_corrected": q.Jet_mass_corrected,
+        "jet_raw_muon_subtr_pt": q.Jet_rawMuonSubtrPt,
+        "jet_em_ef": q.Jet_EmEF,
+        "corrt1metjet_raw_muon_subtr_pt": q.CorrT1METJet_rawMuonSubtrPt,
+        "corrt1metjet_id": q.CorrT1METJet_ID,
+        "t1jet_raw_muon_subtr_pt": q.Type1Jet_rawMuonSubtrPt,
+        "t1jet_eta": q.Type1Jet_eta,
+        "t1jet_phi": q.Type1Jet_phi,
+        "t1jet_area": q.Type1Jet_area,
+        "t1jet_id": q.Type1Jet_ID,
+        "t1jet_em_ef": q.Type1Jet_EmEF,
     },
     scopes=GLOBAL_SCOPES,
-    producer_prefix="Jet",
+    producer_prefix="Type1Jet",
+)
+
+# Jet pt correction producers for AK4 jets on data and simulation
+Type1JetPtCorrectionData, Type1JetPtCorrectionSimulation = stepwise_jerc_producer_factory(
+    input={
+        "jet_pt": q.Type1Jet_rawMuonSubtrPt,
+        "jet_eta": q.Type1Jet_eta,
+        "jet_phi": q.Type1Jet_phi,
+        "jet_area": q.Type1Jet_area,
+        "jet_id": q.Type1Jet_ID,
+        "genjet_pt": nanoAOD.GenJet_pt,
+        "genjet_eta": nanoAOD.GenJet_eta,
+        "genjet_phi": nanoAOD.GenJet_phi,
+        "rho": nanoAOD.Rho_fixedGridRhoFastjetAll,
+        "jet_seed": q.jet_seed,
+    },
+    output={
+        "jet_jec_result": q.Type1Jet_jecResult,
+        "jet_l1_pt": q.Type1Jet_l1Pt,
+        "jet_l2rel_pt": q.Type1Jet_l2relPt,
+        "jet_l2l3res_pt": q.Type1Jet_l2l3resPt,
+        "jet_corrected_pt": q.Type1Jet_correctedPt,
+    },
+    scopes=GLOBAL_SCOPES,
+    producer_prefix="Type1Jet",
     config_parameter_prefix="ak4jet",
+)
+
+# Producer group for type-I jet energy calibration on data
+Type1JECData = ProducerGroup(
+    name="Type1JECData",
+    call=None,
+    input=None,
+    output=None,
+    scopes=GLOBAL_SCOPES,
+    subproducers=[
+        Type1JetCollection,
+        Type1JetPtCorrectionData,
+    ],
+)
+
+# Producer group for type-I jet energy calibration on MC
+Type1JECSimulation = ProducerGroup(
+    name="Type1JECSimulation",
+    call=None,
+    input=None,
+    output=None,
+    scopes=GLOBAL_SCOPES,
+    subproducers=[
+        Type1JetCollection,
+        Type1JetPtCorrectionSimulation,
+    ],
 )
 
 

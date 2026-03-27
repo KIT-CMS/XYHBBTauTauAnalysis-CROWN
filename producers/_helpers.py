@@ -3,6 +3,125 @@ from code_generation.producer import Producer, ProducerGroup
 from typing import Tuple
 
 
+def type1_jet_collection_producer_factory(
+    input: dict[str, Quantity],
+    output: dict[str, Quantity],
+    scopes: list[str],
+    producer_prefix: str = "Type1Jet",
+):
+    # Get input variables
+    jet_pt = input["jet_pt"]
+    jet_eta = input["jet_eta"]
+    jet_phi = input["jet_phi"]
+    jet_id = input["jet_id"]
+    jet_area = input["jet_area"]
+    jet_raw_factor = input["jet_raw_factor"]
+    jet_muon_subtr_factor = input["jet_muon_subtr_factor"]
+    jet_ch_em_ef = input["jet_ch_em_ef"]
+    jet_ne_em_ef = input["jet_ne_em_ef"]
+    corrt1metjet_raw_pt = input["corrt1metjet_raw_pt"]
+    corrt1metjet_eta = input["corrt1metjet_eta"]
+    corrt1metjet_phi = input["corrt1metjet_phi"]
+    corrt1metjet_area = input["corrt1metjet_area"]
+    corrt1metjet_muon_subtr_factor = input["corrt1metjet_muon_subtr_factor"]
+    corrt1metjet_em_ef = input["corrt1metjet_em_ef"]
+    n_corrt1metjet = input["n_corrt1metjet"]
+
+    # Get the output variables
+    jet_raw_muon_subtr_pt = output["jet_raw_muon_subtr_pt"]
+    jet_em_ef = output["jet_em_ef"]
+    corrt1metjet_raw_muon_subtr_pt = output["corrt1metjet_raw_muon_subtr_pt"]
+    corrt1metjet_id = output["corrt1metjet_id"]
+    t1jet_raw_muon_subtr_pt = output["t1jet_raw_muon_subtr_pt"]
+    t1jet_eta = output["t1jet_eta"]
+    t1jet_phi = output["t1jet_phi"]
+    t1jet_area = output["t1jet_area"]
+    t1jet_em_ef = output["t1jet_em_ef"]
+    t1jet_id = output["t1jet_id"]
+
+    # Producers defined in this function, collected into a producer group at
+    # the end of this function
+    producers = []
+
+    # Calculate raw and muon-subtracted jet pt
+    producers.append(Producer(
+        name=f"{producer_prefix}JetRawMuonSubtr",
+        call="physicsobject::jet::jec::RawMuonSubtr({df}, {output}, {input})",
+        input=[
+            jet_pt,
+            jet_raw_factor,
+            jet_muon_subtr_factor,
+        ],
+        output=[jet_raw_muon_subtr_pt],
+        scopes=scopes,
+    ))
+
+    # Calculate the muon-subtracted jet pt for the CorrT1METJet collection
+    producers.append(Producer(
+        name=f"{producer_prefix}CorrT1METJetRawMuonSubtr",
+        call="physicsobject::jet::jec::RawMuonSubtr({df}, {output}, {input})",
+        input=[
+            corrt1metjet_raw_pt,
+            corrt1metjet_muon_subtr_factor,
+        ],
+        output=[corrt1metjet_raw_muon_subtr_pt],
+        scopes=scopes,
+    ))
+
+    # Dummy jet ID column for the CorrT1METJet collection, effectively not used
+    # in the JEC (only for the HEMIssue variation in 2018)
+    producers.append(Producer(
+        name=f"{producer_prefix}CorrT1METJetIDDummy",
+        call="event::quantity::Define<UChar_t>({df}, {output}, {input}, 2)",
+        input=[n_corrt1metjet],
+        output=[corrt1metjet_id],
+        scopes=scopes,
+    ))
+
+    # For jets, charged and neutral em. energy fraction must be summed
+    producers.append(Producer(
+        name=f"{producer_prefix}JetEmEf",
+        call="event::quantity::SumVectors<float>({df}, {output}, {input})",
+        input=[jet_ch_em_ef, jet_ne_em_ef],
+        output=[jet_em_ef],
+        scopes=scopes,
+    ))
+
+    for (input_column_jet, input_column_corrjet), output_column, data_type in [
+        ((jet_raw_muon_subtr_pt, corrt1metjet_raw_muon_subtr_pt), t1jet_raw_muon_subtr_pt, "float"),
+        ((jet_eta, corrt1metjet_eta), t1jet_eta, "float"),
+        ((jet_phi, corrt1metjet_phi), t1jet_phi, "float"),
+        ((jet_area, corrt1metjet_area), t1jet_area, "float"),
+        ((jet_id, corrt1metjet_id), t1jet_id, "int"),
+        ((jet_em_ef, corrt1metjet_em_ef), t1jet_em_ef, "float"),
+    ]:
+        producers.append(Producer(
+            name=f"{producer_prefix}Concatenate{output_column.name}",
+            call=f"""
+            event::quantity::Concatenate<{data_type}>(
+                {{df}},
+                {{output}},
+                {{input}}
+            )
+            """,
+            input=[input_column_jet, input_column_corrjet],
+            output=[output_column],
+            scopes=scopes,
+        ))
+
+    # Create a producer group for generating all columns needed to concatenate
+    # the Jet and the CorrT1METJet collections
+    concatenate_producer_group = ProducerGroup(
+        name=f"{producer_prefix}Collection",
+        call=None,
+        input=None,
+        output=None,
+        scopes=scopes,
+        subproducers=producers,
+    )
+
+    return concatenate_producer_group
+
 
 def stepwise_jerc_producer_factory(
     input: dict[str, Quantity],
@@ -245,7 +364,7 @@ def jerc_producer_factory(
         - `{config_parameter_prefix}_jes_tag_data`: The tag in the correction file that should be used for JEC of the data.
         - `{config_parameter_prefix}_jer_tag`: The tag in the correction file that should be used for JER of the simulation.
         - `{config_parameter_prefix}_jec_algo`: The pileup mitigation algorithm that has been used for the jets (e.g. `AK4chs`, `AK8PFPuppi`).
-        - `{config_parameter_prefix}_reapplyJES`: Flag whether to reapply the nominal JEC. The nominal JEC has already been performed in the `NanoAOD` production.
+        - `{config_parameter_prefix}_reapply_jes`: Flag whether to reapply the nominal JEC. The nominal JEC has already been performed in the `NanoAOD` production.
         - `{config_parameter_prefix}_jes_sources`: Uncertainty sources to be considered for a JEC/JER shift.
         - `{config_parameter_prefix}_jes_shift`: Name of the systematic shift that should be applied to the JEC.
         - `{config_parameter_prefix}_jer_shift`: Name of the systematic shift that should be applied to the JER.
@@ -341,7 +460,7 @@ def jerc_producer_factory(
                 f"\"{{{config_parameter_prefix}_jes_tag}}\", "
                 f"{{{config_parameter_prefix}_jes_sources}}, "
                 f"\"{{{config_parameter_prefix}_jer_tag}}\", "
-                f"{{{config_parameter_prefix}_reapplyJES}}, "
+                f"{{{config_parameter_prefix}_reapply_jes}}, "
                 f"{{{config_parameter_prefix}_jes_shift_factor}}, "
                 f"\"{{{config_parameter_prefix}_jer_shift}}\", "
                 "\"{era}\", "
