@@ -72,7 +72,7 @@ def type1_jet_collection_producer_factory(
     # in the JEC (only for the HEMIssue variation in 2018)
     producers.append(Producer(
         name=f"{producer_prefix}CorrT1METJetIDDummy",
-        call="event::quantity::Define<UChar_t>({df}, {output}, {input}, 2)",
+        call="event::quantity::Define<int>({df}, {output}, {input}, 2)",
         input=[n_corrt1metjet],
         output=[corrt1metjet_id],
         scopes=scopes,
