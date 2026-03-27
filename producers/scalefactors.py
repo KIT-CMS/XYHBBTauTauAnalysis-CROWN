@@ -1195,7 +1195,7 @@ BJetShapeDeepJet_SF = Producer(
     )
     """,
     input=[
-        q.Jet_pt_corrected,
+        q.Jet_correctedPt,
         nanoAOD.Jet_eta,
         nanoAOD.Jet_btagDeepFlavB,
         nanoAOD.Jet_hadronFlavour,
@@ -1222,7 +1222,7 @@ BJetShapePNet_SF = Producer(
     )
     """,
     input=[
-        q.Jet_pt_corrected,
+        q.Jet_correctedPt,
         nanoAOD.Jet_eta,
         nanoAOD.Jet_btagPNetB,
         nanoAOD.Jet_hadronFlavour,
@@ -1250,7 +1250,7 @@ BJetWPUParT_SF = Producer(
     )
     """,
     input=[
-        q.Jet_pt_corrected,
+        q.Jet_correctedPt,
         nanoAOD.Jet_eta,
         nanoAOD.Jet_hadronFlavour,
         q.good_jets_mask,
@@ -1273,7 +1273,7 @@ btagging_SF_boosted = Producer(
         "{btag_sf_variation}")
         """,
     input=[
-        q.Jet_pt_corrected,
+        q.Jet_correctedPt,
         nanoAOD.Jet_eta,
         nanoAOD.Jet_btagDeepFlavB,
         nanoAOD.Jet_hadronFlavour,

@@ -28,7 +28,8 @@ def add_jetVariations(
             },
             producers={
                 "global": {
-                    jets.JetEnergyCorrection,
+                    jets.JECSimulation,
+                    jets.Type1JECSimulation,
                     fatjets.FatJetEnergyCorrection,
                 },
                 # ("mt", "et", "tt"): {scalefactors.btagging_SF},
@@ -48,7 +49,8 @@ def add_jetVariations(
             },
             producers={
                 "global": {
-                    jets.JetEnergyCorrection,
+                    jets.JECSimulation,
+                    jets.Type1JECSimulation,
                     fatjets.FatJetEnergyCorrection,
                 },
                 # ("mt", "et", "tt"): {scalefactors.btagging_SF},
@@ -74,7 +76,8 @@ def add_jetVariations(
             },
             producers={
                 "global": {
-                    jets.JetEnergyCorrection,
+                    jets.JECSimulation,
+                    jets.Type1JECSimulation,
                     fatjets.FatJetEnergyCorrection,
                 },
                 ("mt", "et", "tt"): {bjet_id_sf_producer},
@@ -96,7 +99,8 @@ def add_jetVariations(
             },
             producers={
                 "global": {
-                    jets.JetEnergyCorrection,
+                    jets.JECSimulation,
+                    jets.Type1JECSimulation,
                     fatjets.FatJetEnergyCorrection,
                 },
                 ("mt", "et", "tt"): {bjet_id_sf_producer},
@@ -122,7 +126,8 @@ def add_jetVariations(
                 },
                 producers={
                     "global": {
-                        jets.JetEnergyCorrection,
+                        jets.JECSimulation,
+                        jets.Type1JECSimulation,
                         fatjets.FatJetEnergyCorrection,
                     },
                 },
@@ -142,7 +147,8 @@ def add_jetVariations(
                 },
                 producers={
                 "global": {
-                    jets.JetEnergyCorrection,
+                    jets.JECSimulation,
+                    jets.Type1JECSimulation,
                     fatjets.FatJetEnergyCorrection,
                 },
             },
@@ -168,7 +174,8 @@ def add_jetVariations(
             },
             producers={
                 "global": {
-                    jets.JetEnergyCorrection,
+                    jets.JECSimulation,
+                    jets.Type1JECSimulation,
                     fatjets.FatJetEnergyCorrection,
                 },
                 ("mt", "et", "tt"): {
@@ -192,7 +199,8 @@ def add_jetVariations(
             },
             producers={
                 "global": {
-                    jets.JetEnergyCorrection,
+                    jets.JECSimulation,
+                    jets.Type1JECSimulation,
                     fatjets.FatJetEnergyCorrection,
                 },
                 ("mt", "et", "tt"): {
@@ -220,7 +228,8 @@ def add_jetVariations(
             },
             producers={
                 "global": {
-                    jets.JetEnergyCorrection,
+                    jets.JECSimulation,
+                    jets.Type1JECSimulation,
                     fatjets.FatJetEnergyCorrection,
                 },
                 ("mt", "et", "tt"): {
@@ -246,7 +255,8 @@ def add_jetVariations(
             },
             producers={
                 "global": {
-                    jets.JetEnergyCorrection,
+                    jets.JECSimulation,
+                    jets.Type1JECSimulation,
                     fatjets.FatJetEnergyCorrection,
                 },
                 ("mt", "et", "tt"): {
@@ -272,7 +282,8 @@ def add_jetVariations(
             },
             producers={
                 "global": {
-                    jets.JetEnergyCorrection,
+                    jets.JECSimulation,
+                    jets.Type1JECSimulation,
                     fatjets.FatJetEnergyCorrection,
                 },
                 ("mt", "et", "tt"): {
@@ -296,7 +307,8 @@ def add_jetVariations(
             },
             producers={
                 "global": {
-                    jets.JetEnergyCorrection,
+                    jets.JECSimulation,
+                    jets.Type1JECSimulation,
                     fatjets.FatJetEnergyCorrection,
                 },
                 ("mt", "et", "tt"): {
@@ -322,7 +334,8 @@ def add_jetVariations(
             },
             producers={
                 "global": {
-                    jets.JetEnergyCorrection,
+                    jets.JECSimulation,
+                    jets.Type1JECSimulation,
                     fatjets.FatJetEnergyCorrection,
                 },
                 ("mt", "et", "tt"): {
@@ -346,7 +359,8 @@ def add_jetVariations(
             },
             producers={
                 "global": {
-                    jets.JetEnergyCorrection,
+                    jets.JECSimulation,
+                    jets.Type1JECSimulation,
                     fatjets.FatJetEnergyCorrection,
                 },
                 ("mt", "et", "tt"): {
@@ -372,7 +386,8 @@ def add_jetVariations(
             },
             producers={
                 "global": {
-                    jets.JetEnergyCorrection,
+                    jets.JECSimulation,
+                    jets.Type1JECSimulation,
                     fatjets.FatJetEnergyCorrection,
                 },
                 ("mt", "et", "tt"): {
@@ -398,7 +413,8 @@ def add_jetVariations(
             },
             producers={
                 "global": {
-                    jets.JetEnergyCorrection,
+                    jets.JECSimulation,
+                    jets.Type1JECSimulation,
                     fatjets.FatJetEnergyCorrection,
                 },
                 ("mt", "et", "tt"): {
@@ -424,7 +440,8 @@ def add_jetVariations(
             },
             producers={
                 "global": {
-                    jets.JetEnergyCorrection,
+                    jets.JECSimulation,
+                    jets.Type1JECSimulation,
                     fatjets.FatJetEnergyCorrection,
                 },
                 ("mt", "et", "tt"): {
@@ -448,7 +465,8 @@ def add_jetVariations(
             },
             producers={
                 "global": {
-                    jets.JetEnergyCorrection,
+                    jets.JECSimulation,
+                    jets.Type1JECSimulation,
                     fatjets.FatJetEnergyCorrection,
                 },
                 ("mt", "et", "tt"): {
@@ -474,7 +492,8 @@ def add_jetVariations(
             },
             producers={
                 "global": {
-                    jets.JetEnergyCorrection,
+                    jets.JECSimulation,
+                    jets.Type1JECSimulation,
                     fatjets.FatJetEnergyCorrection,
                 },
                 ("mt", "et", "tt"): {
@@ -498,7 +517,8 @@ def add_jetVariations(
             },
             producers={
                 "global": {
-                    jets.JetEnergyCorrection,
+                    jets.JECSimulation,
+                    jets.Type1JECSimulation,
                     fatjets.FatJetEnergyCorrection,
                 },
                 ("mt", "et", "tt"): {
@@ -524,7 +544,8 @@ def add_jetVariations(
             },
             producers={
                 "global": {
-                    jets.JetEnergyCorrection,
+                    jets.JECSimulation,
+                    jets.Type1JECSimulation,
                     fatjets.FatJetEnergyCorrection,
                 },
                 ("mt", "et", "tt"): {
@@ -548,7 +569,8 @@ def add_jetVariations(
             },
             producers={
                 "global": {
-                    jets.JetEnergyCorrection,
+                    jets.JECSimulation,
+                    jets.Type1JECSimulation,
                     fatjets.FatJetEnergyCorrection,
                 },
                 ("mt", "et", "tt"): {
@@ -574,7 +596,8 @@ def add_jetVariations(
             },
             producers={
                 "global": {
-                    jets.JetEnergyCorrection,
+                    jets.JECSimulation,
+                    jets.Type1JECSimulation,
                     fatjets.FatJetEnergyCorrection,
                 },
                 ("mt", "et", "tt"): {
@@ -598,7 +621,8 @@ def add_jetVariations(
             },
             producers={
                 "global": {
-                    jets.JetEnergyCorrection,
+                    jets.JECSimulation,
+                    jets.Type1JECSimulation,
                     fatjets.FatJetEnergyCorrection,
                 },
                 ("mt", "et", "tt"): {
@@ -624,7 +648,8 @@ def add_jetVariations(
             },
             producers={
                 "global": {
-                    jets.JetEnergyCorrection,
+                    jets.JECSimulation,
+                    jets.Type1JECSimulation,
                     fatjets.FatJetEnergyCorrection,
                 },
                 ("mt", "et", "tt"): {
@@ -648,7 +673,8 @@ def add_jetVariations(
             },
             producers={
                 "global": {
-                    jets.JetEnergyCorrection,
+                    jets.JECSimulation,
+                    jets.Type1JECSimulation,
                     fatjets.FatJetEnergyCorrection,
                 },
                 ("mt", "et", "tt"): {
@@ -676,7 +702,8 @@ def add_jetVariations(
             },
             producers={
                 "global": {
-                    jets.JetEnergyCorrection,
+                    jets.JECSimulation,
+                    jets.Type1JECSimulation,
                     fatjets.FatJetEnergyCorrection,
                 },
                 ("mt", "et", "tt"): {
@@ -702,7 +729,8 @@ def add_jetVariations(
             },
             producers={
                 "global": {
-                    jets.JetEnergyCorrection,
+                    jets.JECSimulation,
+                    jets.Type1JECSimulation,
                     fatjets.FatJetEnergyCorrection,
                 },
                 ("mt", "et", "tt"): {
@@ -727,7 +755,7 @@ def add_jetVariations(
     #                 "bjet_sf_variation": "up_jesAbsoluteStat",
     #             }
     #         },
-    #         producers={"global": jets.JetEnergyCorrection},
+    #         producers={"global": jets.JECSimulation},
     #     ),
     #     exclude_samples=["data", "embedding", "embedding_mc"],
     # )
@@ -741,7 +769,7 @@ def add_jetVariations(
     #                 "bjet_sf_variation": "down_jesAbsoluteStat",
     #             }
     #         },
-    #         producers={"global": jets.JetEnergyCorrection},
+    #         producers={"global": jets.JECSimulation},
     #     ),
     #     exclude_samples=["data", "embedding", "embedding_mc"],
     # )
@@ -757,7 +785,7 @@ def add_jetVariations(
     #                 "bjet_sf_variation": "up_jesAbsoluteScale",
     #             }
     #         },
-    #         producers={"global": jets.JetEnergyCorrection},
+    #         producers={"global": jets.JECSimulation},
     #     ),
     #     exclude_samples=["data", "embedding", "embedding_mc"],
     # )
@@ -771,7 +799,7 @@ def add_jetVariations(
     #                 "bjet_sf_variation": "down_jesAbsoluteScale",
     #             }
     #         },
-    #         producers={"global": jets.JetEnergyCorrection},
+    #         producers={"global": jets.JECSimulation},
     #     ),
     #     exclude_samples=["data", "embedding", "embedding_mc"],
     # )
@@ -787,7 +815,7 @@ def add_jetVariations(
     #                 "bjet_sf_variation": "up_jesAbsoluteMPFBias",
     #             }
     #         },
-    #         producers={"global": jets.JetEnergyCorrection},
+    #         producers={"global": jets.JECSimulation},
     #     ),
     #     exclude_samples=["data", "embedding", "embedding_mc"],
     # )
@@ -801,7 +829,7 @@ def add_jetVariations(
     #                 "bjet_sf_variation": "down_jesAbsoluteMPFBias",
     #             }
     #         },
-    #         producers={"global": jets.JetEnergyCorrection},
+    #         producers={"global": jets.JECSimulation},
     #     ),
     #     exclude_samples=["data", "embedding", "embedding_mc"],
     # )
@@ -817,7 +845,7 @@ def add_jetVariations(
     #                 "bjet_sf_variation": "up_jesFragmentation",
     #             }
     #         },
-    #         producers={"global": jets.JetEnergyCorrection},
+    #         producers={"global": jets.JECSimulation},
     #     ),
     #     exclude_samples=["data", "embedding", "embedding_mc"],
     # )
@@ -831,7 +859,7 @@ def add_jetVariations(
     #                 "bjet_sf_variation": "down_jesFragmentation",
     #             }
     #         },
-    #         producers={"global": jets.JetEnergyCorrection},
+    #         producers={"global": jets.JECSimulation},
     #     ),
     #     exclude_samples=["data", "embedding", "embedding_mc"],
     # )
@@ -847,7 +875,7 @@ def add_jetVariations(
     #                 "bjet_sf_variation": "up_jesSinglePionECAL",
     #             }
     #         },
-    #         producers={"global": jets.JetEnergyCorrection},
+    #         producers={"global": jets.JECSimulation},
     #     ),
     #     exclude_samples=["data", "embedding", "embedding_mc"],
     # )
@@ -861,7 +889,7 @@ def add_jetVariations(
     #                 "bjet_sf_variation": "down_jesSinglePionECAL",
     #             }
     #         },
-    #         producers={"global": jets.JetEnergyCorrection},
+    #         producers={"global": jets.JECSimulation},
     #     ),
     #     exclude_samples=["data", "embedding", "embedding_mc"],
     # )
@@ -877,7 +905,7 @@ def add_jetVariations(
     #                 "bjet_sf_variation": "up_jesSinglePionHCAL",
     #             }
     #         },
-    #         producers={"global": jets.JetEnergyCorrection},
+    #         producers={"global": jets.JECSimulation},
     #     ),
     #     exclude_samples=["data", "embedding", "embedding_mc"],
     # )
@@ -891,7 +919,7 @@ def add_jetVariations(
     #                 "bjet_sf_variation": "down_jesSinglePionHCAL",
     #             }
     #         },
-    #         producers={"global": jets.JetEnergyCorrection},
+    #         producers={"global": jets.JECSimulation},
     #     ),
     #     exclude_samples=["data", "embedding", "embedding_mc"],
     # )
@@ -907,7 +935,7 @@ def add_jetVariations(
     #                 "bjet_sf_variation": "up_jesFlavorQCD",
     #             }
     #         },
-    #         producers={"global": jets.JetEnergyCorrection},
+    #         producers={"global": jets.JECSimulation},
     #     ),
     #     exclude_samples=["data", "embedding", "embedding_mc"],
     # )
@@ -921,7 +949,7 @@ def add_jetVariations(
     #                 "bjet_sf_variation": "down_jesFlavorQCD",
     #             }
     #         },
-    #         producers={"global": jets.JetEnergyCorrection},
+    #         producers={"global": jets.JECSimulation},
     #     ),
     #     exclude_samples=["data", "embedding", "embedding_mc"],
     # )
@@ -937,7 +965,7 @@ def add_jetVariations(
     #                 "bjet_sf_variation": "up_jesTimePtEta",
     #             }
     #         },
-    #         producers={"global": jets.JetEnergyCorrection},
+    #         producers={"global": jets.JECSimulation},
     #     ),
     #     exclude_samples=["data", "embedding", "embedding_mc"],
     # )
@@ -951,7 +979,7 @@ def add_jetVariations(
     #                 "bjet_sf_variation": "down_jesTimePtEta",
     #             }
     #         },
-    #         producers={"global": jets.JetEnergyCorrection},
+    #         producers={"global": jets.JECSimulation},
     #     ),
     #     exclude_samples=["data", "embedding", "embedding_mc"],
     # )
@@ -967,7 +995,7 @@ def add_jetVariations(
     #                 "bjet_sf_variation": "up_jesRelativeJEREC1",
     #             }
     #         },
-    #         producers={"global": jets.JetEnergyCorrection},
+    #         producers={"global": jets.JECSimulation},
     #     ),
     #     exclude_samples=["data", "embedding", "embedding_mc"],
     # )
@@ -981,7 +1009,7 @@ def add_jetVariations(
     #                 "bjet_sf_variation": "down_jesRelativeJEREC1",
     #             }
     #         },
-    #         producers={"global": jets.JetEnergyCorrection},
+    #         producers={"global": jets.JECSimulation},
     #     ),
     #     exclude_samples=["data", "embedding", "embedding_mc"],
     # )
@@ -997,7 +1025,7 @@ def add_jetVariations(
     #                 "bjet_sf_variation": "up_jesRelativeJEREC2",
     #             }
     #         },
-    #         producers={"global": jets.JetEnergyCorrection},
+    #         producers={"global": jets.JECSimulation},
     #     ),
     #     exclude_samples=["data", "embedding", "embedding_mc"],
     # )
@@ -1011,7 +1039,7 @@ def add_jetVariations(
     #                 "bjet_sf_variation": "down_jesRelativeJEREC2",
     #             }
     #         },
-    #         producers={"global": jets.JetEnergyCorrection},
+    #         producers={"global": jets.JECSimulation},
     #     ),
     #     exclude_samples=["data", "embedding", "embedding_mc"],
     # )
@@ -1027,7 +1055,7 @@ def add_jetVariations(
     #                 "bjet_sf_variation": "up_jesRelativeJERHF",
     #             }
     #         },
-    #         producers={"global": jets.JetEnergyCorrection},
+    #         producers={"global": jets.JECSimulation},
     #     ),
     #     exclude_samples=["data", "embedding", "embedding_mc"],
     # )
@@ -1041,7 +1069,7 @@ def add_jetVariations(
     #                 "bjet_sf_variation": "down_jesRelativeJERHF",
     #             }
     #         },
-    #         producers={"global": jets.JetEnergyCorrection},
+    #         producers={"global": jets.JECSimulation},
     #     ),
     #     exclude_samples=["data", "embedding", "embedding_mc"],
     # )
@@ -1057,7 +1085,7 @@ def add_jetVariations(
     #                 "bjet_sf_variation": "up_jesRelativePtBB",
     #             }
     #         },
-    #         producers={"global": jets.JetEnergyCorrection},
+    #         producers={"global": jets.JECSimulation},
     #     ),
     #     exclude_samples=["data", "embedding", "embedding_mc"],
     # )
@@ -1071,7 +1099,7 @@ def add_jetVariations(
     #                 "bjet_sf_variation": "down_jesRelativePtBB",
     #             }
     #         },
-    #         producers={"global": jets.JetEnergyCorrection},
+    #         producers={"global": jets.JECSimulation},
     #     ),
     #     exclude_samples=["data", "embedding", "embedding_mc"],
     # )
@@ -1087,7 +1115,7 @@ def add_jetVariations(
     #                 "bjet_sf_variation": "up_jesRelativePtEC1",
     #             }
     #         },
-    #         producers={"global": jets.JetEnergyCorrection},
+    #         producers={"global": jets.JECSimulation},
     #     ),
     #     exclude_samples=["data", "embedding", "embedding_mc"],
     # )
@@ -1101,7 +1129,7 @@ def add_jetVariations(
     #                 "bjet_sf_variation": "down_jesRelativePtEC1",
     #             }
     #         },
-    #         producers={"global": jets.JetEnergyCorrection},
+    #         producers={"global": jets.JECSimulation},
     #     ),
     #     exclude_samples=["data", "embedding", "embedding_mc"],
     # )
@@ -1117,7 +1145,7 @@ def add_jetVariations(
     #                 "bjet_sf_variation": "up_jesRelativePtEC2",
     #             }
     #         },
-    #         producers={"global": jets.JetEnergyCorrection},
+    #         producers={"global": jets.JECSimulation},
     #     ),
     #     exclude_samples=["data", "embedding", "embedding_mc"],
     # )
@@ -1131,7 +1159,7 @@ def add_jetVariations(
     #                 "bjet_sf_variation": "down_jesRelativePtEC2",
     #             }
     #         },
-    #         producers={"global": jets.JetEnergyCorrection},
+    #         producers={"global": jets.JECSimulation},
     #     ),
     #     exclude_samples=["data", "embedding", "embedding_mc"],
     # )
@@ -1147,7 +1175,7 @@ def add_jetVariations(
     #                 "bjet_sf_variation": "up_jesRelativePtHF",
     #             }
     #         },
-    #         producers={"global": jets.JetEnergyCorrection},
+    #         producers={"global": jets.JECSimulation},
     #     ),
     #     exclude_samples=["data", "embedding", "embedding_mc"],
     # )
@@ -1161,7 +1189,7 @@ def add_jetVariations(
     #                 "bjet_sf_variation": "down_jesRelativePtHF",
     #             }
     #         },
-    #         producers={"global": jets.JetEnergyCorrection},
+    #         producers={"global": jets.JECSimulation},
     #     ),
     #     exclude_samples=["data", "embedding", "embedding_mc"],
     # )
@@ -1177,7 +1205,7 @@ def add_jetVariations(
     #                 "bjet_sf_variation": "up_jesRelativeBal",
     #             }
     #         },
-    #         producers={"global": jets.JetEnergyCorrection},
+    #         producers={"global": jets.JECSimulation},
     #     ),
     #     exclude_samples=["data", "embedding", "embedding_mc"],
     # )
@@ -1191,7 +1219,7 @@ def add_jetVariations(
     #                 "bjet_sf_variation": "down_jesRelativeBal",
     #             }
     #         },
-    #         producers={"global": jets.JetEnergyCorrection},
+    #         producers={"global": jets.JECSimulation},
     #     ),
     #     exclude_samples=["data", "embedding", "embedding_mc"],
     # )
@@ -1207,7 +1235,7 @@ def add_jetVariations(
     #                 "bjet_sf_variation": "up_jesRelativeSample",
     #             }
     #         },
-    #         producers={"global": jets.JetEnergyCorrection},
+    #         producers={"global": jets.JECSimulation},
     #     ),
     #     exclude_samples=["data", "embedding", "embedding_mc"],
     # )
@@ -1221,7 +1249,7 @@ def add_jetVariations(
     #                 "bjet_sf_variation": "down_jesRelativeSample",
     #             }
     #         },
-    #         producers={"global": jets.JetEnergyCorrection},
+    #         producers={"global": jets.JECSimulation},
     #     ),
     #     exclude_samples=["data", "embedding", "embedding_mc"],
     # )
@@ -1237,7 +1265,7 @@ def add_jetVariations(
     #                 "bjet_sf_variation": "up_jesRelativeFSR",
     #             }
     #         },
-    #         producers={"global": jets.JetEnergyCorrection},
+    #         producers={"global": jets.JECSimulation},
     #     ),
     #     exclude_samples=["data", "embedding", "embedding_mc"],
     # )
@@ -1251,7 +1279,7 @@ def add_jetVariations(
     #                 "bjet_sf_variation": "down_jesRelativeFSR",
     #             }
     #         },
-    #         producers={"global": jets.JetEnergyCorrection},
+    #         producers={"global": jets.JECSimulation},
     #     ),
     #     exclude_samples=["data", "embedding", "embedding_mc"],
     # )
@@ -1267,7 +1295,7 @@ def add_jetVariations(
     #                 "bjet_sf_variation": "up_jesRelativeStatFSR",
     #             }
     #         },
-    #         producers={"global": jets.JetEnergyCorrection},
+    #         producers={"global": jets.JECSimulation},
     #     ),
     #     exclude_samples=["data", "embedding", "embedding_mc"],
     # )
@@ -1281,7 +1309,7 @@ def add_jetVariations(
     #                 "bjet_sf_variation": "down_jesRelativeStatFSR",
     #             }
     #         },
-    #         producers={"global": jets.JetEnergyCorrection},
+    #         producers={"global": jets.JECSimulation},
     #     ),
     #     exclude_samples=["data", "embedding", "embedding_mc"],
     # )
@@ -1297,7 +1325,7 @@ def add_jetVariations(
     #                 "bjet_sf_variation": "up_jesRelativeStatEC",
     #             }
     #         },
-    #         producers={"global": jets.JetEnergyCorrection},
+    #         producers={"global": jets.JECSimulation},
     #     ),
     #     exclude_samples=["data", "embedding", "embedding_mc"],
     # )
@@ -1311,7 +1339,7 @@ def add_jetVariations(
     #                 "bjet_sf_variation": "down_jesRelativeStatEC",
     #             }
     #         },
-    #         producers={"global": jets.JetEnergyCorrection},
+    #         producers={"global": jets.JECSimulation},
     #     ),
     #     exclude_samples=["data", "embedding", "embedding_mc"],
     # )
@@ -1327,7 +1355,7 @@ def add_jetVariations(
     #                 "bjet_sf_variation": "up_jesRelativeStatHF",
     #             }
     #         },
-    #         producers={"global": jets.JetEnergyCorrection},
+    #         producers={"global": jets.JECSimulation},
     #     ),
     #     exclude_samples=["data", "embedding", "embedding_mc"],
     # )
@@ -1341,7 +1369,7 @@ def add_jetVariations(
     #                 "bjet_sf_variation": "down_jesRelativeStatHF",
     #             }
     #         },
-    #         producers={"global": jets.JetEnergyCorrection},
+    #         producers={"global": jets.JECSimulation},
     #     ),
     #     exclude_samples=["data", "embedding", "embedding_mc"],
     # )
@@ -1357,7 +1385,7 @@ def add_jetVariations(
     #                 "bjet_sf_variation": "up_jesPileUpDataMC",
     #             }
     #         },
-    #         producers={"global": jets.JetEnergyCorrection},
+    #         producers={"global": jets.JECSimulation},
     #     ),
     #     exclude_samples=["data", "embedding", "embedding_mc"],
     # )
@@ -1371,7 +1399,7 @@ def add_jetVariations(
     #                 "bjet_sf_variation": "down_jesPileUpDataMC",
     #             }
     #         },
-    #         producers={"global": jets.JetEnergyCorrection},
+    #         producers={"global": jets.JECSimulation},
     #     ),
     #     exclude_samples=["data", "embedding", "embedding_mc"],
     # )
@@ -1387,7 +1415,7 @@ def add_jetVariations(
     #                 "bjet_sf_variation": "up_jesPileUpPtRef",
     #             }
     #         },
-    #         producers={"global": jets.JetEnergyCorrection},
+    #         producers={"global": jets.JECSimulation},
     #     ),
     #     exclude_samples=["data", "embedding", "embedding_mc"],
     # )
@@ -1401,7 +1429,7 @@ def add_jetVariations(
     #                 "bjet_sf_variation": "down_jesPileUpPtRef",
     #             }
     #         },
-    #         producers={"global": jets.JetEnergyCorrection},
+    #         producers={"global": jets.JECSimulation},
     #     ),
     #     exclude_samples=["data", "embedding", "embedding_mc"],
     # )
@@ -1417,7 +1445,7 @@ def add_jetVariations(
     #                 "bjet_sf_variation": "up_jesPileUpPtBB",
     #             }
     #         },
-    #         producers={"global": jets.JetEnergyCorrection},
+    #         producers={"global": jets.JECSimulation},
     #     ),
     #     exclude_samples=["data", "embedding", "embedding_mc"],
     # )
@@ -1431,7 +1459,7 @@ def add_jetVariations(
     #                 "bjet_sf_variation": "down_jesPileUpPtBB",
     #             }
     #         },
-    #         producers={"global": jets.JetEnergyCorrection},
+    #         producers={"global": jets.JECSimulation},
     #     ),
     #     exclude_samples=["data", "embedding", "embedding_mc"],
     # )
@@ -1447,7 +1475,7 @@ def add_jetVariations(
     #                 "bjet_sf_variation": "up_jesPileUpPtEC1",
     #             }
     #         },
-    #         producers={"global": jets.JetEnergyCorrection},
+    #         producers={"global": jets.JECSimulation},
     #     ),
     #     exclude_samples=["data", "embedding", "embedding_mc"],
     # )
@@ -1461,7 +1489,7 @@ def add_jetVariations(
     #                 "bjet_sf_variation": "down_jesPileUpPtEC1",
     #             }
     #         },
-    #         producers={"global": jets.JetEnergyCorrection},
+    #         producers={"global": jets.JECSimulation},
     #     ),
     #     exclude_samples=["data", "embedding", "embedding_mc"],
     # )
@@ -1477,7 +1505,7 @@ def add_jetVariations(
     #                 "bjet_sf_variation": "up_jesPileUpPtEC2",
     #             }
     #         },
-    #         producers={"global": jets.JetEnergyCorrection},
+    #         producers={"global": jets.JECSimulation},
     #     ),
     #     exclude_samples=["data", "embedding", "embedding_mc"],
     # )
@@ -1491,7 +1519,7 @@ def add_jetVariations(
     #                 "bjet_sf_variation": "down_jesPileUpPtEC2",
     #             }
     #         },
-    #         producers={"global": jets.JetEnergyCorrection},
+    #         producers={"global": jets.JECSimulation},
     #     ),
     #     exclude_samples=["data", "embedding", "embedding_mc"],
     # )
@@ -1507,7 +1535,7 @@ def add_jetVariations(
     #                 "bjet_sf_variation": "up_jesPileUpPtHF",
     #             }
     #         },
-    #         producers={"global": jets.JetEnergyCorrection},
+    #         producers={"global": jets.JECSimulation},
     #     ),
     #     exclude_samples=["data", "embedding", "embedding_mc"],
     # )
@@ -1521,7 +1549,7 @@ def add_jetVariations(
     #                 "bjet_sf_variation": "down_jesPileUpPtHF",
     #             }
     #         },
-    #         producers={"global": jets.JetEnergyCorrection},
+    #         producers={"global": jets.JECSimulation},
     #     ),
     #     exclude_samples=["data", "embedding", "embedding_mc"],
     # )

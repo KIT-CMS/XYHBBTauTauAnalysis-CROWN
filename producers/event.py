@@ -162,10 +162,10 @@ JetVetoMapVeto = Producer(
     )
     """,
     input=[
-        q.Jet_pt_corrected,
+        q.Jet_correctedPt,
         nanoAOD.Jet_eta,
         nanoAOD.Jet_phi,
-        q.Jet_ID_corrected,
+        q.Jet_ID,
         nanoAOD.Jet_chEmEF,
         nanoAOD.Jet_neEmEF,
     ],

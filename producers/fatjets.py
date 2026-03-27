@@ -568,15 +568,15 @@ fj_Xbb_nChad = Producer(
 )
 fj_Xbb_nBhad_v15 = Producer(
     name="fj_Xbb_nBhad_v15",
-    call="event::quantity::GetFromGenObject<UChar_t>({df}, {output}, {input}, 0)",
-    input=[nanoAOD.FatJet_genJetAK8Idx, nanoAOD.GenJetAK8_nBHadrons, q.Xbb_fatjet],
+    call="event::quantity::GetGenJetForJet<UChar_t>({df}, {output}, {input}, 0)",
+    input=[nanoAOD.GenJetAK8_nBHadrons, nanoAOD.FatJet_genJetAK8Idx, q.Xbb_fatjet],
     output=[q.fj_Xbb_nBhad],
     scopes=SCOPES,
 )
 fj_Xbb_nChad_v15 = Producer(
     name="fj_Xbb_nChad_v15",
-    call="event::quantity::GetFromGenObject<UChar_t>({df}, {output}, {input}, 0)",
-    input=[nanoAOD.FatJet_genJetAK8Idx, nanoAOD.GenJetAK8_nCHadrons, q.Xbb_fatjet],
+    call="event::quantity::GetGenJetForJet<UChar_t>({df}, {output}, {input}, 0)",
+    input=[nanoAOD.GenJetAK8_nCHadrons, nanoAOD.FatJet_genJetAK8Idx, q.Xbb_fatjet],
     output=[q.fj_Xbb_nChad],
     scopes=SCOPES,
 )
@@ -703,15 +703,15 @@ fj_Xbb_nChad_boosted = Producer(
 )
 fj_Xbb_nBhad_boosted_v15 = Producer(
     name="fj_Xbb_nBhad_boosted_v15",
-    call="event::quantity::GetFromGenObject<UChar_t>({df}, {output}, {input}, 0)",
-    input=[nanoAOD.FatJet_genJetAK8Idx, nanoAOD.GenJetAK8_nBHadrons, q.Xbb_fatjet_boosted],
+    call="event::quantity::GetGenJetForJet<UChar_t>({df}, {output}, {input}, 0)",
+    input=[nanoAOD.GenJetAK8_nBHadrons, nanoAOD.FatJet_genJetAK8Idx, q.Xbb_fatjet_boosted],
     output=[q.fj_Xbb_nBhad],
     scopes=SCOPES,
 )
 fj_Xbb_nChad_boosted_v15 = Producer(
     name="fj_Xbb_nChad_boosted_v15",
-    call="event::quantity::GetFromGenObject<UChar_t>({df}, {output}, {input}, 0)",
-    input=[nanoAOD.FatJet_genJetAK8Idx, nanoAOD.GenJetAK8_nCHadrons, q.Xbb_fatjet_boosted],
+    call="event::quantity::GetGenJetForJet<UChar_t>({df}, {output}, {input}, 0)",
+    input=[nanoAOD.GenJetAK8_nCHadrons, nanoAOD.FatJet_genJetAK8Idx, q.Xbb_fatjet_boosted],
     output=[q.fj_Xbb_nChad],
     scopes=SCOPES,
 )

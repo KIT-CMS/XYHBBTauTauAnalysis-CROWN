@@ -202,10 +202,10 @@ PropagateJetsToMET = Producer(
     call="physicsobject::PropagateToMET({df}, {output}, {input}, {propagate_jets_to_met}, {jet_to_met_propagation_pt_min})",
     input=[
         q.met_p4_uncorrected,
-        q.Jet_pt_corrected,
+        q.Jet_correctedPt,
         nanoAOD.Jet_eta,
         nanoAOD.Jet_phi,
-        q.Jet_mass_corrected,
+        q.Jet_correctedMass,
         nanoAOD.Jet_pt,
         nanoAOD.Jet_eta,
         nanoAOD.Jet_phi,
@@ -276,8 +276,8 @@ METCorrectionsRun3 = ProducerGroup(
     output=None,
     scopes=SCOPES,
     subproducers=[
+        Type1CorrectionMET,
         PropagateLeptonsToMET,
-        TypeICorrectionsToMET,
         RecoilCorrectionMET,
     ],
 )
