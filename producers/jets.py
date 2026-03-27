@@ -3,60 +3,232 @@ Producers for AK4 jet energy scale and resolution corrections, object selections
 """
 
 from ..quantities import output as q
-from ..quantities import nanoAOD, nanoAOD_run2
-from analysis_configurations.quantities import nanoAODv12_run3
+from ..quantities import nanoAOD
+from analysis_configurations.quantities import nanoAODv9_run2, nanoAODv12_run3
 from code_generation.producer import Producer, ProducerGroup
 
-from ._helpers import jerc_producer_factory
-from ..constants import GLOBAL_SCOPES, SCOPES
+from ._helpers import (
+    type1_jet_collection_producer_factory,
+    jerc_producer_factory,
+    stepwise_jerc_producer_factory,
+)
+from ..constants import GLOBAL_SCOPES, SCOPES, ERAS_RUN2
 
 
-#
-# JET ID
-#
+# Produce the jet ID column
+# - For run 2, the jet ID can just be taken from the corresponding column in
+#   nanoAOD.
+# - For 2022 and 2023, the jet ID in nanoAOD v12 has a bug which must be
+#   adressed.
+# - For 2024, no jet ID column exists in nanoAOD v15 must be calculated using
+#   a dedicated correction file.
+JetID = {
+    tuple(ERAS_RUN2): Producer(
+        name="JetID",
+        call="""
+        event::quantity::Rename<ROOT::RVec<UChar_t>>(
+            {df},
+            {output},
+            {input}
+        )
+        """,
+        input=[nanoAODv9_run2.Jet_jetId],
+        output=[q.Jet_ID],
+        scopes=GLOBAL_SCOPES,
+    ),
+    ("2022preEE", "2022postEE", "2023preBPix", "2023postBPix"): Producer(
+        name="JetID",
+        call="""
+        physicsobject::jet::quantities::CorrectJetIDRun3NanoV12(
+            {df},
+            {output},
+            {input}
+        )
+        """,
+        input=[
+            nanoAOD.Jet_pt,
+            nanoAOD.Jet_eta,
+            nanoAODv12_run3.Jet_jetId,
+            nanoAOD.Jet_neHEF,
+            nanoAOD.Jet_neEmEF,
+            nanoAOD.Jet_muEF,
+            nanoAOD.Jet_chEmEF,
+        ],
+        output=[q.Jet_ID],
+        scopes=GLOBAL_SCOPES,
+    ),
+    "2024": Producer(
+        name="JetID",
+        call="""
+        physicsobject::jet::quantity::ID(
+            {df},
+            correctionManager,
+            {output},
+            {input},
+            "{ak4jet_id_file}",
+            "{ak4jet_id_name}"
+        )
+        """,
+        input=[
+            nanoAOD.Jet_eta,
+            nanoAOD.Jet_chHEF,
+            nanoAOD.Jet_neHEF,
+            nanoAOD.Jet_chEmEF,
+            nanoAOD.Jet_neEmEF,
+            nanoAOD.Jet_muEF,
+            nanoAOD.Jet_chMultiplicity,
+            nanoAOD.Jet_neMultiplicity,
+        ],
+        output=[q.Jet_ID],
+        scopes=GLOBAL_SCOPES,
+    ),
+}
 
-# Rename the jet ID stored in the NANOAOD samples for run 2 samples
-JetIDRun2 = Producer(
-    name="JetIDRun2",
-    call="event::quantity::Rename<ROOT::RVec<UChar_t>>({df}, {output}, {input})",
-    input=[nanoAODv12_run3.Jet_jetId],
-    output=[q.Jet_ID_corrected],
+# Seed for the random number generator for jet energy resolution smearing
+JERSmearingSeed = Producer(
+    name="JERSmearingSeed",
+    call="""
+    event::quantity::GenerateSeed(
+        {df},
+        {output},
+        {input},
+        {ak4jet_jer_master_seed}
+    )
+    """,
+    input=[nanoAOD.luminosityBlock, nanoAOD.run, nanoAOD.event],
+    output=[q.jet_seed],
     scopes=GLOBAL_SCOPES,
 )
 
-# Correct the jet ID stored in run 3 NANOAODv12 samples
-JetIDRun3NanoV12 = Producer(
-    name="JetIDRun3NanoV12Corrected",
-    call="physicsobject::jet::quantities::CorrectJetIDRun3NanoV12({df}, {output}, {input})",
-    input=[
-        nanoAOD.Jet_pt,
-        nanoAOD.Jet_eta,
-        nanoAODv12_run3.Jet_jetId,
-        nanoAOD.Jet_neHEF,
-        nanoAOD.Jet_neEmEF,
-        nanoAOD.Jet_muEF,
-        nanoAOD.Jet_chEmEF,
-    ],
-    output=[q.Jet_ID_corrected],
+
+#
+# JET ENERGY CALIBRATION
+#
+
+# Create jet energy correction producers for AK4 jets
+# JetEnergyCorrection_data, JetEnergyCorrection, RenameJetsData = jerc_producer_factory(
+#     input={
+#         "jet_pt": nanoAOD.Jet_pt,
+#         "jet_eta": nanoAOD.Jet_eta,
+#         "jet_phi": nanoAOD.Jet_phi,
+#         "jet_mass": nanoAOD.Jet_mass,
+#         "jet_area": nanoAOD.Jet_area,
+#         "jet_raw_factor": nanoAOD.Jet_rawFactor,
+#         "jet_id": q.Jet_ID,
+#         "gen_jet_pt": nanoAOD.GenJet_pt,
+#         "gen_jet_eta": nanoAOD.GenJet_eta,
+#         "gen_jet_phi": nanoAOD.GenJet_phi,
+#         "rho": nanoAOD.Rho_fixedGridRhoFastjetAll,
+#         "luminosity_block": nanoAOD.luminosityBlock,
+#         "run": nanoAOD.run,
+#         "event": nanoAOD.event,
+#     },
+#     output={
+#         "jet_seed": q.jet_seed,
+#         "jet_pt_corrected": q.Jet_correctedPt,
+#         "jet_mass_corrected": q.Jet_correctedMass,
+#     },
+#     scopes=GLOBAL_SCOPES,
+#     producer_prefix="Jet",
+#     config_parameter_prefix="ak4jet",
+# )
+
+# Producer for raw jet pt before JES corrections
+JetRawPt = Producer(
+    name="JetRawPt",
+    call="physicsobject::jet::jec::Raw({df}, {output}, {input})",
+    input=[nanoAOD.Jet_pt, nanoAOD.Jet_rawFactor],
+    output=[q.Jet_rawPt],
     scopes=GLOBAL_SCOPES,
 )
 
-# Calculate the jet ID from a correction JSON for run 3 NANOAODv15 samples
-JetIDRun3NanoV15 = Producer(
-    name="JetIDRun3",
-    call="physicsobject::jet::quantity::ID({df}, correctionManager, {output}, {input}, \"{ak4jet_id_file}\", \"{ak4jet_id_name}\")",
-    input=[
-        nanoAOD.Jet_eta,
-        nanoAOD.Jet_chHEF,
-        nanoAOD.Jet_neHEF,
-        nanoAOD.Jet_chEmEF,
-        nanoAOD.Jet_neEmEF,
-        nanoAOD.Jet_muEF,
-        nanoAOD.Jet_chMultiplicity,
-        nanoAOD.Jet_neMultiplicity,
-    ],
-    output=[q.Jet_ID_corrected],
+# Producer for raw jet mass before JES corrections
+JetRawMass = Producer(
+    name="JetRawMass",
+    call="physicsobject::jet::jec::Raw({df}, {output}, {input})",
+    input=[nanoAOD.Jet_mass, nanoAOD.Jet_rawFactor],
+    output=[q.Jet_rawMass],
     scopes=GLOBAL_SCOPES,
+)
+
+# Jet pt correction producers for AK4 jets on data and simulation
+JetPtCorrectionData, JetPtCorrectionSimulation = stepwise_jerc_producer_factory(
+    input={
+        "jet_pt": nanoAOD.Jet_pt,
+        "jet_eta": nanoAOD.Jet_eta,
+        "jet_phi": nanoAOD.Jet_phi,
+        "jet_mass": nanoAOD.Jet_mass,
+        "jet_area": nanoAOD.Jet_area,
+        "jet_raw_factor": nanoAOD.Jet_rawFactor,
+        "jet_id": q.Jet_ID,
+        "jet_seed": q.jet_seed,
+        "genjet_pt": nanoAOD.GenJet_pt,
+        "genjet_eta": nanoAOD.GenJet_eta,
+        "genjet_phi": nanoAOD.GenJet_phi,
+        "rho": nanoAOD.Rho_fixedGridRhoFastjetAll,
+        "luminosity_block": nanoAOD.luminosityBlock,
+        "run": nanoAOD.run,
+        "event": nanoAOD.event,
+    },
+    output={
+        "jet_jec_result": q.Jet_jecResult,
+        "jet_l1_pt": q.Jet_l1Pt,
+        "jet_l2rel_pt": q.Jet_l2relPt,
+        "jet_l2l3res_pt": q.Jet_l2l3resPt,
+        "jet_corrected_pt": q.Jet_correctedPt,
+    },
+    scopes=GLOBAL_SCOPES,
+    producer_prefix="Jet",
+    config_parameter_prefix="ak4jet",
+)
+
+# Mass correction resulting from the JEC prodcedure
+JetMassCorrection = Producer(
+    name="JetMassCorrection",
+    call="""
+    physicsobject::jet::jec::MassCorrectionFromPt(
+        {df},
+        {output},
+        {input}
+    )
+    """,
+    input=[
+        q.Jet_rawMass,
+        q.Jet_rawPt,
+        q.Jet_correctedPt,
+    ],
+    output=[q.Jet_correctedMass],
+    scopes=GLOBAL_SCOPES,
+)
+
+# Producer group for jet energy calibration on data
+JECData = ProducerGroup(
+    name="JECData",
+    call=None,
+    input=None,
+    output=None,
+    scopes=GLOBAL_SCOPES,
+    subproducers=[
+        JetRawPt,
+        JetRawMass,
+        JetPtCorrectionData,
+        JetMassCorrection,
+    ],
+)
+
+# Producer group for jet energy calibration on MC
+JECSimulation = ProducerGroup(
+    name="JECSimulation",
+    call=None,
+    input=None,
+    output=None,
+    scopes=GLOBAL_SCOPES,
+    subproducers=[
+        JetRawPt,
+        JetRawMass,
+        JetPtCorrectionSimulation,
+        JetMassCorrection,
+    ],
 )
 
 
