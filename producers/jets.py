@@ -166,9 +166,7 @@ JetPtCorrectionData, JetPtCorrectionSimulation = stepwise_jerc_producer_factory(
         "genjet_eta": nanoAOD.GenJet_eta,
         "genjet_phi": nanoAOD.GenJet_phi,
         "rho": nanoAOD.Rho_fixedGridRhoFastjetAll,
-        "luminosity_block": nanoAOD.luminosityBlock,
         "run": nanoAOD.run,
-        "event": nanoAOD.event,
     },
     output={
         "jet_jec_result": q.Jet_jecResult,
@@ -284,6 +282,7 @@ Type1JetPtCorrectionData, Type1JetPtCorrectionSimulation = stepwise_jerc_produce
         "genjet_eta": nanoAOD.GenJet_eta,
         "genjet_phi": nanoAOD.GenJet_phi,
         "rho": nanoAOD.Rho_fixedGridRhoFastjetAll,
+        "run": nanoAOD.run,
         "jet_seed": q.jet_seed,
     },
     output={

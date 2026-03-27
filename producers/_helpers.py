@@ -216,6 +216,7 @@ def stepwise_jerc_producer_factory(
     genjet_eta = input["genjet_eta"]
     genjet_phi = input["genjet_phi"]
     rho = input["rho"]
+    run = input["run"]
 
     # Get output variables from dictionary
     jet_jec_result = output["jet_jec_result"]
@@ -246,6 +247,7 @@ def stepwise_jerc_producer_factory(
             jet_phi,
             jet_area,
             rho,
+            run,
         ],
         output=[
             jet_jec_result,
