@@ -1300,7 +1300,7 @@ def add_ak4jet_config(configuration: Configuration):
     configuration.add_config_parameters(
         GLOBAL_SCOPES + SCOPES, #"global",
         {
-            "ak4jet_reapplyJES": False,
+            "ak4jet_reapply_jes": True,
             "ak4jet_jes_sources": '{""}',
             "ak4jet_jes_shift_factor": 0,
             "ak4jet_jer_master_seed": 42,
@@ -1320,29 +1320,29 @@ def add_ak4jet_config(configuration: Configuration):
             ),
             "ak4jet_jer_tag": EraModifier(
                 {
-                    "2016preVFP": "Summer20UL16APV_JRV3_MC",
-                    "2016postVFP": "Summer20UL16_JRV3_MC",
-                    "2017": "Summer19UL17_JRV2_MC",
-                    "2018": "Summer19UL18_JRV2_MC",
-                    "2022preEE": "Summer22_22Sep2023_JRV1_MC",
-                    "2022postEE": "Summer22EE_22Sep2023_JRV1_MC",
-                    "2023preBPix": "Summer23Prompt23_RunCv1234_JRV1_MC",
-                    "2023postBPix": "Summer23BPixPrompt23_RunD_JRV1_MC",
-                    "2024": "Summer23BPixPrompt23_RunD_JRV1_MC",  # copied from 2023postBPix
+                    "2016preVFP": "Summer20UL16APV_JRV3",
+                    "2016postVFP": "Summer20UL16_JRV3",
+                    "2017": "Summer19UL17_JRV2",
+                    "2018": "Summer19UL18_JRV2",
+                    "2022preEE": "Summer22_22Sep2023_JRV1",
+                    "2022postEE": "Summer22EE_22Sep2023_JRV1",
+                    "2023preBPix": "Summer23Prompt23_RunCv1234_JRV1",
+                    "2023postBPix": "Summer23BPixPrompt23_RunD_JRV1",
+                    "2024": "Summer23BPixPrompt23_RunD_JRV1",  # copied from 2023postBPix
                 }
             ),
             "ak4jet_jes_tag_data": "\"\"",
             "ak4jet_jes_tag": EraModifier(
                 {
-                    "2016preVFP": "Summer19UL16APV_V7_MC",
-                    "2016postVFP": "Summer19UL16_V7_MC",
-                    "2017": "Summer19UL17_V5_MC",
-                    "2018": "Summer19UL18_V5_MC",
-                    "2022preEE": "Summer22_22Sep2023_V3_MC",
-                    "2022postEE": "Summer22EE_22Sep2023_V3_MC",
-                    "2023preBPix": "Summer23Prompt23_V2_MC",
-                    "2023postBPix": "Summer23BPixPrompt23_V3_MC",
-                    "2024": "Summer24Prompt24_V2_MC",
+                    "2016preVFP": "Summer19UL16APV_V7",
+                    "2016postVFP": "Summer19UL16_V7",
+                    "2017": "Summer19UL17_V5",
+                    "2018": "Summer19UL18_V5",
+                    "2022preEE": "Summer22_22Sep2023_V3",
+                    "2022postEE": "Summer22EE_22Sep2023_V3",
+                    "2023preBPix": "Summer23Prompt23_V2",
+                    "2023postBPix": "Summer23BPixPrompt23_V3",
+                    "2024": "Summer24Prompt24_V2",
                 }
             ),
             "ak4jet_jec_algo": EraModifier(
@@ -1442,7 +1442,7 @@ def add_ak8jet_config(configuration: Configuration):
             "ak8jet_max_abs_eta": 2.5,
             "ak8jet_id_wp": 2,  # tight & tightLepVeto
             "ak8jet_apply_jet_horn_veto": "true",
-            "ak8jet_reapplyJES": False,
+            "ak8jet_reapply_jes": True,
             "ak8jet_jes_sources": '{""}',
             "ak8jet_jes_shift_factor": 0,
             "ak8jet_jer_master_seed": 43,
@@ -1594,7 +1594,7 @@ def add_bjet_config(configuration: Configuration):
                     "2022postEE": "/cvmfs/cms-griddata.cern.ch/cat/metadata/BTV/Run3-22EFGSep23-Summer22EE-NanoAODv12/2025-08-20/btagging.json.gz",
                     "2023preBPix": "/cvmfs/cms-griddata.cern.ch/cat/metadata/BTV/Run3-23CSep23-Summer23-NanoAODv12/2025-08-20/btagging.json.gz",
                     "2023postBPix": "/cvmfs/cms-griddata.cern.ch/cat/metadata/BTV/Run3-23DSep23-Summer23BPix-NanoAODv12/2025-08-20/btagging.json.gz",
-                    "2024": "/cvmfs/cms-griddata.cern.ch/cat/metadata/BTV/Run3-24CDEReprocessingFGHIPrompt-Summer24-NanoAODv15/2026-01-30/btagging_preliminary.json.gz",
+                    "2024": "/cvmfs/cms-griddata.cern.ch/cat/metadata/BTV/Run3-24CDEReprocessingFGHIPrompt-Summer24-NanoAODv15/2026-03-10/btagging.json.gz",
                 }
             ),
             "bjet_sf_name": EraModifier(
@@ -1607,7 +1607,7 @@ def add_bjet_config(configuration: Configuration):
                         _era: "particleNet_shape"  # ParticleNet
                         for _era in ["2022preEE", "2022postEE", "2023preBPix", "2023postBPix"]
                     },
-                    "2024": "UParTAK4_kinfit",  # UParT
+                    "2024": "UParTAK4_comb",  # UParT
                 },
             ),
             "bjet_sf_variation": "central",
@@ -1664,6 +1664,16 @@ def add_recoil_corrections_config(configuration: Configuration):
     provided by the HLepRare group.
     """
 
+    # Type-I MET corrections
+    configuration.add_config_parameters(
+        SCOPES,
+        {
+            "t1jet_min_pt": 15.0,
+            "t1jet_max_abs_eta": 5.2,
+            "t1jet_max_em_ef": 0.9,
+        },
+    )
+
     # Configuration of the recoil corrections producer
     configuration.add_config_parameters(
         SCOPES,
@@ -1698,7 +1708,6 @@ def add_recoil_corrections_config(configuration: Configuration):
             "recoil_correction_variation": "nom",
         },
     )
-
 
     # Declare types of corrections to apply to the MET
     configuration.add_config_parameters(
@@ -2181,6 +2190,10 @@ def build_config(
         era,
     )
 
+    # Jet ID producer
+    # For a detailed description, see producers/jets.py
+    JetID = get_for_era(jets.JetID, era)
+
     # Base jet selection
     # - In Run 2, the CHS collection is used and pileup ID is applied.
     # - In Run 3, the PUPPI collection is used and no pileup ID is applied; the jet ID needs to
@@ -2189,15 +2202,12 @@ def build_config(
     base_jet_selection_producers = get_for_era(
         {
             tuple(ERAS_RUN2): [
-                jets.JetIDRun2,
                 jets.BaseJetSelectionWithPUID,
             ],
             ("2022preEE", "2022postEE", "2023preBPix", "2023postBPix"): [
-                jets.JetIDRun3NanoV12,
                 jets.BaseJetSelectionWithoutPUID,
             ],
             "2024": [
-                jets.JetIDRun3NanoV15,
                 jets.BaseJetSelectionWithoutPUID,
             ],
         },
@@ -2434,6 +2444,7 @@ def build_config(
             fatjets.GoodFatJets,
             event.DiLeptonVeto,
             met.MetQuantitiesUncorrected,
+            JetID,
         ]
         + met_cov_producers
         + prefire_weight_producers
@@ -2442,7 +2453,9 @@ def build_config(
         + jet_veto_map_producers
         + [
             electron_pt_correction_mc_producer,
-            jets.JetEnergyCorrection,
+            jets.JERSmearingSeed,
+            jets.JECSimulation,
+            jets.Type1JECSimulation,
             fatjets.FatJetEnergyCorrection,
         ]
     )
@@ -2827,12 +2840,21 @@ def build_config(
         ),
     )
 
-    # Replace jet energy correction for data
+    # Replace jet energy correction for data and embedding
     configuration.add_modification_rule(
         GLOBAL_SCOPES,
         ReplaceProducer(
-            producers=[jets.JetEnergyCorrection, jets.JetEnergyCorrection_data],
-            samples=["data"],
+            producers=[jets.JECSimulation, jets.JECData],
+            samples=["data", "embedding", "embedding_mc"],
+        ),
+    )
+
+    # Replace jet energy correction for type-I correction jets for data and embedding
+    configuration.add_modification_rule(
+        GLOBAL_SCOPES,
+        ReplaceProducer(
+            producers=[jets.Type1JECSimulation, jets.Type1JECData],
+            samples=["data", "embedding", "embedding_mc"],
         ),
     )
 
@@ -2845,15 +2867,6 @@ def build_config(
                 fatjets.FatJetEnergyCorrection_data,
             ],
             samples=["data"],
-        ),
-    )
-
-    # Replace jet energy correction for embedding with dummy rename operation
-    configuration.add_modification_rule(
-        GLOBAL_SCOPES,
-        ReplaceProducer(
-            producers=[jets.JetEnergyCorrection, jets.RenameJetsData],
-            samples=["embedding", "embedding_mc"],
         ),
     )
 
