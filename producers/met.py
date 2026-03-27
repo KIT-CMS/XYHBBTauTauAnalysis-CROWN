@@ -170,47 +170,25 @@ MetQuantitiesUncorrected = ProducerGroup(
 #
 
 # Type-1 MET correction to propagate JEC to the MET
-TypeICorrectionsToMET = Producer(
-    name="TypeICorrectionsToMET",
+Type1CorrectionMET = Producer(
+    name="Type1CorrectionMET",
     call="""
-    met::TypeIMET(
+    met::Type1Correction(
         {df},
-        correctionManager,
         {output},
         {input},
-        "{ak4jet_jec_file}",
-        "{ak4jet_jec_algo}",
-        "{ak4jet_jes_tag}",
-        {ak4jet_jes_sources},
-        "{ak4jet_jer_tag}",
-        {ak4jet_jes_shift_factor},
-        "{ak4jet_jer_shift}",
-        "{era}",
-        {is_data}
+        {t1jet_min_pt},
+        {t1jet_max_abs_eta},
+        {t1jet_max_em_ef}
     )
     """,
     input=[
         q.met_p4_uncorrected,
-        nanoAOD.Jet_pt,
-        nanoAOD.Jet_eta,
-        nanoAOD.Jet_phi,
-        nanoAOD.Jet_area,
-        nanoAOD.Jet_rawFactor,
-        nanoAOD.Jet_muonSubtrFactor,
-        nanoAOD.Jet_chEmEF,
-        nanoAOD.Jet_neEmEF,
-        nanoAOD.CorrT1METJet_rawPt,
-        nanoAOD.CorrT1METJet_eta,
-        nanoAOD.CorrT1METJet_phi,
-        nanoAOD.CorrT1METJet_area,
-        nanoAOD.CorrT1METJet_muonSubtrFactor,
-        nanoAOD.CorrT1METJet_EmEF,
-        nanoAOD.GenJet_pt,
-        nanoAOD.GenJet_eta,
-        nanoAOD.GenJet_phi,
-        nanoAOD.Rho_fixedGridRhoFastjetAll,
-        q.jet_seed,
-        nanoAOD.run,
+        q.Type1Jet_l1Pt,
+        q.Type1Jet_correctedPt,
+        q.Type1Jet_eta,
+        q.Type1Jet_phi,
+        q.Type1Jet_EmEF,
     ],
     output=[
         q.met_p4_jetcorrected,
