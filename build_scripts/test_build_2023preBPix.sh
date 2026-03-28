@@ -14,7 +14,7 @@ main () {
 
     # get the CROWN directories
     local crown_dir="$( cd "${this_dir}/../../.." && pwd )"
-    local crown_build_dir="${crown_dir}/build"
+    local crown_build_dir="${crown_dir}/build_2023preBPix"
     local crown_bin_dir="${crown_build_dir}/bin"
 
     # create the build directory if it does not exist
