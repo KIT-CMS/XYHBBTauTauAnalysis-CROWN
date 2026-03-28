@@ -1295,6 +1295,17 @@ def add_ak4jet_config(configuration: Configuration):
         },
     )
 
+    # Common JES tags
+    common_jes_tags = {
+        "2016preVFP": "Summer19UL16APV_V7",
+        "2016postVFP": "Summer19UL16_V7",
+        "2017": "Summer19UL17_V5",
+        "2018": "Summer19UL18_V5",
+        "2023preBPix": "Summer23Prompt23_V2",
+        "2023postBPix": "Summer23BPixPrompt23_V3",
+        "2024": "Summer24Prompt24_V2",
+    }
+
     # AK4 jet energy calibration and resolution corrections
     # JEC recommendations: https://twiki.cern.ch/twiki/bin/view/CMS/JECDataMC
     configuration.add_config_parameters(
@@ -1331,18 +1342,18 @@ def add_ak4jet_config(configuration: Configuration):
                     "2024": "Summer23BPixPrompt23_RunD_JRV1",  # copied from 2023postBPix
                 }
             ),
-            "ak4jet_jes_tag_data": "\"\"",
-            "ak4jet_jes_tag": EraModifier(
+            "ak4jet_jes_tag_data": EraModifier(
                 {
-                    "2016preVFP": "Summer19UL16APV_V7",
-                    "2016postVFP": "Summer19UL16_V7",
-                    "2017": "Summer19UL17_V5",
-                    "2018": "Summer19UL18_V5",
+                    **common_jes_tags,
+                    "2022preEE": "Summer22_22Sep2023_RunCD_V3",
+                    "2022postEE": "Summer22EE_22Sep2023_RunE_V3",
+                },
+            ),
+            "ak4jet_jes_tag_mc": EraModifier(
+                {
+                    **common_jes_tags,
                     "2022preEE": "Summer22_22Sep2023_V3",
                     "2022postEE": "Summer22EE_22Sep2023_V3",
-                    "2023preBPix": "Summer23Prompt23_V2",
-                    "2023postBPix": "Summer23BPixPrompt23_V3",
-                    "2024": "Summer24Prompt24_V2",
                 }
             ),
             "ak4jet_jec_algo": EraModifier(
@@ -1656,7 +1667,7 @@ def add_zpt_weight_config(configuration: Configuration):
     )
 
 
-def add_recoil_corrections_config(configuration: Configuration):
+def add_met_corrections_config(configuration: Configuration):
     """
     Configuration parameters for recoil corrections.
 
@@ -1666,7 +1677,7 @@ def add_recoil_corrections_config(configuration: Configuration):
 
     # Type-I MET corrections
     configuration.add_config_parameters(
-        SCOPES,
+        GLOBAL_SCOPES,
         {
             "t1jet_min_pt": 15.0,
             "t1jet_max_abs_eta": 5.2,
@@ -1674,22 +1685,55 @@ def add_recoil_corrections_config(configuration: Configuration):
         },
     )
 
-    # Configuration of the recoil corrections producer
+    # Files containing the recoil corrections. We have ROOT files for Run 2 and
+    # json.gz files for Run 3, which are processed using different producers.
     configuration.add_config_parameters(
         SCOPES,
         {
             "recoil_correction_file": EraModifier(
                 {
                     **{
-                        _era: f"data/hleprare/RecoilCorrlib/Recoil_corrections_{_era}_v5.json.gz"
-                        for _era in ERAS_RUN3
+                        "2016preVFP": "data/recoil_corrections/Type1_PuppiMET_2016.root",
+                        "2016postVFP": "data/recoil_corrections/Type1_PuppiMET_2016.root",
+                        "2017": "data/recoil_corrections/Type1_PuppiMET_2017.root",
+                        "2018": "data/recoil_corrections/Type1_PuppiMET_2018.root",
                     },
                     **{
-                        _era: "DOES_NOT_EXIST"  # placeholder for Run 2, for which corrections are provided in a different way
-                        for _era in ERAS_RUN2
-                    },
+                        _era: f"data/hleprare/RecoilCorrlib/Recoil_corrections_{_era}_v5.json.gz"
+                        for _era in ERAS_RUN3
+                    }
                 },
             ),
+        },
+    )
+
+    # Run 2-specific parameters for recoil corrections
+    configuration.add_config_parameters(
+        SCOPES,
+        {
+            "recoil_systematics_file": EraModifier(
+                {
+                    "2016preVFP": "data/recoil_corrections/PuppiMETSys_2016.root",
+                    "2016postVFP": "data/recoil_corrections/PuppiMETSys_2016.root",
+                    "2017": "data/recoil_corrections/PuppiMETSys_2017.root",
+                    "2018": "data/recoil_corrections/PuppiMETSys_2018.root",
+                    **{
+                        _era: "DOES_NOT_EXIST"  # TODO does not exist Run3
+                        for _era in ERAS_RUN3
+                    },
+                }
+            ),
+            "apply_recoil_resolution_systematic": False,
+            "apply_recoil_response_systematic": False,
+            "recoil_systematic_shift_up": False,
+            "recoil_systematic_shift_down": False,
+        },
+    )
+
+    # Run 3-specific parameters for recoil corrections
+    configuration.add_config_parameters(
+        SCOPES,
+        {
             "recoil_correction_name": "Recoil_correction",
             "recoil_correction_order": SampleModifier(
                 {
@@ -1739,64 +1783,6 @@ def add_recoil_corrections_config(configuration: Configuration):
                 },
                 default=False,
             ),
-            "jet_to_met_propagation_pt_min": 15,
-        },
-    )
-
-
-def add_recoil_corrections_config_run2(configuration: Configuration):
-    ## all scopes MET selection
-    configuration.add_config_parameters(
-        SCOPES,
-        {
-            "propagateLeptons": SampleModifier(
-                {"data": False},
-                default=True,
-            ),
-            "propagateJets": SampleModifier(
-                {"data": False},
-                default=True,
-            ),
-            "recoil_corrections_file": EraModifier(
-                {
-                    "2016preVFP": "data/recoil_corrections/Type1_PuppiMET_2016.root",
-                    "2016postVFP": "data/recoil_corrections/Type1_PuppiMET_2016.root",
-                    "2017": "data/recoil_corrections/Type1_PuppiMET_2017.root",
-                    "2018": "data/recoil_corrections/Type1_PuppiMET_2018.root",
-                    **{
-                        _era: "DOES_NOT_EXIST"  # TODO does not exist yet for Run3 samples, include as soon as available
-                        for _era in ERAS_RUN3
-                    },
-                }
-            ),
-            "recoil_systematics_file": EraModifier(
-                {
-                    "2016preVFP": "data/recoil_corrections/PuppiMETSys_2016.root",
-                    "2016postVFP": "data/recoil_corrections/PuppiMETSys_2016.root",
-                    "2017": "data/recoil_corrections/PuppiMETSys_2017.root",
-                    "2018": "data/recoil_corrections/PuppiMETSys_2018.root",
-                    **{
-                        _era: "DOES_NOT_EXIST"  # TODO does not exist yet for Run3 samples, include as soon as available
-                        for _era in ERAS_RUN3
-                    },
-                }
-            ),
-            "applyRecoilCorrections": SampleModifier(
-                {
-                    "ttbar": False,
-                    "singletop": False,
-                    "diboson": False,
-                    "data": False,
-                    "embedding": False,
-                    "embedding_mc": False,
-                },
-                default=True,
-            ),
-            "apply_recoil_resolution_systematic": False,
-            "apply_recoil_response_systematic": False,
-            "recoil_systematic_shift_up": False,
-            "recoil_systematic_shift_down": False,
-            "min_jetpt_met_propagation": 15,
         },
     )
 
@@ -1897,12 +1883,8 @@ def build_config(
     # Z pt reweighting
     add_zpt_weight_config(configuration)
 
-    # Recoil corrections
-    add_recoil_corrections_config(configuration)
-
-    # recoil corrections
-    # TODO needs to be refined for run 3, not considered at the moment(https://github.com/kit-cms/XYHBBTauTauAnalysis-CROWN/issues/6)
-    #add_recoil_corrections_config(configuration)
+    # MET corrections
+    add_met_corrections_config(configuration)
 
     # Z pt reweighting
     # TODO needs to be refined for run 3, not considered at the moment (https://github.com/kit-cms/XYHBBTauTauAnalysis-CROWN/issues/7)
@@ -2194,6 +2176,19 @@ def build_config(
     # For a detailed description, see producers/jets.py
     JetID = get_for_era(jets.JetID, era)
 
+    # Calibrated jets used for Type-I MET corrections
+    # For a detailed descriptions, see producers/jets.py
+    Type1JECData = get_for_era(jets.Type1JECData, era)
+    Type1JECSimulation = get_for_era(jets.Type1JECSimulation, era)
+
+    # MET global quantities producer
+    # For a detailed description, see producers/met.py
+    MetGlobal = get_for_era(met.MetGlobal, era)
+
+    # MET scope quantities producer
+    # For a detailed description, see producers/met.py
+    MetScopes = get_for_era(met.MetScopes, era)
+
     # Base jet selection
     # - In Run 2, the CHS collection is used and pileup ID is applied.
     # - In Run 3, the PUPPI collection is used and no pileup ID is applied; the jet ID needs to
@@ -2380,31 +2375,6 @@ def build_config(
         era,
     )
 
-    # The MET covariance matrix producer is different for 2024 compared to all
-    # other eras, since in NanoAOD v15, also PuppiMET covariance matrix elements
-    # exist.
-    met_cov_producers = get_for_era(
-        {
-            tuple(ERAS_RUN2) + ("2022preEE", "2022postEE", "2023preBPix", "2023postBPix"): [
-                met.MetCov,
-            ],
-            "2024": [
-                met.PuppiMetCov,
-            ],
-        },
-        era,
-    )
-
-    # The jet energy corrections are propagated in a different way in Run 2 and
-    # Run 3, so different producer groups are needed for the MET corrections.
-    met_corrections_producers = get_for_era(
-        {
-            tuple(ERAS_RUN2): [met.METCorrectionsRun2],
-            tuple(ERAS_RUN3): [met.METCorrectionsRun3],
-        },
-        era,
-    )
-
     # For 2024, replace the nBHadrons and nCHadrons producers, as they are not
     # stored in the jet collection, but must be accessed via the associated
     # GenJetAK8 collection
@@ -2443,10 +2413,9 @@ def build_config(
             muons.BaseMuons,
             fatjets.GoodFatJets,
             event.DiLeptonVeto,
-            met.MetQuantitiesUncorrected,
+            MetGlobal,
             JetID,
         ]
-        + met_cov_producers
         + prefire_weight_producers
         + base_jet_selection_producers
         + fat_jet_id_producers
@@ -2455,7 +2424,7 @@ def build_config(
             electron_pt_correction_mc_producer,
             jets.JERSmearingSeed,
             jets.JECSimulation,
-            jets.Type1JECSimulation,
+            Type1JECSimulation,
             fatjets.FatJetEnergyCorrection,
         ]
     )
@@ -2481,9 +2450,9 @@ def build_config(
             fatjets.BasicXbbFatJetQuantities,
             fatjets.LeadingFatJetQuantities,
             bjet_id_sf_producer,
-            # TODO Need to properly handle producers for Run 2 (ROOT file-based)
-        ] + met_corrections_producers + [
-            met.METQuantities,
+            # TODO Need to properly handle recoil producer for Run 2 (ROOT file-based)
+            MetScopes,
+            met.MetQuantities,
             pairquantities.DiTauPairMETQuantities,
             genparticles.GenMatching,
         ]
@@ -2703,8 +2672,16 @@ def build_config(
     configuration.add_modification_rule(
         SCOPES,
         ReplaceProducer(
-            producers=[met.RecoilCorrectionMET, met.RenameMET],
-            exclude_samples=["dyjets_madgraph", "dyjets_amcatnlo", "dyjets_amcatnlo_ll", "dyjets_amcatnlo_tt", "dyjets_powheg"],
+            producers=[get_for_era(met.MetRecoilCorrection, era), met.RenameMet],
+            exclude_samples=[
+                "dyjets_madgraph",
+                "dyjets_amcatnlo",
+                "dyjets_amcatnlo_ll",
+                "dyjets_amcatnlo_tt",
+                "dyjets_powheg",
+                "wjets_madgraph",
+                "wjets_amcatnlo",
+            ],
         ),
     )
 
@@ -2853,7 +2830,7 @@ def build_config(
     configuration.add_modification_rule(
         GLOBAL_SCOPES,
         ReplaceProducer(
-            producers=[jets.Type1JECSimulation, jets.Type1JECData],
+            producers=[Type1JECSimulation, Type1JECData],
             samples=["data", "embedding", "embedding_mc"],
         ),
     )
@@ -3195,12 +3172,11 @@ def build_config(
             q.gen_m_vis,
             q.met,
             q.metphi,
-            #q.pfmet,
-            #q.pfmetphi,
+            q.met_raw,
+            q.metphi_raw,
+            q.metSumEt_raw,
             q.met_uncorrected,
             q.metphi_uncorrected,
-            #q.pfmet_uncorrected,
-            #q.pfmetphi_uncorrected,
             q.metSumEt,
             q.metcov00,
             q.metcov01,
@@ -3217,15 +3193,6 @@ def build_config(
             q.mt_tot,
             q.gen_match_1,
             q.gen_match_2,
-            # TODO remove these variables as PF MET is not used anymore by us
-            #q.pzetamissvis_pf,
-            #q.mTdileptonMET_pf,
-            #q.mt_1_pf,
-            #q.mt_2_pf,
-            #q.pt_tt_pf,
-            # q.pt_ttjj_pf,
-            #q.pt_ttbb_pf,
-            #q.mt_tot_pf,
             q.pt_dijet,
             q.jet_hemisphere,
         ],
@@ -3901,7 +3868,7 @@ def build_config(
                     },
                     producers={
                         tuple(SCOPES): [
-                            met.RecoilCorrectionMET,
+                            get_for_era(met.MetRecoilCorrection, era),
                         ],
                     },
                 ),
