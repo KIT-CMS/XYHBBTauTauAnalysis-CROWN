@@ -528,6 +528,10 @@ metcov10 = Quantity("metcov10")
 metcov11 = Quantity("metcov11")
 met_uncorrected = Quantity("met_uncorrected")
 metphi_uncorrected = Quantity("metphi_uncorrected")
+met_p4_raw = Quantity("met_p4_raw")
+met_raw = Quantity("met_raw")
+metphi_raw = Quantity("metphi_raw")
+metSumEt_raw = Quantity("metSumEt_raw")
 met_p4_boosted_leptoncorrected = Quantity("met_p4_boosted_leptoncorrected")
 met_p4_boosted_jetcorrected = Quantity("met_p4_boosted_jetcorrected")
 met_p4_boosted_recoilcorrected = Quantity("met_p4_boosted_recoilcorrected")
@@ -709,6 +713,7 @@ Jet_correctedMass = Quantity("Jet_correctedMass")
 # Additional columns for the CorrT1METJet collection
 CorrT1METJet_rawMuonSubtrPt = Quantity("CorrT1METJet_rawMuonSubtrPt")
 CorrT1METJet_ID = Quantity("CorrT1METJet_ID")
+CorrT1METJet_EmEnergyFraction = Quantity("CorrT1METJet_EmEnergyFraction")
 
 # Type1Jet collection, which is the concatenation of the Jet and CorrT1METJet
 # collections

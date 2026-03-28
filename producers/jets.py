@@ -12,6 +12,7 @@ from ._helpers import (
     jerc_producer_factory,
     stepwise_jerc_producer_factory,
 )
+from ..helpers import era_producer_groups
 from ..constants import GLOBAL_SCOPES, SCOPES, ERAS_RUN2
 
 
@@ -234,6 +235,28 @@ JECSimulation = ProducerGroup(
 # JETS AND JET ENERGY CALIBRATION FOR MET TYPE-I CORRECTIONS
 #
 
+# Dummy value or renaming of the EmEF column of CorrT1METJet collection
+# - For 2022 and 2023, the EmEF column of the CorrT1METJet collection does not
+#   exist. Dummy values of 0 are added, i.e., all CorrT1METJet objects are
+#   passing the EmEF < 0.9 criterion.
+# - For 2024, just rename the column.
+CorrT1METJetEmEF = {
+    ("2022preEE", "2022postEE", "2023preBPix", "2023postBPix"): Producer(
+        name="CorrT1METJetEmEFDummy",
+        call="event::quantity::Define<float>({df}, {output}, {input}, 0.0)",
+        input=[nanoAOD.nCorrT1METJet],
+        output=[q.CorrT1METJet_EmEnergyFraction],
+        scopes=GLOBAL_SCOPES,
+    ),
+    "2024": Producer(
+        name="CorrT1METJetEmEFDummy",
+        call="event::quantity::Rename<ROOT::RVec<float>>({df}, {output}, {input})",
+        input=[nanoAOD.CorrT1METJet_EmEF],
+        output=[q.CorrT1METJet_EmEnergyFraction],
+        scopes=GLOBAL_SCOPES,
+    ),
+}
+
 # Concatenate Jet and CorrT1METJet collections for MET type-I corrections
 Type1JetCollection = type1_jet_collection_producer_factory(
     input={
@@ -251,7 +274,7 @@ Type1JetCollection = type1_jet_collection_producer_factory(
         "corrt1metjet_phi": nanoAOD.CorrT1METJet_phi,
         "corrt1metjet_area": nanoAOD.CorrT1METJet_area,
         "corrt1metjet_muon_subtr_factor": nanoAOD.CorrT1METJet_muonSubtrFactor,
-        "corrt1metjet_em_ef": nanoAOD.CorrT1METJet_EmEF,
+        "corrt1metjet_em_ef": q.CorrT1METJet_EmEnergyFraction,
         "n_corrt1metjet": nanoAOD.nCorrT1METJet,
     },
     output={
@@ -298,29 +321,25 @@ Type1JetPtCorrectionData, Type1JetPtCorrectionSimulation = stepwise_jerc_produce
 )
 
 # Producer group for type-I jet energy calibration on data
-Type1JECData = ProducerGroup(
-    name="Type1JECData",
-    call=None,
-    input=None,
-    output=None,
-    scopes=GLOBAL_SCOPES,
-    subproducers=[
+Type1JECData = era_producer_groups( 
+    "Type1JECData",
+    [
+        CorrT1METJetEmEF,
         Type1JetCollection,
         Type1JetPtCorrectionData,
     ],
+    GLOBAL_SCOPES,
 )
 
 # Producer group for type-I jet energy calibration on MC
-Type1JECSimulation = ProducerGroup(
-    name="Type1JECSimulation",
-    call=None,
-    input=None,
-    output=None,
-    scopes=GLOBAL_SCOPES,
-    subproducers=[
+Type1JECSimulation = era_producer_groups( 
+    "Type1JECSimulation",
+    [
+        CorrT1METJetEmEF,
         Type1JetCollection,
         Type1JetPtCorrectionSimulation,
     ],
+    GLOBAL_SCOPES,
 )
 
 

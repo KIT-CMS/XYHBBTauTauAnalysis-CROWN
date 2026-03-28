@@ -236,7 +236,7 @@ def stepwise_jerc_producer_factory(
             {{input}},
             "{{{config_parameter_prefix}_jec_file}}",
             "{{{config_parameter_prefix}_jec_algo}}",
-            "{{{config_parameter_prefix}_jes_tag}}",
+            "{{{config_parameter_prefix}_jes_tag_data}}",
             {{{config_parameter_prefix}_reapply_jes}},
             "{{era}}"
         )
@@ -270,7 +270,7 @@ def stepwise_jerc_producer_factory(
             {{input}},
             "{{{config_parameter_prefix}_jec_file}}",
             "{{{config_parameter_prefix}_jec_algo}}",
-            "{{{config_parameter_prefix}_jes_tag}}",
+            "{{{config_parameter_prefix}_jes_tag_mc}}",
             "{{{config_parameter_prefix}_jer_tag}}",
             {{{config_parameter_prefix}_jes_sources}},
             {{{config_parameter_prefix}_jes_shift_factor}},

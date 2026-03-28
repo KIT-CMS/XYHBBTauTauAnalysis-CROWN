@@ -3,8 +3,8 @@ from ..quantities import nanoAOD as nanoAOD
 from analysis_configurations.quantities import nanoAODv12_run3
 from code_generation.producer import Producer, ProducerGroup
 
-from ..constants import GLOBAL_SCOPES, SCOPES
-
+from ..constants import GLOBAL_SCOPES, SCOPES, ERAS_RUN2, ERAS_RUN3
+from ..helpers import era_producer_groups
 
 #
 # HELPER FUNCTIONS
@@ -79,230 +79,297 @@ def met_cov_producers(
 # UNCORRECTED MET QUANTITIES
 #
 
-BuildMetVector_uncorrected = Producer(
-    name="BuildMetVector_uncorrected",
+# PF MET covariance matrix elements
+# - In nanoAODv12, the MET covariance matrix elements are only available for PFMET.
+# - In nanoAODv15, the MET covariance matrix elements can be taken from PuppiMET.
+MetCov = {
+    tuple(ERAS_RUN2) + ("2022preEE", "2022postEE", "2023preBPix", "2023postBPix"): met_cov_producers(
+        name="MetCov",
+        input_quantities={
+            "met_cov_xx": nanoAODv12_run3.MET_covXX,
+            "met_cov_xy": nanoAODv12_run3.MET_covXY,
+            "met_cov_yy": nanoAODv12_run3.MET_covYY,
+        },
+        output_quantities={
+            "met_cov_00": q.metcov00,
+            "met_cov_01": q.metcov01,
+            "met_cov_10": q.metcov10,
+            "met_cov_11": q.metcov11,
+        },
+        scopes=GLOBAL_SCOPES,
+    ),
+    "2024": met_cov_producers(
+        name="MetCov",
+        input_quantities={
+            "met_cov_xx": nanoAOD.PuppiMET_covXX,
+            "met_cov_xy": nanoAOD.PuppiMET_covXY,
+            "met_cov_yy": nanoAOD.PuppiMET_covYY,
+        },
+        output_quantities={
+            "met_cov_00": q.metcov00,
+            "met_cov_01": q.metcov01,
+            "met_cov_10": q.metcov10,
+            "met_cov_11": q.metcov11,
+        },
+        scopes=GLOBAL_SCOPES,
+    ),
+}
+
+# PuppiMET vector without recoil corrections and missing propagation of changes
+# in lepton and jet energy scale
+MetVectorUncorrected = Producer(
+    name="MetVectorUncorrected",
     call="lorentzvector::BuildMET({df}, {output}, {input})",
-    input=[
-        nanoAOD.PuppiMET_pt,
-        nanoAOD.PuppiMET_phi,
-    ],
+    input=[nanoAOD.PuppiMET_pt, nanoAOD.PuppiMET_phi],
     output=[q.met_p4_uncorrected],
     scopes=GLOBAL_SCOPES,
 )
 
-# PF MET covariance matrix elements (2016-2018 v9+v12, 2022-2023 v12)
-MetCov = met_cov_producers(
-    name="MetCov",
-    input_quantities={
-        "met_cov_xx": nanoAODv12_run3.MET_covXX,
-        "met_cov_xy": nanoAODv12_run3.MET_covXX,
-        "met_cov_yy": nanoAODv12_run3.MET_covYY,
-    },
-    output_quantities={
-        "met_cov_00": q.metcov00,
-        "met_cov_01": q.metcov01,
-        "met_cov_10": q.metcov10,
-        "met_cov_11": q.metcov11,
-    },
-    scopes=GLOBAL_SCOPES,
-)
-
-# PUPPI MET covariance matrix elements (2024 v15)
-PuppiMetCov = met_cov_producers(
-    name="PuppiMetCov",
-    input_quantities={
-        "met_cov_xx": nanoAOD.PuppiMET_covXX,
-        "met_cov_xy": nanoAOD.PuppiMET_covXY,
-        "met_cov_yy": nanoAOD.PuppiMET_covYY,
-    },
-    output_quantities={
-        "met_cov_00": q.metcov00,
-        "met_cov_01": q.metcov01,
-        "met_cov_10": q.metcov10,
-        "met_cov_11": q.metcov11,
-    },
-    scopes=GLOBAL_SCOPES,
-)
-
+# Scalar sum of transverse energy
 MetSumEt = Producer(
     name="MetSumEt",
     call="event::quantity::Rename<float>({df}, {output}, {input})",
-    input=[
-        nanoAOD.PuppiMET_sumEt,
-    ],
+    input=[nanoAOD.PuppiMET_sumEt],
     output=[q.metSumEt],
     scopes=GLOBAL_SCOPES,
 )
 
-MetPt_uncorrected = Producer(
-    name="MetPt_uncorrected",
+# Uncorrected PuppiMET pt
+MetPtUncorrected = Producer(
+    name="MetPtUncorrected",
     call="lorentzvector::GetPt({df}, {output}, {input})",
     input=[q.met_p4_uncorrected],
     output=[q.met_uncorrected],
     scopes=GLOBAL_SCOPES,
 )
 
-MetPhi_uncorrected = Producer(
-    name="MetPhi_uncorrected",
+# Uncorrected PuppiMET phi
+MetPhiUncorrected = Producer(
+    name="MetPhiUncorrected",
     call="lorentzvector::GetPhi({df}, {output}, {input})",
     input=[q.met_p4_uncorrected],
     output=[q.metphi_uncorrected],
     scopes=GLOBAL_SCOPES,
 )
 
-MetQuantitiesUncorrected = ProducerGroup(
-    name="MetQuantitiesUncorrected",
-    call=None,
-    input=None,
-    output=None,
+# Raw PuppiMET vector
+MetVectorRaw = Producer(
+    name="MetVectorRaw",
+    call="lorentzvector::BuildMET({df}, {output}, {input})",
+    input=[nanoAOD.RawPuppiMET_pt, nanoAOD.RawPuppiMET_phi],
+    output=[q.met_p4_raw],
     scopes=GLOBAL_SCOPES,
-    subproducers=[
-        BuildMetVector_uncorrected,
-        MetPt_uncorrected,
-        MetPhi_uncorrected,
-        MetSumEt,
-    ],
 )
 
+# Raw scalar sum of transverse energy
+MetSumEtRaw = Producer(
+    name="MetSumEtRaw",
+    call="event::quantity::Rename<float>({df}, {output}, {input})",
+    input=[nanoAOD.RawPuppiMET_sumEt],
+    output=[q.metSumEt_raw],
+    scopes=GLOBAL_SCOPES,
+)
 
-#
-# PROPAGATION OF ENERGY SCALE CORRECTIONS AND RECOIL CORRECTIONS
-#
+# Raw PuppiMET pt
+MetPtRaw = Producer(
+    name="MetPtRaw",
+    call="lorentzvector::GetPt({df}, {output}, {input})",
+    input=[q.met_p4_raw],
+    output=[q.met_raw],
+    scopes=GLOBAL_SCOPES,
+)
 
-# Type-1 MET correction to propagate JEC to the MET
-Type1CorrectionMET = Producer(
-    name="Type1CorrectionMET",
+# Raw PuppiMET phi
+MetPhiRaw = Producer(
+    name="MetPhiRaw",
+    call="lorentzvector::GetPhi({df}, {output}, {input})",
+    input=[q.met_p4_raw],
+    output=[q.metphi_raw],
+    scopes=GLOBAL_SCOPES,
+)
+
+# Propagate changes due to JEC to MET
+# - In Run 2, the PuppiMET is already accounted for the changes due to JEC
+#   correctly. Here, we just need to propagate changes in the JEC (e.g., due
+#   to shifts) to the MET. The input to this function is the "uncorrected"
+#   PuppiMET from nanoAOD.
+# - In Run 3, we need to apply Type-I MET corrections to propagate the effect
+#   of JEC to the raw PuppiMET.
+MetJetCorrection = {
+    tuple(ERAS_RUN2): Producer(
+        name="MetJetCorrection",
+        call="""
+        physicsobject::PropagateToMET(
+            {df},
+            {output},
+            {input},
+            {propagate_jets_to_met},
+            {t1jet_min_pt}
+        )
+        """,
+        input=[
+            q.met_p4_uncorrected,
+            q.Jet_correctedPt,
+            nanoAOD.Jet_eta,
+            nanoAOD.Jet_phi,
+            q.Jet_correctedMass,
+            nanoAOD.Jet_pt,
+            nanoAOD.Jet_eta,
+            nanoAOD.Jet_phi,
+            nanoAOD.Jet_mass,
+        ],
+        output=[q.met_p4_jetcorrected],
+        scopes=GLOBAL_SCOPES,
+    ),
+    tuple(ERAS_RUN3): Producer(
+        name="MetJetCorrection",
+        call="""
+        met::Type1Correction(
+            {df},
+            {output},
+            {input},
+            {t1jet_min_pt},
+            {t1jet_max_abs_eta},
+            {t1jet_max_em_ef}
+        )
+        """,
+        input=[
+            q.met_p4_raw,
+            q.Type1Jet_l1Pt,
+            q.Type1Jet_correctedPt,
+            q.Type1Jet_eta,
+            q.Type1Jet_phi,
+            q.Type1Jet_EmEF,
+        ],
+        output=[q.met_p4_jetcorrected],
+        scopes=GLOBAL_SCOPES,
+    ),
+}
+
+# MET functions running in the global scope
+MetGlobal = era_producer_groups(
+    "MetGlobal",
+    [
+        MetCov,
+        MetVectorUncorrected,
+        MetPtUncorrected,
+        MetPhiUncorrected,
+        MetSumEt,
+        MetVectorRaw,
+        MetPtRaw,
+        MetPhiRaw,
+        MetSumEtRaw,
+        MetJetCorrection,
+    ],
+    GLOBAL_SCOPES,
+)
+
+# Propagate changes in the lepton energy scales to MET
+MetLeptonCorrection = Producer(
+    name="MetLeptonCorrection",
     call="""
-    met::Type1Correction(
+    lorentzvector::PropagateToMET(
         {df},
         {output},
         {input},
-        {t1jet_min_pt},
-        {t1jet_max_abs_eta},
-        {t1jet_max_em_ef}
+        {propagate_leptons_to_met}
     )
     """,
     input=[
-        q.met_p4_uncorrected,
-        q.Type1Jet_l1Pt,
-        q.Type1Jet_correctedPt,
-        q.Type1Jet_eta,
-        q.Type1Jet_phi,
-        q.Type1Jet_EmEF,
-    ],
-    output=[
         q.met_p4_jetcorrected,
+        q.p4_1_uncorrected,
+        q.p4_2_uncorrected,
+        q.p4_1,
+        q.p4_2,
     ],
-    scopes=SCOPES,
-)
-
-# Correct MET for corrections in jet energy scale
-PropagateJetsToMET = Producer(
-    name="PropagateJetsToMet",
-    call="physicsobject::PropagateToMET({df}, {output}, {input}, {propagate_jets_to_met}, {jet_to_met_propagation_pt_min})",
-    input=[
-        q.met_p4_uncorrected,
-        q.Jet_correctedPt,
-        nanoAOD.Jet_eta,
-        nanoAOD.Jet_phi,
-        q.Jet_correctedMass,
-        nanoAOD.Jet_pt,
-        nanoAOD.Jet_eta,
-        nanoAOD.Jet_phi,
-        nanoAOD.Jet_mass,
-    ],
-    output=[q.met_p4_jetcorrected],
-    scopes=["et", "mt", "tt", "em", "mm", "ee"],
-)
-
-# Correct MET for corrections in lepton energy scale
-PropagateLeptonsToMET = Producer(
-    name="PropagateLeptonsToMET",
-    call="lorentzvector::PropagateToMET({df}, {output}, {input}, {propagate_leptons_to_met})",
-    input=[q.met_p4_jetcorrected, q.p4_1_uncorrected, q.p4_2_uncorrected, q.p4_1, q.p4_2],
     output=[q.met_p4_leptoncorrected],
     scopes=SCOPES,
 )
 
-
 # Recoil correction evaluation via correctionlib
-RecoilCorrectionMET = Producer(
-    name="RecoilCorrectionMET",
-    call=(
-        """
+MetRecoilCorrection = {
+    tuple(ERAS_RUN2): Producer(
+        name="RecoilCorrectionMet",
+        call="""
         met::RecoilCorrection(
             {df},
-            correctionManager,
             {output},
             {input},
-            \"{recoil_correction_file}\",
-            \"{recoil_correction_name}\",
-            \"{recoil_correction_method}\",
-            \"{recoil_correction_order}\",
-            \"{recoil_correction_variation}\",
-            {apply_recoil_correction}
+            "{recoil_correction_file}",
+            "{recoil_systematics_file}",
+            {apply_recoil_correction},
+            {apply_recoil_resolution_systematic},
+            {apply_recoil_response_systematic},
+            {recoil_systematic_shift_up},
+            {recoil_systematic_shift_down},
+            {is_wjets}
         )
-        """
+        """,
+        input=[
+            q.met_p4_leptoncorrected,
+            q.gen_boson_p4,
+            q.gen_vis_boson_p4,
+            q.Jet_correctedPt,
+        ],
+        output=[q.met_p4_recoilcorrected],
+        scopes=SCOPES,
     ),
-    input=[
-        q.met_p4_leptoncorrected,
-        q.gen_boson_p4,
-        q.gen_vis_boson_p4,
-        q.n_jets,
+    tuple(ERAS_RUN3): Producer(
+        name="RecoilCorrectionMet",
+        call=(
+            """
+            met::RecoilCorrection(
+                {df},
+                correctionManager,
+                {output},
+                {input},
+                "{recoil_correction_file}",
+                "{recoil_correction_name}",
+                "{recoil_correction_method}",
+                "{recoil_correction_order}",
+                "{recoil_correction_variation}",
+                {apply_recoil_correction}
+            )
+            """
+        ),
+        input=[
+            q.met_p4_leptoncorrected,
+            q.gen_boson_p4,
+            q.gen_vis_boson_p4,
+            q.n_jets,
+        ],
+        output=[q.met_p4_recoilcorrected],
+        scopes=SCOPES,
+    ),
+}
+
+# MET functions running in the scopes
+MetScopes = era_producer_groups(
+    "MetScopes",
+    [
+        MetLeptonCorrection,
+        MetRecoilCorrection,
     ],
-    output=[q.met_p4_recoilcorrected],
-    scopes=SCOPES,
+    SCOPES,
 )
-
-# Producer group to trigger production of all MET corrections
-METCorrectionsRun2 = ProducerGroup(
-    name="METCorrections",
-    call=None,
-    input=None,
-    output=None,
-    scopes=SCOPES,
-    subproducers=[
-        PropagateLeptonsToMET,
-        PropagateJetsToMET,
-        RecoilCorrectionMET,
-    ],
-)
-
-# Producer group to trigger production of all MET corrections
-METCorrectionsRun3 = ProducerGroup(
-    name="METCorrections",
-    call=None,
-    input=None,
-    output=None,
-    scopes=SCOPES,
-    subproducers=[
-        Type1CorrectionMET,
-        PropagateLeptonsToMET,
-        RecoilCorrectionMET,
-    ],
-)
-
-#
-# RENAME PRODUCERS
-#
-
 
 # Dummy producer to rename the MET if recoil corrections are applied to the
 # sample
-RenameMET = Producer(
-    name="RenameMET",
-    call="event::quantity::Rename<ROOT::Math::PtEtaPhiMVector>({df}, {output}, {input})",
+RenameMet = Producer(
+    name="RenameMet",
+    call="""
+    event::quantity::Rename<ROOT::Math::PtEtaPhiMVector>(
+        {df},
+        {output},
+        {input}
+    )
+    """,
     input=[q.met_p4_jetcorrected],
     output=[q.met_p4_recoilcorrected],
     scopes=SCOPES,
 )
 
-
-#
-# CORRECTED MET QUANTITIES
-#
-
-
+# Final MET pt
 MetPt = Producer(
     name="MetPt",
     call="lorentzvector::GetPt({df}, {output}, {input})",
@@ -311,6 +378,7 @@ MetPt = Producer(
     scopes=SCOPES,
 )
 
+# Final MET phi
 MetPhi = Producer(
     name="MetPhi",
     call="lorentzvector::GetPhi({df}, {output}, {input})",
@@ -319,7 +387,8 @@ MetPhi = Producer(
     scopes=SCOPES,
 )
 
-METQuantities = ProducerGroup(
+# Producer group for final MET quantities
+MetQuantities = ProducerGroup(
     name="MetQuantities",
     call=None,
     input=None,
@@ -330,3 +399,4 @@ METQuantities = ProducerGroup(
         MetPhi,
     ],
 )
+
