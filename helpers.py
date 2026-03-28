@@ -1,9 +1,9 @@
 """
 General helper functions useful for building the configuration.
 """
-
 from typing import TypeVar 
 
+from code_generation.producer import ProducerGroup
 
 T = TypeVar("T")
 
@@ -69,3 +69,66 @@ def get_for_era(objects: dict[str | tuple[str], T], era: str, default: T = None)
 
     # If no matching item is found at this point, raise an exception
     raise ValueError(f"No object found for era {era}, and no default value specified.")
+
+
+def era_producer_groups(
+    name: str,
+    object_list: list[dict[str | tuple[str], T] | T],
+    scopes: list[str],
+) -> T:
+    """
+    Takes a list of producers or era dictionaries containing producers and
+    creates a dictionary of producer groups for each era appearing in the
+    dictionaries.
+
+    The keys in the era dictionaries can either be single strings representing
+    an era or tuples of strings representing a collection of eras. The objects
+    can have an arbitrary type `T`.
+
+    An era dictionary can be structured as follows:
+
+    ```python
+    {
+        ("2016preVFP", "2016postVFP", "2017", "2018"): ProducerRun2,
+        "2022preEE": Producer2022preEE,
+        "2022postEE": Producer2022postEE,
+    }
+    ```
+    """
+
+    # First, collect the eras appearing in the era dictionaries
+    eras = set()
+    for obj in object_list:
+        if isinstance(obj, dict):
+            obj_eras = []
+            for key in obj.keys():
+                if isinstance(key, tuple):
+                    obj_eras.extend(list(key))
+                else:
+                    obj_eras.append(key)
+            eras |= set(obj_eras)
+
+    # Construct the producer group for each era
+    producer_group_dict = {}
+    for era in eras:
+        # Get the bare producers and collect them in a list
+        producers = [
+            (
+                get_for_era(obj, era)
+                if isinstance(obj, dict)
+                else obj
+            )
+            for obj in object_list
+        ]
+
+        # Create the producer group
+        producer_group_dict[era] = ProducerGroup(
+            name=name,
+            call=None,
+            input=None,
+            output=None,
+            scopes=scopes,
+            subproducers=producers,
+        )
+
+    return producer_group_dict
