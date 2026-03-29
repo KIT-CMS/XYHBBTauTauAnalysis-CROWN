@@ -700,18 +700,7 @@ def add_hadronic_tau_config(configuration: Configuration, era: str):
     """
 
     # define the tau identification algorithm to use
-    tau_id = EraModifier(
-        {
-            # **{
-            #     _era: "DeepTau2017v2p1"
-            #     for _era in ERAS_RUN2
-            # },
-            **{
-                _era: "DeepTau2018v2p5"
-                for _era in ERAS_RUN2 + ERAS_RUN3
-            },
-        }
-    )
+    tau_id = "DeepTau2018v2p5"
 
     # hadronic tau selection in semileptonic channels
     configuration.add_config_parameters(
@@ -747,12 +736,7 @@ def add_hadronic_tau_config(configuration: Configuration, era: str):
         {
             "vsjet_tau_id": [
                 {
-                    "tau_id_discriminator": EraModifier(
-                        {
-                            _era: f"{_tau_id}VSjet"
-                            for _era, _tau_id in tau_id.modifier_dict.items()
-                        }
-                    ),
+                    "tau_id_discriminator": f"{tau_id}VSjet",
                     "vsjet_tau_id_WPbit": bit,
                     "vsjet_tau_id_WP": "{wp}".format(wp=wp),
                     "tau_1_vsjet_id_outputname": "id_tau_vsJet_{wp}_1".format(wp=wp),
@@ -771,12 +755,7 @@ def add_hadronic_tau_config(configuration: Configuration, era: str):
             ],
             "vsele_tau_id": [
                 {
-                    "tau_id_discriminator": EraModifier(
-                        {
-                            _era: f"{_tau_id}VSe"
-                            for _era, _tau_id in tau_id.modifier_dict.items()
-                        }
-                    ),
+                    "tau_id_discriminator": f"{tau_id}VSe",
                     "vsele_tau_id_WPbit": bit,
                     "vsele_tau_id_WP": "{wp}".format(wp=wp),
                     "tau_1_vsele_id_outputname": "id_tau_vsEle_{wp}_1".format(wp=wp),
@@ -795,12 +774,7 @@ def add_hadronic_tau_config(configuration: Configuration, era: str):
             ],
             "vsmu_tau_id": [
                 {
-                    "tau_id_discriminator": EraModifier(
-                        {
-                            _era: f"{_tau_id}VSmu"
-                            for _era, _tau_id in tau_id.modifier_dict.items()
-                        }
-                    ),
+                    "tau_id_discriminator": f"{tau_id}VSmu",
                     "vsmu_tau_id_WPbit": bit,
                     "vsmu_tau_id_WP": "{wp}".format(wp=wp),
                     "tau_1_vsmu_id_outputname": "id_tau_vsMu_{wp}_1".format(wp=wp),
@@ -891,12 +865,7 @@ def add_hadronic_tau_config(configuration: Configuration, era: str):
             # scale factors
             "vsjet_tau_id_sf": [
                 {
-                    "discriminator": EraModifier(
-                        {
-                            _era: f"{_tau_id}VSjet"
-                            for _era, _tau_id in tau_id.modifier_dict.items()
-                        }
-                    ),
+                    "discriminator": f"{tau_id}VSjet",
                     "tau1_output_name": "id_wgt_tau_vsJet_{wp}_1".format(
                         wp=wp
                     ),
@@ -932,7 +901,7 @@ def add_hadronic_tau_config(configuration: Configuration, era: str):
             "tau_id_sf_vsjet_tau_dm10_pt40toInf_shift": "nom",
             "tau_id_sf_vsjet_tau_dm11_pt20to40_shift": "nom",
             "tau_id_sf_vsjet_tau_dm11_pt40toInf_shift": "nom",
-            "tau_id_sf_vsjet_sf_dependence": "pt",  # or "dm" ("pt" is both dm and pt dependent)
+            "tau_id_sf_vsjet_sf_dependence": "dm",  # or "dm" ("pt" is both dm and pt dependent)
         },
     )
 
@@ -943,12 +912,7 @@ def add_hadronic_tau_config(configuration: Configuration, era: str):
             # scale factors
             "vsele_tau_id_sf": [
                 {
-                    "discriminator": EraModifier(
-                        {
-                            _era: f"{_tau_id}VSe"
-                            for _era, _tau_id in tau_id.modifier_dict.items()
-                        }
-                    ),
+                    "discriminator": f"{tau_id}VSe",
                     "tau1_output_name": "id_wgt_tau_vsEle_{wp}_1".format(
                         wp=wp
                     ),
@@ -982,12 +946,7 @@ def add_hadronic_tau_config(configuration: Configuration, era: str):
             # scale factors
             "vsmu_tau_id_sf": [
                 {
-                    "discriminator": EraModifier(
-                        {
-                            _era: f"{_tau_id}VSmu"
-                            for _era, _tau_id in tau_id.modifier_dict.items()
-                        }
-                    ),
+                    "discriminator": f"{tau_id}VSmu",
                     "tau1_output_name": f"id_wgt_tau_vsMu_{vsmu_wp}_1",
                     "tau2_output_name": f"id_wgt_tau_vsMu_{vsmu_wp}_2",
                     "vsmu_wp": f"{vsmu_wp}",
@@ -1019,12 +978,7 @@ def add_hadronic_tau_config(configuration: Configuration, era: str):
             # scale factors
             "vsmu_tau_id_sf": [
                 {
-                    "discriminator": EraModifier(
-                        {
-                            _era: f"{_tau_id}VSmu"
-                            for _era, _tau_id in tau_id.modifier_dict.items()
-                        }
-                    ),
+                    "discriminator":f"{tau_id}VSmu",
                     "tau1_output_name": f"id_wgt_tau_vsMu_{vsmu_wp}_1",
                     "tau2_output_name": f"id_wgt_tau_vsMu_{vsmu_wp}_2",
                     "vsmu_wp": f"{vsmu_wp}",
