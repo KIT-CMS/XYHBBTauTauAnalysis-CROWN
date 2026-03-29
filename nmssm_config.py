@@ -1675,13 +1675,21 @@ def add_met_corrections_config(configuration: Configuration):
     provided by the HLepRare group.
     """
 
-    # Type-I MET corrections
+    # Selection of jets for Type-I MET corrections and propagation of JEC
+    # to MET
     configuration.add_config_parameters(
         GLOBAL_SCOPES,
         {
             "t1jet_min_pt": 15.0,
             "t1jet_max_abs_eta": 5.2,
             "t1jet_max_em_ef": 0.9,
+            "propagate_jets_to_met": SampleModifier(
+                {
+                    "data": False,
+                    "embedding": False,
+                },
+                default=True,
+            ),
         },
     )
 
@@ -1760,13 +1768,6 @@ def add_met_corrections_config(configuration: Configuration):
             "propagate_leptons_to_met": SampleModifier(
                 {
                     "data": False,
-                },
-                default=True,
-            ),
-            "propagate_jets_to_met": SampleModifier(
-                {
-                    "data": False,
-                    "embedding": False,
                 },
                 default=True,
             ),
