@@ -2366,12 +2366,10 @@ def build_config(
         ET_SCOPES,
         [
             electrons.GoodElectrons,
-            taus.GoodTaus,
-            taus.NumberOfGoodTaus,
             electrons.NumberOfGoodElectrons,
             electrons.VetoElectrons,
-            electrons.ExtraElectronsVeto,
-            muons.ExtraMuonsVeto,
+            taus.GoodTaus,
+            taus.NumberOfGoodTaus,
             pairselection.ETPairSelection,
             pairselection.GoodETPairFilter,
             pairselection.LVEl1,
@@ -2398,10 +2396,8 @@ def build_config(
             muons.GoodMuons,
             muons.NumberOfGoodMuons,
             muons.VetoMuons,
-            muons.ExtraMuonsVeto,
             taus.GoodTaus,
             taus.NumberOfGoodTaus,
-            electrons.ExtraElectronsVeto,
             pairselection.MTPairSelection,
             pairselection.GoodMTPairFilter,
             pairselection.LVMu1,
@@ -2424,8 +2420,6 @@ def build_config(
     configuration.add_producers(
         TT_SCOPES,
         [
-            electrons.ExtraElectronsVeto,
-            muons.ExtraMuonsVeto,
             taus.GoodTaus,
             taus.NumberOfGoodTaus,
             pairselection.TTPairSelection,
@@ -2453,7 +2447,6 @@ def build_config(
             electrons.NumberOfGoodElectrons,
             electrons.VetoElectrons,
             electrons.VetoSecondElectron,
-            electrons.ExtraElectronsVeto,
             pairselection.ZElElPairSelection,
             pairselection.GoodElElPairFilter,
             pairselection.LVEl1,
@@ -2475,7 +2468,6 @@ def build_config(
             muons.GoodMuons,
             muons.VetoMuons,
             muons.VetoSecondMuon,
-            muons.ExtraMuonsVeto,
             muons.NumberOfGoodMuons,
             pairselection.ZMuMuPairSelection,
             pairselection.GoodMuMuPairFilter,
@@ -2496,13 +2488,11 @@ def build_config(
         EM_SCOPES,
         [
             electrons.GoodElectrons,
-            muons.GoodMuons,
-            electrons.VetoElectrons,
-            electrons.ExtraElectronsVeto,
-            muons.VetoMuons,
-            muons.ExtraMuonsVeto,
             electrons.NumberOfGoodElectrons,
+            electrons.VetoElectrons,
+            muons.GoodMuons,
             muons.NumberOfGoodMuons,
+            muons.VetoMuons,
             pairselection.EMPairSelection,
             pairselection.GoodEMPairFilter,
             pairselection.LVEl1,
@@ -2517,6 +2507,16 @@ def build_config(
             triggers.SingleMuTriggerFlags,
             scalefactors.SingleEleTriggerSF,
             scalefactors.SingleMuTriggerSF,
+        ],
+    )
+
+    # Extra lepton vetoes in channels, requires `Veto<object>` and
+    # `VetoSecond<object>` to be added to the correct scopes
+    configuration.add_producers(
+        SCOPES,
+        [
+            electrons.ExtraElectronsVeto,
+            muons.ExtraMuonsVeto,
         ],
     )
 
@@ -3171,9 +3171,8 @@ def build_config(
             # q.gen_taujet_pt_2,
             q.tau_decaymode_1,
             q.tau_decaymode_2,
-            q.muon_veto_flag,
             q.electron_veto_flag,
-            q.dimuon_veto,
+            q.muon_veto_flag,
             q.dilepton_veto,
         ],
     )
@@ -3197,9 +3196,8 @@ def build_config(
             # q.gen_taujet_pt_2,
             q.tau_decaymode_1,
             q.tau_decaymode_2,
-            q.muon_veto_flag,
             q.electron_veto_flag,
-            q.dielectron_veto,
+            q.muon_veto_flag,
             q.dilepton_veto,
             # q.id_wgt_ele_wp90nonIso_1,
             # q.id_wgt_ele_wp80nonIso_1,
@@ -3228,10 +3226,8 @@ def build_config(
             # q.gen_taujet_pt_2,
             q.tau_decaymode_1,
             q.tau_decaymode_2,
-            q.muon_veto_flag,
             q.electron_veto_flag,
-            q.dimuon_veto,
-            q.dilepton_veto,
+            q.muon_veto_flag,
             q.fj_leading_pt,
             q.fj_leading_msoftdrop,
         ],
@@ -3253,6 +3249,7 @@ def build_config(
         [
             q.nmuons,
             triggers.SingleMuTriggerFlags.output_group,
+            q.electron_veto_flag,
             q.muon_veto_flag,
         ]
         + scalefactors.SingleMuTriggerSF.get_outputs("mm"),
@@ -3265,6 +3262,7 @@ def build_config(
             q.nelectrons,
             triggers.SingleEleTriggerFlags.output_group,
             q.electron_veto_flag,
+            q.muon_veto_flag,
         ] + scalefactors.SingleEleTriggerSF.get_outputs("ee"),
     )
 

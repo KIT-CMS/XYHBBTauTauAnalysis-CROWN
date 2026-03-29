@@ -204,7 +204,6 @@ BoostedExtraElectronsVeto = Producer(
 # DI-ELECTRON VETO
 #
 
-
 DiElectronVeto = Producer(
     name="DiElectronVeto",
     call="xyh::vetoes::dielectron({df}, {output}, {input}, {diele_electron_min_pt}, {diele_electron_max_abs_eta}, {diele_electron_max_iso}, {diele_electron_max_abs_dxy}, {diele_electron_max_abs_dz}, {diele_electron_id_wp}, {diele_electron_min_delta_r})",
