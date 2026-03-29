@@ -1300,7 +1300,6 @@ def add_ak4jet_config(configuration: Configuration):
         "2016preVFP": "Summer19UL16APV_V7",
         "2016postVFP": "Summer19UL16_V7",
         "2017": "Summer19UL17_V5",
-        "2018": "Summer19UL18_V5",
         "2023preBPix": "Summer23Prompt23_V2",
         "2023postBPix": "Summer23BPixPrompt23_V3",
         "2024": "Summer24Prompt24_V2",
@@ -1345,6 +1344,7 @@ def add_ak4jet_config(configuration: Configuration):
             "ak4jet_jes_tag_data": EraModifier(
                 {
                     **common_jes_tags,
+                    "2018": "Summer19UL18_RunA_V5",  # TODO generalize this to runs B, C, D
                     "2022preEE": "Summer22_22Sep2023_RunCD_V3",
                     "2022postEE": "Summer22EE_22Sep2023_RunE_V3",
                 },
@@ -1352,6 +1352,7 @@ def add_ak4jet_config(configuration: Configuration):
             "ak4jet_jes_tag_mc": EraModifier(
                 {
                     **common_jes_tags,
+                    "2018": "Summer19UL18_V5",
                     "2022preEE": "Summer22_22Sep2023_V3",
                     "2022postEE": "Summer22EE_22Sep2023_V3",
                 }
@@ -2425,10 +2426,11 @@ def build_config(
             electron_pt_correction_mc_producer,
             jets.JERSmearingSeed,
             jets.JECSimulation,
-            Type1JECSimulation,
             fatjets.FatJetEnergyCorrection,
         ]
     )
+    if era in ERAS_RUN3:
+        configuration.add_producers(GLOBAL_SCOPES, [Type1JECSimulation])
 
     # Producers common to all scopes with at least one hadronic tau
     configuration.add_producers(
@@ -2754,6 +2756,17 @@ def build_config(
         )
     )
 
+    # Remove muon ID and isolation scale factor producers from data and embedding samples in mt scope
+    configuration.add_modification_rule(
+        MT_SCOPES,
+        RemoveProducer(
+            producers=[
+                scalefactors.MuonIDIso_SF,
+            ],
+            samples=["data", "embedding", "embedding_mc"],
+        )
+    )
+
     # Remove trigger scale factor producers from data and embedding samples in tt scope
     configuration.add_modification_rule(
         TT_SCOPES,
@@ -2828,13 +2841,14 @@ def build_config(
     )
 
     # Replace jet energy correction for type-I correction jets for data and embedding
-    configuration.add_modification_rule(
-        GLOBAL_SCOPES,
-        ReplaceProducer(
-            producers=[Type1JECSimulation, Type1JECData],
-            samples=["data", "embedding", "embedding_mc"],
-        ),
-    )
+    if era in ERAS_RUN3:
+        configuration.add_modification_rule(
+            GLOBAL_SCOPES,
+            ReplaceProducer(
+                producers=[Type1JECSimulation, Type1JECData],
+                samples=["data", "embedding", "embedding_mc"],
+            ),
+        )
 
     # Replace fat jet energy correction for data
     configuration.add_modification_rule(
