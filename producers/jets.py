@@ -27,7 +27,7 @@ JetID = {
     tuple(ERAS_RUN2): Producer(
         name="JetID",
         call="""
-        event::quantity::Rename<ROOT::RVec<UChar_t>>(
+        event::quantity::Rename<ROOT::RVec<int>>(
             {df},
             {output},
             {input}
@@ -241,7 +241,7 @@ JECSimulation = ProducerGroup(
 #   passing the EmEF < 0.9 criterion.
 # - For 2024, just rename the column.
 CorrT1METJetEmEF = {
-    ("2022preEE", "2022postEE", "2023preBPix", "2023postBPix"): Producer(
+    tuple(ERAS_RUN2) + ("2022preEE", "2022postEE", "2023preBPix", "2023postBPix"): Producer(
         name="CorrT1METJetEmEFDummy",
         call="event::quantity::Define<float>({df}, {output}, {input}, 0.0)",
         input=[nanoAOD.nCorrT1METJet],
