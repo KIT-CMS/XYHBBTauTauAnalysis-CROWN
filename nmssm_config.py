@@ -1,7 +1,7 @@
 from __future__ import annotations  # needed for type annotations in > python 3.7
 
 from typing import List
-
+from itertools import chain
 from .producers import electrons as electrons
 from .producers import event as event
 from .producers import genparticles as genparticles
@@ -186,13 +186,12 @@ def add_pileup_reweighting_config(configuration: Configuration):
     configuration.add_config_parameters(
         "global",
         {
-
             "PU_reweighting_file": EraModifier(
                 {
                     "2016preVFP": "/cvmfs/cms-griddata.cern.ch/cat/metadata/LUM/Run2-2016preVFP-UL-NanoAODv9/2021-09-10/puWeights.json.gz",
                     "2016postVFP": "/cvmfs/cms-griddata.cern.ch/cat/metadata/LUM/Run2-2016postVFP-UL-NanoAODv9/2021-09-10/puWeights.json.gz",
                     "2017": "/cvmfs/cms-griddata.cern.ch/cat/metadata/LUM/Run2-2017-UL-NanoAODv9/2021-09-10/puWeights.json.gz",
-                    "2018": "/cvmfs/cms-griddata.cern.ch/cat/metadata/LUM/Run2-2017-UL-NanoAODv9/2021-09-10/puWeights.json.gz",
+                    "2018": "/cvmfs/cms-griddata.cern.ch/cat/metadata/LUM/Run2-2018-UL-NanoAODv9/2021-09-10/puWeights.json.gz",
                     "2022preEE": "/cvmfs/cms-griddata.cern.ch/cat/metadata/LUM/Run3-22CDSep23-Summer22-NanoAODv12/2024-01-31/puWeights.json.gz",
                     "2022postEE": "/cvmfs/cms-griddata.cern.ch/cat/metadata/LUM/Run3-22EFGSep23-Summer22EE-NanoAODv12/2024-01-31/puWeights.json.gz",
                     "2023preBPix": "/cvmfs/cms-griddata.cern.ch/cat/metadata/LUM/Run3-23CSep23-Summer23-NanoAODv12/2024-01-31/puWeights.json.gz",
@@ -608,7 +607,18 @@ def add_muon_config(configuration: Configuration):
                 }
             ),
             "muon_id_sf_name": "NUM_MediumID_DEN_TrackerMuons",  # correction for mediumId WP
-            "muon_iso_sf_name": "NUM_TightPFIso_DEN_MediumID",  # correction for TightPFIso WP (PF isolation < 0.15)
+            "muon_iso_sf_name": EraModifier(  # correction for TightPFIso WP (PF isolation < 0.15)
+                {
+                    **{
+                        _era: "NUM_TightRelIso_DEN_MediumID"
+                        for _era in ERAS_RUN2
+                    },
+                    **{
+                        _era: "NUM_TightPFIso_DEN_MediumID"
+                        for _era in ERAS_RUN3
+                    },
+                },
+            ),
             "muon_reco_sf_variation": "nominal",  # "nominal" is nominal, "systup"/"systdown" are up/down variations
             "muon_id_sf_variation": "nominal",  # "nominal" is nominal, "systup"/"systdown" are up/down variations
             "muon_iso_sf_variation": "nominal",  # "nominal" is nominal, "systup"/"systdown" are up/down variations
@@ -692,13 +702,13 @@ def add_hadronic_tau_config(configuration: Configuration, era: str):
     # define the tau identification algorithm to use
     tau_id = EraModifier(
         {
-            **{
-                _era: "DeepTau2017v2p1"
-                for _era in ERAS_RUN2
-            },
+            # **{
+            #     _era: "DeepTau2017v2p1"
+            #     for _era in ERAS_RUN2
+            # },
             **{
                 _era: "DeepTau2018v2p5"
-                for _era in ERAS_RUN3
+                for _era in ERAS_RUN2 + ERAS_RUN3
             },
         }
     )
@@ -813,10 +823,10 @@ def add_hadronic_tau_config(configuration: Configuration, era: str):
         {
             "tau_ides_sf_file": EraModifier(
                 {
-                    "2016preVFP": "/cvmfs/cms-griddata.cern.ch/cat/metadata/TAU/Run2-2016preVFP-UL-NanoAODv9/2024-07-02/tau.json.gz",
-                    "2016postVFP": "/cvmfs/cms-griddata.cern.ch/cat/metadata/TAU/Run2-2016postVFP-UL-NanoAODv9/2024-07-02/tau.json.gz",
-                    "2017": "/cvmfs/cms-griddata.cern.ch/cat/metadata/TAU/Run2-2017-UL-NanoAODv9/2024-07-02/tau.json.gz",
-                    "2018": "/cvmfs/cms-griddata.cern.ch/cat/metadata/TAU/Run2-2018-UL-NanoAODv9/2024-07-02/tau.json.gz",
+                    "2016preVFP": "/cvmfs/cms-griddata.cern.ch/cat/metadata/TAU/Run2-2016preVFP-UL-NanoAODv15/2024-11-27/tau.json.gz",
+                    "2016postVFP": "/cvmfs/cms-griddata.cern.ch/cat/metadata/TAU/Run2-2016postVFP-UL-NanoAODv15/2025-11-27/tau.json.gz",
+                    "2017": "/cvmfs/cms-griddata.cern.ch/cat/metadata/TAU/Run2-2017-UL-NanoAODv15/2025-11-27/tau.json.gz",
+                    "2018": "/cvmfs/cms-griddata.cern.ch/cat/metadata/TAU/Run2-2018-UL-NanoAODv15/2025-11-27/tau.json.gz",
                     "2022preEE": "/cvmfs/cms-griddata.cern.ch/cat/metadata/TAU/Run3-22CDSep23-Summer22-NanoAODv12/2025-10-01/tau_DeepTau2018v2p5_2022_preEE.json.gz",
                     "2022postEE": "/cvmfs/cms-griddata.cern.ch/cat/metadata/TAU/Run3-22EFGSep23-Summer22EE-NanoAODv12/2025-10-01/tau_DeepTau2018v2p5_2022_postEE.json.gz",
                     "2023preBPix": "/cvmfs/cms-griddata.cern.ch/cat/metadata/TAU/Run3-23CSep23-Summer23-NanoAODv12/2025-10-01/tau_DeepTau2018v2p5_2023_preBPix.json.gz",
@@ -2092,6 +2102,7 @@ def build_config(
             ),
         },
     )
+
     # Settings for the ditau trigger scale factors on embedding
     configuration.add_config_parameters(
         TT_SCOPES,
@@ -2168,7 +2179,7 @@ def build_config(
     # different types of producers here.
     tau_energy_correction_mc_producer = get_for_era(
         {
-            tuple(ERAS_RUN2): taus.TauEnergyCorrectionMCRun2,
+            tuple(ERAS_RUN2): taus.TauEnergyCorrectionMCRun3,
             tuple(ERAS_RUN3): taus.TauEnergyCorrectionMCRun3,
         },
         era,
@@ -2311,72 +2322,6 @@ def build_config(
         default=[],
     )
 
-    # Tau ID scale factors in the mt channel
-    # - In Run 2, the scale factors are provided from own measurements with the same methods as for
-    #   embedding.
-    # - In Run 3, the official measurements from the TAU POG are taken.
-    mt_tau_sf_producers = get_for_era(
-        {
-            tuple(ERAS_RUN2): [
-                scalefactors.Tau_2_VsJetTauID_lt_SF,
-                scalefactors.Tau_2_VsEleTauID_SF_Run2,
-                scalefactors.Tau_2_VsMuTauID_SF,
-            ],
-            tuple(ERAS_RUN3): [
-                scalefactors.Tau_2_VsJetTauID_SF,
-                scalefactors.Tau_2_VsEleTauID_SF_Run3,
-                scalefactors.Tau_2_VsMuTauID_SF,
-            ],
-        },
-        era,
-    )
-
-    # Tau ID scale factors in the et channel
-    # - In Run 2, the scale factors are provided from own measurements with the same methods as for
-    #   embedding.
-    # - In Run 3, the official measurements from the TAU POG are taken.
-    et_tau_sf_producers = get_for_era(
-        {
-            tuple(ERAS_RUN2): [
-                scalefactors.Tau_2_VsJetTauID_lt_SF,
-                scalefactors.Tau_2_VsEleTauID_SF_Run2,
-                scalefactors.Tau_2_VsMuTauID_SF,
-            ],
-            tuple(ERAS_RUN3): [
-                scalefactors.Tau_2_VsJetTauID_SF,
-                scalefactors.Tau_2_VsEleTauID_SF_Run3,
-                scalefactors.Tau_2_VsMuTauID_SF,
-            ],
-        },
-        era,
-    )
-
-    # Tau ID scale factors in the tt channel 
-    # - In Run 2, the scale factors are provided from own measurements with the same methods as for
-    #   embedding.
-    # - In Run 3, the official measurements from the TAU POG are taken.
-    tt_tau_sf_producers = get_for_era(
-        {
-            tuple(ERAS_RUN2): [
-                scalefactors.Tau_1_VsJetTauID_tt_SF,
-                scalefactors.Tau_2_VsJetTauID_tt_SF,
-                scalefactors.Tau_1_VsEleTauID_SF_Run2,
-                scalefactors.Tau_2_VsEleTauID_SF_Run2,
-                scalefactors.Tau_1_VsMuTauID_SF,
-                scalefactors.Tau_2_VsMuTauID_SF,
-            ],
-            tuple(ERAS_RUN3): [
-                scalefactors.Tau_1_VsJetTauID_SF,
-                scalefactors.Tau_2_VsJetTauID_SF,
-                scalefactors.Tau_1_VsEleTauID_SF_Run3,
-                scalefactors.Tau_2_VsEleTauID_SF_Run3,
-                scalefactors.Tau_1_VsMuTauID_SF,
-                scalefactors.Tau_2_VsMuTauID_SF,
-            ],
-        },
-        era,
-    )
-
     # For 2024, replace the nBHadrons and nCHadrons producers, as they are not
     # stored in the jet collection, but must be accessed via the associated
     # GenJetAK8 collection
@@ -2468,6 +2413,7 @@ def build_config(
     configuration.add_producers(
         HAD_TAU_SCOPES,
         [
+            scalefactors.TauIDSF,
             tau_energy_correction_mc_producer,
         ]
     )
@@ -2495,12 +2441,11 @@ def build_config(
             triggers.SingleEleTriggerFlags,
             triggers.DoubleEleTauTriggerFlags,
             scalefactors.SingleEleTriggerSF,
-            scalefactors.DoubleEleTauTriggerSF,
+            # scalefactors.DoubleEleTauTriggerSF,  # TODO fix for Run 2, SF seem to not be available
             # TODO rework trigger setup before enabling this
             # triggers.ETGenerateCrossTriggerFlags,
             # triggers.GenerateSingleTrailingTauTriggerFlags,
         ]
-        + et_tau_sf_producers
     )
 
     # Producers for quantities in the mt scope
@@ -2526,11 +2471,10 @@ def build_config(
             triggers.DoubleMuTauTriggerFlags,
             scalefactors.MuonIDIso_SF,
             scalefactors.SingleMuTriggerSF,
-            scalefactors.DoubleMuTauTriggerSF,
+            # scalefactors.DoubleMuTauTriggerSF,  # TODO fix for Run 2, SF seem to not be available
             # TODO rework trigger setup before enabling this
             # triggers.GenerateSingleTrailingTauTriggerFlags,
         ]
-        + mt_tau_sf_producers
     )
 
     # Producers for quantities in the tt scope
@@ -2556,7 +2500,6 @@ def build_config(
             # triggers.GenerateSingleLeadingTauTriggerFlags,
         ]
         + tautaujet_trigger_producers
-        + tt_tau_sf_producers
     )
 
     # Producers for quantities in the et scope
@@ -2688,29 +2631,11 @@ def build_config(
         ),
     )
 
-    # Remove tau ID scale factor producers from data samples in et scope
+    # Remove DeepTau ID scale factor producers from data samples
     configuration.add_modification_rule(
-        ET_SCOPES,
+        HAD_TAU_SCOPES,
         RemoveProducer(
-            producers=et_tau_sf_producers,
-            samples=["data"],
-        ),
-    )
-
-    # Remove tau ID scale factor producers from data samples in mt scope
-    configuration.add_modification_rule(
-        MT_SCOPES,
-        RemoveProducer(
-            producers=mt_tau_sf_producers,
-            samples=["data"],
-        ),
-    )
-
-    # Remove tau ID scale factor producers from data samples in tt scope
-    configuration.add_modification_rule(
-        TT_SCOPES,
-        RemoveProducer(
-            producers=tt_tau_sf_producers,
+            producers=[scalefactors.TauIDSF],
             samples=["data"],
         ),
     )
@@ -2725,15 +2650,16 @@ def build_config(
             samples=["data", "embedding", "embedding_mc"],
         ),
     )
-    configuration.add_modification_rule(
-        ET_SCOPES,
-        RemoveProducer(
-            producers=[
-                scalefactors.DoubleEleTauTriggerSF,
-            ],
-            samples=["data", "embedding", "embedding_mc"],
-        ),
-    )
+    # TODO fix for Run 2, SF seem to not be available
+    # configuration.add_modification_rule(
+    #     ET_SCOPES,
+    #     RemoveProducer(
+    #         producers=[
+    #             scalefactors.DoubleEleTauTriggerSF,
+    #         ],
+    #         samples=["data", "embedding", "embedding_mc"],
+    #     ),
+    # )
 
 
     # Remove trigger scale factor producers from data and embedding samples in mt scope
@@ -2746,15 +2672,16 @@ def build_config(
             samples=["data", "embedding", "embedding_mc"],
         )
     )
-    configuration.add_modification_rule(
-        MT_SCOPES,
-        RemoveProducer(
-            producers=[
-                scalefactors.DoubleMuTauTriggerSF,
-            ],
-            samples=["data", "embedding", "embedding_mc"],
-        )
-    )
+    # TODO fix for Run 2, SF seem to not be available
+    # configuration.add_modification_rule(
+    #     MT_SCOPES,
+    #     RemoveProducer(
+    #         producers=[
+    #             scalefactors.DoubleMuTauTriggerSF,
+    #         ],
+    #         samples=["data", "embedding", "embedding_mc"],
+    #     )
+    # )
 
     # Remove muon ID and isolation scale factor producers from data and embedding samples in mt scope
     configuration.add_modification_rule(
@@ -3248,17 +3175,53 @@ def build_config(
             ],
         )
 
+
+    # Add electron ID scale factors to all scopes with electrons
+    for _scope in ELECTRON_SCOPES:
+        configuration.add_outputs(
+            [_scope],
+            list(chain(
+                _output
+                for _output in scalefactors.EleID_SF.get_outputs(_scope)
+            )),
+        )
+
+    # Add muon ID and isolation scale factors to all scopes with muons 
+    for _scope in MUON_SCOPES:
+        configuration.add_outputs(
+            [_scope],
+            list(chain(
+                _output
+                for _output in scalefactors.MuonIDIso_SF.get_outputs(_scope)
+            )),
+        )
+
+    # Add DeepTau ID scale factors as output groups of vector producers to all
+    # scopes with hadronic taus
+    for _scope in HAD_TAU_SCOPES:
+        configuration.add_outputs(
+            [_scope],
+            [
+                producer.output_group
+                for producer in scalefactors.TauIDSF.producers[_scope]
+            ],
+        )
+
     configuration.add_outputs(
-        "mt",
+        MT_SCOPES,
         [
             q.nmuons,
             q.ntaus,
-            scalefactors.Tau_2_VsMuTauID_SF.output_group,
             pairquantities.VsJetTauIDFlag_2.output_group,
             pairquantities.VsEleTauIDFlag_2.output_group,
             pairquantities.VsMuTauIDFlag_2.output_group,
             triggers.SingleMuTriggerFlags.output_group,
-            triggers.DoubleMuTauTriggerFlags.output_group,
+            scalefactors.SingleMuTriggerSF.output_group,
+            # triggers.DoubleMuTauTriggerFlags.output_group,  # TODO fix for Run 2, SF seem to not be available
+            # [
+            #     p
+            #     for p in scalefactors.DoubleMuTauTriggerSF.get_outputs("mt")  # TODO fix for Run 2, SF seem to not be available
+            # ]
             # triggers.MTGenerateCrossTriggerFlags.output_group,
             # triggers.GenerateSingleTrailingTauTriggerFlags.output_group,
             # q.taujet_pt_2,
@@ -3269,53 +3232,24 @@ def build_config(
             q.electron_veto_flag,
             q.dimuon_veto,
             q.dilepton_veto,
-            q.id_wgt_mu_1,
-            q.iso_wgt_mu_1,
         ],
     )
-
-    # add the old MVA ID scale factor producers only for Run 2 eras (not available for Run 3)
-    if era in ERAS_RUN2:
-        configuration.add_outputs(
-            "mt",
-            [
-                scalefactors.Tau_2_VsJetTauID_lt_SF.output_group,
-                scalefactors.Tau_2_VsEleTauID_SF_Run2.output_group,
-            ],
-        )
-    elif era in ERAS_RUN3:
-        configuration.add_outputs(
-            "mt",
-            [
-                p
-                for p in scalefactors.DoubleMuTauTriggerSF.get_outputs("mt")
-            ] + [
-                p
-                for p in scalefactors.MuonIDIso_SF.get_outputs("mt")
-
-            ] + [
-                scalefactors.SingleMuTriggerSF.output_group,
-                scalefactors.Tau_2_VsJetTauID_SF.output_group,
-                scalefactors.Tau_2_VsEleTauID_SF_Run3.output_group,
-            ],
-        )
 
     configuration.add_outputs(
         "et",
         [
-            p
-            for p in scalefactors.DoubleEleTauTriggerSF.get_outputs("et")
-        ]
-        + [
             q.nelectrons,
             q.ntaus,
-            scalefactors.Tau_2_VsMuTauID_SF.output_group,
             pairquantities.VsJetTauIDFlag_2.output_group,
             pairquantities.VsEleTauIDFlag_2.output_group,
             pairquantities.VsMuTauIDFlag_2.output_group,
             triggers.SingleEleTriggerFlags.output_group,
-            triggers.DoubleEleTauTriggerFlags.output_group,
             scalefactors.SingleEleTriggerSF.output_group,
+            # triggers.DoubleEleTauTriggerFlags.output_group,
+            # [
+            #     p
+            #     for p in scalefactors.DoubleEleTauTriggerSF.get_outputs("et")  # TODO fix for Run 2, SF seem to not be available
+            # ]
             # q.taujet_pt_2,
             # q.gen_taujet_pt_2,
             q.tau_decaymode_1,
@@ -3329,35 +3263,12 @@ def build_config(
         ],
     )
 
-    # add the old MVA ID scale factor producers only for Run 2 eras (not available for Run 3)
-    if era in ERAS_RUN2:
-        configuration.add_outputs(
-            "et",
-            [
-                scalefactors.Tau_2_VsJetTauID_lt_SF.output_group,
-                scalefactors.Tau_2_VsEleTauID_SF_Run2.output_group,
-            ],
-        )
-    elif era in ERAS_RUN3:
-        configuration.add_outputs(
-            "et",
-            [
-                p
-                for p in scalefactors.EleID_SF.get_outputs("et")
-            ]
-            + [
-                scalefactors.Tau_2_VsJetTauID_SF.output_group,
-                scalefactors.Tau_2_VsEleTauID_SF_Run3.output_group,
-            ],
-        )
 
 
     configuration.add_outputs(
         "tt",
         [
             q.ntaus,
-            scalefactors.Tau_1_VsMuTauID_SF.output_group,
-            scalefactors.Tau_2_VsMuTauID_SF.output_group,
             pairquantities.VsJetTauIDFlag_1.output_group,
             pairquantities.VsEleTauIDFlag_1.output_group,
             pairquantities.VsMuTauIDFlag_1.output_group,
@@ -3383,31 +3294,6 @@ def build_config(
         ],
     )
 
-    # add the old MVA ID scale factor producers only for Run 2 eras (not available for Run 3)
-    if era in ERAS_RUN2:
-        configuration.add_outputs(
-            "tt",
-            [
-                scalefactors.Tau_1_VsJetTauID_tt_SF.output_group,
-                scalefactors.Tau_2_VsJetTauID_tt_SF.output_group,
-                scalefactors.Tau_1_VsEleTauID_SF_Run2.output_group,
-                scalefactors.Tau_2_VsEleTauID_SF_Run2.output_group,
-            ],
-        )
-    elif era in ERAS_RUN3:
-        configuration.add_outputs(
-            "tt",
-            [
-                p
-                for p in scalefactors.TauTauTriggerSF.get_outputs("tt")
-            ] + [
-                scalefactors.Tau_1_VsJetTauID_SF.output_group,
-                scalefactors.Tau_2_VsJetTauID_SF.output_group,
-                scalefactors.Tau_1_VsEleTauID_SF_Run3.output_group,
-                scalefactors.Tau_2_VsEleTauID_SF_Run3.output_group,
-            ],
-        )
-
     if "data" not in sample:
         configuration.add_outputs(
             "tt",
@@ -3425,7 +3311,7 @@ def build_config(
             q.nmuons,
             triggers.SingleMuTriggerFlags.output_group,
             q.muon_veto_flag,
-        ] + scalefactors.MuonIDIso_SF.get_outputs("mm")
+        ]
         + scalefactors.SingleMuTriggerSF.get_outputs("mm"),
     )
 
@@ -3436,8 +3322,7 @@ def build_config(
             q.nelectrons,
             triggers.SingleEleTriggerFlags.output_group,
             q.electron_veto_flag,
-        ] + scalefactors.EleID_SF.get_outputs("ee")
-        + scalefactors.SingleEleTriggerSF.get_outputs("ee"),
+        ] + scalefactors.SingleEleTriggerSF.get_outputs("ee"),
     )
 
     # Outputs for the em scope
@@ -3451,9 +3336,7 @@ def build_config(
             q.electron_veto_flag,
             q.muon_veto_flag,
             q.dilepton_veto,
-        ] + scalefactors.EleID_SF.get_outputs("em")
-        + scalefactors.MuonIDIso_SF.get_outputs("em")
-        + scalefactors.SingleEleTriggerSF.get_outputs("em")
+        ] + scalefactors.SingleEleTriggerSF.get_outputs("em")
         + scalefactors.SingleMuTriggerSF.get_outputs("em"),
     )
 
@@ -4214,20 +4097,16 @@ def build_config(
     #########################
     # TauID scale factor shifts, channel dependent # Tau energy scale shifts, dm dependent
     #########################
-    if era in ERAS_RUN2:
-        add_tauVariations(
-            configuration,
-            scalefactors.Tau_1_VsEleTauID_SF_Run2,
-            scalefactors.Tau_2_VsEleTauID_SF_Run2,
-            sample,
-        )
-    elif era in ERAS_RUN3:
-        add_tauVariations(
-            configuration,
-            scalefactors.Tau_1_VsEleTauID_SF_Run3,
-            scalefactors.Tau_2_VsEleTauID_SF_Run3,
-            sample,
-        )
+    add_tauVariations(
+        configuration,
+        scalefactors.TauIDVsJetSF1,
+        scalefactors.TauIDVsJetSF2,
+        scalefactors.TauIDVsEleSF1,
+        scalefactors.TauIDVsEleSF2,
+        scalefactors.TauIDVsMuSF1,
+        scalefactors.TauIDVsMuSF2,
+        sample,
+    )
 
     #########################
     # Import triggersetup   #

@@ -150,9 +150,8 @@ Muon_SF_boosted = ProducerGroup(
 
 
 #
-# Helper functions to create extended vector producers for tau ID scale factors
+# Tau ID scale factors
 #
-
 
 def _create_tau_id_vsjet_sf_producer(
     name: str,
@@ -176,7 +175,7 @@ def _create_tau_id_vsjet_sf_producer(
         "\"{tau_ides_sf_file}\"",
         "\"{discriminator}\"", 
     ]
-    call_fn = f"physicsobject::tau::scalefactor::Id_vsJet"
+    call_fn = "physicsobject::tau::scalefactor::Id_vsJet"
     parameters.extend([
         f"\"{{{vsjet_wp}}}\"", 
         f"\"{{{tau_ides_sf_vsele_wp}}}\"", 
@@ -236,7 +235,7 @@ def _create_tau_id_vsmu_sf_producer(
     input: list[Quantity],
     output: str,
     scopes: list[str],
-    vec_config: str,       
+    vec_config: str,
 ):
     return ExtendedVectorProducer(
         name=name,
@@ -264,171 +263,91 @@ def _create_tau_id_vsmu_sf_producer(
         vec_config=vec_config,
     )
 
-#
-# Tau ID vs. jet scale factors
-#
-
-
-Tau_1_VsJetTauID_tt_SF = _create_tau_id_vsjet_sf_producer(
-    name="Tau_1_VsJetTauID_tt_SF",
+TauIDVsJetSF1 = _create_tau_id_vsjet_sf_producer(
+    name="TauIDVsJetSF1",
     input=[q.pt_1, q.tau_decaymode_1, q.gen_match_1],
     output="tau1_output_name",
     scopes=TT_SCOPES,
     vec_config="vsjet_tau_id_sf",
 )
 
-Tau_1_VsJetTauID_SF = _create_tau_id_vsjet_sf_producer(
-    name="Tau_1_VsJetTauID_SF",
-    input=[q.pt_1, q.tau_decaymode_1, q.gen_match_1],
-    output="tau1_output_name",
-    scopes=TT_SCOPES,
-    vec_config="vsjet_tau_id_sf",
-)
-
-Tau_2_VsJetTauID_lt_SF = _create_tau_id_vsjet_sf_producer(
-    name="Tau_2_VsJetTauID_lt_SF",
-    input=[q.pt_2, q.tau_decaymode_2, q.gen_match_2],
-    output="tau2_output_name",
-    scopes=SL_SCOPES,
-    vec_config="vsjet_tau_id_sf",
-)
-
-Tau_2_VsJetTauID_tt_SF = _create_tau_id_vsjet_sf_producer(
-    name="Tau_2_VsJetTauID_tt_SF",
-    input=[q.pt_2, q.tau_decaymode_2, q.gen_match_2],
-    output="tau2_output_name",
-    scopes=TT_SCOPES,
-    vec_config="vsjet_tau_id_sf",
-)
-
-Tau_2_VsJetTauID_SF = _create_tau_id_vsjet_sf_producer(
-    name="Tau_2_VsJetTauID_tt_SF",
+TauIDVsJetSF2 = _create_tau_id_vsjet_sf_producer(
+    name="TauIDVsJetSF2",
     input=[q.pt_2, q.tau_decaymode_2, q.gen_match_2],
     output="tau2_output_name",
     vec_config="vsjet_tau_id_sf",
     scopes=HAD_TAU_SCOPES,
 )
 
-
-#
-# Tau ID vs. electron scale factors
-#
-
-
-Tau_1_VsEleTauID_SF_Run2 = _create_tau_id_vsele_sf_producer(
-    name="Tau_1_VsEleTauID_SF_Run2",
-    input=[q.eta_1, q.gen_match_1],
-    output="tau1_output_name",
-    scopes=TT_SCOPES,
-    vec_config="vsele_tau_id_sf",
-)
-
-Tau_1_VsEleTauID_SF_Run3 = _create_tau_id_vsele_sf_producer(
-    name="Tau_1_VsEleTauID_SF_Run3",
+# DeepTau ID vs. electrons scale factor for the first tau
+TauIDVsEleSF1 = _create_tau_id_vsele_sf_producer(
+    name="TauIDVsEleSF1",
     input=[q.eta_1, q.tau_decaymode_1, q.gen_match_1],
     output="tau1_output_name",
     scopes=TT_SCOPES,
     vec_config="vsele_tau_id_sf",
 )
 
-Tau_2_VsEleTauID_SF_Run2 = _create_tau_id_vsele_sf_producer(
-    name="Tau_2_VsEleTauID_SF_Run2",
-    input=[q.eta_2, q.gen_match_2],
-    output="tau2_output_name",
-    scopes=HAD_TAU_SCOPES,
-    vec_config="vsele_tau_id_sf",
-)
-
-Tau_2_VsEleTauID_SF_Run3 = _create_tau_id_vsele_sf_producer(
-    name="Tau_2_VsEleTauID_SF_Run3",
+# DeepTau ID vs. electrons scale factor for the second tau
+TauIDVsEleSF2 = _create_tau_id_vsele_sf_producer(
+    name="TauIDVsEleSF2",
     input=[q.eta_2, q.tau_decaymode_2, q.gen_match_2],
     output="tau2_output_name",
     scopes=HAD_TAU_SCOPES,
     vec_config="vsele_tau_id_sf",
 )
 
-#
-# Tau ID vs. muon scale factors
-#
-
-Tau_1_VsMuTauID_SF = _create_tau_id_vsmu_sf_producer(
-    name="Tau_1_VsMuTauID_SF",
+# DeepTau ID vs. muons scale factor for the first tau
+TauIDVsMuSF1 = _create_tau_id_vsmu_sf_producer(
+    name="TauIDVsMuSF1",
     input=[q.eta_1, q.gen_match_1],
     output="tau1_output_name",
     scopes=TT_SCOPES,
     vec_config="vsmu_tau_id_sf",
 )
 
-Tau_2_VsMuTauID_SF = _create_tau_id_vsmu_sf_producer(
-    name="Tau_2_VsMuTauID_SF",
+# DeepTau ID vs. muons scale factor for the second tau
+TauIDVsMuSF2 = _create_tau_id_vsmu_sf_producer(
+    name="TauIDVsMuSF2",
     input=[q.eta_2, q.gen_match_2],
     output="tau2_output_name",
     scopes=HAD_TAU_SCOPES,
     vec_config="vsmu_tau_id_sf",
 )
 
-
-#
-# Producer groups for tau ID scale factors
-#
-
-
-TauID_SF_Run2 = ProducerGroup(
-    name="TauID_SF_Run2",
+# Producer group for all DeepTau ID scale factors
+TauIDSF = ProducerGroup(
+    name="TauIDSF",
     call=None,
     input=None,
     output=None,
-    scopes=["tt", "mt", "et"],
+    scopes=HAD_TAU_SCOPES,
     subproducers={
         "tt": [
-            Tau_1_VsJetTauID_tt_SF,
-            Tau_1_VsEleTauID_SF_Run2,
-            Tau_1_VsMuTauID_SF,
-            Tau_2_VsJetTauID_tt_SF,
-            Tau_2_VsEleTauID_SF_Run2,
-            Tau_2_VsMuTauID_SF,
+            TauIDVsJetSF1,
+            TauIDVsEleSF1,
+            TauIDVsMuSF1,
+            TauIDVsJetSF2,
+            TauIDVsEleSF2,
+            TauIDVsMuSF2,
         ],
         "mt": [
-            Tau_2_VsJetTauID_lt_SF,
-            Tau_2_VsEleTauID_SF_Run2,
-            Tau_2_VsMuTauID_SF,
+            TauIDVsJetSF2,
+            TauIDVsEleSF2,
+            TauIDVsMuSF2,
         ],
         "et": [
-            Tau_2_VsJetTauID_lt_SF,
-            Tau_2_VsEleTauID_SF_Run2,
-            Tau_2_VsMuTauID_SF,
+            TauIDVsJetSF2,
+            TauIDVsEleSF2,
+            TauIDVsMuSF2,
         ],
     },
 )
 
-TauID_SF_Run3 = ProducerGroup(
-    name="TauID_SF_Run3",
-    call=None,
-    input=None,
-    output=None,
-    scopes=["tt", "mt", "et"],
-    subproducers={
-        "tt": [
-            Tau_1_VsJetTauID_SF,
-            Tau_1_VsEleTauID_SF_Run3,
-            Tau_1_VsMuTauID_SF,
-            Tau_2_VsJetTauID_SF,
-            Tau_2_VsEleTauID_SF_Run3,
-            Tau_2_VsMuTauID_SF,
-        ],
-        "mt": [
-            Tau_2_VsJetTauID_SF,
-            Tau_2_VsEleTauID_SF_Run3,
-            Tau_2_VsMuTauID_SF,
-        ],
-        "et": [
-            Tau_2_VsJetTauID_SF,
-            Tau_2_VsEleTauID_SF_Run3,
-            Tau_2_VsMuTauID_SF,
-        ],
-    },
-)
 
+#
+# PRODUCERS FOR SCALE FACTORS OF BOOSTED HADRONIC TAUS (DEPRECATED)
+#
 
 Tau_1_oldIsoTauID_tt_SF = ExtendedVectorProducer(
     name="Tau_1_oldIsoTauID_tt_SF",

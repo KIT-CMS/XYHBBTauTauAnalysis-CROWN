@@ -1196,11 +1196,11 @@ def add_diTauTriggerSetup(configuration: Configuration):
         ELECTRON_SCOPES,
         {
             "e_trigger_sf_file": EraModifier(
-                {
-                    **{
-                        _era: "DOES_NOT_EXIST"  # TODO does not exist for Run2 eras
-                        for _era in ERAS_RUN2
-                    },
+                {  # TODO clarify if we can actually just use the electron trigger SFs
+                    "2016preVFP": "/cvmfs/cms-griddata.cern.ch/cat/metadata/EGM/Run2-2016preVFP-UL-NanoAODv9/2024-07-02/electron.json.gz",
+                    "2016postVFP": "/cvmfs/cms-griddata.cern.ch/cat/metadata/EGM/Run2-2016postVFP-UL-NanoAODv9/2024-07-02/electron.json.gz",
+                    "2017": "/cvmfs/cms-griddata.cern.ch/cat/metadata/EGM/Run2-2017-UL-NanoAODv9/2024-07-02/electron.json.gz",
+                    "2018": "/cvmfs/cms-griddata.cern.ch/cat/metadata/EGM/Run2-2018-UL-NanoAODv9/2024-07-02/electron.json.gz",
                     "2022preEE": "/cvmfs/cms-griddata.cern.ch/cat/metadata/EGM/Run3-22CDSep23-Summer22-NanoAODv12/2025-12-03/electronHlt.json.gz",
                     "2022postEE": "/cvmfs/cms-griddata.cern.ch/cat/metadata/EGM/Run3-22EFGSep23-Summer22EE-NanoAODv12/2025-12-03/electronHlt.json.gz",
                     "2023preBPix": "/cvmfs/cms-griddata.cern.ch/cat/metadata/EGM/Run3-23CSep23-Summer23-NanoAODv12/2025-12-03/electronHlt.json.gz",
@@ -1215,7 +1215,7 @@ def add_diTauTriggerSetup(configuration: Configuration):
                     "e_trigger_era": EraModifier(
                         {
                             **{
-                                _era: "DOES_NOT_EXIST"  # TODO does not exist for Run2 eras as correctionlib
+                                _era: _era
                                 for _era in ERAS_RUN2
                             },
                             "2022preEE": "2022Re-recoBCD",
@@ -1305,13 +1305,14 @@ def add_diTauTriggerSetup(configuration: Configuration):
                 {
                     "mt_trigger_leg1_sf_file": EraModifier(
                         {
-                            **{
-                                _era: "DOES_NOT_EXIST"  # TODO does not exist for Run2 eras
-                                for _era in ERAS_RUN2
-                            },
+                            # TODO clarify if we can actually just use the muon trigger SFs
+                            "2016preVFP": "/cvmfs/cms-griddata.cern.ch/cat/metadata/MUO/Run2-2016preVFP-UL-NanoAODv9/2024-07-02/muon_Z.json.gz",
+                            "2016postVFP": "/cvmfs/cms-griddata.cern.ch/cat/metadata/MUO/Run2-2016postVFP-UL-NanoAODv9/2024-07-02/muon_Z.json.gz",
+                            "2017": "/cvmfs/cms-griddata.cern.ch/cat/metadata/MUO/Run2-2017-UL-NanoAODv9/2024-07-02/muon_Z.json.gz",
+                            "2018": "/cvmfs/cms-griddata.cern.ch/cat/metadata/MUO/Run2-2018-UL-NanoAODv9/2024-07-02/muon_Z.json.gz",
                             **{
                                 _era: f"data/hleprare/TriggerScaleFactors/{_era}/CrossMuTauHlt_MuLeg_v1.json"
-                                for _era in ["2022preEE", "2022postEE", "2023preBPix", "2023postBPix", "2024"]
+                                for _era in ERAS_RUN3
                             },
                         }
                     ),
