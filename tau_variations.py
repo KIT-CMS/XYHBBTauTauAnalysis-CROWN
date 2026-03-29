@@ -16,6 +16,7 @@ def add_tauVariations(
     tau_id_vs_ele_sf_2_producer: Producer,
     tau_id_vs_mu_sf_1_producer: Producer,
     tau_id_vs_mu_sf_2_producer: Producer,
+    tau_pt_correction_producer: Producer,
     sample: str
 ):
     if sample == "embedding" or sample == "embedding_mc" or sample == "data":
@@ -440,7 +441,7 @@ def add_tauVariations(
         SystematicShift(
             name="tauEs1prong0pizeroDown",
             shift_config={("et", "mt", "tt"): {"tau_ES_shift_DM0": "down"}},
-            producers={("et", "mt", "tt"): taus.TauPtCorrection_genTau},
+            producers={("et", "mt", "tt"): tau_pt_correction_producer},
             ignore_producers={
                 "et": [pairselection.LVEl1, electrons.VetoElectrons],
                 "mt": [pairselection.LVMu1, muons.VetoMuons],
@@ -452,7 +453,7 @@ def add_tauVariations(
         SystematicShift(
             name="tauEs1prong0pizeroUp",
             shift_config={("et", "mt", "tt"): {"tau_ES_shift_DM0": "up"}},
-            producers={("et", "mt", "tt"): taus.TauPtCorrection_genTau},
+            producers={("et", "mt", "tt"): tau_pt_correction_producer},
             ignore_producers={
                 "et": [pairselection.LVEl1, electrons.VetoElectrons],
                 "mt": [pairselection.LVMu1, muons.VetoMuons],
@@ -464,7 +465,7 @@ def add_tauVariations(
         SystematicShift(
             name="tauEs1prong1pizeroDown",
             shift_config={("et", "mt", "tt"): {"tau_ES_shift_DM1": "down"}},
-            producers={("et", "mt", "tt"): taus.TauPtCorrection_genTau},
+            producers={("et", "mt", "tt"): tau_pt_correction_producer},
             ignore_producers={
                 "et": [pairselection.LVEl1, electrons.VetoElectrons],
                 "mt": [pairselection.LVMu1, muons.VetoMuons],
@@ -476,7 +477,7 @@ def add_tauVariations(
         SystematicShift(
             name="tauEs1prong1pizeroUp",
             shift_config={("et", "mt", "tt"): {"tau_ES_shift_DM1": "up"}},
-            producers={("et", "mt", "tt"): taus.TauPtCorrection_genTau},
+            producers={("et", "mt", "tt"): tau_pt_correction_producer},
             ignore_producers={
                 "et": [pairselection.LVEl1, electrons.VetoElectrons],
                 "mt": [pairselection.LVMu1, muons.VetoMuons],
@@ -488,7 +489,7 @@ def add_tauVariations(
         SystematicShift(
             name="tauEs3prong0pizeroDown",
             shift_config={("et", "mt", "tt"): {"tau_ES_shift_DM10": "down"}},
-            producers={("et", "mt", "tt"): taus.TauPtCorrection_genTau},
+            producers={("et", "mt", "tt"): tau_pt_correction_producer},
             ignore_producers={
                 "et": [pairselection.LVEl1, electrons.VetoElectrons],
                 "mt": [pairselection.LVMu1, muons.VetoMuons],
@@ -500,7 +501,7 @@ def add_tauVariations(
         SystematicShift(
             name="tauEs3prong0pizeroUp",
             shift_config={("et", "mt", "tt"): {"tau_ES_shift_DM10": "up"}},
-            producers={("et", "mt", "tt"): taus.TauPtCorrection_genTau},
+            producers={("et", "mt", "tt"): tau_pt_correction_producer},
             ignore_producers={
                 "et": [pairselection.LVEl1, electrons.VetoElectrons],
                 "mt": [pairselection.LVMu1, muons.VetoMuons],
@@ -512,7 +513,7 @@ def add_tauVariations(
         SystematicShift(
             name="tauEs3prong1pizeroDown",
             shift_config={("et", "mt", "tt"): {"tau_ES_shift_DM11": "down"}},
-            producers={("et", "mt", "tt"): taus.TauPtCorrection_genTau},
+            producers={("et", "mt", "tt"): tau_pt_correction_producer},
             ignore_producers={
                 "et": [pairselection.LVEl1, electrons.VetoElectrons],
                 "mt": [pairselection.LVMu1, muons.VetoMuons],
@@ -524,7 +525,7 @@ def add_tauVariations(
         SystematicShift(
             name="tauEs3prong1pizeroUp",
             shift_config={("et", "mt", "tt"): {"tau_ES_shift_DM11": "up"}},
-            producers={("et", "mt", "tt"): taus.TauPtCorrection_genTau},
+            producers={("et", "mt", "tt"): tau_pt_correction_producer},
             ignore_producers={
                 "et": [pairselection.LVEl1, electrons.VetoElectrons],
                 "mt": [pairselection.LVMu1, muons.VetoMuons],

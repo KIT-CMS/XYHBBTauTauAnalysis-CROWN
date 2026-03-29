@@ -2128,17 +2128,6 @@ def build_config(
         era,
     )
 
-    # Tau energy correction on MC
-    # The parameters of the correction changed between Run 2 and Run 3, that's why we need two
-    # different types of producers here.
-    tau_energy_correction_mc_producer = get_for_era(
-        {
-            tuple(ERAS_RUN2): taus.TauEnergyCorrectionMCRun3,
-            tuple(ERAS_RUN3): taus.TauEnergyCorrectionMCRun3,
-        },
-        era,
-    )
-
     # Jet ID producer
     # For a detailed description, see producers/jets.py
     JetID = get_for_era(jets.JetID, era)
@@ -2368,7 +2357,7 @@ def build_config(
         HAD_TAU_SCOPES,
         [
             scalefactors.TauIDSF,
-            tau_energy_correction_mc_producer,
+            taus.TauEnergyCorrectionMC,
         ]
     )
 
@@ -2769,7 +2758,7 @@ def build_config(
     configuration.add_modification_rule(
         HAD_TAU_SCOPES,
         ReplaceProducer(
-            producers=[tau_energy_correction_mc_producer, taus.TauEnergyCorrection_data],
+            producers=[taus.TauEnergyCorrectionMC, taus.TauEnergyCorrectionData],
             samples=["data"],
         ),
     )
@@ -3431,7 +3420,7 @@ def build_config(
                         "tau_mufake_es": "down",
                     }
                 },
-                producers={"mt": [taus.TauPtCorrection_muFake]},
+                producers={"mt": [taus.TauPtCorrectionMC]},
             ),
             exclude_samples=["data", "embedding", "embedding_mc"],
         )
@@ -3443,7 +3432,7 @@ def build_config(
                         "tau_mufake_es": "up",
                     }
                 },
-                producers={"mt": [taus.TauPtCorrection_muFake]},
+                producers={"mt": [taus.TauPtCorrectionMC]},
             ),
             exclude_samples=["data", "embedding", "embedding_mc"],
         )
@@ -3455,7 +3444,7 @@ def build_config(
                         "tau_elefake_es_DM0_barrel": "down",
                     }
                 },
-                producers={"et": [taus.TauPtCorrection_eleFake]},
+                producers={"et": [taus.TauPtCorrectionMC]},
             ),
             exclude_samples=["data", "embedding", "embedding_mc"],
         )
@@ -3467,7 +3456,7 @@ def build_config(
                         "tau_elefake_es_DM0_barrel": "up",
                     }
                 },
-                producers={"et": [taus.TauPtCorrection_eleFake]},
+                producers={"et": [taus.TauPtCorrectionMC]},
             ),
             exclude_samples=["data", "embedding", "embedding_mc"],
         )
@@ -3479,7 +3468,7 @@ def build_config(
                         "tau_elefake_es_DM0_endcap": "down",
                     }
                 },
-                producers={"et": [taus.TauPtCorrection_eleFake]},
+                producers={"et": [taus.TauPtCorrectionMC]},
             ),
             exclude_samples=["data", "embedding", "embedding_mc"],
         )
@@ -3491,7 +3480,7 @@ def build_config(
                         "tau_elefake_es_DM0_endcap": "up",
                     }
                 },
-                producers={"et": [taus.TauPtCorrection_eleFake]},
+                producers={"et": [taus.TauPtCorrectionMC]},
             ),
             exclude_samples=["data", "embedding", "embedding_mc"],
         )
@@ -3503,7 +3492,7 @@ def build_config(
                         "tau_elefake_es_DM1_barrel": "down",
                     }
                 },
-                producers={"et": [taus.TauPtCorrection_eleFake]},
+                producers={"et": [taus.TauPtCorrectionMC]},
             ),
             exclude_samples=["data", "embedding", "embedding_mc"],
         )
@@ -3515,7 +3504,7 @@ def build_config(
                         "tau_elefake_es_DM1_barrel": "up",
                     }
                 },
-                producers={"et": [taus.TauPtCorrection_eleFake]},
+                producers={"et": [taus.TauPtCorrectionMC]},
             ),
             exclude_samples=["data", "embedding", "embedding_mc"],
         )
@@ -3527,7 +3516,7 @@ def build_config(
                         "tau_elefake_es_DM1_endcap": "down",
                     }
                 },
-                producers={"et": [taus.TauPtCorrection_eleFake]},
+                producers={"et": [taus.TauPtCorrectionMC]},
             ),
             exclude_samples=["data", "embedding", "embedding_mc"],
         )
@@ -3539,7 +3528,7 @@ def build_config(
                         "tau_elefake_es_DM1_endcap": "up",
                     }
                 },
-                producers={"et": [taus.TauPtCorrection_eleFake]},
+                producers={"et": [taus.TauPtCorrectionMC]},
             ),
             exclude_samples=["data", "embedding", "embedding_mc"],
         )
@@ -4059,6 +4048,7 @@ def build_config(
         scalefactors.TauIDVsEleSF2,
         scalefactors.TauIDVsMuSF1,
         scalefactors.TauIDVsMuSF2,
+        taus.TauPtCorrectionMC,
         sample,
     )
 
