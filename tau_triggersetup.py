@@ -1334,73 +1334,79 @@ def add_diTauTriggerSetup(configuration: Configuration):
     )
 
     # double tau-tau trigger scale factors
+    common_double_tautau_trigger_args = {
+        "tt_trigger_leg1_sf_name": "ditau",
+        "tt_trigger_leg1_variation": "nom",
+        "tt_trigger_leg2_sf_name": "ditau",
+        "tt_trigger_leg2_variation": "nom",
+    }
     configuration.add_config_parameters(
         TT_SCOPES,
         {
-            "double_tautau_trigger_leg1_sf": [
+            "double_tautau_trigger_leg1_sf": EraModifier(
                 {
-                    "tt_trigger_leg1_flagname": EraModifier(
+                    "2018": [
                         {
-                            "2024": "trg_wgt_double_tau35_mediumpnet_leg1",
-                            **{
-                                _era: "trg_wgt_double_tau35_mediumdeeptau_leg1"
-                                for _era in ["2022preEE", "2022postEE", "2023preBPix", "2023postBPix"]
+                            "tt_trigger_leg1_flagname": f"{flag.replace('trg_', 'trg_wgt')}_leg1",
+                            "tt_trigger_flag": flag,
+                            **common_double_tautau_trigger_args,
+                        }
+                        for flag in [
+                            "trg_double_tau35_mediumiso",
+                            "trg_double_tau35_tightiso",
+                            "trg_double_tau40_mediumiso",
+                            "trg_double_tau40_tightiso",
+                        ]
+                    ],
+                    **{
+                        _era: [
+                            {
+                                "tt_trigger_leg1_flagname": "trg_wgt_double_tau35_mediumdeeptau_leg1",
+                                "tt_trigger_flag": "trg_double_tau35_mediumdeeptau",
+                                **common_double_tautau_trigger_args,
                             },
-                            **{
-                                _era: "DOES_NOT_EXIST"  # TODO placeholder, to be filled
-                                for _era in ERAS_RUN2
-                            },
-                        },
-                    ),
-                    "tt_trigger_flag": EraModifier(
-                        {
-                            "2024": "trg_double_tau35_mediumpnet",
-                            **{
-                                _era: "trg_double_tau35_mediumdeeptau"
-                                for _era in ["2022preEE", "2022postEE", "2023preBPix", "2023postBPix"]
-                            },
-                            **{
-                                _era: "DOES_NOT_EXIST"  # TODO placeholder, to be filled
-                                for _era in ERAS_RUN2
-                            },
-                        },
-                    ),
-                    "tt_trigger_leg1_sf_name": "ditau",
-                    "tt_trigger_leg1_variation": "nom",
+                        ]
+                        for _era in ["2022preEE", "2022postEE", "2023preBPix", "2023postBPix"]
+                    },
+                    "2024": {
+                        "tt_trigger_leg1_flagname": "trg_wgt_double_tau35_mediumpnet_leg1",
+                        "tt_trigger_flag": "trg_double_tau35_mediumpnet",
+                        **common_double_tautau_trigger_args,
+                    },
                 },
-            ],
-            "double_tautau_trigger_leg2_sf": [
+            ),
+            "double_tautau_trigger_leg2_sf": EraModifier(
                 {
-                    "tt_trigger_leg2_flagname": EraModifier(
+                    "2018": [
                         {
-                            "2024": "trg_wgt_double_tau35_mediumpnet_leg2",
-                            **{
-                                _era: "trg_wgt_double_tau35_mediumdeeptau_leg2"
-                                for _era in ["2022preEE", "2022postEE", "2023preBPix", "2023postBPix"]
+                            "tt_trigger_leg2_flagname": f"{flag.replace('trg_', 'trg_wgt')}_leg2",
+                            "tt_trigger_flag": flag,
+                            **common_double_tautau_trigger_args,
+                        }
+                        for flag in [
+                            "trg_double_tau35_mediumiso",
+                            "trg_double_tau35_tightiso",
+                            "trg_double_tau40_mediumiso",
+                            "trg_double_tau40_tightiso",
+                        ]
+                    ],
+                    **{
+                        _era: [
+                            {
+                                "tt_trigger_leg2_flagname": "trg_wgt_double_tau35_mediumdeeptau_leg2",
+                                "tt_trigger_flag": "trg_double_tau35_mediumdeeptau",
+                                **common_double_tautau_trigger_args,
                             },
-                            **{
-                                _era: "DOES_NOT_EXIST"  # TODO placeholder, to be filled
-                                for _era in ERAS_RUN2
-                            },
-                        },
-                    ),
-                    "tt_trigger_flag": EraModifier(
-                        {
-                            "2024": "trg_double_tau35_mediumpnet",
-                            **{
-                                _era: "trg_double_tau35_mediumdeeptau"
-                                for _era in ["2022preEE", "2022postEE", "2023preBPix", "2023postBPix"]
-                            },
-                            **{
-                                _era: "DOES_NOT_EXIST"  # TODO placeholder, to be filled
-                                for _era in ERAS_RUN2
-                            },
-                        },
-                    ),
-                    "tt_trigger_leg2_sf_name": "ditau",
-                    "tt_trigger_leg2_variation": "nom",
+                        ]
+                        for _era in ["2022preEE", "2022postEE", "2023preBPix", "2023postBPix"]
+                    },
+                    "2024": {
+                        "tt_trigger_leg2_flagname": "trg_wgt_double_tau35_mediumpnet_leg2",
+                        "tt_trigger_flag": "trg_double_tau35_mediumpnet",
+                        **common_double_tautau_trigger_args,
+                    },
                 },
-            ],
+            ),
         },
     )
 
