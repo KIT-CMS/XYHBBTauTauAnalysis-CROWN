@@ -1931,24 +1931,24 @@ def build_config(
     )
 
     # AK8 X->bb jet identification
-    configuration.add_config_parameters(
-        SCOPES,
-        {
-            "pNetXbb_sf_file": EraModifier(
-                {
-                    "2016preVFP": "DOES_NOT_EXIST",
-                    "2016postVFP": "DOES_NOT_EXIST",
-                    "2017": "DOES_NOT_EXIST",
-                    "2018": "payloads/particleNet/pNet_Xbb_SF_2018.json.gz",
-                    **{
-                        _era: "DOES_NOT_EXIST"  # TODO does not exist yet for Run3 samples, include as soon as available
-                        for _era in ERAS_RUN3
-                    },
-                }
-            ),
-            "pNetXbb_sf_variation": "nominal",
-        },
-    )
+    # configuration.add_config_parameters(
+    #     SCOPES,
+    #     {
+    #         "pNetXbb_sf_file": EraModifier(
+    #             {
+    #                 "2016preVFP": "DOES_NOT_EXIST",
+    #                 "2016postVFP": "DOES_NOT_EXIST",
+    #                 "2017": "DOES_NOT_EXIST",
+    #                 "2018": "payloads/particleNet/pNet_Xbb_SF_2018.json.gz",
+    #                 **{
+    #                     _era: "DOES_NOT_EXIST"  # TODO does not exist yet for Run3 samples, include as soon as available
+    #                     for _era in ERAS_RUN3
+    #                 },
+    #             }
+    #         ),
+    #         "pNetXbb_sf_variation": "nominal",
+    #     },
+    # )
 
     # gen b pair for NMSSM analysis
     configuration.add_config_parameters(
@@ -2069,25 +2069,25 @@ def build_config(
     )
 
     # fatjet trigger settings
-    configuration.add_config_parameters(
-        SCOPES,
-        {
-            "fatjet_trigger_sf_file": EraModifier(
-                {
-                    "2016preVFP": "DOES_NOT_EXIST",
-                    "2016postVFP": "DOES_NOT_EXIST",
-                    "2017": "DOES_NOT_EXIST",
-                    "2018": "payloads/fatjet_trigger/scale_factor__AK8PFJet400_TrimMass30__singlemuon.json",
-                    **{
-                        _era: "DOES_NOT_EXIST"  # TODO does not exist yet for Run3 samples, include as soon as available
-                        for _era in ERAS_RUN3
-                    }
-                }
-            ),
-            "fatjet_trigger_sf_name": "SF_AK8PFJet400_TrimMass30",
-            "fatjet_trigger_sf_syst": "nominal",
-        },
-    )
+    # configuration.add_config_parameters(
+    #     SCOPES,
+    #     {
+    #         "fatjet_trigger_sf_file": EraModifier(
+    #             {
+    #                 "2016preVFP": "DOES_NOT_EXIST",
+    #                 "2016postVFP": "DOES_NOT_EXIST",
+    #                 "2017": "DOES_NOT_EXIST",
+    #                 "2018": "payloads/fatjet_trigger/scale_factor__AK8PFJet400_TrimMass30__singlemuon.json",
+    #                 **{
+    #                     _era: "DOES_NOT_EXIST"  # TODO does not exist yet for Run3 samples, include as soon as available
+    #                     for _era in ERAS_RUN3
+    #                 }
+    #             }
+    #         ),
+    #         "fatjet_trigger_sf_name": "SF_AK8PFJet400_TrimMass30",
+    #         "fatjet_trigger_sf_syst": "nominal",
+    #     },
+    # )
 
 
     #
@@ -2134,8 +2134,8 @@ def build_config(
 
     # Calibrated jets used for Type-I MET corrections
     # For a detailed descriptions, see producers/jets.py
-    Type1JECData = get_for_era(jets.Type1JECData, era)
-    Type1JECSimulation = get_for_era(jets.Type1JECSimulation, era)
+    Type1JECData = get_for_era(jets.Type1JetEnergyCorrectionData, era)
+    Type1JECSimulation = get_for_era(jets.Type1JetEnergyCorrectionMC, era)
 
     # MET global quantities producer
     # For a detailed description, see producers/met.py
@@ -2166,17 +2166,17 @@ def build_config(
     )
 
     # AK8 jet ID producers
-    fat_jet_id_producers = get_for_era(
-        {
-            tuple(ERAS_RUN2) + ("2022preEE", "2022postEE", "2023preBPix", "2023postBPix"): [
-                fatjets.FatJetIDRun2,
-            ],
-            "2024": [
-                fatjets.FatJetIDRun3NanoV15,
-            ],
-        },
-        era,
-    )
+    # fat_jet_id_producers = get_for_era(
+    #     {
+    #         tuple(ERAS_RUN2) + ("2022preEE", "2022postEE", "2023preBPix", "2023postBPix"): [
+    #             fatjets.FatJetIDRun2,
+    #         ],
+    #         "2024": [
+    #             fatjets.FatJetIDRun3NanoV15,
+    #         ],
+    #     },
+    #     era,
+    # )
 
     # Jet vetomaps
     # Vetoing events with jets in regions with known issues is only applied to Run 3 data/MC
@@ -2191,15 +2191,15 @@ def build_config(
     # AK8 X -> bb tagging scale factors
     # The X -> bb tagging scale factors only exist for 2018 for now.
     # TODO provide these scale factors for all eras
-    xbb_sf_producers = get_for_era(
-        {
-            "2018": [
-                scalefactors.Xbb_tagging_SF,
-            ],
-        },
-        era,
-        default=[]
-    )
+    # xbb_sf_producers = get_for_era(
+    #     {
+    #         "2018": [
+    #             scalefactors.Xbb_tagging_SF,
+    #         ],
+    #     },
+    #     era,
+    #     default=[]
+    # )
 
     # b jet identification scale factors
     bjet_id_sf_producer = get_for_era(
@@ -2268,19 +2268,19 @@ def build_config(
     # For 2024, replace the nBHadrons and nCHadrons producers, as they are not
     # stored in the jet collection, but must be accessed via the associated
     # GenJetAK8 collection
-    fj_genjet_producers = get_for_era(
-        {
-            tuple(ERAS_RUN2) + ("2022preEE", "2022postEE", "2023preBPix", "2023postBPix"): [
-                fatjets.fj_Xbb_nBhad,
-                fatjets.fj_Xbb_nChad,
-            ],
-            "2024": [
-                fatjets.fj_Xbb_nBhad_v15,
-                fatjets.fj_Xbb_nChad_v15,
-            ],
-        },
-        era,
-    )
+    # fj_genjet_producers = get_for_era(
+    #     {
+    #         tuple(ERAS_RUN2) + ("2022preEE", "2022postEE", "2023preBPix", "2023postBPix"): [
+    #             fatjets.fj_Xbb_nBhad,
+    #             fatjets.fj_Xbb_nChad,
+    #         ],
+    #         "2024": [
+    #             fatjets.fj_Xbb_nBhad_v15,
+    #             fatjets.fj_Xbb_nChad_v15,
+    #         ],
+    #     },
+    #     era,
+    # )
 
     #
     # PRODUCER DEFINITIONS
@@ -2301,20 +2301,20 @@ def build_config(
             event.LHE_Scale_weight,
             electrons.BaseElectrons,
             muons.BaseMuons,
-            fatjets.GoodFatJets,
+            # fatjets.GoodFatJets,
             event.DiLeptonVeto,
             MetGlobal,
             JetID,
         ]
         + prefire_weight_producers
         + base_jet_selection_producers
-        + fat_jet_id_producers
+        # + fat_jet_id_producers
         + jet_veto_map_producers
         + [
             electron_pt_correction_mc_producer,
             jets.JERSmearingSeed,
-            jets.JECSimulation,
-            fatjets.FatJetEnergyCorrection,
+            jets.JetEnergyCorrectionMC,
+            # fatjets.FatJetEnergyCorrection,
         ]
     )
     if era in ERAS_RUN3:
@@ -2324,9 +2324,9 @@ def build_config(
     configuration.add_producers(
         SCOPES,
         [
-            fatjets.FatJetCollection,
-            fatjets.FatJetCollectionWithoutVeto,
-            fatjets.BasicFatJetQuantities,
+            # fatjets.FatJetCollection,
+            # fatjets.FatJetCollectionWithoutVeto,
+            # fatjets.BasicFatJetQuantities,
             jets.JetSelection,
             jets.BasicJetQuantities,
             jets.BasicBJetQuantities,
@@ -2335,11 +2335,11 @@ def build_config(
             pairselection.LVbjet1,
             pairselection.LVbjet2,
             genparticles.GenDiBjetPairQuantities,
-            fatjets.FindFatjetMatchingBjet,
-            fatjets.BasicMatchedFatJetQuantities,
-            fatjets.FindXbbFatjet,
-            fatjets.BasicXbbFatJetQuantities,
-            fatjets.LeadingFatJetQuantities,
+            # fatjets.FindFatjetMatchingBjet,
+            # fatjets.BasicMatchedFatJetQuantities,
+            # fatjets.FindXbbFatjet,
+            # fatjets.BasicXbbFatJetQuantities,
+            # fatjets.LeadingFatJetQuantities,
             bjet_id_sf_producer,
             # TODO Need to properly handle recoil producer for Run 2 (ROOT file-based)
             MetScopes,
@@ -2347,8 +2347,8 @@ def build_config(
             pairquantities.DiTauPairMETQuantities,
             genparticles.GenMatching,
         ]
-        + xbb_sf_producers
-        + fj_genjet_producers
+        # + xbb_sf_producers
+        # + fj_genjet_producers
         + bb_jet_pair_quantity_producers,
     )
 
@@ -2673,24 +2673,24 @@ def build_config(
     )
 
     # Remove X -> bb fatjet producers from data and embedding samples in all scopes
-    configuration.add_modification_rule(
-        SCOPES,
-        RemoveProducer(
-            producers=[
-                fatjets.fj_Xbb_hadflavor,
-            ] + fj_genjet_producers,
-            samples=["data", "embedding", "embedding_mc"],
-        ),
-    )
+    # configuration.add_modification_rule(
+    #     SCOPES,
+    #     RemoveProducer(
+    #         producers=[
+    #             fatjets.fj_Xbb_hadflavor,
+    #         ] + fj_genjet_producers,
+    #         samples=["data", "embedding", "embedding_mc"],
+    #     ),
+    # )
 
     # Remove X -> bb tagging scale factor producers from data and embedding samples in all scopes
-    configuration.add_modification_rule(
-        SCOPES,
-        RemoveProducer(
-            producers=xbb_sf_producers,
-            samples=["data", "embedding", "embedding_mc"],
-        ),
-    )
+    # configuration.add_modification_rule(
+    #     SCOPES,
+    #     RemoveProducer(
+    #         producers=xbb_sf_producers,
+    #         samples=["data", "embedding", "embedding_mc"],
+    #     ),
+    # )
 
     # Remove the pileup weights from data and embedding samples
     configuration.add_modification_rule(
@@ -2705,7 +2705,7 @@ def build_config(
     configuration.add_modification_rule(
         GLOBAL_SCOPES,
         ReplaceProducer(
-            producers=[jets.JECSimulation, jets.JECData],
+            producers=[jets.JetEnergyCorrectionMC, jets.JetEnergyCorrectionData],
             samples=["data", "embedding", "embedding_mc"],
         ),
     )
@@ -2721,25 +2721,25 @@ def build_config(
         )
 
     # Replace fat jet energy correction for data
-    configuration.add_modification_rule(
-        GLOBAL_SCOPES,
-        ReplaceProducer(
-            producers=[
-                fatjets.FatJetEnergyCorrection,
-                fatjets.FatJetEnergyCorrection_data,
-            ],
-            samples=["data"],
-        ),
-    )
+    # configuration.add_modification_rule(
+    #     GLOBAL_SCOPES,
+    #     ReplaceProducer(
+    #         producers=[
+    #             fatjets.FatJetEnergyCorrection,
+    #             fatjets.FatJetEnergyCorrection_data,
+    #         ],
+    #         samples=["data"],
+    #     ),
+    # )
 
     # Replace fat jet energy correction for embedding with dummy rename operation
-    configuration.add_modification_rule(
-        GLOBAL_SCOPES,
-        ReplaceProducer(
-            producers=[fatjets.FatJetEnergyCorrection, fatjets.RenameFatJetsData],
-            samples=["embedding", "embedding_mc"],
-        ),
-    )
+    # configuration.add_modification_rule(
+    #     GLOBAL_SCOPES,
+    #     ReplaceProducer(
+    #         producers=[fatjets.FatJetEnergyCorrection, fatjets.RenameFatJetsData],
+    #         samples=["embedding", "embedding_mc"],
+    #     ),
+    # )
 
     # Replace electron pt correction for data, as the correction is computed differently in data and
     # MC
@@ -2936,7 +2936,7 @@ def build_config(
             q.eta_2,
             q.phi_1,
             q.phi_2,
-            q.nfatjets,
+            # q.nfatjets,
             # q.fj_pt_1,
             # q.fj_eta_1,
             # q.fj_phi_1,
@@ -2961,17 +2961,17 @@ def build_config(
             # q.fj_matched_particleNet_XbbvsQCD,
             # q.fj_matched_nsubjettiness_2over1,
             # q.fj_matched_nsubjettiness_3over2,
-            q.fj_Xbb_pt,
-            q.fj_Xbb_eta,
-            q.fj_Xbb_phi,
-            q.fj_Xbb_mass,
-            q.fj_Xbb_msoftdrop,
-            q.fj_Xbb_particleNet_XbbvsQCD,
-            q.fj_Xbb_nsubjettiness_2over1,
-            q.fj_Xbb_nsubjettiness_3over2,
-            q.fj_Xbb_hadflavor,
-            q.fj_Xbb_nBhad,
-            q.fj_Xbb_nChad,
+            # q.fj_Xbb_pt,
+            # q.fj_Xbb_eta,
+            # q.fj_Xbb_phi,
+            # q.fj_Xbb_mass,
+            # q.fj_Xbb_msoftdrop,
+            # q.fj_Xbb_particleNet_XbbvsQCD,
+            # q.fj_Xbb_nsubjettiness_2over1,
+            # q.fj_Xbb_nsubjettiness_3over2,
+            # q.fj_Xbb_hadflavor,
+            # q.fj_Xbb_nBhad,
+            # q.fj_Xbb_nChad,
             q.bpair_pt_1,
             q.bpair_pt_2,
             q.bpair_eta_1,
@@ -3082,14 +3082,14 @@ def build_config(
             q.jet_hemisphere,
         ],
     )
-    if era in ["2018"] and sample not in ["data", "embedding", "embedding_mc"]:
-        # in 2018, we have the Xbb tagging scale factors
-        configuration.add_outputs(
-            SCOPES,
-            [
-                q.pNet_Xbb_weight,
-            ],
-        )
+    # if era in ["2018"] and sample not in ["data", "embedding", "embedding_mc"]:
+    #     # in 2018, we have the Xbb tagging scale factors
+    #     configuration.add_outputs(
+    #         SCOPES,
+    #         [
+    #             q.pNet_Xbb_weight,
+    #         ],
+    #     )
 
     if sample in ["dyjets", "dyjets_madgraph", "dyjets_powheg", "dyjets_amcatnlo", "dyjets_amcatnlo_ll", "dyjets_amcatnlo_tt"]:
         configuration.add_outputs(
@@ -3228,8 +3228,8 @@ def build_config(
             q.tau_decaymode_2,
             q.electron_veto_flag,
             q.muon_veto_flag,
-            q.fj_leading_pt,
-            q.fj_leading_msoftdrop,
+            # q.fj_leading_pt,
+            # q.fj_leading_msoftdrop,
         ],
     )
 
@@ -3662,35 +3662,35 @@ def build_config(
 
     # add Xbb tagging scale factor shifts for 2018
     # TODO also provide these scale factors for other eras
-    if era in ["2018"]:
-        configuration.add_shift(
-            SystematicShift(
-                name="pNetXbbSFUp",
-                shift_config={
-                    ("mt", "et", "tt"): {"pNetXbb_sf_variation": "up"},
-                },
-                producers={
-                    ("mt", "et", "tt"): {
-                        scalefactors.Xbb_tagging_SF,
-                    }
-                },
-            ),
-            exclude_samples=["data", "embedding", "embedding_mc"],
-        )
-        configuration.add_shift(
-            SystematicShift(
-                name="pNetXbbSFDown",
-                shift_config={
-                    ("mt", "et", "tt"): {"pNetXbb_sf_variation": "down"},
-                },
-                producers={
-                    ("mt", "et", "tt"): {
-                        scalefactors.Xbb_tagging_SF,
-                    }
-                },
-            ),
-            exclude_samples=["data", "embedding", "embedding_mc"],
-        )
+    # if era in ["2018"]:
+    #     configuration.add_shift(
+    #         SystematicShift(
+    #             name="pNetXbbSFUp",
+    #             shift_config={
+    #                 ("mt", "et", "tt"): {"pNetXbb_sf_variation": "up"},
+    #             },
+    #             producers={
+    #                 ("mt", "et", "tt"): {
+    #                     scalefactors.Xbb_tagging_SF,
+    #                 }
+    #             },
+    #         ),
+    #         exclude_samples=["data", "embedding", "embedding_mc"],
+    #     )
+    #     configuration.add_shift(
+    #         SystematicShift(
+    #             name="pNetXbbSFDown",
+    #             shift_config={
+    #                 ("mt", "et", "tt"): {"pNetXbb_sf_variation": "down"},
+    #             },
+    #             producers={
+    #                 ("mt", "et", "tt"): {
+    #                     scalefactors.Xbb_tagging_SF,
+    #                 }
+    #             },
+    #         ),
+    #         exclude_samples=["data", "embedding", "embedding_mc"],
+    #     )
 
     #########################
     # MET Recoil Shifts

@@ -211,15 +211,15 @@ def _create_tau_id_vsele_sf_producer(
         name=name,
         call="""
             physicsobject::tau::scalefactor::Id_vsEle(
-                {df}, 
-                correctionManager, 
-                {output}, 
-                {input}, 
+                {df},
+                correctionManager,
+                {output},
+                {input},
+                "{tau_ides_sf_file}",
+                "{discriminator}",
+                "{vsele_wp}",
                 "{era}",
-                "{tau_ides_sf_file}", 
-                "{discriminator}", 
-                "{vsele_wp}", 
-                "{tau_id_sf_vsele_barrel_shift}", 
+                "{tau_id_sf_vsele_barrel_shift}",
                 "{tau_id_sf_vsele_endcap_shift}"
             )
         """,

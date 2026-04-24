@@ -153,7 +153,7 @@ JetRawMass = Producer(
 )
 
 # Jet pt correction producers for AK4 jets on data and simulation
-JetPtCorrectionData, JetPtCorrectionSimulation = stepwise_jerc_producer_factory(
+JetPtCorrectionData, JetPtCorrectionMC = stepwise_jerc_producer_factory(
     input={
         "jet_pt": nanoAOD.Jet_pt,
         "jet_eta": nanoAOD.Jet_eta,
@@ -201,7 +201,7 @@ JetMassCorrection = Producer(
 )
 
 # Producer group for jet energy calibration on data
-JECData = ProducerGroup(
+JetEnergyCorrectionData = ProducerGroup(
     name="JECData",
     call=None,
     input=None,
@@ -216,7 +216,7 @@ JECData = ProducerGroup(
 )
 
 # Producer group for jet energy calibration on MC
-JECSimulation = ProducerGroup(
+JetEnergyCorrectionMC = ProducerGroup(
     name="JECSimulation",
     call=None,
     input=None,
@@ -225,7 +225,7 @@ JECSimulation = ProducerGroup(
     subproducers=[
         JetRawPt,
         JetRawMass,
-        JetPtCorrectionSimulation,
+        JetPtCorrectionMC,
         JetMassCorrection,
     ],
 )
@@ -294,7 +294,7 @@ Type1JetCollection = type1_jet_collection_producer_factory(
 )
 
 # Jet pt correction producers for AK4 jets on data and simulation
-Type1JetPtCorrectionData, Type1JetPtCorrectionSimulation = stepwise_jerc_producer_factory(
+Type1JetPtCorrectionData, Type1JetPtCorrectionMC = stepwise_jerc_producer_factory(
     input={
         "jet_pt": q.Type1Jet_rawMuonSubtrPt,
         "jet_eta": q.Type1Jet_eta,
@@ -321,8 +321,8 @@ Type1JetPtCorrectionData, Type1JetPtCorrectionSimulation = stepwise_jerc_produce
 )
 
 # Producer group for type-I jet energy calibration on data
-Type1JECData = era_producer_groups( 
-    "Type1JECData",
+Type1JetEnergyCorrectionData = era_producer_groups( 
+    "Type1JetEnergyCorrectionData",
     [
         CorrT1METJetEmEF,
         Type1JetCollection,
@@ -332,12 +332,12 @@ Type1JECData = era_producer_groups(
 )
 
 # Producer group for type-I jet energy calibration on MC
-Type1JECSimulation = era_producer_groups( 
-    "Type1JECSimulation",
+Type1JetEnergyCorrectionMC = era_producer_groups( 
+    "Type1JetEnergyCorrectionMC",
     [
         CorrT1METJetEmEF,
         Type1JetCollection,
-        Type1JetPtCorrectionSimulation,
+        Type1JetPtCorrectionMC,
     ],
     GLOBAL_SCOPES,
 )

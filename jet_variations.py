@@ -16,12 +16,12 @@ def add_jetVariations(
     bjet_id_sf_producer: Producer,
 ):
     # Get the producers
-    JECSimulation = jets.JECSimulation
-    Type1JECSimulation = get_for_era(jets.Type1JECSimulation, era)
+    JECSimulation = jets.JetEnergyCorrectionMC
+    Type1JECSimulation = get_for_era(jets.Type1JetEnergyCorrectionMC, era)
     producers = (
-        {JECSimulation, Type1JECSimulation, fatjets.FatJetEnergyCorrection} 
+        {JECSimulation, Type1JECSimulation} #, fatjets.FatJetEnergyCorrection}
         if era in ERAS_RUN3 else
-        {JECSimulation, fatjets.FatJetEnergyCorrection}
+        {JECSimulation}  # , fatjets.FatJetEnergyCorrection}
     )
 
     #########################
