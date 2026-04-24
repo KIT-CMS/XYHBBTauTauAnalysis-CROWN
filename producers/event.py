@@ -1,6 +1,12 @@
 from ..quantities import output as q
 from ..quantities import nanoAOD, nanoAOD_run2
-from code_generation.producer import BaseFilter, Producer, ProducerGroup, VectorProducer
+from code_generation.producer import (
+    BaseFilter,
+    Filter,
+    Producer,
+    ProducerGroup,
+    VectorProducer,
+)
 from .electrons import DiElectronVeto
 from .muons import DiMuonVeto
 
@@ -234,9 +240,20 @@ LHEDrellYanDecayFlavor = Producer(
     name="LHEDrellYanDecayFlavor",
     call="genparticles::drell_yan::DecayFlavor({df}, {output}, {input})",
     input=[nanoAOD.LHEPart_pdgId, nanoAOD.LHEPart_status],
-    output=[q.lhe_drell_yan_decay_flavor],
+    output=[],
     scopes=["global"],
 )
+
+LHEDrellYanEMuFilter = Filter(
+    name="LHEDrellYanEMuFilter",
+    call="event::filter::Quantity<int>({df}, \"drell_yan_e_mu\", {input}, {vec_open}{dy_filter_flavors}{vec_close})",
+    input=[],
+    scopes=["global"],
+    subproducers=[
+        LHEDrellYanDecayFlavor,
+    ]
+)
+
 NMSSM_LHE_Scale_weight = Producer(
     name="NMSSM_LHE_Scale_weight",
     call="event::reweighting::NMSSMLHEScaleWeights({df}, {output}, {input}, {muR}, {muF})",

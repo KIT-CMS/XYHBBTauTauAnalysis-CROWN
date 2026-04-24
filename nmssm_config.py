@@ -1856,6 +1856,14 @@ def build_config(
     # TODO needs to be refined for run 3, not considered at the moment (https://github.com/kit-cms/XYHBBTauTauAnalysis-CROWN/issues/7)
     #add_z_pt_reweighting_config(configuration)
 
+    # In 2022 and 2023, the DY -> leptons sample has a bug for the taus, so only keep decays into electrons and muons there.
+    configuration.add_config_parameters(
+        GLOBAL_SCOPES,
+        {
+            "dy_filter_flavors": "11,13",
+        },
+    )
+
     #
     # LOOSE OBJECT SELECTIONS
     #
@@ -2528,15 +2536,16 @@ def build_config(
     #
 
     # For DY samples, add producer for flag indicating the flavor of the decay products
-    configuration.add_modification_rule(
-        GLOBAL_SCOPES,
-        AppendProducer(
-            [
-                event.LHEDrellYanDecayFlavor,
-            ],
-            samples=["dyjets", "dyjets_madgraph", "dyjets_amcatnlo", "dyjets_amcatnlo_ll", "dyjets_amcatnlo_tt", "dyjets_powheg"],
+    if era in ["2022preEE", "2022postEE", "2023preBPix", "2023postBPix"]:
+        configuration.add_modification_rule(
+            GLOBAL_SCOPES,
+            AppendProducer(
+                [
+                    event.LHEDrellYanEMuFilter,
+                ],
+                samples=["dyjets_amcatnlo_ll"],
+            )
         )
-    )
 
     # For DY and W samples, calculate the generator-level boson four-vector
     configuration.add_modification_rule(
@@ -3090,14 +3099,6 @@ def build_config(
     #             q.pNet_Xbb_weight,
     #         ],
     #     )
-
-    if sample in ["dyjets", "dyjets_madgraph", "dyjets_powheg", "dyjets_amcatnlo", "dyjets_amcatnlo_ll", "dyjets_amcatnlo_tt"]:
-        configuration.add_outputs(
-            SCOPES,
-            [
-                q.lhe_drell_yan_decay_flavor,
-            ]
-        )
 
     # add genWeight for everything but data
     if sample != "data":
