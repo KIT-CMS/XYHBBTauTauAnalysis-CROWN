@@ -1368,11 +1368,13 @@ def add_diTauTriggerSetup(configuration: Configuration):
                         ]
                         for _era in ["2022preEE", "2022postEE", "2023preBPix", "2023postBPix"]
                     },
-                    "2024": {
-                        "tt_trigger_leg1_flagname": "trg_wgt_double_tau35_mediumpnet_leg1",
-                        "tt_trigger_flag": "trg_double_tau35_mediumpnet",
-                        **common_double_tautau_trigger_args,
-                    },
+                    "2024": [
+                        {
+                            "tt_trigger_leg1_flagname": "trg_wgt_double_tau35_mediumpnet_leg1",
+                            "tt_trigger_flag": "trg_double_tau35_mediumpnet",
+                            **common_double_tautau_trigger_args,
+                        },
+                    ],
                 },
             ),
             "double_tautau_trigger_leg2_sf": EraModifier(
@@ -1400,11 +1402,13 @@ def add_diTauTriggerSetup(configuration: Configuration):
                         ]
                         for _era in ["2022preEE", "2022postEE", "2023preBPix", "2023postBPix"]
                     },
-                    "2024": {
-                        "tt_trigger_leg2_flagname": "trg_wgt_double_tau35_mediumpnet_leg2",
-                        "tt_trigger_flag": "trg_double_tau35_mediumpnet",
-                        **common_double_tautau_trigger_args,
-                    },
+                    "2024": [
+                        {
+                            "tt_trigger_leg2_flagname": "trg_wgt_double_tau35_mediumpnet_leg2",
+                            "tt_trigger_flag": "trg_double_tau35_mediumpnet",
+                            **common_double_tautau_trigger_args,
+                        },
+                    ],
                 },
             ),
         },
