@@ -1486,7 +1486,7 @@ def add_ak8jet_config(configuration: Configuration):
     )
 
 
-def add_bjet_config(configuration: Configuration):
+def add_bjet_config(configuration: Configuration, sample_types: list[str]):
     """
     B jet identification and corrections.
 
@@ -1573,6 +1573,93 @@ def add_bjet_config(configuration: Configuration):
                     "2024": "/cvmfs/cms-griddata.cern.ch/cat/metadata/BTV/Run3-24CDEReprocessingFGHIPrompt-Summer24-NanoAODv15/2026-03-10/btagging.json.gz",
                 }
             ),
+            "bjet_sf_wp_name": EraModifier(
+                {
+                    "2016preVFP": "TO_ADD",
+                    "2016postVFP": "TO_ADD",
+                    "2017": "TO_ADD",
+                    "2018": "TO_ADD",
+                    "2022preEE": "TO_ADD",
+                    "2022postEE": "TO_ADD",
+                    "2023preBPix": "TO_ADD",
+                    "2023postBPix": "TO_ADD",
+                    "2024": "UParTAK4_wp_values",
+                },
+            ),
+            "bjet_eff_file": EraModifier(
+                {
+                    "2016preVFP": "TO_ADD",
+                    "2016postVFP": "TO_ADD",
+                    "2017": "TO_ADD",
+                    "2018": "TO_ADD",
+                    "2022preEE": "TO_ADD",
+                    "2022postEE": "TO_ADD",
+                    "2023preBPix": "TO_ADD",
+                    "2023postBPix": "TO_ADD",
+                    "2024": "payloads/btagging_efficiencies/btag_efficiency_2024.json.gz",
+                }
+            ),
+            "bjet_eff_sample_type": SampleModifier(
+                {
+                    **{
+                        sample_type: sample_type
+                        for sample_type in sample_types
+                    },
+                    **{
+                        sample_type: "dyjets"
+                        for sample_type in [
+                            "dyjets",
+                            "dyjets_madgraph",
+                            "dyjets_amcatnlo",
+                            "dyjets_amcatnlo_ll",
+                            "dyjets_amcatnlo_tt",
+                            "dyjets_powheg",
+                            "electroweak_boson",
+                        ]
+                    },
+                    **{
+                        sample_type: "dyjets"
+                        for sample_type in [
+                            "ggh_htautau",
+                            "ggh_hbb",
+                            "vbf_htautau",
+                            "vbf_hbb",
+                            "rem_htautau",
+                            "rem_hbb",
+                            "rem_hww",
+                            "rem_hzz",
+                            "rem_higgs",
+                            "hh4b",
+                            "hh2b2tau",
+                            "hh4v",
+                            "nmssm_Ybb",
+                            "nmssm_Ytautau",
+                        ]
+                    },
+                    **{
+                        sample_type: "ttbar"
+                        for sample_type in [
+                            "ttbar",
+                            "rem_ttbar",
+                        ]
+                    },
+                    **{
+                        sample_type: "diboson"
+                        for sample_type in [
+                            "diboson",
+                        ]
+                    },
+                    **{
+                        sample_type: "wjets"
+                        for sample_type in [
+                            "wjets",
+                            "wjets_madgraph",
+                            "wjets_amcatnlo",
+                        ]
+                    },
+                }
+            ),
+            "bjet_eff_name": "btag_efficiency",
             "bjet_sf_name": EraModifier(
                 {
                     **{
@@ -1584,6 +1671,24 @@ def add_bjet_config(configuration: Configuration):
                         for _era in ["2022preEE", "2022postEE", "2023preBPix", "2023postBPix"]
                     },
                     "2024": "UParTAK4_comb",  # UParT
+                },
+            ),
+            "bjet_sf_bc_name": EraModifier(
+                {
+                    **{
+                        _era: "DOES_NOT_EXIST" 
+                        for _era in ERAS_RUN2 + ["2022preEE", "2022postEE", "2023preBPix", "2023postBPix"]
+                    },
+                    "2024": "UParTAK4_comb",  # UParT
+                },
+            ),
+            "bjet_sf_lf_name": EraModifier(
+                {
+                    **{
+                        _era: "DOES_NOT_EXIST" 
+                        for _era in ERAS_RUN2 + ["2022preEE", "2022postEE", "2023preBPix", "2023postBPix"]
+                    },
+                    "2024": "UParTAK4_light",  # UParT
                 },
             ),
             "bjet_sf_variation": "central",
@@ -1844,7 +1949,7 @@ def build_config(
     add_hadronic_tau_config(configuration, era)
 
     # b jet selection, identification, and corrections
-    add_bjet_config(configuration)
+    add_bjet_config(configuration, available_sample_types)
 
     # Z pt reweighting
     add_zpt_weight_config(configuration)
