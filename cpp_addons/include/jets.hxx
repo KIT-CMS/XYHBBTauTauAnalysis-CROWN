@@ -16,11 +16,11 @@ namespace jet {
 namespace jec {
 
 typedef struct jec_result_t {
-  float jet_pt_l1;
-  float jet_pt_l2rel;
-  float jet_pt_l2l3res;
-  float jet_pt_syst;
-  float jet_pt_corr;
+    float jet_pt_l1;
+    float jet_pt_l2rel;
+    float jet_pt_l2l3res;
+    float jet_pt_syst;
+    float jet_pt_corr;
 } JECResult;
 const correction::Correction *load_nominal_jes_correction(
     correctionManager::CorrectionManager &correction_manager,
@@ -166,30 +166,30 @@ GetGenJetQuantity(ROOT::RDF::RNode df, const std::string &output_name,
                   const std::string &gen_quantity,
                   const std::string &index_vector, const int &position) {
 
-  auto get_gen_quantity = [position](const ROOT::RVec<Short_t> &genjet_idx,
-                                     const ROOT::RVec<T> &gen_quantity,
-                                     const ROOT::RVec<int> &index_vector) {
-    // Define the result with the default value, which is returned when
-    // accessing the entries in the vectors fails
-    T result = default_value<T>();
+    auto get_gen_quantity = [position](const ROOT::RVec<Short_t> &genjet_idx,
+                                       const ROOT::RVec<T> &gen_quantity,
+                                       const ROOT::RVec<int> &index_vector) {
+        // Define the result with the default value, which is returned when
+        // accessing the entries in the vectors fails
+        T result = default_value<T>();
 
-    // Get the index to access in the fatjet list
-    if (position >= 0 && position < index_vector.size()) {
-      auto index = index_vector.at(position);
-      if (index >= 0 && index < genjet_idx.size()) {
-        auto gen_index = genjet_idx.at(index);
-        result = gen_quantity.at(gen_index);
-      }
-    } else {
-      Logger::get("event::quantity::Get")
-          ->debug("Index not found, returning dummy value!");
-    }
+        // Get the index to access in the fatjet list
+        if (position >= 0 && position < index_vector.size()) {
+            auto index = index_vector.at(position);
+            if (index >= 0 && index < genjet_idx.size()) {
+                auto gen_index = genjet_idx.at(index);
+                result = gen_quantity.at(gen_index);
+            }
+        } else {
+            Logger::get("event::quantity::Get")
+                ->debug("Index not found, returning dummy value!");
+        }
 
-    return result;
-  };
+        return result;
+    };
 
-  return df.Define(output_name, get_gen_quantity,
-                   {genjet_idx, gen_quantity, index_vector});
+    return df.Define(output_name, get_gen_quantity,
+                     {genjet_idx, gen_quantity, index_vector});
 }
 
 ROOT::RDF::RNode CorrectJetIDRun3NanoV12(
