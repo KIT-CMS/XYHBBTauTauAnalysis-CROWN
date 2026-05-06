@@ -1,7 +1,11 @@
 #ifndef GUARDJETSEXT_H
 #define GUARDJETSEXT_H
 
+#include "../../../../include/defaults.hxx"
 #include "../../../../include/utility/CorrectionManager.hxx"
+#include "../../../../include/utility/Logger.hxx"
+#include "ROOT/RDataFrame.hxx"
+#include "ROOT/RVec.hxx"
 #include "TRandom3.h"
 #include "correction.h"
 

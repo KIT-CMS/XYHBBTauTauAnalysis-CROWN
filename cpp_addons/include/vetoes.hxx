@@ -1,6 +1,8 @@
 #ifndef GUARDVETOES_HXX
 #define GUARDVETOES_HXX
 
+#include "../../../../include/utility/CorrectionManager.hxx"
+#include "../../../../include/utility/Logger.hxx"
 #include "ROOT/RDataFrame.hxx"
 #include "ROOT/RVec.hxx"
 
