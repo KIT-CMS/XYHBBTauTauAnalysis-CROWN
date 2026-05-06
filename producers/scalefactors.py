@@ -1153,24 +1153,29 @@ BJetShapePNet_SF = Producer(
     scopes=SCOPES,
 )
 
-# B jet identification scale factor for UParT (WP-based)
+# B jet identification scale factor for UParT (multiple WP setup)
 BJetWPUParT_SF = Producer(
     name="BJetWPUParT_SF",
     call="""
-    physicsobject::jet::scalefactor::BtaggingWP(
+    physicsobject::jet::scalefactor::BtaggingMultipleWP(
         {df},
         correctionManager,
         {output},
         {input},
         "{bjet_sf_file}",
-        "{bjet_sf_name}",
-        "{bjet_sf_variation}",
-        "{bjet_sf_wp}"
+        "{bjet_sf_bc_name}",
+        "{bjet_sf_lf_name}",
+        "{bjet_sf_wp_name}",
+        "{bjet_eff_file}",
+        "{bjet_eff_name}",
+        "{bjet_eff_sample_type}",
+        "{bjet_sf_variation}"
     )
     """,
     input=[
         q.Jet_correctedPt,
         nanoAOD.Jet_eta,
+        nanoAOD.Jet_btagUParTAK4B,
         nanoAOD.Jet_hadronFlavour,
         q.good_jets_mask,
         q.good_bjets_mask,
