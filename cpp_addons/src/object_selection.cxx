@@ -49,40 +49,45 @@ electron(ROOT::RDF::RNode df, const std::string &output_mask,
          const std::string &electron_dz, const std::string &electron_id,
          const float &min_pt, const float &abs_max_eta, const float &max_iso,
          const float &max_dxy, const float &max_dz) {
-  auto select = [min_pt, abs_max_eta, max_iso, max_dxy, max_dz, electron_id](
-                    const ROOT::RVec<float> &pt, const ROOT::RVec<float> &eta,
-                    const ROOT::RVec<float> &iso, const ROOT::RVec<float> &dxy,
-                    const ROOT::RVec<float> &dz, const ROOT::RVec<bool> &id) {
-    // debug output for selection criteria and electron observables
-    Logger::get("xyh::object_selection::electron")
-        ->debug("Create selection masks for electrons");
-    Logger::get("xyh::object_selection::electron")
-        ->debug(
-            "    min_pt {}, abs_max_eta {}, max_iso {}, max_dxy {}, max_dz {}",
-            min_pt, abs_max_eta, max_iso, max_dxy, max_dz);
-    Logger::get("xyh::object_selection::electron")
-        ->debug("    electron_id {}", electron_id);
-    Logger::get("xyh::object_selection::electron")->debug("    pt {}", pt);
-    Logger::get("xyh::object_selection::electron")->debug("    eta {}", eta);
-    Logger::get("xyh::object_selection::electron")->debug("    iso {}", iso);
-    Logger::get("xyh::object_selection::electron")->debug("    dxy {}", dxy);
-    Logger::get("xyh::object_selection::electron")->debug("    dz {}", dz);
-    Logger::get("xyh::object_selection::electron")->debug("    id {}", id);
+    auto select = [min_pt, abs_max_eta, max_iso, max_dxy, max_dz, electron_id](
+                      const ROOT::RVec<float> &pt, const ROOT::RVec<float> &eta,
+                      const ROOT::RVec<float> &iso,
+                      const ROOT::RVec<float> &dxy, const ROOT::RVec<float> &dz,
+                      const ROOT::RVec<bool> &id) {
+        // debug output for selection criteria and electron observables
+        Logger::get("xyh::object_selection::electron")
+            ->debug("Create selection masks for electrons");
+        Logger::get("xyh::object_selection::electron")
+            ->debug("    min_pt {}, abs_max_eta {}, max_iso {}, max_dxy {}, "
+                    "max_dz {}",
+                    min_pt, abs_max_eta, max_iso, max_dxy, max_dz);
+        Logger::get("xyh::object_selection::electron")
+            ->debug("    electron_id {}", electron_id);
+        Logger::get("xyh::object_selection::electron")->debug("    pt {}", pt);
+        Logger::get("xyh::object_selection::electron")
+            ->debug("    eta {}", eta);
+        Logger::get("xyh::object_selection::electron")
+            ->debug("    iso {}", iso);
+        Logger::get("xyh::object_selection::electron")
+            ->debug("    dxy {}", dxy);
+        Logger::get("xyh::object_selection::electron")->debug("    dz {}", dz);
+        Logger::get("xyh::object_selection::electron")->debug("    id {}", id);
 
-    // create the selection mask
-    auto mask = ((pt > min_pt) && (abs(eta) < abs_max_eta) && (iso < max_iso) &&
-                 (abs(dxy) < max_dxy) && (abs(dz) < max_dz) && (id));
+        // create the selection mask
+        auto mask =
+            ((pt > min_pt) && (abs(eta) < abs_max_eta) && (iso < max_iso) &&
+             (abs(dxy) < max_dxy) && (abs(dz) < max_dz) && (id));
 
-    // debug output for the final selection mask
-    Logger::get("xyh::object_selection::electron")
-        ->debug("    selection mask {}", mask);
+        // debug output for the final selection mask
+        Logger::get("xyh::object_selection::electron")
+            ->debug("    selection mask {}", mask);
 
-    return mask;
-  };
+        return mask;
+    };
 
-  return df.Define(output_mask, select,
-                   {electron_pt, electron_eta, electron_iso, electron_dxy,
-                    electron_dz, electron_id});
+    return df.Define(output_mask, select,
+                     {electron_pt, electron_eta, electron_iso, electron_dxy,
+                      electron_dz, electron_id});
 }
 
 /**
@@ -118,39 +123,41 @@ ROOT::RDF::RNode muon(ROOT::RDF::RNode df, const std::string &output_mask,
                       const float &min_pt, const float &abs_max_eta,
                       const float &max_iso, const float &max_dxy,
                       const float &max_dz) {
-  auto select = [min_pt, abs_max_eta, max_iso, max_dxy, max_dz, muon_id](
-                    const ROOT::RVec<float> &pt, const ROOT::RVec<float> &eta,
-                    const ROOT::RVec<float> &iso, const ROOT::RVec<float> &dxy,
-                    const ROOT::RVec<float> &dz, const ROOT::RVec<bool> &id) {
-    // debug output for selection criteria and muon observables
-    Logger::get("xyh::object_selection::muon")
-        ->debug("Create selection masks for muons");
-    Logger::get("xyh::object_selection::muon")
-        ->debug(
-            "    min_pt {}, abs_max_eta {}, max_iso {}, max_dxy {}, max_dz {}",
-            min_pt, abs_max_eta, max_iso, max_dxy, max_dz, muon_id);
-    Logger::get("xyh::object_selection::muon")
-        ->debug("    muon_id {}", muon_id);
-    Logger::get("xyh::object_selection::muon")->debug("    pt {}", pt);
-    Logger::get("xyh::object_selection::muon")->debug("    eta {}", eta);
-    Logger::get("xyh::object_selection::muon")->debug("    iso {}", iso);
-    Logger::get("xyh::object_selection::muon")->debug("    dxy {}", dxy);
-    Logger::get("xyh::object_selection::muon")->debug("    dz {}", dz);
-    Logger::get("xyh::object_selection::muon")->debug("    id {}", id);
+    auto select = [min_pt, abs_max_eta, max_iso, max_dxy, max_dz, muon_id](
+                      const ROOT::RVec<float> &pt, const ROOT::RVec<float> &eta,
+                      const ROOT::RVec<float> &iso,
+                      const ROOT::RVec<float> &dxy, const ROOT::RVec<float> &dz,
+                      const ROOT::RVec<bool> &id) {
+        // debug output for selection criteria and muon observables
+        Logger::get("xyh::object_selection::muon")
+            ->debug("Create selection masks for muons");
+        Logger::get("xyh::object_selection::muon")
+            ->debug("    min_pt {}, abs_max_eta {}, max_iso {}, max_dxy {}, "
+                    "max_dz {}",
+                    min_pt, abs_max_eta, max_iso, max_dxy, max_dz, muon_id);
+        Logger::get("xyh::object_selection::muon")
+            ->debug("    muon_id {}", muon_id);
+        Logger::get("xyh::object_selection::muon")->debug("    pt {}", pt);
+        Logger::get("xyh::object_selection::muon")->debug("    eta {}", eta);
+        Logger::get("xyh::object_selection::muon")->debug("    iso {}", iso);
+        Logger::get("xyh::object_selection::muon")->debug("    dxy {}", dxy);
+        Logger::get("xyh::object_selection::muon")->debug("    dz {}", dz);
+        Logger::get("xyh::object_selection::muon")->debug("    id {}", id);
 
-    // create the selection mask
-    auto mask = ((pt > min_pt) && (abs(eta) < abs_max_eta) && (iso < max_iso) &&
-                 (abs(dxy) < max_dxy) && (abs(dz) < max_dz) && (id));
+        // create the selection mask
+        auto mask =
+            ((pt > min_pt) && (abs(eta) < abs_max_eta) && (iso < max_iso) &&
+             (abs(dxy) < max_dxy) && (abs(dz) < max_dz) && (id));
 
-    // debug output for the final selection mask
-    Logger::get("xyh::object_selection::muon")
-        ->debug("    selection mask {}", mask);
+        // debug output for the final selection mask
+        Logger::get("xyh::object_selection::muon")
+            ->debug("    selection mask {}", mask);
 
-    return mask;
-  };
+        return mask;
+    };
 
-  return df.Define(output_mask, select,
-                   {muon_pt, muon_eta, muon_iso, muon_dxy, muon_dz, muon_id});
+    return df.Define(output_mask, select,
+                     {muon_pt, muon_eta, muon_iso, muon_dxy, muon_dz, muon_id});
 }
 
 /**
@@ -193,64 +200,66 @@ tau(ROOT::RDF::RNode df, const std::string &output_mask,
     const float &abs_max_eta, const float &max_dz,
     const std::vector<int> &decay_modes, const int &id_vs_jet_wp,
     const int &id_vs_electron_wp, const int &id_vs_muon_wp) {
-  auto select = [min_pt, abs_max_eta, decay_modes, max_dz, id_vs_electron_wp,
-                 id_vs_muon_wp, id_vs_jet_wp, tau_id_vs_jet, tau_id_vs_electron,
-                 tau_id_vs_muon](const ROOT::RVec<float> &pt,
-                                 const ROOT::RVec<float> &eta,
-                                 const ROOT::RVec<float> &dz,
-                                 const ROOT::RVec<UChar_t> &decay_mode_v12,
-                                 const ROOT::RVec<UChar_t> &id_vs_jet,
-                                 const ROOT::RVec<UChar_t> &id_vs_electron,
-                                 const ROOT::RVec<UChar_t> &id_vs_muon) {
-    // convert decay mode column to integer
-    ROOT::RVec<int> decay_mode = static_cast<ROOT::RVec<int>>(decay_mode_v12);
+    auto select = [min_pt, abs_max_eta, decay_modes, max_dz, id_vs_electron_wp,
+                   id_vs_muon_wp, id_vs_jet_wp, tau_id_vs_jet,
+                   tau_id_vs_electron, tau_id_vs_muon](
+                      const ROOT::RVec<float> &pt, const ROOT::RVec<float> &eta,
+                      const ROOT::RVec<float> &dz,
+                      const ROOT::RVec<UChar_t> &decay_mode_v12,
+                      const ROOT::RVec<UChar_t> &id_vs_jet,
+                      const ROOT::RVec<UChar_t> &id_vs_electron,
+                      const ROOT::RVec<UChar_t> &id_vs_muon) {
+        // convert decay mode column to integer
+        ROOT::RVec<int> decay_mode =
+            static_cast<ROOT::RVec<int>>(decay_mode_v12);
 
-    // debug output for selection criteria and tau observables
-    Logger::get("xyh::object_selection::tau")
-        ->debug("Create selection masks for hadronic taus");
-    // Logger::get("xyh::object_selection::tau")->debug("    min_pt {},
-    // abs_max_eta {}, decay_modes {}, max_dz {}, id_vs_jet_wp {},
-    // id_vs_electron_wp {}, id_vs_muon_wp {}", min_pt, abs_max_eta,
-    // decay_modes, max_dz, id_vs_jet_wp, id_vs_electron_wp, id_vs_muon_wp);
-    Logger::get("xyh::object_selection::tau")
-        ->debug(
-            "    tau_id_vs_jet {}, tau_id_vs_electron {}, tau_id_vs_muon {}",
-            tau_id_vs_jet, tau_id_vs_electron, tau_id_vs_muon);
-    Logger::get("xyh::object_selection::tau")->debug("    pt {}", pt);
-    Logger::get("xyh::object_selection::tau")->debug("    eta {}", eta);
-    Logger::get("xyh::object_selection::tau")->debug("    dz {}", dz);
-    Logger::get("xyh::object_selection::tau")
-        ->debug("    decay_mode {}", decay_mode);
-    Logger::get("xyh::object_selection::tau")
-        ->debug("    id_vs_jet {}", id_vs_jet);
-    Logger::get("xyh::object_selection::tau")
-        ->debug("    id_vs_electron {}", id_vs_electron);
-    Logger::get("xyh::object_selection::tau")
-        ->debug("    id_vs_muon {}", id_vs_muon);
+        // debug output for selection criteria and tau observables
+        Logger::get("xyh::object_selection::tau")
+            ->debug("Create selection masks for hadronic taus");
+        // Logger::get("xyh::object_selection::tau")->debug("    min_pt {},
+        // abs_max_eta {}, decay_modes {}, max_dz {}, id_vs_jet_wp {},
+        // id_vs_electron_wp {}, id_vs_muon_wp {}", min_pt, abs_max_eta,
+        // decay_modes, max_dz, id_vs_jet_wp, id_vs_electron_wp, id_vs_muon_wp);
+        Logger::get("xyh::object_selection::tau")
+            ->debug("    tau_id_vs_jet {}, tau_id_vs_electron {}, "
+                    "tau_id_vs_muon {}",
+                    tau_id_vs_jet, tau_id_vs_electron, tau_id_vs_muon);
+        Logger::get("xyh::object_selection::tau")->debug("    pt {}", pt);
+        Logger::get("xyh::object_selection::tau")->debug("    eta {}", eta);
+        Logger::get("xyh::object_selection::tau")->debug("    dz {}", dz);
+        Logger::get("xyh::object_selection::tau")
+            ->debug("    decay_mode {}", decay_mode);
+        Logger::get("xyh::object_selection::tau")
+            ->debug("    id_vs_jet {}", id_vs_jet);
+        Logger::get("xyh::object_selection::tau")
+            ->debug("    id_vs_electron {}", id_vs_electron);
+        Logger::get("xyh::object_selection::tau")
+            ->debug("    id_vs_muon {}", id_vs_muon);
 
-    // construct a decay mode mask
-    auto decay_mode_mask = ROOT::VecOps::RVec<bool>(decay_mode.size(), false);
-    for (const auto &mode : decay_modes) {
-      decay_mode_mask |= (decay_mode == mode);
-    }
+        // construct a decay mode mask
+        auto decay_mode_mask =
+            ROOT::VecOps::RVec<bool>(decay_mode.size(), false);
+        for (const auto &mode : decay_modes) {
+            decay_mode_mask |= (decay_mode == mode);
+        }
 
-    // create the selection mask
-    auto mask =
-        ((pt > min_pt) && (abs(eta) < abs_max_eta) && (abs(dz) < max_dz) &&
-         decay_mode_mask && (id_vs_jet >= id_vs_jet_wp) &&
-         (id_vs_electron >= id_vs_electron_wp) &&
-         (id_vs_muon >= id_vs_muon_wp));
+        // create the selection mask
+        auto mask =
+            ((pt > min_pt) && (abs(eta) < abs_max_eta) && (abs(dz) < max_dz) &&
+             decay_mode_mask && (id_vs_jet >= id_vs_jet_wp) &&
+             (id_vs_electron >= id_vs_electron_wp) &&
+             (id_vs_muon >= id_vs_muon_wp));
 
-    // debug output for the final selection mask
-    Logger::get("xyh::object_selection::tau")
-        ->debug("    selection mask {}", mask);
+        // debug output for the final selection mask
+        Logger::get("xyh::object_selection::tau")
+            ->debug("    selection mask {}", mask);
 
-    return mask;
-  };
+        return mask;
+    };
 
-  return df.Define(output_mask, select,
-                   {tau_pt, tau_eta, tau_dz, tau_decay_mode, tau_id_vs_jet,
-                    tau_id_vs_electron, tau_id_vs_muon});
+    return df.Define(output_mask, select,
+                     {tau_pt, tau_eta, tau_dz, tau_decay_mode, tau_id_vs_jet,
+                      tau_id_vs_electron, tau_id_vs_muon});
 }
 
 /**
@@ -287,37 +296,37 @@ ROOT::RDF::RNode jet(ROOT::RDF::RNode df, const std::string &output_mask,
                      const std::string &jet_id, const float &min_pt,
                      const float &abs_max_eta, const int &id_wp,
                      const bool &apply_jet_horn_veto) {
-  // In nanoAODv12 the type of jet/fatjet ID was changed to UChar_t
-  // For v9 compatibility a type casting is applied
-  auto [df1, jet_id_v12] =
-      utility::Cast<ROOT::RVec<UChar_t>, ROOT::RVec<Int_t>>(
-          df, jet_id + "_v12", "ROOT::VecOps::RVec<UChar_t>", jet_id);
+    // In nanoAODv12 the type of jet/fatjet ID was changed to UChar_t
+    // For v9 compatibility a type casting is applied
+    auto [df1, jet_id_v12] =
+        utility::Cast<ROOT::RVec<UChar_t>, ROOT::RVec<Int_t>>(
+            df, jet_id + "_v12", "ROOT::VecOps::RVec<UChar_t>", jet_id);
 
-  auto select = [min_pt, abs_max_eta, id_wp, apply_jet_horn_veto](
-                    const ROOT::RVec<float> &pt, const ROOT::RVec<float> &eta,
-                    const ROOT::RVec<UChar_t> &id) {
-    // debug output for selection criteria and jet observables
-    Logger::get("xyh::object_selection::jet")
-        ->debug("Create selection masks for jets");
-    Logger::get("xyh::object_selection::jet")
-        ->debug("    min_pt {}, abs_max_eta {}, id_wp {}", min_pt, abs_max_eta,
-                id_wp);
-    Logger::get("xyh::object_selection::jet")->debug("    pt {}", pt);
-    Logger::get("xyh::object_selection::jet")->debug("    eta {}", eta);
-    Logger::get("xyh::object_selection::jet")->debug("    id {}", id);
+    auto select = [min_pt, abs_max_eta, id_wp, apply_jet_horn_veto](
+                      const ROOT::RVec<float> &pt, const ROOT::RVec<float> &eta,
+                      const ROOT::RVec<UChar_t> &id) {
+        // debug output for selection criteria and jet observables
+        Logger::get("xyh::object_selection::jet")
+            ->debug("Create selection masks for jets");
+        Logger::get("xyh::object_selection::jet")
+            ->debug("    min_pt {}, abs_max_eta {}, id_wp {}", min_pt,
+                    abs_max_eta, id_wp);
+        Logger::get("xyh::object_selection::jet")->debug("    pt {}", pt);
+        Logger::get("xyh::object_selection::jet")->debug("    eta {}", eta);
+        Logger::get("xyh::object_selection::jet")->debug("    id {}", id);
 
-    // create the selection mask
-    auto mask = xyh::object_selection::select_jet(
-        pt, eta, id, min_pt, abs_max_eta, id_wp, apply_jet_horn_veto);
+        // create the selection mask
+        auto mask = xyh::object_selection::select_jet(
+            pt, eta, id, min_pt, abs_max_eta, id_wp, apply_jet_horn_veto);
 
-    // debug output for the final selection mask
-    Logger::get("xyh::object_selection::jet")
-        ->debug("    selection mask {}", mask);
+        // debug output for the final selection mask
+        Logger::get("xyh::object_selection::jet")
+            ->debug("    selection mask {}", mask);
 
-    return mask;
-  };
+        return mask;
+    };
 
-  return df1.Define(output_mask, select, {jet_pt, jet_eta, jet_id_v12});
+    return df1.Define(output_mask, select, {jet_pt, jet_eta, jet_id_v12});
 }
 
 /**
@@ -359,43 +368,43 @@ ROOT::RDF::RNode jet(ROOT::RDF::RNode df, const std::string &output_mask,
                      const float &min_pt, const float &abs_max_eta,
                      const int &id_wp, const bool &apply_jet_horn_veto,
                      const int &puid_wp, const float &puid_max_pt) {
-  // In nanoAODv12 the type of jet/fatjet ID was changed to UChar_t
-  // For v9 compatibility a type casting is applied
-  auto [df1, jet_id_v12] =
-      utility::Cast<ROOT::RVec<UChar_t>, ROOT::RVec<Int_t>>(
-          df, jet_id + "_v12", "ROOT::VecOps::RVec<UChar_t>", jet_id);
+    // In nanoAODv12 the type of jet/fatjet ID was changed to UChar_t
+    // For v9 compatibility a type casting is applied
+    auto [df1, jet_id_v12] =
+        utility::Cast<ROOT::RVec<UChar_t>, ROOT::RVec<Int_t>>(
+            df, jet_id + "_v12", "ROOT::VecOps::RVec<UChar_t>", jet_id);
 
-  auto select = [min_pt, abs_max_eta, id_wp, puid_wp, puid_max_pt,
-                 apply_jet_horn_veto](const ROOT::RVec<float> &pt,
-                                      const ROOT::RVec<float> &eta,
-                                      const ROOT::RVec<UChar_t> &id,
-                                      const ROOT::RVec<UChar_t> &puid) {
-    // debug output for selection criteria and jet observables
-    Logger::get("xyh::object_selection::jet")
-        ->debug("Create selection masks for jets");
-    Logger::get("xyh::object_selection::jet")
-        ->debug("    min_pt {}, abs_max_eta {}, id_wp {}, puid_wp {}, "
-                "puid_max_pt {}",
-                min_pt, abs_max_eta, id_wp, puid_wp, puid_max_pt);
-    Logger::get("xyh::object_selection::jet")->debug("    pt {}", pt);
-    Logger::get("xyh::object_selection::jet")->debug("    eta {}", eta);
-    Logger::get("xyh::object_selection::jet")->debug("    id {}", id);
-    Logger::get("xyh::object_selection::jet")->debug("    puid {}", puid);
+    auto select = [min_pt, abs_max_eta, id_wp, puid_wp, puid_max_pt,
+                   apply_jet_horn_veto](const ROOT::RVec<float> &pt,
+                                        const ROOT::RVec<float> &eta,
+                                        const ROOT::RVec<UChar_t> &id,
+                                        const ROOT::RVec<UChar_t> &puid) {
+        // debug output for selection criteria and jet observables
+        Logger::get("xyh::object_selection::jet")
+            ->debug("Create selection masks for jets");
+        Logger::get("xyh::object_selection::jet")
+            ->debug("    min_pt {}, abs_max_eta {}, id_wp {}, puid_wp {}, "
+                    "puid_max_pt {}",
+                    min_pt, abs_max_eta, id_wp, puid_wp, puid_max_pt);
+        Logger::get("xyh::object_selection::jet")->debug("    pt {}", pt);
+        Logger::get("xyh::object_selection::jet")->debug("    eta {}", eta);
+        Logger::get("xyh::object_selection::jet")->debug("    id {}", id);
+        Logger::get("xyh::object_selection::jet")->debug("    puid {}", puid);
 
-    // create the selection mask
-    auto mask = xyh::object_selection::select_jet(
-        pt, eta, id, puid, min_pt, abs_max_eta, id_wp, apply_jet_horn_veto,
-        puid_wp, puid_max_pt);
+        // create the selection mask
+        auto mask = xyh::object_selection::select_jet(
+            pt, eta, id, puid, min_pt, abs_max_eta, id_wp, apply_jet_horn_veto,
+            puid_wp, puid_max_pt);
 
-    // debug output for the final selection mask
-    Logger::get("xyh::object_selection::jet")
-        ->debug("    selection mask {}", mask);
+        // debug output for the final selection mask
+        Logger::get("xyh::object_selection::jet")
+            ->debug("    selection mask {}", mask);
 
-    return mask;
-  };
+        return mask;
+    };
 
-  return df1.Define(output_mask, select,
-                    {jet_pt, jet_eta, jet_id_v12, jet_puid});
+    return df1.Define(output_mask, select,
+                      {jet_pt, jet_eta, jet_id_v12, jet_puid});
 }
 
 } // end namespace object_selection

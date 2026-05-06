@@ -76,48 +76,51 @@ Id_vsJet(ROOT::RDF::RNode df,
          const std::string &sf_file, const std::string &sf_name,
          const std::string &wp, const std::string &vsele_wp,
          const std::string &sf_dependence, const std::string &variation) {
-  Logger::get("physicsobject::tau::scalefactor::Id_vsJet")
-      ->debug("Setting up function for tau ID vsJet scale factor");
-  Logger::get("physicsobject::tau::scalefactor::Id_vsJet")
-      ->debug("ID - Name {}", sf_name);
-  auto evaluator = correction_manager.loadCorrection(sf_file, sf_name);
-
-  auto sf_calculator = [evaluator, wp, vsele_wp, variation, sf_dependence,
-                        sf_name](const float &pt, const int &decay_mode,
-                                 const int &gen_match) {
     Logger::get("physicsobject::tau::scalefactor::Id_vsJet")
-        ->debug("Evaluate tau ID vsJet scale factor for algorithm {}", sf_name);
-
-    // set default value of scale factor of 1 in the case that the correction is
-    // not provided
-    double sf = 1.;
-
-    // only calculate SFs for allowed tau decay modes (also excludes default
-    // values due to tau energy correction shifts below good tau pt
-    // selection)
-    const std::unordered_set<int> valid_modes = {0, 1, 10, 11};
-    if (valid_modes.count(decay_mode)) {
-      Logger::get("physicsobject::tau::scalefactor::Id_vsJet")
-          ->debug("    pt {}, decay mode {}, gen_match {}, wp {}, vsele_wp {}, "
-                  "variation {}, "
-                  "sf_dependence {}",
-                  pt, decay_mode, gen_match, wp, vsele_wp, variation,
-                  sf_dependence);
-      sf = evaluator->evaluate(
-          {pt, decay_mode, gen_match, wp, vsele_wp, variation, sf_dependence});
-    } else {
-      Logger::get("physicsobject::tau::scalefactor::Id_vsJet")
-          ->debug("    Skip scale factor evaluation (invalid decay mode {})",
-                  decay_mode);
-    }
-
+        ->debug("Setting up function for tau ID vsJet scale factor");
     Logger::get("physicsobject::tau::scalefactor::Id_vsJet")
-        ->debug("    Scale factor {}", sf);
+        ->debug("ID - Name {}", sf_name);
+    auto evaluator = correction_manager.loadCorrection(sf_file, sf_name);
 
-    return sf;
-  };
+    auto sf_calculator = [evaluator, wp, vsele_wp, variation, sf_dependence,
+                          sf_name](const float &pt, const int &decay_mode,
+                                   const int &gen_match) {
+        Logger::get("physicsobject::tau::scalefactor::Id_vsJet")
+            ->debug("Evaluate tau ID vsJet scale factor for algorithm {}",
+                    sf_name);
 
-  return df.Define(outputname, sf_calculator, {pt, decay_mode, gen_match});
+        // set default value of scale factor of 1 in the case that the
+        // correction is not provided
+        double sf = 1.;
+
+        // only calculate SFs for allowed tau decay modes (also excludes default
+        // values due to tau energy correction shifts below good tau pt
+        // selection)
+        const std::unordered_set<int> valid_modes = {0, 1, 10, 11};
+        if (valid_modes.count(decay_mode)) {
+            Logger::get("physicsobject::tau::scalefactor::Id_vsJet")
+                ->debug("    pt {}, decay mode {}, gen_match {}, wp {}, "
+                        "vsele_wp {}, "
+                        "variation {}, "
+                        "sf_dependence {}",
+                        pt, decay_mode, gen_match, wp, vsele_wp, variation,
+                        sf_dependence);
+            sf = evaluator->evaluate({pt, decay_mode, gen_match, wp, vsele_wp,
+                                      variation, sf_dependence});
+        } else {
+            Logger::get("physicsobject::tau::scalefactor::Id_vsJet")
+                ->debug(
+                    "    Skip scale factor evaluation (invalid decay mode {})",
+                    decay_mode);
+        }
+
+        Logger::get("physicsobject::tau::scalefactor::Id_vsJet")
+            ->debug("    Scale factor {}", sf);
+
+        return sf;
+    };
+
+    return df.Define(outputname, sf_calculator, {pt, decay_mode, gen_match});
 }
 
 } // namespace scalefactor

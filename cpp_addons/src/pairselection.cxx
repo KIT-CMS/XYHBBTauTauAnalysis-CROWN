@@ -26,31 +26,31 @@ ROOT::RDF::RNode findAdditionalTau(ROOT::RDF::RNode df,
                                    const std::string &tau_mask,
                                    const std::string &pairname,
                                    const std::string &outputname) {
-  return df.Define(
-      outputname,
-      [](const ROOT::RVec<int> &mask, const ROOT::RVec<int> &pair) {
-        const int selected_index = pair.at(1);
-        ROOT::RVec<int> selected_additional_tau = {-1};
-        const auto original_tau_indices = ROOT::VecOps::Nonzero(mask);
-        Logger::get("findAdditionalTau")
-            ->debug("tau mask {}", original_tau_indices);
-        Logger::get("findAdditionalTau")->debug("Selected pair {}", pair);
-        if (original_tau_indices.size() == 0 || selected_index < 0) {
-          Logger::get("findAdditionalTau")
-              ->debug("no add. tau {}", selected_additional_tau);
-          return selected_additional_tau;
-        }
-        for (auto &idx : original_tau_indices) {
-          if (selected_index != idx) {
-            selected_additional_tau = {static_cast<int>(idx)};
-            break;
-          }
-        }
-        Logger::get("findAdditionalTau")
-            ->debug("add. tau {}", selected_additional_tau);
-        return selected_additional_tau;
-      },
-      {tau_mask, pairname});
+    return df.Define(
+        outputname,
+        [](const ROOT::RVec<int> &mask, const ROOT::RVec<int> &pair) {
+            const int selected_index = pair.at(1);
+            ROOT::RVec<int> selected_additional_tau = {-1};
+            const auto original_tau_indices = ROOT::VecOps::Nonzero(mask);
+            Logger::get("findAdditionalTau")
+                ->debug("tau mask {}", original_tau_indices);
+            Logger::get("findAdditionalTau")->debug("Selected pair {}", pair);
+            if (original_tau_indices.size() == 0 || selected_index < 0) {
+                Logger::get("findAdditionalTau")
+                    ->debug("no add. tau {}", selected_additional_tau);
+                return selected_additional_tau;
+            }
+            for (auto &idx : original_tau_indices) {
+                if (selected_index != idx) {
+                    selected_additional_tau = {static_cast<int>(idx)};
+                    break;
+                }
+            }
+            Logger::get("findAdditionalTau")
+                ->debug("add. tau {}", selected_additional_tau);
+            return selected_additional_tau;
+        },
+        {tau_mask, pairname});
 }
 
 } // namespace ditau_pairselection
@@ -80,39 +80,41 @@ namespace boosted_ditau_pairselection {
  */
 auto compareForPairs(const ROOT::RVec<float> &lep1pt,
                      const ROOT::RVec<float> &lep2pt) {
-  return [lep1pt, lep2pt](auto value_next, auto value_previous) {
-    Logger::get("PairSelectionCompare")->debug("lep1 Pt: {}", lep1pt);
-    Logger::get("PairSelectionCompare")->debug("lep2 Pt: {}", lep2pt);
-    bool result = false;
-    Logger::get("PairSelectionCompare")
-        ->debug("Next pair: {}, {}", std::to_string(value_next.first),
-                std::to_string(value_next.second));
-    Logger::get("PairSelectionCompare")
-        ->debug("Previous pair: {}, {}", std::to_string(value_previous.first),
-                std::to_string(value_previous.second));
-    const auto i1_next = value_next.first;
-    const auto i1_previous = value_previous.first;
-    const auto i2_next = value_next.second;
-    const auto i2_previous = value_previous.second;
-    Logger::get("PairSelectionCompare")
-        ->debug("i1_next: {}, i1_previous : {}", i1_next, i1_previous);
-    // start with lep1 isolation
-    const auto pt1_next = lep1pt.at(i1_next);
-    const auto pt1_previous = lep1pt.at(i1_previous);
+    return [lep1pt, lep2pt](auto value_next, auto value_previous) {
+        Logger::get("PairSelectionCompare")->debug("lep1 Pt: {}", lep1pt);
+        Logger::get("PairSelectionCompare")->debug("lep2 Pt: {}", lep2pt);
+        bool result = false;
+        Logger::get("PairSelectionCompare")
+            ->debug("Next pair: {}, {}", std::to_string(value_next.first),
+                    std::to_string(value_next.second));
+        Logger::get("PairSelectionCompare")
+            ->debug("Previous pair: {}, {}",
+                    std::to_string(value_previous.first),
+                    std::to_string(value_previous.second));
+        const auto i1_next = value_next.first;
+        const auto i1_previous = value_previous.first;
+        const auto i2_next = value_next.second;
+        const auto i2_previous = value_previous.second;
+        Logger::get("PairSelectionCompare")
+            ->debug("i1_next: {}, i1_previous : {}", i1_next, i1_previous);
+        // start with lep1 isolation
+        const auto pt1_next = lep1pt.at(i1_next);
+        const auto pt1_previous = lep1pt.at(i1_previous);
 
-    if (not utility::ApproxEqual(pt1_next, pt1_previous)) {
-      result = pt1_next > pt1_previous;
-    } else {
-      // if too similar, compare lep2 pt
-      Logger::get("PairSelectionCompare")
-          ->debug("pt lep 1 too similar, taking pt 2");
-      const auto pt2_next = lep2pt.at(i2_next);
-      const auto pt2_previous = lep2pt.at(i2_previous);
-      result = pt2_next > pt2_previous;
-    }
-    Logger::get("PairSelectionCompare")->debug("Returning result {}", result);
-    return result;
-  };
+        if (not utility::ApproxEqual(pt1_next, pt1_previous)) {
+            result = pt1_next > pt1_previous;
+        } else {
+            // if too similar, compare lep2 pt
+            Logger::get("PairSelectionCompare")
+                ->debug("pt lep 1 too similar, taking pt 2");
+            const auto pt2_next = lep2pt.at(i2_next);
+            const auto pt2_previous = lep2pt.at(i2_previous);
+            result = pt2_next > pt2_previous;
+        }
+        Logger::get("PairSelectionCompare")
+            ->debug("Returning result {}", result);
+        return result;
+    };
 }
 
 namespace semileptonic {
@@ -127,105 +129,110 @@ namespace semileptonic {
 /// \returns an `ROOT::RVec<int>` with two values, the first one beeing
 /// the lepton index and the second one beeing the tau index.
 auto PairSelectionAlgo(const float &mindeltaR, const float &maxdeltaR) {
-  Logger::get("semileptonic::PairSelectionAlgo")->debug("Setting up algorithm");
-  return [mindeltaR, maxdeltaR](const ROOT::RVec<float> &tau_pt,
-                                const ROOT::RVec<float> &tau_eta,
-                                const ROOT::RVec<float> &tau_phi,
-                                const ROOT::RVec<float> &tau_mass,
-                                const ROOT::RVec<float> &lepton_pt,
-                                const ROOT::RVec<float> &lepton_eta,
-                                const ROOT::RVec<float> &lepton_phi,
-                                const ROOT::RVec<float> &lepton_mass,
-                                const ROOT::RVec<int> &lepton_mask,
-                                const ROOT::RVec<int> &boostedtau_mask) {
-    // first entry is the lepton index,
-    // second entry is the tau index
-    ROOT::RVec<int> selected_pair = {-1, -1};
-    const auto original_tau_indices = ROOT::VecOps::Nonzero(boostedtau_mask);
-    const auto original_lepton_indices = ROOT::VecOps::Nonzero(lepton_mask);
-
-    if (original_tau_indices.size() == 0 or
-        original_lepton_indices.size() == 0) {
-      return selected_pair;
-    }
     Logger::get("semileptonic::PairSelectionAlgo")
-        ->debug("Running algorithm on good taus and leptons");
+        ->debug("Setting up algorithm");
+    return [mindeltaR, maxdeltaR](const ROOT::RVec<float> &tau_pt,
+                                  const ROOT::RVec<float> &tau_eta,
+                                  const ROOT::RVec<float> &tau_phi,
+                                  const ROOT::RVec<float> &tau_mass,
+                                  const ROOT::RVec<float> &lepton_pt,
+                                  const ROOT::RVec<float> &lepton_eta,
+                                  const ROOT::RVec<float> &lepton_phi,
+                                  const ROOT::RVec<float> &lepton_mass,
+                                  const ROOT::RVec<int> &lepton_mask,
+                                  const ROOT::RVec<int> &boostedtau_mask) {
+        // first entry is the lepton index,
+        // second entry is the tau index
+        ROOT::RVec<int> selected_pair = {-1, -1};
+        const auto original_tau_indices =
+            ROOT::VecOps::Nonzero(boostedtau_mask);
+        const auto original_lepton_indices = ROOT::VecOps::Nonzero(lepton_mask);
 
-    const auto selected_tau_pt =
-        ROOT::VecOps::Take(tau_pt, original_tau_indices);
-    const auto selected_lepton_pt =
-        ROOT::VecOps::Take(lepton_pt, original_lepton_indices);
-
-    const auto pair_indices = ROOT::VecOps::Combinations(
-        selected_lepton_pt,
-        selected_tau_pt); // Gives indices of mu-tau pair
-    Logger::get("semileptonic::PairSelectionAlgo")
-        ->debug("Pairs: {} {}", pair_indices[0], pair_indices[1]);
-
-    const auto pairs = ROOT::VecOps::Construct<std::pair<UInt_t, UInt_t>>(
-        pair_indices[0], pair_indices[1]);
-    Logger::get("semileptonic::PairSelectionAlgo")
-        ->debug("Pairs size: {}", pairs.size());
-    int counter = 0;
-    for (auto &pair : pairs) {
-      counter++;
-      Logger::get("semileptonic::PairSelectionAlgo")
-          ->debug("Constituents pair {}. : {} {}", counter, pair.first,
-                  pair.second);
-    }
-
-    const auto sorted_pairs =
-        ROOT::VecOps::Sort(pairs, boosted_ditau_pairselection::compareForPairs(
-                                      selected_lepton_pt, selected_tau_pt));
-
-    Logger::get("semileptonic::PairSelectionAlgo")
-        ->debug("Original TauPt: {}", tau_pt);
-    Logger::get("semileptonic::PairSelectionAlgo")
-        ->debug("Original leptonPt: {}", lepton_pt);
-
-    Logger::get("semileptonic::PairSelectionAlgo")
-        ->debug("Selected TauPt: {}", selected_tau_pt);
-    Logger::get("semileptonic::PairSelectionAlgo")
-        ->debug("Selected leptonPt: {}", selected_lepton_pt);
-
-    // construct the four vectors of the selected leptons and taus to check
-    // deltaR and reject a pair if the candidates are too close
-
-    for (auto &candidate : sorted_pairs) {
-      auto leptonindex = original_lepton_indices[candidate.first];
-      ROOT::Math::PtEtaPhiMVector lepton = ROOT::Math::PtEtaPhiMVector(
-          lepton_pt.at(leptonindex), lepton_eta.at(leptonindex),
-          lepton_phi.at(leptonindex), lepton_mass.at(leptonindex));
-      Logger::get("semileptonic::PairSelectionAlgo")
-          ->debug("{} lepton vector: {}", leptonindex, lepton);
-      auto tauindex = original_tau_indices[candidate.second];
-      ROOT::Math::PtEtaPhiMVector tau = ROOT::Math::PtEtaPhiMVector(
-          tau_pt.at(tauindex), tau_eta.at(tauindex), tau_phi.at(tauindex),
-          tau_mass.at(tauindex));
-      Logger::get("semileptonic::PairSelectionAlgo")
-          ->debug("{} tau vector: {}", tauindex, tau);
-      Logger::get("semileptonic::PairSelectionAlgo")
-          ->debug("DeltaR: {}", ROOT::Math::VectorUtil::DeltaR(lepton, tau));
-      if ((ROOT::Math::VectorUtil::DeltaR(lepton, tau) > mindeltaR) &&
-          (ROOT::Math::VectorUtil::DeltaR(lepton, tau) < maxdeltaR)) {
+        if (original_tau_indices.size() == 0 or
+            original_lepton_indices.size() == 0) {
+            return selected_pair;
+        }
         Logger::get("semileptonic::PairSelectionAlgo")
-            ->debug("Selected original pair indices: mu = {} , tau = {}",
-                    leptonindex, tauindex);
-        Logger::get("semileptonic::PairSelectionAlgo")
-            ->debug("leptonPt = {} , TauPt = {} ", lepton.Pt(), tau.Pt());
-        Logger::get("semileptonic::PairSelectionAlgo")
-            ->debug("leptonPt = {} , TauPt = {} ", lepton_pt[leptonindex],
-                    tau_pt[tauindex]);
-        selected_pair = {static_cast<int>(leptonindex),
-                         static_cast<int>(tauindex)};
-        break;
-      }
-    }
-    Logger::get("semileptonic::PairSelectionAlgo")
-        ->debug("Final pair {} {}", selected_pair[0], selected_pair[1]);
+            ->debug("Running algorithm on good taus and leptons");
 
-    return selected_pair;
-  };
+        const auto selected_tau_pt =
+            ROOT::VecOps::Take(tau_pt, original_tau_indices);
+        const auto selected_lepton_pt =
+            ROOT::VecOps::Take(lepton_pt, original_lepton_indices);
+
+        const auto pair_indices = ROOT::VecOps::Combinations(
+            selected_lepton_pt,
+            selected_tau_pt); // Gives indices of mu-tau pair
+        Logger::get("semileptonic::PairSelectionAlgo")
+            ->debug("Pairs: {} {}", pair_indices[0], pair_indices[1]);
+
+        const auto pairs = ROOT::VecOps::Construct<std::pair<UInt_t, UInt_t>>(
+            pair_indices[0], pair_indices[1]);
+        Logger::get("semileptonic::PairSelectionAlgo")
+            ->debug("Pairs size: {}", pairs.size());
+        int counter = 0;
+        for (auto &pair : pairs) {
+            counter++;
+            Logger::get("semileptonic::PairSelectionAlgo")
+                ->debug("Constituents pair {}. : {} {}", counter, pair.first,
+                        pair.second);
+        }
+
+        const auto sorted_pairs = ROOT::VecOps::Sort(
+            pairs, boosted_ditau_pairselection::compareForPairs(
+                       selected_lepton_pt, selected_tau_pt));
+
+        Logger::get("semileptonic::PairSelectionAlgo")
+            ->debug("Original TauPt: {}", tau_pt);
+        Logger::get("semileptonic::PairSelectionAlgo")
+            ->debug("Original leptonPt: {}", lepton_pt);
+
+        Logger::get("semileptonic::PairSelectionAlgo")
+            ->debug("Selected TauPt: {}", selected_tau_pt);
+        Logger::get("semileptonic::PairSelectionAlgo")
+            ->debug("Selected leptonPt: {}", selected_lepton_pt);
+
+        // construct the four vectors of the selected leptons and taus to check
+        // deltaR and reject a pair if the candidates are too close
+
+        for (auto &candidate : sorted_pairs) {
+            auto leptonindex = original_lepton_indices[candidate.first];
+            ROOT::Math::PtEtaPhiMVector lepton = ROOT::Math::PtEtaPhiMVector(
+                lepton_pt.at(leptonindex), lepton_eta.at(leptonindex),
+                lepton_phi.at(leptonindex), lepton_mass.at(leptonindex));
+            Logger::get("semileptonic::PairSelectionAlgo")
+                ->debug("{} lepton vector: {}", leptonindex, lepton);
+            auto tauindex = original_tau_indices[candidate.second];
+            ROOT::Math::PtEtaPhiMVector tau = ROOT::Math::PtEtaPhiMVector(
+                tau_pt.at(tauindex), tau_eta.at(tauindex), tau_phi.at(tauindex),
+                tau_mass.at(tauindex));
+            Logger::get("semileptonic::PairSelectionAlgo")
+                ->debug("{} tau vector: {}", tauindex, tau);
+            Logger::get("semileptonic::PairSelectionAlgo")
+                ->debug("DeltaR: {}",
+                        ROOT::Math::VectorUtil::DeltaR(lepton, tau));
+            if ((ROOT::Math::VectorUtil::DeltaR(lepton, tau) > mindeltaR) &&
+                (ROOT::Math::VectorUtil::DeltaR(lepton, tau) < maxdeltaR)) {
+                Logger::get("semileptonic::PairSelectionAlgo")
+                    ->debug(
+                        "Selected original pair indices: mu = {} , tau = {}",
+                        leptonindex, tauindex);
+                Logger::get("semileptonic::PairSelectionAlgo")
+                    ->debug("leptonPt = {} , TauPt = {} ", lepton.Pt(),
+                            tau.Pt());
+                Logger::get("semileptonic::PairSelectionAlgo")
+                    ->debug("leptonPt = {} , TauPt = {} ",
+                            lepton_pt[leptonindex], tau_pt[tauindex]);
+                selected_pair = {static_cast<int>(leptonindex),
+                                 static_cast<int>(tauindex)};
+                break;
+            }
+        }
+        Logger::get("semileptonic::PairSelectionAlgo")
+            ->debug("Final pair {} {}", selected_pair[0], selected_pair[1]);
+
+        return selected_pair;
+    };
 }
 } // namespace semileptonic
 
@@ -241,96 +248,100 @@ namespace fullhadronic {
 /// \returns an `ROOT::RVec<int>` with two values, the first one beeing
 /// the leading tau index and the second one beeing trailing tau index.
 auto PairSelectionAlgo(const float &mindeltaR, const float &maxdeltaR) {
-  Logger::get("fullhadronic::PairSelectionAlgo")->debug("Setting up algorithm");
-  return [mindeltaR, maxdeltaR](const ROOT::RVec<float> &tau_pt,
-                                const ROOT::RVec<float> &tau_eta,
-                                const ROOT::RVec<float> &tau_phi,
-                                const ROOT::RVec<float> &tau_mass,
-                                const ROOT::RVec<int> &boostedtau_mask) {
-    // first entry is the leading tau index,
-    // second entry is the trailing tau index
-    ROOT::RVec<int> selected_pair = {-1, -1};
-    const auto original_tau_indices = ROOT::VecOps::Nonzero(boostedtau_mask);
-
-    if (original_tau_indices.size() < 2) {
-      return selected_pair;
-    }
     Logger::get("fullhadronic::PairSelectionAlgo")
-        ->debug("Running algorithm on good taus");
+        ->debug("Setting up algorithm");
+    return [mindeltaR, maxdeltaR](const ROOT::RVec<float> &tau_pt,
+                                  const ROOT::RVec<float> &tau_eta,
+                                  const ROOT::RVec<float> &tau_phi,
+                                  const ROOT::RVec<float> &tau_mass,
+                                  const ROOT::RVec<int> &boostedtau_mask) {
+        // first entry is the leading tau index,
+        // second entry is the trailing tau index
+        ROOT::RVec<int> selected_pair = {-1, -1};
+        const auto original_tau_indices =
+            ROOT::VecOps::Nonzero(boostedtau_mask);
 
-    const auto selected_tau_pt =
-        ROOT::VecOps::Take(tau_pt, original_tau_indices);
-
-    Logger::get("fullhadronic::PairSelectionAlgo")
-        ->debug("Original TauPt: {}", tau_pt);
-
-    Logger::get("fullhadronic::PairSelectionAlgo")
-        ->debug("Selected TauPt: {}", selected_tau_pt);
-
-    const auto pair_indices = ROOT::VecOps::Combinations(
-        selected_tau_pt, 2); // Gives indices of tau-tau pairs
-    Logger::get("fullhadronic::PairSelectionAlgo")
-        ->debug("Pairs: {} {}", pair_indices[0], pair_indices[1]);
-
-    const auto pairs = ROOT::VecOps::Construct<std::pair<UInt_t, UInt_t>>(
-        pair_indices[0], pair_indices[1]);
-    Logger::get("fullhadronic::PairSelectionAlgo")
-        ->debug("Pairs size: {}", pairs.size());
-    int counter = 0;
-    for (auto &pair : pairs) {
-      counter++;
-      Logger::get("fullhadronic::PairSelectionAlgo")
-          ->debug("Constituents pair {}. : {} {}", counter, pair.first,
-                  pair.second);
-    }
-
-    const auto sorted_pairs =
-        ROOT::VecOps::Sort(pairs, boosted_ditau_pairselection::compareForPairs(
-                                      selected_tau_pt, selected_tau_pt));
-
-    // construct the four vectors of the selected taus to check
-    // deltaR and reject a pair if the candidates are too close
-    bool found = false;
-    for (auto &candidate : sorted_pairs) {
-      auto tau_index_1 = original_tau_indices[candidate.first];
-      ROOT::Math::PtEtaPhiMVector tau_1 = ROOT::Math::PtEtaPhiMVector(
-          tau_pt.at(tau_index_1), tau_eta.at(tau_index_1),
-          tau_phi.at(tau_index_1), tau_mass.at(tau_index_1));
-      Logger::get("fullhadronic::PairSelectionAlgo")
-          ->debug("{} leadint tau vector: {}", tau_index_1, tau_1);
-      auto tau_index_2 = original_tau_indices[candidate.second];
-      ROOT::Math::PtEtaPhiMVector tau_2 = ROOT::Math::PtEtaPhiMVector(
-          tau_pt.at(tau_index_2), tau_eta.at(tau_index_2),
-          tau_phi.at(tau_index_2), tau_mass.at(tau_index_2));
-      Logger::get("fullhadronic::PairSelectionAlgo")
-          ->debug("{} tau vector: {}", tau_index_2, tau_2);
-      Logger::get("fullhadronic::PairSelectionAlgo")
-          ->debug("DeltaR: {}", ROOT::Math::VectorUtil::DeltaR(tau_1, tau_2));
-      if ((ROOT::Math::VectorUtil::DeltaR(tau_1, tau_2) > mindeltaR) &&
-          (ROOT::Math::VectorUtil::DeltaR(tau_1, tau_2) < maxdeltaR)) {
+        if (original_tau_indices.size() < 2) {
+            return selected_pair;
+        }
         Logger::get("fullhadronic::PairSelectionAlgo")
-            ->debug("Selected original pair indices: tau_1 = {} , "
-                    "tau_2 = {}",
-                    tau_index_1, tau_index_2);
-        Logger::get("fullhadronic::PairSelectionAlgo")
-            ->debug("Tau_1 Pt = {} , Tau_2 Pt = {} ", tau_1.Pt(), tau_2.Pt());
-        selected_pair = {static_cast<int>(tau_index_1),
-                         static_cast<int>(tau_index_2)};
-        found = true;
-        break;
-      }
-    }
-    // sort it that the leading tau in pt is first
-    if (found) {
-      if (tau_pt.at(selected_pair[0]) < tau_pt.at(selected_pair[1])) {
-        std::swap(selected_pair[0], selected_pair[1]);
-      }
-    }
-    Logger::get("fullhadronic::PairSelectionAlgo")
-        ->debug("Final pair {} {}", selected_pair[0], selected_pair[1]);
+            ->debug("Running algorithm on good taus");
 
-    return selected_pair;
-  };
+        const auto selected_tau_pt =
+            ROOT::VecOps::Take(tau_pt, original_tau_indices);
+
+        Logger::get("fullhadronic::PairSelectionAlgo")
+            ->debug("Original TauPt: {}", tau_pt);
+
+        Logger::get("fullhadronic::PairSelectionAlgo")
+            ->debug("Selected TauPt: {}", selected_tau_pt);
+
+        const auto pair_indices = ROOT::VecOps::Combinations(
+            selected_tau_pt, 2); // Gives indices of tau-tau pairs
+        Logger::get("fullhadronic::PairSelectionAlgo")
+            ->debug("Pairs: {} {}", pair_indices[0], pair_indices[1]);
+
+        const auto pairs = ROOT::VecOps::Construct<std::pair<UInt_t, UInt_t>>(
+            pair_indices[0], pair_indices[1]);
+        Logger::get("fullhadronic::PairSelectionAlgo")
+            ->debug("Pairs size: {}", pairs.size());
+        int counter = 0;
+        for (auto &pair : pairs) {
+            counter++;
+            Logger::get("fullhadronic::PairSelectionAlgo")
+                ->debug("Constituents pair {}. : {} {}", counter, pair.first,
+                        pair.second);
+        }
+
+        const auto sorted_pairs = ROOT::VecOps::Sort(
+            pairs, boosted_ditau_pairselection::compareForPairs(
+                       selected_tau_pt, selected_tau_pt));
+
+        // construct the four vectors of the selected taus to check
+        // deltaR and reject a pair if the candidates are too close
+        bool found = false;
+        for (auto &candidate : sorted_pairs) {
+            auto tau_index_1 = original_tau_indices[candidate.first];
+            ROOT::Math::PtEtaPhiMVector tau_1 = ROOT::Math::PtEtaPhiMVector(
+                tau_pt.at(tau_index_1), tau_eta.at(tau_index_1),
+                tau_phi.at(tau_index_1), tau_mass.at(tau_index_1));
+            Logger::get("fullhadronic::PairSelectionAlgo")
+                ->debug("{} leadint tau vector: {}", tau_index_1, tau_1);
+            auto tau_index_2 = original_tau_indices[candidate.second];
+            ROOT::Math::PtEtaPhiMVector tau_2 = ROOT::Math::PtEtaPhiMVector(
+                tau_pt.at(tau_index_2), tau_eta.at(tau_index_2),
+                tau_phi.at(tau_index_2), tau_mass.at(tau_index_2));
+            Logger::get("fullhadronic::PairSelectionAlgo")
+                ->debug("{} tau vector: {}", tau_index_2, tau_2);
+            Logger::get("fullhadronic::PairSelectionAlgo")
+                ->debug("DeltaR: {}",
+                        ROOT::Math::VectorUtil::DeltaR(tau_1, tau_2));
+            if ((ROOT::Math::VectorUtil::DeltaR(tau_1, tau_2) > mindeltaR) &&
+                (ROOT::Math::VectorUtil::DeltaR(tau_1, tau_2) < maxdeltaR)) {
+                Logger::get("fullhadronic::PairSelectionAlgo")
+                    ->debug("Selected original pair indices: tau_1 = {} , "
+                            "tau_2 = {}",
+                            tau_index_1, tau_index_2);
+                Logger::get("fullhadronic::PairSelectionAlgo")
+                    ->debug("Tau_1 Pt = {} , Tau_2 Pt = {} ", tau_1.Pt(),
+                            tau_2.Pt());
+                selected_pair = {static_cast<int>(tau_index_1),
+                                 static_cast<int>(tau_index_2)};
+                found = true;
+                break;
+            }
+        }
+        // sort it that the leading tau in pt is first
+        if (found) {
+            if (tau_pt.at(selected_pair[0]) < tau_pt.at(selected_pair[1])) {
+                std::swap(selected_pair[0], selected_pair[1]);
+            }
+        }
+        Logger::get("fullhadronic::PairSelectionAlgo")
+            ->debug("Final pair {} {}", selected_pair[0], selected_pair[1]);
+
+        return selected_pair;
+    };
 }
 
 } // namespace fullhadronic
@@ -366,14 +377,14 @@ ROOT::RDF::RNode PairSelection(ROOT::RDF::RNode df,
                                const std::vector<std::string> &input_vector,
                                const std::string &pairname,
                                const float &mindeltaR, const float &maxdeltaR) {
-  Logger::get("mutau::PairSelection")
-      ->debug("Setting up boosted MuTau pair building");
-  auto df1 =
-      df.Define(pairname,
-                boosted_ditau_pairselection::semileptonic::PairSelectionAlgo(
-                    mindeltaR, maxdeltaR),
-                input_vector);
-  return df1;
+    Logger::get("mutau::PairSelection")
+        ->debug("Setting up boosted MuTau pair building");
+    auto df1 =
+        df.Define(pairname,
+                  boosted_ditau_pairselection::semileptonic::PairSelectionAlgo(
+                      mindeltaR, maxdeltaR),
+                  input_vector);
+    return df1;
 }
 } // namespace mutau
 
@@ -411,14 +422,14 @@ ROOT::RDF::RNode PairSelection(ROOT::RDF::RNode df,
                                const std::vector<std::string> &input_vector,
                                const std::string &pairname,
                                const float &mindeltaR, const float &maxdeltaR) {
-  Logger::get("eltau::PairSelection")
-      ->debug("Setting up boosted ElTau pair building");
-  auto df1 =
-      df.Define(pairname,
-                boosted_ditau_pairselection::semileptonic::PairSelectionAlgo(
-                    mindeltaR, maxdeltaR),
-                input_vector);
-  return df1;
+    Logger::get("eltau::PairSelection")
+        ->debug("Setting up boosted ElTau pair building");
+    auto df1 =
+        df.Define(pairname,
+                  boosted_ditau_pairselection::semileptonic::PairSelectionAlgo(
+                      mindeltaR, maxdeltaR),
+                  input_vector);
+    return df1;
 }
 } // namespace eltau
 
@@ -447,14 +458,14 @@ ROOT::RDF::RNode PairSelection(ROOT::RDF::RNode df,
                                const std::vector<std::string> &input_vector,
                                const std::string &pairname,
                                const float &mindeltaR, const float &maxdeltaR) {
-  Logger::get("tautau::PairSelection")
-      ->debug("Setting up boosted TauTau pair building");
-  auto df1 =
-      df.Define(pairname,
-                boosted_ditau_pairselection::fullhadronic::PairSelectionAlgo(
-                    mindeltaR, maxdeltaR),
-                input_vector);
-  return df1;
+    Logger::get("tautau::PairSelection")
+        ->debug("Setting up boosted TauTau pair building");
+    auto df1 =
+        df.Define(pairname,
+                  boosted_ditau_pairselection::fullhadronic::PairSelectionAlgo(
+                      mindeltaR, maxdeltaR),
+                  input_vector);
+    return df1;
 }
 
 } // namespace tautau
@@ -473,95 +484,103 @@ namespace bb_pairselection {
  * of the bb pair
  */
 auto BBPairSelectionAlgo(const float &mindeltaR, const float &btag_WP_value) {
-  Logger::get("bb::PairSelectionAlgo")->debug("Setting up algorithm");
-  return [mindeltaR, btag_WP_value](const ROOT::RVec<float> &jet_pt,
-                                    const ROOT::RVec<float> &jet_eta,
-                                    const ROOT::RVec<float> &jet_phi,
-                                    const ROOT::RVec<float> &jet_mass,
-                                    const ROOT::RVec<int> &good_bjet_collection,
-                                    const ROOT::RVec<int> &good_jet_collection,
-                                    const ROOT::RVec<float> &jet_btag_discr) {
-    // first entry is index of the leading bjet,
-    // second entry is the index of the subleading bjet or non b-tagged jet
-    // with the highest btag value
-    ROOT::RVec<int> selected_pair = {-1, -1};
+    Logger::get("bb::PairSelectionAlgo")->debug("Setting up algorithm");
+    return [mindeltaR,
+            btag_WP_value](const ROOT::RVec<float> &jet_pt,
+                           const ROOT::RVec<float> &jet_eta,
+                           const ROOT::RVec<float> &jet_phi,
+                           const ROOT::RVec<float> &jet_mass,
+                           const ROOT::RVec<int> &good_bjet_collection,
+                           const ROOT::RVec<int> &good_jet_collection,
+                           const ROOT::RVec<float> &jet_btag_discr) {
+        // first entry is index of the leading bjet,
+        // second entry is the index of the subleading bjet or non b-tagged jet
+        // with the highest btag value
+        ROOT::RVec<int> selected_pair = {-1, -1};
 
-    if (good_bjet_collection.size() == 1) {
-      Logger::get("bb::PairSelectionAlgo")
-          ->debug("Running algorithm on one good bjet");
+        if (good_bjet_collection.size() == 1) {
+            Logger::get("bb::PairSelectionAlgo")
+                ->debug("Running algorithm on one good bjet");
 
-      int highest_non_tag_jet_index = -1;
-      float highest_non_tag_value = -1.;
-      const auto selected_jet_btag_values =
-          ROOT::VecOps::Take(jet_btag_discr, good_jet_collection);
+            int highest_non_tag_jet_index = -1;
+            float highest_non_tag_value = -1.;
+            const auto selected_jet_btag_values =
+                ROOT::VecOps::Take(jet_btag_discr, good_jet_collection);
 
-      auto leading_bjet_index = good_bjet_collection[0];
-      ROOT::Math::PtEtaPhiMVector leading_bjet = ROOT::Math::PtEtaPhiMVector(
-          jet_pt.at(leading_bjet_index), jet_eta.at(leading_bjet_index),
-          jet_phi.at(leading_bjet_index), jet_mass.at(leading_bjet_index));
-      Logger::get("bb::PairSelectionAlgo")
-          ->debug("{} leading bjet vector: {}", leading_bjet_index,
-                  leading_bjet);
+            auto leading_bjet_index = good_bjet_collection[0];
+            ROOT::Math::PtEtaPhiMVector leading_bjet =
+                ROOT::Math::PtEtaPhiMVector(jet_pt.at(leading_bjet_index),
+                                            jet_eta.at(leading_bjet_index),
+                                            jet_phi.at(leading_bjet_index),
+                                            jet_mass.at(leading_bjet_index));
+            Logger::get("bb::PairSelectionAlgo")
+                ->debug("{} leading bjet vector: {}", leading_bjet_index,
+                        leading_bjet);
 
-      for (auto &index : good_jet_collection) {
-        ROOT::Math::PtEtaPhiMVector subleading_candidate =
-            ROOT::Math::PtEtaPhiMVector(jet_pt.at(index), jet_eta.at(index),
-                                        jet_phi.at(index), jet_mass.at(index));
-        Logger::get("bb::PairSelectionAlgo")
-            ->debug("{} subleading non bjet candidate vector: {}", index,
-                    subleading_candidate);
+            for (auto &index : good_jet_collection) {
+                ROOT::Math::PtEtaPhiMVector subleading_candidate =
+                    ROOT::Math::PtEtaPhiMVector(
+                        jet_pt.at(index), jet_eta.at(index), jet_phi.at(index),
+                        jet_mass.at(index));
+                Logger::get("bb::PairSelectionAlgo")
+                    ->debug("{} subleading non bjet candidate vector: {}",
+                            index, subleading_candidate);
 
-        if ((selected_jet_btag_values[index] < btag_WP_value) &&
-            (selected_jet_btag_values[index] > highest_non_tag_value) &&
-            (index != good_bjet_collection[0]) &&
-            (ROOT::Math::VectorUtil::DeltaR(
-                 leading_bjet, subleading_candidate) > mindeltaR)) {
-          highest_non_tag_jet_index = index;
-          highest_non_tag_value = selected_jet_btag_values[index];
+                if ((selected_jet_btag_values[index] < btag_WP_value) &&
+                    (selected_jet_btag_values[index] > highest_non_tag_value) &&
+                    (index != good_bjet_collection[0]) &&
+                    (ROOT::Math::VectorUtil::DeltaR(
+                         leading_bjet, subleading_candidate) > mindeltaR)) {
+                    highest_non_tag_jet_index = index;
+                    highest_non_tag_value = selected_jet_btag_values[index];
+                }
+            }
+
+            selected_pair = {static_cast<int>(leading_bjet_index),
+                             static_cast<int>(highest_non_tag_jet_index)};
+            Logger::get("bb::PairSelectionAlgo")
+                ->debug("Final pair {} {}", selected_pair[0], selected_pair[1]);
+
+            return selected_pair;
+
+        } else if (good_bjet_collection.size() >= 2) {
+            Logger::get("bb::PairSelectionAlgo")
+                ->debug("Running algorithm on at least two good bjets");
+
+            auto leading_bjet_index = good_bjet_collection[0];
+            ROOT::Math::PtEtaPhiMVector leading_bjet =
+                ROOT::Math::PtEtaPhiMVector(jet_pt.at(leading_bjet_index),
+                                            jet_eta.at(leading_bjet_index),
+                                            jet_phi.at(leading_bjet_index),
+                                            jet_mass.at(leading_bjet_index));
+            Logger::get("bb::PairSelectionAlgo")
+                ->debug("{} leading bjet vector: {}", leading_bjet_index,
+                        leading_bjet);
+
+            for (auto &index : good_bjet_collection) {
+                ROOT::Math::PtEtaPhiMVector subleading_candidate =
+                    ROOT::Math::PtEtaPhiMVector(
+                        jet_pt.at(index), jet_eta.at(index), jet_phi.at(index),
+                        jet_mass.at(index));
+                Logger::get("bb::PairSelectionAlgo")
+                    ->debug("{} subleading bjet candidate vector: {}", index,
+                            subleading_candidate);
+                if ((index != leading_bjet_index) &&
+                    (ROOT::Math::VectorUtil::DeltaR(
+                         leading_bjet, subleading_candidate) > mindeltaR)) {
+                    selected_pair = {static_cast<int>(leading_bjet_index),
+                                     static_cast<int>(index)};
+                    Logger::get("bb::PairSelectionAlgo")
+                        ->debug("Final pair {} {}", selected_pair[0],
+                                selected_pair[1]);
+                    break;
+                }
+            }
+            return selected_pair;
+        } else {
+            return selected_pair;
         }
-      }
-
-      selected_pair = {static_cast<int>(leading_bjet_index),
-                       static_cast<int>(highest_non_tag_jet_index)};
-      Logger::get("bb::PairSelectionAlgo")
-          ->debug("Final pair {} {}", selected_pair[0], selected_pair[1]);
-
-      return selected_pair;
-
-    } else if (good_bjet_collection.size() >= 2) {
-      Logger::get("bb::PairSelectionAlgo")
-          ->debug("Running algorithm on at least two good bjets");
-
-      auto leading_bjet_index = good_bjet_collection[0];
-      ROOT::Math::PtEtaPhiMVector leading_bjet = ROOT::Math::PtEtaPhiMVector(
-          jet_pt.at(leading_bjet_index), jet_eta.at(leading_bjet_index),
-          jet_phi.at(leading_bjet_index), jet_mass.at(leading_bjet_index));
-      Logger::get("bb::PairSelectionAlgo")
-          ->debug("{} leading bjet vector: {}", leading_bjet_index,
-                  leading_bjet);
-
-      for (auto &index : good_bjet_collection) {
-        ROOT::Math::PtEtaPhiMVector subleading_candidate =
-            ROOT::Math::PtEtaPhiMVector(jet_pt.at(index), jet_eta.at(index),
-                                        jet_phi.at(index), jet_mass.at(index));
-        Logger::get("bb::PairSelectionAlgo")
-            ->debug("{} subleading bjet candidate vector: {}", index,
-                    subleading_candidate);
-        if ((index != leading_bjet_index) &&
-            (ROOT::Math::VectorUtil::DeltaR(
-                 leading_bjet, subleading_candidate) > mindeltaR)) {
-          selected_pair = {static_cast<int>(leading_bjet_index),
-                           static_cast<int>(index)};
-          Logger::get("bb::PairSelectionAlgo")
-              ->debug("Final pair {} {}", selected_pair[0], selected_pair[1]);
-          break;
-        }
-      }
-      return selected_pair;
-    } else {
-      return selected_pair;
-    }
-  };
+    };
 }
 /**
  * @brief Function used to select a pair of b-jets
@@ -588,13 +607,14 @@ ROOT::RDF::RNode
 PairSelection(ROOT::RDF::RNode df, const std::vector<std::string> &input_vector,
               const std::string &jet_btag_score, const std::string &pairname,
               const float &mindeltaR, const float &btag_WP_value) {
-  Logger::get("bb::PairSelection")->debug("Setting up bb pair building");
-  auto inputs = std::vector<std::string>(input_vector);
-  inputs.push_back(jet_btag_score);
-  auto df1 = df.Define(
-      pairname, bb_pairselection::BBPairSelectionAlgo(mindeltaR, btag_WP_value),
-      inputs);
-  return df1;
+    Logger::get("bb::PairSelection")->debug("Setting up bb pair building");
+    auto inputs = std::vector<std::string>(input_vector);
+    inputs.push_back(jet_btag_score);
+    auto df1 = df.Define(
+        pairname,
+        bb_pairselection::BBPairSelectionAlgo(mindeltaR, btag_WP_value),
+        inputs);
+    return df1;
 }
 
 } // namespace bb_pairselection

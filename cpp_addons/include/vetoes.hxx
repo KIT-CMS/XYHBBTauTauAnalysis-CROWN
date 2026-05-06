@@ -36,40 +36,41 @@ inline auto dilepton_veto(const ROOT::RVec<int> &object_index,
                           const ROOT::RVec<int> &charge,
                           const float &min_delta_r,
                           const std::string &logger_function_name) {
-  // immediately return false if only one lepton has been found
-  if (object_index.size() < 2) {
-    return false;
-  }
-
-  // build combinations of leptons
-  auto combinations = ROOT::VecOps::Combinations(object_index, 2);
-
-  // check if one of the combinations fulfills the dilepton veto requirements
-  bool has_dilepton = false;
-  for (int i = 0; i < combinations[0].size(); ++i) {
-    // get the indices of the two leptons in the combination
-    auto left = combinations[0][i];
-    auto right = combinations[1][i];
-
-    // check whether they have opposite charge and if they have a large enough
-    // separation
-    auto delta_r =
-        ROOT::VecOps::DeltaR(eta[left], eta[right], phi[left], phi[right]);
-    auto is_os_and_resolved =
-        ((charge[left] * charge[right] < 0) && (delta_r > min_delta_r));
-
-    // break if a valid combination of electrons has been found
-    if (is_os_and_resolved) {
-      Logger::get(logger_function_name)
-          ->debug("    Found combination ({}, {}) with opposite charge and "
-                  "deltaR = {} that passes criteria",
-                  left, right, delta_r);
-      has_dilepton = true;
-      break;
+    // immediately return false if only one lepton has been found
+    if (object_index.size() < 2) {
+        return false;
     }
-  }
 
-  return has_dilepton;
+    // build combinations of leptons
+    auto combinations = ROOT::VecOps::Combinations(object_index, 2);
+
+    // check if one of the combinations fulfills the dilepton veto requirements
+    bool has_dilepton = false;
+    for (int i = 0; i < combinations[0].size(); ++i) {
+        // get the indices of the two leptons in the combination
+        auto left = combinations[0][i];
+        auto right = combinations[1][i];
+
+        // check whether they have opposite charge and if they have a large
+        // enough separation
+        auto delta_r =
+            ROOT::VecOps::DeltaR(eta[left], eta[right], phi[left], phi[right]);
+        auto is_os_and_resolved =
+            ((charge[left] * charge[right] < 0) && (delta_r > min_delta_r));
+
+        // break if a valid combination of electrons has been found
+        if (is_os_and_resolved) {
+            Logger::get(logger_function_name)
+                ->debug(
+                    "    Found combination ({}, {}) with opposite charge and "
+                    "deltaR = {} that passes criteria",
+                    left, right, delta_r);
+            has_dilepton = true;
+            break;
+        }
+    }
+
+    return has_dilepton;
 }
 
 // function xyh::vetoes::dielectron

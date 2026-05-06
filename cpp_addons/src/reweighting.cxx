@@ -45,40 +45,40 @@ ROOT::RDF::RNode NMSSMLHEScaleWeights(ROOT::RDF::RNode df,
                                       const std::string &weightname,
                                       const std::string &lhe_scale_weights,
                                       const float muR, const float muF) {
-  // find the index we have to use, first check if the muR and muF values are
-  // valid, only 0.5, 1.0, 2.0 are allowed
-  std::vector<float> allowed_values = {0.5, 1.0, 2.0};
-  if (std::find(allowed_values.begin(), allowed_values.end(), muR) ==
-      allowed_values.end()) {
-    Logger::get("event::reweighting::NMSSMLHEScaleWeights")
-        ->error("Invalid value for muR: {}", muR);
-    throw std::runtime_error("Invalid value for muR");
-  }
-  if (std::find(allowed_values.begin(), allowed_values.end(), muF) ==
-      allowed_values.end()) {
-    Logger::get("event::reweighting::NMSSMLHEScaleWeights")
-        ->error("Invalid value for muF: {}", muF);
-    throw std::runtime_error("Invalid value for muF");
-  }
-  // now find the index
-  std::map<std::pair<const float, const float>, int> index_map = {
-      {{0.5, 0.5}, 0}, {{1.0, 0.5}, 1}, {{2.0, 0.5}, 2},
-      {{0.5, 1.0}, 3}, {{2.0, 1.0}, 4}, {{0.5, 2.0}, 5},
-      {{1.0, 2.0}, 6}, {{2.0, 2.0}, 7}, {{1.0, 1.0}, 8}};
-  std::pair<const float, const float> variations = {muR, muF};
-  int index = index_map[variations];
-  auto lhe_scale_weights_lambda =
-      [index](const ROOT::RVec<float> scale_weight) {
-        if (index == 8) {
-          float default_weight = 1.;
-          return default_weight;
-        } else {
-          return scale_weight.at(index);
-        }
-      };
-  auto df1 =
-      df.Define(weightname, lhe_scale_weights_lambda, {lhe_scale_weights});
-  return df1;
+    // find the index we have to use, first check if the muR and muF values are
+    // valid, only 0.5, 1.0, 2.0 are allowed
+    std::vector<float> allowed_values = {0.5, 1.0, 2.0};
+    if (std::find(allowed_values.begin(), allowed_values.end(), muR) ==
+        allowed_values.end()) {
+        Logger::get("event::reweighting::NMSSMLHEScaleWeights")
+            ->error("Invalid value for muR: {}", muR);
+        throw std::runtime_error("Invalid value for muR");
+    }
+    if (std::find(allowed_values.begin(), allowed_values.end(), muF) ==
+        allowed_values.end()) {
+        Logger::get("event::reweighting::NMSSMLHEScaleWeights")
+            ->error("Invalid value for muF: {}", muF);
+        throw std::runtime_error("Invalid value for muF");
+    }
+    // now find the index
+    std::map<std::pair<const float, const float>, int> index_map = {
+        {{0.5, 0.5}, 0}, {{1.0, 0.5}, 1}, {{2.0, 0.5}, 2},
+        {{0.5, 1.0}, 3}, {{2.0, 1.0}, 4}, {{0.5, 2.0}, 5},
+        {{1.0, 2.0}, 6}, {{2.0, 2.0}, 7}, {{1.0, 1.0}, 8}};
+    std::pair<const float, const float> variations = {muR, muF};
+    int index = index_map[variations];
+    auto lhe_scale_weights_lambda =
+        [index](const ROOT::RVec<float> scale_weight) {
+            if (index == 8) {
+                float default_weight = 1.;
+                return default_weight;
+            } else {
+                return scale_weight.at(index);
+            }
+        };
+    auto df1 =
+        df.Define(weightname, lhe_scale_weights_lambda, {lhe_scale_weights});
+    return df1;
 }
 
 } // namespace reweighting

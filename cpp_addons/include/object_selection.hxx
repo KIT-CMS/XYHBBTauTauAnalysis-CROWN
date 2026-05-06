@@ -39,15 +39,15 @@ inline auto select_jet(const ROOT::RVec<float> &pt,
                        const ROOT::RVec<float> &eta, const ROOT::RVec<int> &id,
                        const float &min_pt, const float &abs_max_eta,
                        const int &id_wp, const bool &apply_jet_horn_veto) {
-  // jet horn veto: veto jets in 2.5 < eta < 3.0 with a pt smaller than 50 GeV
-  // jets that have this flag set to "true" shall be ignored, i.e., selected
-  // jets should have !jet_horn_veto
-  auto jet_horn_veto = (abs(eta) > 2.5) && (abs(eta) < 3.0) && (pt < 50.0);
+    // jet horn veto: veto jets in 2.5 < eta < 3.0 with a pt smaller than 50 GeV
+    // jets that have this flag set to "true" shall be ignored, i.e., selected
+    // jets should have !jet_horn_veto
+    auto jet_horn_veto = (abs(eta) > 2.5) && (abs(eta) < 3.0) && (pt < 50.0);
 
-  // create the selection mask
-  auto mask = ((pt > min_pt) && (abs(eta) < abs_max_eta) && (id >= id_wp) &&
-               !(apply_jet_horn_veto && jet_horn_veto));
-  return mask;
+    // create the selection mask
+    auto mask = ((pt > min_pt) && (abs(eta) < abs_max_eta) && (id >= id_wp) &&
+                 !(apply_jet_horn_veto && jet_horn_veto));
+    return mask;
 }
 
 /**
@@ -85,16 +85,16 @@ inline auto select_jet(const ROOT::RVec<float> &pt,
                        const float &abs_max_eta, const int &id_wp,
                        const bool &apply_jet_horn_veto, const int &puid_wp,
                        const float &puid_max_pt) {
-  // create  pileup ID mask
-  auto puid_mask =
-      (pt > puid_max_pt) || ((pt <= puid_max_pt) && (puid >= puid_wp));
+    // create  pileup ID mask
+    auto puid_mask =
+        (pt > puid_max_pt) || ((pt <= puid_max_pt) && (puid >= puid_wp));
 
-  // evaluate jet selection with base function and add pileup ID mask
-  auto mask = (select_jet(pt, eta, id, min_pt, abs_max_eta, id_wp,
-                          apply_jet_horn_veto) &&
-               puid_mask);
+    // evaluate jet selection with base function and add pileup ID mask
+    auto mask = (select_jet(pt, eta, id, min_pt, abs_max_eta, id_wp,
+                            apply_jet_horn_veto) &&
+                 puid_mask);
 
-  return mask;
+    return mask;
 }
 
 // function xyh::object_selection::electron
