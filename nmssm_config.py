@@ -1558,6 +1558,63 @@ def add_bjet_config(configuration: Configuration, sample_types: list[str]):
 
     # corrections for b jet identification
     configuration.add_config_parameters(
+        ET_SCOPES + EE_SCOPES,
+        {
+            "bjet_eff_file": EraModifier(
+                {
+                    "2016preVFP": "TO_ADD",
+                    "2016postVFP": "TO_ADD",
+                    "2017": "TO_ADD",
+                    "2018": "TO_ADD",
+                    "2022preEE": "TO_ADD",
+                    "2022postEE": "TO_ADD",
+                    "2023preBPix": "TO_ADD",
+                    "2023postBPix": "TO_ADD",
+                    "2024": "payloads/btagging_efficiencies/btag_efficiency_2024_et.json.gz",
+                }
+            ),
+        },
+    )
+
+    configuration.add_config_parameters(
+        MT_SCOPES + MM_SCOPES + EM_SCOPES,
+        {
+            "bjet_eff_file": EraModifier(
+                {
+                    "2016preVFP": "TO_ADD",
+                    "2016postVFP": "TO_ADD",
+                    "2017": "TO_ADD",
+                    "2018": "TO_ADD",
+                    "2022preEE": "TO_ADD",
+                    "2022postEE": "TO_ADD",
+                    "2023preBPix": "TO_ADD",
+                    "2023postBPix": "TO_ADD",
+                    "2024": "payloads/btagging_efficiencies/btag_efficiency_2024_mt.json.gz",
+                }
+            ),
+        },
+    )
+
+    configuration.add_config_parameters(
+        TT_SCOPES,
+        {
+            "bjet_eff_file": EraModifier(
+                {
+                    "2016preVFP": "TO_ADD",
+                    "2016postVFP": "TO_ADD",
+                    "2017": "TO_ADD",
+                    "2018": "TO_ADD",
+                    "2022preEE": "TO_ADD",
+                    "2022postEE": "TO_ADD",
+                    "2023preBPix": "TO_ADD",
+                    "2023postBPix": "TO_ADD",
+                    "2024": "payloads/btagging_efficiencies/btag_efficiency_2024_tt.json.gz",
+                }
+            ),
+        },
+    )
+
+    configuration.add_config_parameters(
         SCOPES,
         {
             "bjet_sf_file": EraModifier(
@@ -1585,19 +1642,6 @@ def add_bjet_config(configuration: Configuration, sample_types: list[str]):
                     "2023postBPix": "TO_ADD",
                     "2024": "UParTAK4_wp_values",
                 },
-            ),
-            "bjet_eff_file": EraModifier(
-                {
-                    "2016preVFP": "TO_ADD",
-                    "2016postVFP": "TO_ADD",
-                    "2017": "TO_ADD",
-                    "2018": "TO_ADD",
-                    "2022preEE": "TO_ADD",
-                    "2022postEE": "TO_ADD",
-                    "2023preBPix": "TO_ADD",
-                    "2023postBPix": "TO_ADD",
-                    "2024": "payloads/btagging_efficiencies/btag_efficiency_2024.json.gz",
-                }
             ),
             "bjet_eff_sample_type": SampleModifier(
                 {
