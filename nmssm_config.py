@@ -1229,7 +1229,7 @@ def add_ak4jet_config(configuration: Configuration):
         "global",
         {
             "ak4jet_min_pt": 30.0,
-            "ak4jet_max_abs_eta": 4.7,
+            "ak4jet_max_abs_eta": 2.5,
             "ak4jet_id_wp": 2,  # 0 == fail, 2 == pass(tight) & fail(tightLepVeto), 6 == pass(tight) & pass(tightLepVeto)
             "ak4jet_apply_jet_horn_veto": "true",
             "ak4jet_puid_wp": EraModifier(
