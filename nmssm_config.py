@@ -1662,7 +1662,7 @@ def add_bjet_config(configuration: Configuration, sample_types: list[str]):
                         ]
                     },
                     **{
-                        sample_type: "dyjets"
+                        sample_type: "ggh_htautau"
                         for sample_type in [
                             "ggh_htautau",
                             "ggh_hbb",
@@ -1685,6 +1685,12 @@ def add_bjet_config(configuration: Configuration, sample_types: list[str]):
                         for sample_type in [
                             "ttbar",
                             "rem_ttbar",
+                        ]
+                    },
+                    **{
+                        sample_type: "singletop"
+                        for sample_type in [
+                            "singletop",
                         ]
                     },
                     **{
