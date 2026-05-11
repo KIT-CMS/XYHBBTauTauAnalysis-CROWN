@@ -728,3 +728,17 @@ Type1Jet_l1Pt = Quantity("Type1Jet_l1Pt")
 Type1Jet_l2relPt = Quantity("Type1Jet_l2relPt")
 Type1Jet_l2l3resPt = Quantity("Type1Jet_l2l3resPt")
 Type1Jet_correctedPt = Quantity("Type1Jet_correctedPt")
+
+# ------------------------------------------------------------------------------
+# Fake factor quantities
+# ------------------------------------------------------------------------------
+
+# Fake factor outputs in semileptonic channels
+ff_input_qcd = Quantity("ff_input_qcd")
+ff_input_tt = Quantity("ff_input_tt")
+ff_input_fraction = Quantity("ff_input_fraction")
+ff_corr_dr_sr_input_qcd = Quantity("ff_corr_dr_sr_input_qcd")
+ff_corr_closure_input_qcd = Quantity("ff_corr_closure_input_qcd")
+ff_corr_closure_input_tt = Quantity("ff_corr_closure_input_tt")
+fake_factor_raw = Quantity("fake_factor_raw")
+fake_factor = Quantity("fake_factor")

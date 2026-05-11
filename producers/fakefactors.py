@@ -2,6 +2,188 @@ from ..quantities import output as q
 from ..quantities import nanoAOD as nanoAOD
 from code_generation.producer import Producer
 
+from ..constants import SL_SCOPES
+
+# ------------------------------------------------------------------------------
+# Fake factor inputs for semileptonic channels
+# ------------------------------------------------------------------------------
+
+FakeFactorSemileptonicQCDInput = Producer(
+    name="FakeFactorSemileptonicQCDInput",
+    call="""
+    fakefactors::BuildFloatVector(
+        {df},
+        {output},
+        {vec_open}{input}{vec_close}
+    )
+    """,
+    input=[
+        q.pt_2,
+        q.n_jets,
+    ],
+    output=[q.ff_input_qcd],
+    scopes=SL_SCOPES,
+)
+
+FakeFactorSemileptonicTTInput = Producer(
+    name="FakeFactorSemileptonicTTInput",
+    call="""
+    fakefactors::BuildFloatVector(
+        {df},
+        {output},
+        {vec_open}{input}{vec_close}
+    )
+    """,
+    input=[
+        q.pt_2,
+        q.n_jets,
+    ],
+    output=[q.ff_input_tt],
+    scopes=SL_SCOPES,
+)
+
+FakeFactorSemileptonicFractionInput = Producer(
+    name="FakeFactorSemileptonicFractionInput",
+    call="""
+    fakefactors::BuildFloatVector(
+        {df},
+        {output},
+        {vec_open}{input}{vec_close}
+    )
+    """,
+    input=[
+        q.m_vis,
+        q.n_bjets,
+    ],
+    output=[q.ff_input_fraction],
+    scopes=SL_SCOPES,
+)
+
+FakeFactorDRSRCorrectionSemileptonicQCDInput = Producer(
+    name="FakeFactorDRSRCorrectionSemileptonicQCDInput",
+    call="""
+    fakefactors::BuildFloatVector(
+        {df},
+        {output},
+        {vec_open}{input}{vec_close}
+    )
+    """,
+    input=[
+        q.m_vis,
+    ],
+    output=[q.ff_corr_dr_sr_input_qcd],
+    scopes=SL_SCOPES,
+)
+
+FakeFactorClosureCorrectionSemileptonicQCDInput = Producer(
+    name="FakeFactorClosureCorrectionSemileptonicQCDInput",
+    call="""
+    fakefactors::BuildFloatVector(
+        {df},
+        {output},
+        {vec_open}{input}{vec_close}
+    )
+    """,
+    input=[
+        q.pt_1,
+        q.tau_decaymode_2,
+        q.mass_2,
+    ],
+    output=[q.ff_corr_closure_input_qcd],
+    scopes=SL_SCOPES,
+)
+
+FakeFactorClosureCorrectionSemileptonicTTInput = Producer(
+    name="FakeFactorClosureCorrectionSemileptonicTTInput",
+    call="""
+    fakefactors::BuildFloatVector(
+        {df},
+        {output},
+        {vec_open}{input}{vec_close}
+    )
+    """,
+    input=[
+        q.pt_1,
+        q.tau_decaymode_2,
+        q.mass_2,
+    ],
+    output=[q.ff_corr_closure_input_tt],
+    scopes=SL_SCOPES,
+)
+
+# ------------------------------------------------------------------------------
+# Fake factors for semileptonic channels
+# ------------------------------------------------------------------------------
+
+# Raw fake factor without any corrections applied
+RawFakeFactorSemileptonic = Producer(
+    name="RawFakeFactorSemileptonic",
+    call="""
+    fakefactors::xyh::RawFakeFactorSemileptonic(
+        {df},
+        correctionManager,
+        {output},
+        {input},
+        "{ff_file}",
+        "{ff_qcd_name}",
+        "{ff_tt_name}",
+        "{ff_fraction_name}",
+        "{ff_qcd_variation}",
+        "{ff_tt_variation}",
+        "{ff_fraction_variation}"
+    )
+    """,
+    input=[
+        q.ff_input_qcd,
+        q.ff_input_tt,
+        q.ff_input_fraction,
+    ],
+    output=[q.fake_factor_raw],
+    scopes=SL_SCOPES,
+)
+
+# Fake factor including DR/SR and closure corrections
+FakeFactorSemileptonic = Producer(
+    name="FakeFactorSemileptonic",
+    call="""
+    fakefactors::xyh::FakeFactorSemileptonic(
+        {df},
+        correctionManager,
+        {output},
+        {input},
+        "{ff_file}",
+        "{ff_qcd_name}",
+        "{ff_tt_name}",
+        "{ff_fraction_name}",
+        "{ff_corr_file}",
+        "{ff_corr_dr_sr_qcd_name}",
+        "{ff_corr_closure_qcd_name}",
+        "{ff_corr_closure_tt_name}",
+        "{ff_qcd_variation}",
+        "{ff_tt_variation}",
+        "{ff_fraction_variation}",
+        "{ff_dr_sr_corr_qcd_variation}",
+        "{ff_closure_corr_qcd_variation}",
+        "{ff_closure_corr_tt_variation}"
+    )
+    """,
+    input=[
+        q.ff_input_qcd,
+        q.ff_input_tt,
+        q.ff_input_fraction,
+        q.ff_corr_dr_sr_input_qcd,
+        q.ff_corr_closure_input_qcd,
+        q.ff_corr_closure_input_tt,
+    ],
+    output=[q.fake_factor],
+    scopes=SL_SCOPES,
+)
+
+
+# ------------------------------------------------------------------------------
+# Fake factors for NMSSM analysis (old)
+# ------------------------------------------------------------------------------
+
 RawFakeFactors_nmssm_lt = Producer(
     name="RawFakeFactors_nmssm_lt",
     call='fakefactors::raw_fakefactor_nmssm_lt({df}, {output}, {input}, "{qcd_ff_variation}", "{wjets_ff_variation}", "{ttbar_ff_variation}", "{fraction_variation}", "{ff_file}")',
