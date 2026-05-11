@@ -2,11 +2,38 @@
 #define GUARDFAKEFACTORS_H
 
 #include "ROOT/RDataFrame.hxx"
+#include "correction.h"
+
 namespace fakefactors {
 
 ROOT::RDF::RNode
 BuildFloatVector(ROOT::RDF::RNode df, const std::string &output,
                  const std::vector<std::string> &input_columns);
+
+namespace util {
+
+std::vector<correction::Variable::Type>
+to_clib_input(const std::vector<double> &vector);
+
+void prepend(std::vector<correction::Variable::Type> &vector,
+             const correction::Variable::Type &value);
+
+void append(std::vector<correction::Variable::Type> &vector,
+            const correction::Variable::Type &value);
+
+const std::vector<correction::Variable::Type>
+prepare_ff_input(const std::vector<double> &vector,
+                 const std::string &variation);
+
+const std::vector<correction::Variable::Type>
+prepare_fractions_input(const std::vector<double> &vector,
+                        const std::string &process,
+                        const std::string &variation);
+
+std::string join(const std::vector<correction::Variable::Type> &vector);
+
+} // end namespace util
+
 ROOT::RDF::RNode raw_fakefactor_nmssm_lt(
     ROOT::RDF::RNode df, const std::string &outputname,
     const std::string &tau_pt, const std::string &njets,

@@ -4,6 +4,8 @@
 #include "../../../../include/utility/Logger.hxx"
 #include "ROOT/RDataFrame.hxx"
 #include "correction.h"
+#include "fmt/ranges.h"
+#include <sstream>
 
 namespace fakefactors {
 
@@ -34,6 +36,68 @@ BuildFloatVector(ROOT::RDF::RNode df, const std::string &output,
 
   return df.Define(output, expression);
 }
+
+// ----------------------------------------------------------------------------
+// Utility functions for correctionlib input vector creation, manipulation, and
+// inspection
+// ----------------------------------------------------------------------------
+
+namespace util {
+
+std::vector<correction::Variable::Type>
+to_clib_input(const std::vector<double> &vector) {
+  // Copy vector of doubles to expected correctionlib input
+  return std::vector<correction::Variable::Type>(vector.begin(), vector.end());
+}
+
+void prepend(std::vector<correction::Variable::Type> &vector,
+             const correction::Variable::Type &value) {
+  // Prepend a value to a correctionlib input vector
+  vector.insert(vector.begin(), value);
+}
+
+void append(std::vector<correction::Variable::Type> &vector,
+            const correction::Variable::Type &value) {
+  // Append a value to a correctionlib input vector
+  vector.insert(vector.end(), value);
+}
+
+const std::vector<correction::Variable::Type>
+prepare_ff_input(const std::vector<double> &vector,
+                 const std::string &variation) {
+  // Convert vector of doubles to vector of correction::Variable::Type and
+  // append the systematic variation
+  auto input = to_clib_input(vector);
+  append(input, variation);
+  return input;
+}
+
+const std::vector<correction::Variable::Type>
+prepare_fractions_input(const std::vector<double> &vector,
+                        const std::string &process,
+                        const std::string &variation) {
+  // Convert vector of doubles to vector of correction::Variable::Type,
+  // add process type, and append the systematic variation
+  auto input = to_clib_input(vector);
+  prepend(input, process);
+  append(input, variation);
+  return input;
+}
+
+std::string join(const std::vector<correction::Variable::Type> &vector) {
+  // Join all elements of a correctionlib input vector to a string
+  std::ostringstream os;
+  bool first = true;
+  for (const auto &v : vector) {
+    if (!first)
+      os << ", ";
+    first = false;
+    std::visit([&os](auto &&x) { os << x; }, v);
+  }
+  return os.str();
+}
+
+} // end namespace util
 
 /**
  * @brief Function to calculate raw fake factors without corrections with
