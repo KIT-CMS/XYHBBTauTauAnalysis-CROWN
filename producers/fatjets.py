@@ -6,6 +6,7 @@ Producers for AK8 jet energy scale and resolution corrections, object selections
 
 from ..quantities import output as q
 from ..quantities import nanoAOD as nanoAOD
+from analysis_configurations.quantities import nanoAODv12_run3
 from code_generation.producer import Producer, ProducerGroup
 
 from ._helpers import jerc_producer_factory
@@ -16,37 +17,6 @@ from ..constants import SCOPES, GLOBAL_SCOPES
 # JET ENERGY SCALE AND RESOLUTION CORRECTIONS
 #
 
-
-# create jet energy correction producers for AK8 jets (Run 2)
-FatJetEnergyCorrection_data_Run2, FatJetEnergyCorrectionRun2, RenameFatJetsDataRun2 = jerc_producer_factory(
-    input={
-        "jet_pt": nanoAOD.FatJet_pt,
-        "jet_eta": nanoAOD.FatJet_eta,
-        "jet_phi": nanoAOD.FatJet_phi,
-        "jet_mass": nanoAOD.FatJet_mass,
-        "jet_area": nanoAOD.FatJet_area,
-        "jet_raw_factor": nanoAOD.FatJet_rawFactor,
-        "jet_id": nanoAOD.FatJet_jetId,
-        "gen_jet_pt": nanoAOD.GenJetAK8_pt,
-        "gen_jet_eta": nanoAOD.GenJetAK8_eta,
-        "gen_jet_phi": nanoAOD.GenJetAK8_phi,
-        "rho": nanoAOD.Rho_fixedGridRhoFastjetAll,
-        "luminosity_block": nanoAOD.luminosityBlock,
-        "run": nanoAOD.run,
-        "event": nanoAOD.event,
-    },
-    output={
-        "jet_pt_corrected": q.FatJet_pt_corrected,
-        "jet_mass_corrected": q.FatJet_mass_corrected,
-    },
-    scopes=GLOBAL_SCOPES,
-    producer_prefix="FatJet",
-    config_parameter_prefix="ak8jet",
-    lhc_run=2,
-)
-
-
-
 # create jet energy correction producers for AK8 jets
 FatJetEnergyCorrection_data, FatJetEnergyCorrection, RenameFatJetsData = jerc_producer_factory(
     input={
@@ -56,7 +26,7 @@ FatJetEnergyCorrection_data, FatJetEnergyCorrection, RenameFatJetsData = jerc_pr
         "jet_mass": nanoAOD.FatJet_mass,
         "jet_area": nanoAOD.FatJet_area,
         "jet_raw_factor": nanoAOD.FatJet_rawFactor,
-        "jet_id": nanoAOD.FatJet_jetId,
+        "jet_id": q.FatJet_ID_corrected,
         "gen_jet_pt": nanoAOD.GenJetAK8_pt,
         "gen_jet_eta": nanoAOD.GenJetAK8_eta,
         "gen_jet_phi": nanoAOD.GenJetAK8_phi,
@@ -66,13 +36,13 @@ FatJetEnergyCorrection_data, FatJetEnergyCorrection, RenameFatJetsData = jerc_pr
         "event": nanoAOD.event,
     },
     output={
+        "jet_seed": q.fatjet_seed,
         "jet_pt_corrected": q.FatJet_pt_corrected,
         "jet_mass_corrected": q.FatJet_mass_corrected,
     },
     scopes=GLOBAL_SCOPES,
     producer_prefix="FatJet",
     config_parameter_prefix="ak8jet",
-    lhc_run=3,
 )
 
 
@@ -80,6 +50,32 @@ FatJetEnergyCorrection_data, FatJetEnergyCorrection, RenameFatJetsData = jerc_pr
 # AK8 JET SELECTION
 #
 
+# Calculate the jet ID values for run 3 (nanoAOD v15, 2024)
+FatJetIDRun3NanoV15 = Producer(
+    name="FatJetIDRun3",
+    call="physicsobject::jet::quantity::ID({df}, correctionManager, {output}, {input}, \"{ak8jet_id_file}\", \"{ak8jet_id_name}\")",
+    input=[
+        nanoAOD.FatJet_eta,
+        nanoAOD.FatJet_chHEF,
+        nanoAOD.FatJet_neHEF,
+        nanoAOD.FatJet_chEmEF,
+        nanoAOD.FatJet_neEmEF,
+        nanoAOD.FatJet_muEF,
+        nanoAOD.FatJet_chMultiplicity,
+        nanoAOD.FatJet_neMultiplicity,
+    ],
+    output=[q.FatJet_ID_corrected],
+    scopes=GLOBAL_SCOPES,
+)
+
+# for Run 2, the Jet ID implementation is correct, just rename the column
+FatJetIDRun2 = Producer(
+    name="JetIDRun2",
+    call="event::quantity::Rename<ROOT::RVec<Int_t>>({df}, {output}, {input})",
+    input=[nanoAODv12_run3.FatJet_jetId],
+    output=[q.FatJet_ID_corrected],
+    scopes=GLOBAL_SCOPES,
+)
 
 # jet selection not applying the pileup ID (for PUPPI jets)
 GoodFatJetsWithoutPUID = Producer(
@@ -88,7 +84,7 @@ GoodFatJetsWithoutPUID = Producer(
     input=[
         q.FatJet_pt_corrected,
         nanoAOD.FatJet_eta,
-        nanoAOD.FatJet_jetId,
+        q.FatJet_ID_corrected,
     ],
     output=[q.good_fatjets_mask],
     scopes=GLOBAL_SCOPES,
@@ -559,14 +555,28 @@ fj_Xbb_hadflavor = Producer(
 fj_Xbb_nBhad = Producer(
     name="fj_Xbb_nBhad",
     call="event::quantity::Get<UChar_t>({df}, {output}, {input}, 0)",
-    input=[nanoAOD.FatJet_nBHadrons, q.Xbb_fatjet],
+    input=[nanoAODv12_run3.FatJet_nBHadrons, q.Xbb_fatjet],
     output=[q.fj_Xbb_nBhad],
     scopes=SCOPES,
 )
 fj_Xbb_nChad = Producer(
     name="fj_Xbb_nChad",
     call="event::quantity::Get<UChar_t>({df}, {output}, {input}, 0)",
-    input=[nanoAOD.FatJet_nCHadrons, q.Xbb_fatjet],
+    input=[nanoAODv12_run3.FatJet_nCHadrons, q.Xbb_fatjet],
+    output=[q.fj_Xbb_nChad],
+    scopes=SCOPES,
+)
+fj_Xbb_nBhad_v15 = Producer(
+    name="fj_Xbb_nBhad_v15",
+    call="event::quantity::GetGenJetForJet<UChar_t>({df}, {output}, {input}, 0)",
+    input=[nanoAOD.GenJetAK8_nBHadrons, nanoAOD.FatJet_genJetAK8Idx, q.Xbb_fatjet],
+    output=[q.fj_Xbb_nBhad],
+    scopes=SCOPES,
+)
+fj_Xbb_nChad_v15 = Producer(
+    name="fj_Xbb_nChad_v15",
+    call="event::quantity::GetGenJetForJet<UChar_t>({df}, {output}, {input}, 0)",
+    input=[nanoAOD.GenJetAK8_nCHadrons, nanoAOD.FatJet_genJetAK8Idx, q.Xbb_fatjet],
     output=[q.fj_Xbb_nChad],
     scopes=SCOPES,
 )
@@ -587,8 +597,6 @@ BasicXbbFatJetQuantities = ProducerGroup(
         fj_Xbb_nsubjettiness_2over1,
         fj_Xbb_nsubjettiness_3over2,
         fj_Xbb_hadflavor,
-        fj_Xbb_nBhad,
-        fj_Xbb_nChad,
     ],
 )
 
@@ -682,15 +690,29 @@ fj_Xbb_hadflavor_boosted = Producer(
 fj_Xbb_nBhad_boosted = Producer(
     name="fj_Xbb_nBhad_boosted",
     call="event::quantity::Get<UChar_t>({df}, {output}, {input}, 0)",
-    input=[nanoAOD.FatJet_nBHadrons, q.Xbb_fatjet_boosted],
+    input=[nanoAODv12_run3.FatJet_nBHadrons, q.Xbb_fatjet_boosted],
     output=[q.fj_Xbb_nBhad_boosted],
     scopes=SCOPES,
 )
 fj_Xbb_nChad_boosted = Producer(
     name="fj_Xbb_nChad_boosted",
     call="event::quantity::Get<UChar_t>({df}, {output}, {input}, 0)",
-    input=[nanoAOD.FatJet_nCHadrons, q.Xbb_fatjet_boosted],
+    input=[nanoAODv12_run3.FatJet_nCHadrons, q.Xbb_fatjet_boosted],
     output=[q.fj_Xbb_nChad_boosted],
+    scopes=SCOPES,
+)
+fj_Xbb_nBhad_boosted_v15 = Producer(
+    name="fj_Xbb_nBhad_boosted_v15",
+    call="event::quantity::GetGenJetForJet<UChar_t>({df}, {output}, {input}, 0)",
+    input=[nanoAOD.GenJetAK8_nBHadrons, nanoAOD.FatJet_genJetAK8Idx, q.Xbb_fatjet_boosted],
+    output=[q.fj_Xbb_nBhad],
+    scopes=SCOPES,
+)
+fj_Xbb_nChad_boosted_v15 = Producer(
+    name="fj_Xbb_nChad_boosted_v15",
+    call="event::quantity::GetGenJetForJet<UChar_t>({df}, {output}, {input}, 0)",
+    input=[nanoAOD.GenJetAK8_nCHadrons, nanoAOD.FatJet_genJetAK8Idx, q.Xbb_fatjet_boosted],
+    output=[q.fj_Xbb_nChad],
     scopes=SCOPES,
 )
 BasicXbbFatJetQuantities_boosted = ProducerGroup(
@@ -710,8 +732,6 @@ BasicXbbFatJetQuantities_boosted = ProducerGroup(
         fj_Xbb_nsubjettiness_2over1_boosted,
         fj_Xbb_nsubjettiness_3over2_boosted,
         fj_Xbb_hadflavor_boosted,
-        fj_Xbb_nBhad_boosted,
-        fj_Xbb_nChad_boosted,
     ],
 )
 LVLeadingFatJet = Producer(

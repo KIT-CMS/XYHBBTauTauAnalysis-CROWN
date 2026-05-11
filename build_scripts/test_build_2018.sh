@@ -14,7 +14,7 @@ main () {
 
     # get the CROWN directories
     local crown_dir="$( cd "${this_dir}/../../.." && pwd )"
-    local crown_build_dir="${crown_dir}/build_2023preBPix"
+    local crown_build_dir="${crown_dir}/build_2018"
     local crown_bin_dir="${crown_build_dir}/bin"
 
     # create the build directory if it does not exist
@@ -25,14 +25,14 @@ main () {
     # define fixed parameters of the compilation process
     local analysis="xyh_bbtautau"
     local config="nmssm_config"
-    local era="2023preBPix"
+    local era="2018"
     local shifts="none"
     local threads="$( [[ "${debug}" == true ]] && echo "1" || echo "4" )"
     local cores="16"
 
     # split the samples string into an array
     if [[ "${samples}" == "all" ]]; then
-        samples="data,nmssm_Ybb,ttbar,dyjets_amcatnlo_ll"
+        samples="data,ttbar,dyjets"  # nmssm_Ybb
     fi
     declare -a samples_list
     IFS="," read -ra samples_list <<< "${samples}"
@@ -44,10 +44,10 @@ main () {
 
     # build associative array of test files for different sample types
     declare -A test_files_list
-    test_files_list[data]="root://xrootd-cms.infn.it///store/data/Run2023C/Muon0/NANOAOD/22Sep2023_v1-v1/30000/0ceac210-9c0b-49a3-baea-ea57c85de9d4.root"
+    test_files_list[data]="root://xrootd-cms.infn.it///store/user/aakhmets/SingleMuon/data_2018UL_singlemuon_SingleMuon_Run2018A_1729863731/241025_134540/0000/nano_7.root"
     #test_files_list[nmssm_Ybb]=""
-    test_files_list[ttbar]="root://xrootd-cms.infn.it///store/mc/Run3Summer23NanoAODv12/TTto2L2Nu_TuneCP5_13p6TeV_powheg-pythia8/NANOAODSIM/130X_mcRun3_2023_realistic_v14-v2/70000/428c6754-4ad2-4c2f-8ec6-4f2b5dc60758.root"
-    test_files_list[dyjets_amcatnlo_ll]="root://xrootd-cms.infn.it///store/mc/Run3Summer23NanoAODv12/DYto2L-2Jets_MLL-50_0J_TuneCP5_13p6TeV_amcatnloFXFX-pythia8/NANOAODSIM/130X_mcRun3_2023_realistic_v14-v3/2820000/21ad2859-37a5-436b-82f9-51b55cf93ba0.root"
+    test_files_list[ttbar]="root://xrootd-cms.infn.it///store/user/aakhmets/TTTo2L2Nu_TuneCP5_13TeV-powheg-pythia8/mc_2018UL_ttbar_TTTo2L2Nu_1729599001/241022_121510/0000/nanosim_84.root"
+    test_files_list[dyjets]="root://xrootd-cms.infn.it///store/user/sdaigler/DYJetsToLL_M-50_TuneCP5_13TeV-madgraphMLM-pythia8/mc_2018UL_DY_DYJetsToLL_1734539918/241218_164017/0000/nanosim_196.root"
 
     # configure and compile the project
     if [[ "${steps}" == "build" || "${steps}" == "all" ]]; then

@@ -24,7 +24,7 @@ SingleEleTriggerFlags = ExtendedVectorProducer(
     ],
     output="flagname",
     scope=ELECTRON_SCOPES,
-    vec_config="single_ele_trigger",
+    vec_config="ele_trigger",
 )
 
 # double electron-tau trigger flags, including trigger object matching
@@ -69,7 +69,7 @@ SingleMuTriggerFlags = ExtendedVectorProducer(
     },
     output="flagname",
     scope=MUON_SCOPES,
-    vec_config="single_mu_trigger",
+    vec_config="mu_trigger",
 )
 
 # double muon-tau trigger flags, including trigger object matching
@@ -96,8 +96,8 @@ DoubleMuTauTriggerFlags = ExtendedVectorProducer(
 #
 
 # double tau-tau trigger flags, including trigger object matching
-DoubleTauTauTriggerFlags = ExtendedVectorProducer(
-    name="DoubleTauTauTriggerFlags",
+TauTauTriggerFlags = ExtendedVectorProducer(
+    name="TauTauTriggerFlags",
     call='trigger::DoubleObjectFlag({df}, {output}, {input}, "{hlt_path}", {p1_min_pt}, {p2_min_pt}, {p1_max_abs_eta}, {p2_max_abs_eta}, {p1_particle_id}, {p2_particle_id}, {p1_filter_bit}, {p2_filter_bit}, {match_max_delta_r})',
     input=[
         q.p4_1,
@@ -110,12 +110,12 @@ DoubleTauTauTriggerFlags = ExtendedVectorProducer(
     ],
     output="flagname",
     scope=TT_SCOPES,
-    vec_config="double_tautau_trigger",
+    vec_config="tautau_trigger",
 )
 
 # double tau-tau + jet trigger flags, including trigger object matching
-DoubleTauTauJetTriggerFlags = ExtendedVectorProducer(
-    name="DoubleTauTauJetTriggerFlags",
+TauTauJetTriggerFlags = ExtendedVectorProducer(
+    name="TauTauJetTriggerFlags",
     call='trigger::DoubleObjectFlag({df}, {output}, {input}, "{hlt_path}", {p1_min_pt}, {p2_min_pt}, {p1_max_abs_eta}, {p2_max_abs_eta}, {p1_particle_id}, {p2_particle_id}, {p1_filter_bit}, {p2_filter_bit}, {match_max_delta_r})',
     input=[
         q.p4_1,
@@ -128,7 +128,7 @@ DoubleTauTauJetTriggerFlags = ExtendedVectorProducer(
     ],
     output="flagname",
     scope=TT_SCOPES,
-    vec_config="double_tautau_jet_trigger",
+    vec_config="tautaujet_trigger",
 )
 
 

@@ -118,7 +118,6 @@ BoostedExtraMuonsVeto = Producer(
 # DI-MUON VETO
 #
 
-
 DiMuonVeto = Producer(
     name="DiMuonVeto",
     call="xyh::vetoes::dimuon({df}, {output}, {input}, {dimu_muon_min_pt}, {dimu_muon_max_abs_eta}, {dimu_muon_max_iso}, {dimu_muon_max_abs_dxy}, {dimu_muon_max_abs_dz}, {dimu_muon_min_delta_r})",

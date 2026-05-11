@@ -6,9 +6,7 @@
 #include "ROOT/RDataFrame.hxx"
 #include <regex>
 
-
 namespace trigger {
-
 
 /**
  * @brief Function to generate a trigger flag based on an hlt path.
@@ -22,23 +20,21 @@ namespace trigger {
  * @return a new dataframe containing the trigger flag column
  */
 
-ROOT::RDF::RNode GenerateTriggerFlag(
-    ROOT::RDF::RNode df, const std::string &triggerflag_name,
-    const std::string &hltpath) {
+ROOT::RDF::RNode GenerateTriggerFlag(ROOT::RDF::RNode df,
+                                     const std::string &triggerflag_name,
+                                     const std::string &hltpath) {
 
-    auto triggermatch =
-        [hltpath](bool hltpath_match) {
-            Logger::get("GenerateTriggerFlag")->debug("Checking Trigger");
-            Logger::get("CheckTriggerMatch")
-                    ->debug("Selected trigger: {}", hltpath);
-            bool result = false;
-            result = hltpath_match;
-            Logger::get("GenerateTriggerFlag")
-                ->debug("---> HLT Match: {}", hltpath_match);
-            Logger::get("GenerateTriggerFlag")
-                ->debug("--->>>> result: {}", result);
-            return result;
-        };
+    auto triggermatch = [hltpath](bool hltpath_match) {
+        Logger::get("GenerateTriggerFlag")->debug("Checking Trigger");
+        Logger::get("CheckTriggerMatch")
+            ->debug("Selected trigger: {}", hltpath);
+        bool result = false;
+        result = hltpath_match;
+        Logger::get("GenerateTriggerFlag")
+            ->debug("---> HLT Match: {}", hltpath_match);
+        Logger::get("GenerateTriggerFlag")->debug("--->>>> result: {}", result);
+        return result;
+    };
     auto available_trigger = df.GetColumnNames();
     std::vector<std::string> matched_trigger_names;
     std::regex hltpath_regex = std::regex(hltpath);
@@ -68,14 +64,12 @@ ROOT::RDF::RNode GenerateTriggerFlag(
     } else {
         Logger::get("GenerateTriggerFlag")
             ->debug("Found matching trigger: {}", matched_trigger_names[0]);
-        auto df1 =
-            df.Define(triggerflag_name, triggermatch,
-                      {matched_trigger_names[0]});
+        auto df1 = df.Define(triggerflag_name, triggermatch,
+                             {matched_trigger_names[0]});
         return df1;
     }
 }
 
-} // end trigger
-
+} // namespace trigger
 
 #endif // end GUARD_TRIGGERSEXT_H

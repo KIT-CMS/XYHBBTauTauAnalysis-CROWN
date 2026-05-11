@@ -12,42 +12,9 @@ from ..constants import HAD_TAU_SCOPES
 # ENERGY SCALE CORRECTIONS
 #
 
-# tau pt correction for Run 2
-TauPtCorrectionRun2 = Producer(
-    name="TauPtCorrectionRun2",
-    call="""
-        physicsobject::tau::PtCorrectionMC(
-            {df},
-            correctionManager,
-            {output},
-            {input},
-            "{tau_ides_sf_file}",
-            "{tau_ES_json_name}",
-            "{tau_id_algorithm}",
-            "{tau_elefake_es_DM0_barrel}",
-            "{tau_elefake_es_DM1_barrel}",
-            "{tau_elefake_es_DM0_endcap}",
-            "{tau_elefake_es_DM1_endcap}",
-            "{tau_mufake_es}",
-            "{tau_ES_shift_DM0}",
-            "{tau_ES_shift_DM1}",
-            "{tau_ES_shift_DM10}",
-            "{tau_ES_shift_DM11}"
-        )
-    """,
-    input=[
-        nanoAOD.Tau_pt,
-        nanoAOD.Tau_eta,
-        nanoAOD.Tau_decayMode,
-        nanoAOD.Tau_genPartFlav,
-    ],
-    output=[q.Tau_pt_corrected],
-    scopes=HAD_TAU_SCOPES,
-)
-
-# tau pt correction for Run 3
-TauPtCorrectionRun3 = Producer(
-    name="TauPtCorrectionRun3",
+# Hadronic tau pt correction for DeepTau v2.5
+TauPtCorrectionMC = Producer(
+    name="TauPtCorrectionMC",
     call="""
         physicsobject::tau::PtCorrectionMC(
             {df},
@@ -80,7 +47,103 @@ TauPtCorrectionRun3 = Producer(
     scopes=HAD_TAU_SCOPES,
 )
 
-# pt correction for hadronic taus in embedding samples
+# Tau mass correction, derived from the change of the tau pt due to the 
+# correction
+TauMassCorrection = Producer(
+    name="TauMassCorrection",
+    call="physicsobject::MassCorrectionWithPt({df}, {output}, {input})",
+    input=[
+        nanoAOD.Tau_mass,
+        nanoAOD.Tau_pt,
+        q.Tau_pt_corrected,
+    ],
+    output=[q.Tau_mass_corrected],
+    scopes=HAD_TAU_SCOPES,
+)
+
+# Rename the hadronic tau pt in data (no correction applied)
+RenameTauPt = Producer(
+    name="RenameTauPt",
+    call="event::quantity::Rename<ROOT::RVec<float>>({df}, {output}, {input})",
+    input=[nanoAOD.Tau_pt],
+    output=[q.Tau_pt_corrected],
+    scopes=HAD_TAU_SCOPES,
+)
+
+# Rename the hadronic tau mass in data (no correction applied)
+RenameTauMass = Producer(
+    name="RenameTauMass",
+    call="event::quantity::Rename<ROOT::RVec<float>>({df}, {output}, {input})",
+    input=[nanoAOD.Tau_mass],
+    output=[q.Tau_mass_corrected],
+    scopes=HAD_TAU_SCOPES,
+)
+
+# Producer group encapsulating all tau energy scale corrections in MC samples
+TauEnergyCorrectionMC = ProducerGroup(
+    name="TauEnergyCorrectionMC",
+    call=None,
+    input=None,
+    output=None,
+    scopes=HAD_TAU_SCOPES,
+    subproducers=[
+        TauPtCorrectionMC,
+        TauMassCorrection,
+    ],
+)
+
+# producer group encapsulating dummy tau energy scale corrections in data
+TauEnergyCorrectionData = ProducerGroup(
+    name="TauEnergyCorrectionData",
+    call=None,
+    input=None,
+    output=None,
+    scopes=HAD_TAU_SCOPES,
+    subproducers=[
+        RenameTauPt,
+        RenameTauMass,
+    ],
+)
+
+
+#
+# RUN 2 TAU ENERGY CORRECTION PRODUCERS (DEPRECATED)
+#
+
+# Hadronic tau pt correction for DeepTau v2.1 (deprectated)
+TauPtCorrectionMCDeepTau2p1 = Producer(
+    name="TauPtCorrectionMCDeepTau2p1",
+    call="""
+        physicsobject::tau::PtCorrectionMC(
+            {df},
+            correctionManager,
+            {output},
+            {input},
+            "{tau_ides_sf_file}",
+            "{tau_ES_json_name}",
+            "{tau_id_algorithm}",
+            "{tau_elefake_es_DM0_barrel}",
+            "{tau_elefake_es_DM1_barrel}",
+            "{tau_elefake_es_DM0_endcap}",
+            "{tau_elefake_es_DM1_endcap}",
+            "{tau_mufake_es}",
+            "{tau_ES_shift_DM0}",
+            "{tau_ES_shift_DM1}",
+            "{tau_ES_shift_DM10}",
+            "{tau_ES_shift_DM11}"
+        )
+    """,
+    input=[
+        nanoAOD.Tau_pt,
+        nanoAOD.Tau_eta,
+        nanoAOD.Tau_decayMode,
+        nanoAOD.Tau_genPartFlav,
+    ],
+    output=[q.Tau_pt_corrected],
+    scopes=HAD_TAU_SCOPES,
+)
+
+# pt correction for hadronic taus in embedding samples (deprecated)
 TauPtCorrection_byValue = Producer(
     name="TauPtCorrection",
     call="embedding::tau::PtCorrection_byValue({df}, {output}, {input}, {tau_ES_shift_DM0}, {tau_ES_shift_DM1}, {tau_ES_shift_DM10}, {tau_ES_shift_DM11})",
@@ -92,7 +155,7 @@ TauPtCorrection_byValue = Producer(
     scopes=HAD_TAU_SCOPES,
 )
 
-# pt correction for electrons that fake hadronic taus
+# pt correction for electrons that fake hadronic taus (deprecated)
 TauPtCorrection_eleFake = Producer(
     name="TauPtCorrection_eleFake",
     call='physicsobject::tau::PtCorrectionMC_eleFake({df}, correctionManager, {output}, {input}, "{tau_ides_sf_file}", "{tau_ES_json_name}", "{tau_id_algorithm}", "{tau_elefake_es_DM0_barrel}", "{tau_elefake_es_DM1_barrel}", "{tau_elefake_es_DM0_endcap}", "{tau_elefake_es_DM1_endcap}")',
@@ -106,7 +169,7 @@ TauPtCorrection_eleFake = Producer(
     scopes=HAD_TAU_SCOPES,
 )
 
-# pt correction for muons that fake hadronic taus 
+# pt correction for muons that fake hadronic taus  (deprecated)
 TauPtCorrection_muFake = Producer(
     name="TauPtCorrection_muFake",
     call='physicsobject::tau::PtCorrectionMC_muFake({df}, correctionManager, {output}, {input}, "{tau_ides_sf_file}", "{tau_ES_json_name}", "{tau_id_algorithm}", "{tau_mufake_es}")',
@@ -120,7 +183,7 @@ TauPtCorrection_muFake = Producer(
     scopes=HAD_TAU_SCOPES,
 )
 
-# pt correction for genuine hadronic taus 
+# pt correction for genuine hadronic taus  (deprecated)
 TauPtCorrection_genTau = Producer(
     name="TauPtCorrection_genTau",
     call='physicsobject::tau::PtCorrectionMC_genuineTau({df}, correctionManager, {output}, {input}, "{tau_ides_sf_file}", "{tau_ES_json_name}", "{tau_id_algorithm}", "{tau_ES_shift_DM0}", "{tau_ES_shift_DM1}", "{tau_ES_shift_DM10}", "{tau_ES_shift_DM11}")',
@@ -134,38 +197,9 @@ TauPtCorrection_genTau = Producer(
     scopes=HAD_TAU_SCOPES,
 )
 
-# dummy pt corrections in data and for cases in which corrections are already applied on NANOAOD level (just rename column)
-TauPtCorrection_data = Producer(
-    name="TauPtCorrection_data",
-    call="event::quantity::Rename<ROOT::RVec<float>>({df}, {output}, {input})",
-    input=[nanoAOD.Tau_pt],
-    output=[q.Tau_pt_corrected],
-    scopes=HAD_TAU_SCOPES,
-)
-
-# dummy mass corrections in data and for cases in which corrections are already applied on NANOAOD level (just rename column)
-TauMassCorrection_data = Producer(
-    name="TauMassCorrection_data",
-    call="event::quantity::Rename<ROOT::RVec<float>>({df}, {output}, {input})",
-    input=[nanoAOD.Tau_mass],
-    output=[q.Tau_mass_corrected],
-    scopes=HAD_TAU_SCOPES,
-)
-
-# mass correction derived from the pt correction
-TauMassCorrection = Producer(
-    name="TauMassCorrection",
-    call="physicsobject::MassCorrectionWithPt({df}, {output}, {input})",
-    input=[
-        nanoAOD.Tau_mass,
-        nanoAOD.Tau_pt,
-        q.Tau_pt_corrected,
-    ],
-    output=[q.Tau_mass_corrected],
-    scopes=HAD_TAU_SCOPES,
-)
 
 # producer group encapsulating tau pt corrections in embedding samples
+# (deprecated)
 TauEnergyCorrection_byValue = ProducerGroup(
     name="TauEnergyCorrection",
     call=None,
@@ -180,7 +214,8 @@ TauEnergyCorrection_byValue = ProducerGroup(
 )
 
 # producer group encapsulating all tau energy scale corrections in MC samples
-TauEnergyCorrectionMCRun2 = ProducerGroup(
+#  (deprecated)
+TauEnergyCorrection_MC = ProducerGroup(
     name="TauEnergyCorrectionMCRun2",
     call=None,
     input=None,
@@ -194,20 +229,8 @@ TauEnergyCorrectionMCRun2 = ProducerGroup(
     ],
 )
 
-# producer group encapsulating all tau energy scale corrections in Run 3 MC samples
-TauEnergyCorrectionMCRun3 = ProducerGroup(
-    name="TauEnergyCorrectionMCRun3",
-    call=None,
-    input=None,
-    output=None,
-    scopes=HAD_TAU_SCOPES,
-    subproducers=[
-        TauPtCorrectionRun3,
-        TauMassCorrection,
-    ],
-)
-
-# producer group encapsulating all tau energy scale corrections in embedding samples
+# producer group encapsulating all tau energy scale corrections in embedding 
+# samples (deprecated)
 TauEnergyCorrection_Embedding = ProducerGroup(
     name="TauEnergyCorrection_Embedding",
     call=None,
@@ -220,24 +243,10 @@ TauEnergyCorrection_Embedding = ProducerGroup(
     ],
 )
 
-# producer group encapsulating dummy tau energy scale corrections in data
-TauEnergyCorrection_data = ProducerGroup(
-    name="TauEnergyCorrection",
-    call=None,
-    input=None,
-    output=None,
-    scopes=HAD_TAU_SCOPES,
-    subproducers=[
-        TauPtCorrection_data,
-        TauMassCorrection_data,
-    ],
-)
-
 
 #
 # OBJECT SELECTION
 #
-
 
 # selection masks for tight hadronic taus (final state tau candidates)
 GoodTaus = Producer(

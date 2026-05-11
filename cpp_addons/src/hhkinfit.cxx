@@ -86,20 +86,19 @@ ROOT::RDF::RNode
 YHKinFit(ROOT::RDF::RNode df, const std::string &outputname_1,
          const std::string &outputname_2, const std::string &outputname_3,
          const std::string &outputname_4, const std::string &outputname_5,
-         const std::string &outputname_6,
-         const std::string &tau_pt_1, const std::string &tau_eta_1,
-         const std::string &tau_phi_1, const std::string &tau_mass_1,
-         const std::string &tau_pt_2, const std::string &tau_eta_2,
-         const std::string &tau_phi_2, const std::string &tau_mass_2,
-         const std::string &b_pt_1, const std::string &b_eta_1,
-         const std::string &b_phi_1, const std::string &b_mass_1,
-         const std::string &b_reso_1, const std::string &b_pt_2,
-         const std::string &b_eta_2, const std::string &b_phi_2,
-         const std::string &b_mass_2, const std::string &b_reso_2,
-         const std::string &met, const std::string &met_phi,
-         const std::string &met_cov00, const std::string &met_cov01,
-         const std::string &met_cov10, const std::string &met_cov11,
-         const std::string &YDecay) {
+         const std::string &outputname_6, const std::string &tau_pt_1,
+         const std::string &tau_eta_1, const std::string &tau_phi_1,
+         const std::string &tau_mass_1, const std::string &tau_pt_2,
+         const std::string &tau_eta_2, const std::string &tau_phi_2,
+         const std::string &tau_mass_2, const std::string &b_pt_1,
+         const std::string &b_eta_1, const std::string &b_phi_1,
+         const std::string &b_mass_1, const std::string &b_reso_1,
+         const std::string &b_pt_2, const std::string &b_eta_2,
+         const std::string &b_phi_2, const std::string &b_mass_2,
+         const std::string &b_reso_2, const std::string &met,
+         const std::string &met_phi, const std::string &met_cov00,
+         const std::string &met_cov01, const std::string &met_cov10,
+         const std::string &met_cov11, const std::string &YDecay) {
     Logger::get("YHKinFit" + YDecay)
         ->debug("Fitting bbtautau system to get estimation for X mass.");
 
@@ -124,17 +123,22 @@ YHKinFit(ROOT::RDF::RNode df, const std::string &outputname_1,
 
         if ((tau_pt_1 > 0.) && (tau_pt_2 > 0.) && (b_pt_1 > 0.) &&
             (b_pt_2 > 0.)) {
-            ROOT::Math::PtEtaPhiEVector tau_1 = (ROOT::Math::PtEtaPhiEVector) ROOT::Math::PtEtaPhiMVector(
-                tau_pt_1, tau_eta_1, tau_phi_1, tau_mass_1);
-            ROOT::Math::PtEtaPhiEVector tau_2 = (ROOT::Math::PtEtaPhiEVector) ROOT::Math::PtEtaPhiMVector(
-                tau_pt_2, tau_eta_2, tau_phi_2, tau_mass_2);
+            ROOT::Math::PtEtaPhiEVector tau_1 =
+                (ROOT::Math::PtEtaPhiEVector)ROOT::Math::PtEtaPhiMVector(
+                    tau_pt_1, tau_eta_1, tau_phi_1, tau_mass_1);
+            ROOT::Math::PtEtaPhiEVector tau_2 =
+                (ROOT::Math::PtEtaPhiEVector)ROOT::Math::PtEtaPhiMVector(
+                    tau_pt_2, tau_eta_2, tau_phi_2, tau_mass_2);
             ROOT::Math::PtEtaPhiEVector b_1 =
-                (ROOT::Math::PtEtaPhiEVector) ROOT::Math::PtEtaPhiMVector(b_pt_1, b_eta_1, b_phi_1, b_mass_1);
+                (ROOT::Math::PtEtaPhiEVector)ROOT::Math::PtEtaPhiMVector(
+                    b_pt_1, b_eta_1, b_phi_1, b_mass_1);
             ROOT::Math::PtEtaPhiEVector b_2 =
-                (ROOT::Math::PtEtaPhiEVector) ROOT::Math::PtEtaPhiMVector(b_pt_2, b_eta_2, b_phi_2, b_mass_2);
+                (ROOT::Math::PtEtaPhiEVector)ROOT::Math::PtEtaPhiMVector(
+                    b_pt_2, b_eta_2, b_phi_2, b_mass_2);
 
             ROOT::Math::PtEtaPhiEVector met_LV =
-                (ROOT::Math::PtEtaPhiEVector) ROOT::Math::PtEtaPhiMVector(met, 0., met_phi, 0.);
+                (ROOT::Math::PtEtaPhiEVector)ROOT::Math::PtEtaPhiMVector(
+                    met, 0., met_phi, 0.);
             TMatrixD met_cov(2, 2);
             met_cov[0][0] = met_cov00;
             met_cov[1][0] = met_cov10;
@@ -200,19 +204,20 @@ YHKinFit(ROOT::RDF::RNode df, const std::string &outputname_1,
         }
 
         ROOT::RVec<float> result = {
-            (float)kinfit_convergence, (float)kinfit_mX,
-            (float)kinfit_mY,          (float)kinfit_mh,
-            (float)kinfit_chi2,        (float)kinfit_prob};
+            (float)kinfit_convergence, (float)kinfit_mX,   (float)kinfit_mY,
+            (float)kinfit_mh,          (float)kinfit_chi2, (float)kinfit_prob};
         return result;
     };
 
     std::string variation = "";
     if (outputname_1.find("__") != std::string::npos) {
         size_t pos = outputname_1.find("__");
-        variation = outputname_1.substr(pos);;
+        variation = outputname_1.substr(pos);
+        ;
     }
-    
-    std::string result_vec_name = "HYKinFit_vector_" + YDecay + "_resolved" + variation;
+
+    std::string result_vec_name =
+        "HYKinFit_vector_" + YDecay + "_resolved" + variation;
     if (outputname_1.find("boosted") != std::string::npos) {
         result_vec_name = "HYKinFit_vector_" + YDecay + "_boosted" + variation;
     }
@@ -341,9 +346,10 @@ ROOT::RDF::RNode BestYHKinFit(
     std::string variation = "";
     if (outputname_1.find("__") != std::string::npos) {
         size_t pos = outputname_1.find("__");
-        variation = outputname_1.substr(pos);;
+        variation = outputname_1.substr(pos);
+        ;
     }
-    
+
     std::string result_vec_name = "HYKinFit_vector_resolved" + variation;
     if (outputname_1.find("boosted") != std::string::npos) {
         result_vec_name = "HYKinFit_vector_boosted" + variation;

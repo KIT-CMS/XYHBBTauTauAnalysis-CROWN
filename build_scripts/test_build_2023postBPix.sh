@@ -14,7 +14,7 @@ main () {
 
     # get the CROWN directories
     local crown_dir="$( cd "${this_dir}/../../.." && pwd )"
-    local crown_build_dir="${crown_dir}/build"
+    local crown_build_dir="${crown_dir}/build_2023postBPix"
     local crown_bin_dir="${crown_build_dir}/bin"
 
     # create the build directory if it does not exist
@@ -44,7 +44,7 @@ main () {
 
     # build associative array of test files for different sample types
     declare -A test_files_list
-    test_files_list[data]="root://xrootd-cms.infn.it///store/data/Run2023D/Muon0/NANOAOD/22Sep2023_v1-v1/2530000/dd9c19c9-84b4-47e1-bc42-34320f55faba.root"
+    test_files_list[data]="root://xrootd-cms.infn.it///store/data/Run2023D/Muon0/NANOAOD/22Sep2023_v1-v1/30000/cb3be378-82f5-4585-aa67-d0e9f430b0ea.root"
     #test_files_list[nmssm_Ybb]=""
     test_files_list[ttbar]="root://xrootd-cms.infn.it///store/mc/Run3Summer23BPixNanoAODv12/TTto2L2Nu_TuneCP5_13p6TeV_powheg-pythia8/NANOAODSIM/130X_mcRun3_2023_realistic_postBPix_v2-v3/2560000/edcc614d-8bbe-4cd5-91b8-d5c2e82bb1fc.root"
     test_files_list[dyjets_amcatnlo_ll]="root://xrootd-cms.infn.it///store/mc/Run3Summer23BPixNanoAODv12/DYto2L-2Jets_MLL-50_0J_TuneCP5_13p6TeV_amcatnloFXFX-pythia8/NANOAODSIM/130X_mcRun3_2023_realistic_postBPix_v2-v3/2820000/6f09e67e-04a8-46cb-a85f-b430d84e71e1.root"

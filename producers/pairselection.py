@@ -2,15 +2,18 @@ from ..quantities import output as q
 from ..quantities import nanoAOD as nanoAOD
 from code_generation.producer import Producer, Filter
 
-from ..constants import ET_SCOPES, MT_SCOPES, TT_SCOPES, EE_SCOPES, MM_SCOPES, EM_SCOPES, HAD_TAU_SCOPES, ELECTRON_SCOPES, SCOPES, AvailableBJetIDs, BJET_ID_ALGORTHM
+from ..constants import ET_SCOPES, MT_SCOPES, TT_SCOPES, EE_SCOPES, MM_SCOPES, EM_SCOPES, HAD_TAU_SCOPES, ELECTRON_SCOPES, SCOPES, AvailableBJetIDs, BJET_ID_ALGORITHM
 
 # Get the nanoAOD b jet tagging column, according to the default b jet identification algorithm
 # selected with BJET_ID_ALGORITHM
 nanoaod_btag_score = None
-if BJET_ID_ALGORTHM == AvailableBJetIDs.DEEPJET:
+if BJET_ID_ALGORITHM == AvailableBJetIDs.DEEPJET:
     nanoaod_btag_score = nanoAOD.Jet_btagDeepFlavB
-elif BJET_ID_ALGORTHM == AvailableBJetIDs.PNET:
+elif BJET_ID_ALGORITHM == AvailableBJetIDs.PNET:
     nanoaod_btag_score = nanoAOD.Jet_btagPNetB
+elif BJET_ID_ALGORITHM == AvailableBJetIDs.UPART:
+    nanoaod_btag_score = nanoAOD.Jet_btagUParTAK4B
+
 
 
 
@@ -364,13 +367,12 @@ GoodEMPairFilter = Filter(
 
 BBPairSelection = Producer(
     name="BBPairSelection",
-    call="bb_pairselection::PairSelection({df}, {input_vec}, {output}, {bb_pairselection_min_dR}, {bjet_min_deepjet_score})",
+    call="bb_pairselection::PairSelection({df}, {input_vec}, \"{bjet_score_column}\", {output}, {bb_pairselection_min_dR}, {bjet_min_score})",
     input=[
-        q.Jet_pt_corrected,
+        q.Jet_correctedPt,
         nanoAOD.Jet_eta,
         nanoAOD.Jet_phi,
-        q.Jet_mass_corrected,
-        nanoaod_btag_score,
+        q.Jet_correctedMass,
         q.good_bjet_collection,
         q.good_jet_collection,
     ],
@@ -379,13 +381,12 @@ BBPairSelection = Producer(
 )
 BBPairSelection_boosted = Producer(
     name="BBPairSelection_boosted",
-    call="bb_pairselection::PairSelection({df}, {input_vec}, {output}, {bb_pairselection_min_dR}, {bjet_min_deepjet_score})",
+    call="bb_pairselection::PairSelection({df}, {input_vec}, \"{bjet_score_column}\", {output}, {bb_pairselection_min_dR}, {bjet_min_score})",
     input=[
-        q.Jet_pt_corrected,
+        q.Jet_correctedPt,
         nanoAOD.Jet_eta,
         nanoAOD.Jet_phi,
-        q.Jet_mass_corrected,
-        nanoaod_btag_score,
+        q.Jet_correctedMass,
         q.good_bjet_collection_boosted,
         q.good_jet_collection_boosted,
     ],
@@ -612,10 +613,10 @@ LVbjet1 = Producer(
     name="LVbjet1",
     call="lorentzvector::Build({df}, {output}, {input}, 0)",
     input=[
-        q.Jet_pt_corrected,
+        q.Jet_correctedPt,
         nanoAOD.Jet_eta,
         nanoAOD.Jet_phi,
-        q.Jet_mass_corrected,
+        q.Jet_correctedMass,
         q.dibjetpair,
     ],
     output=[q.bpair_p4_1],
@@ -625,10 +626,10 @@ LVbjet2 = Producer(
     name="LVbjet2",
     call="lorentzvector::Build({df}, {output}, {input}, 1)",
     input=[
-        q.Jet_pt_corrected,
+        q.Jet_correctedPt,
         nanoAOD.Jet_eta,
         nanoAOD.Jet_phi,
-        q.Jet_mass_corrected,
+        q.Jet_correctedMass,
         q.dibjetpair,
     ],
     output=[q.bpair_p4_2],
@@ -638,10 +639,10 @@ LVbjet1_boosted = Producer(
     name="LVbjet1_boosted",
     call="lorentzvector::Build({df}, {output}, {input}, 0)",
     input=[
-        q.Jet_pt_corrected,
+        q.Jet_correctedPt,
         nanoAOD.Jet_eta,
         nanoAOD.Jet_phi,
-        q.Jet_mass_corrected,
+        q.Jet_correctedMass,
         q.dibjetpair_boosted,
     ],
     output=[q.bpair_p4_1_boosted],
@@ -651,10 +652,10 @@ LVbjet2_boosted = Producer(
     name="LVbjet2_boosted",
     call="lorentzvector::Build({df}, {output}, {input}, 1)",
     input=[
-        q.Jet_pt_corrected,
+        q.Jet_correctedPt,
         nanoAOD.Jet_eta,
         nanoAOD.Jet_phi,
-        q.Jet_mass_corrected,
+        q.Jet_correctedMass,
         q.dibjetpair_boosted,
     ],
     output=[q.bpair_p4_2_boosted],

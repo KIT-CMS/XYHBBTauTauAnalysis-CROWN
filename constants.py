@@ -21,7 +21,7 @@ __all__ = [
     "SCOPES",
     "ERAS",
     "AvailableBJetIDs",
-    "BJET_ID_ALGORTHM",
+    "BJET_ID_ALGORITHM",
 ]
 
 
@@ -43,7 +43,7 @@ SCOPES = SL_SCOPES + FH_SCOPES + FL_SCOPES
 
 # eras for Run 2 and Run 3
 ERAS_RUN2 = ["2016preVFP", "2016postVFP", "2017", "2018"]
-ERAS_RUN3 = ["2022preEE", "2022postEE", "2023preBPix", "2023postBPix"]
+ERAS_RUN3 = ["2022preEE", "2022postEE", "2023preBPix", "2023postBPix", "2024"]
 ERAS = ERAS_RUN2 + ERAS_RUN3
 
 # correctionlib campaigns
@@ -56,10 +56,12 @@ CORRECTIONLIB_CAMPAIGNS = {
     "2022postEE": "2022_Summer22EE",
     "2023preBPix": "2023_Summer23",
     "2023postBPix": "2023_Summer23BPix",
+    "2024": "2024",
 }
 
 # b jet identification algorithms
 class AvailableBJetIDs(enum.Enum):
-    DEEPJET = enum.auto() 
+    DEEPJET = enum.auto()
     PNET = enum.auto()
-BJET_ID_ALGORTHM = AvailableBJetIDs.PNET
+    UPART = enum.auto()
+BJET_ID_ALGORITHM = AvailableBJetIDs.PNET
