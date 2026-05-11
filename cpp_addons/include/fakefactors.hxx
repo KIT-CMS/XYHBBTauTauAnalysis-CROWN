@@ -1,8 +1,12 @@
 #ifndef GUARDFAKEFACTORS_H
 #define GUARDFAKEFACTORS_H
 
+#include "ROOT/RDataFrame.hxx"
 namespace fakefactors {
 
+ROOT::RDF::RNode
+BuildFloatVector(ROOT::RDF::RNode df, const std::string &output,
+                 const std::vector<std::string> &input_columns);
 ROOT::RDF::RNode raw_fakefactor_nmssm_lt(
     ROOT::RDF::RNode df, const std::string &outputname,
     const std::string &tau_pt, const std::string &njets,

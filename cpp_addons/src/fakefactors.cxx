@@ -6,6 +6,35 @@
 #include "correction.h"
 
 namespace fakefactors {
+
+ROOT::RDF::RNode
+BuildFloatVector(ROOT::RDF::RNode df, const std::string &output,
+                 const std::vector<std::string> &input_columns) {
+
+  // Set name of the logger for debug messages
+  auto logger_name = "fakefactors::BuildInputVector";
+  Logger::get(logger_name)
+      ->debug("Building input vector from columns {}",
+              fmt::join(input_columns, ", "));
+
+  // Build the expression to create a vector of variants with the input
+  // columns, casting all to double for correctionlib evaluation
+  std::string expression = "std::vector<float>{";
+  for (size_t i = 0; i < input_columns.size(); ++i) {
+    expression += "static_cast<float>(" + input_columns[i] + ")";
+    if (i + 1 < input_columns.size()) {
+      expression += ", ";
+    }
+  }
+  expression += "}";
+
+  // Debug message to show the JIT expression being defined for the column
+  Logger::get(logger_name)
+      ->debug("Define column with expression {}", expression);
+
+  return df.Define(output, expression);
+}
+
 /**
  * @brief Function to calculate raw fake factors without corrections with
  * correctionlib for the semileptonic channels
