@@ -3354,8 +3354,6 @@ def build_config(
         ],
     )
 
-
-
     configuration.add_outputs(
         "tt",
         [
@@ -3367,10 +3365,12 @@ def build_config(
             pairquantities.VsEleTauIDFlag_2.output_group,
             pairquantities.VsMuTauIDFlag_2.output_group,
             triggers.TauTauTriggerFlags.output_group,
-        ] + [
+            ] + [
+                o for o in scalefactors.TauTauTriggerSF.get_outputs("tt")
+            ] + [
                 producer.output_group
                 for producer in tautaujet_trigger_producers
-        ] + [
+            ] + [
             # q.taujet_pt_1,
             # q.taujet_pt_2,
             # q.gen_taujet_pt_2,
