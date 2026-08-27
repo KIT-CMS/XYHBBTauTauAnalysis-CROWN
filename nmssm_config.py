@@ -2400,26 +2400,16 @@ def build_config(
     )
 
     # Electron pt correction
-    # - In Run 2, a fix must be applied to the already corrected electron pt.
-    # - In Run 3, the electon pt is not corrected at NanoAOD level, the full correction is applied
-    #   based on correctionlib files.
-    electron_pt_correction_mc_producer = get_for_era(
-        {
-            tuple(ERAS_RUN2): electrons.ElectronPtCorrectionMCRun2,
-            tuple(ERAS_RUN3): electrons.ElectronPtCorrectionMCRun3,
-        },
-        era,
-    )
-
-    # Electron pt correction for data
-    # - In Run 2, the pt is already corrected, so this is just 
-    electron_pt_correction_data_producer = get_for_era(
-        {
-            tuple(ERAS_RUN2): electrons.RenameElectronPt,
-            tuple(ERAS_RUN3): electrons.ElectronPtCorrectionDataRun3,
-        },
-        era,
-    )
+    #
+    # See comments in corresponding producers: For Run 2, the corrections on
+    # NANOAOD v15 samples are not available yet (the procedure has changed
+    # between NanoAODv9 and NanoAODv15). Currently, the Run 2 producers just
+    # rename the electron pt in NANOAOD.
+    #
+    # TODO As soon as dedicated corrections are available, implement the
+    # Run 3 procedure also for Run 2 eras.
+    ElectronPtCorrectionMC = get_for_era(electrons.ElectronPtCorrectionMC, era)
+    ElectronPtCorrectionData = get_for_era(electrons.ElectronPtCorrectionData, era)
 
     # Producers of auxiliary jet collection quantities (mainly used for
     # selection and JEC). For a detailed description, see producers/jets.py
@@ -2584,7 +2574,7 @@ def build_config(
         # + fat_jet_id_producers
         + jet_veto_map_producers
         + [
-            electron_pt_correction_mc_producer,
+            ElectronPtCorrectionMC,
             jets.JERSmearingSeed,
             jets.JetEnergyCorrectionMC,
             jets.JetEnergyCorrectionMCRegressed,
@@ -3025,8 +3015,8 @@ def build_config(
         GLOBAL_SCOPES,
         ReplaceProducer(
             producers=[
-                electron_pt_correction_mc_producer,
-                electron_pt_correction_data_producer,
+                ElectronPtCorrectionMC,
+                ElectronPtCorrectionData,
             ],
             samples=["data"],
         ),
