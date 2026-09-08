@@ -16,7 +16,7 @@ def add_jetCorrectionData(configuration: Configuration, era: str):
                         "jet_jes_tag_data": '"Summer19UL18_RunA_V5_DATA"',
                     },
                 },
-                producers={"global": jets.JetEnergyCorrection_data},
+                producers={"global": jets.JetEnergyCorrectionData},
             ),
             samples=["data"],
         )
@@ -28,7 +28,7 @@ def add_jetCorrectionData(configuration: Configuration, era: str):
                         "jet_jes_tag_data": '"Summer19UL18_RunB_V5_DATA"',
                     },
                 },
-                producers={"global": jets.JetEnergyCorrection_data},
+                producers={"global": jets.JetEnergyCorrectionData},
             ),
             samples=["data"],
         )
@@ -40,7 +40,7 @@ def add_jetCorrectionData(configuration: Configuration, era: str):
                         "jet_jes_tag_data": '"Summer19UL18_RunC_V5_DATA"',
                     },
                 },
-                producers={"global": jets.JetEnergyCorrection_data},
+                producers={"global": jets.JetEnergyCorrectionData},
             ),
             samples=["data"],
         )
@@ -52,7 +52,7 @@ def add_jetCorrectionData(configuration: Configuration, era: str):
                         "jet_jes_tag_data": '"Summer19UL18_RunD_V5_DATA"',
                     },
                 },
-                producers={"global": jets.JetEnergyCorrection_data},
+                producers={"global": jets.JetEnergyCorrectionData},
             ),
             samples=["data"],
         )
@@ -66,7 +66,7 @@ def add_jetCorrectionData(configuration: Configuration, era: str):
                         "jet_jes_tag_data": '"Summer19UL17_RunB_V5_DATA"',
                     },
                 },
-                producers={"global": jets.JetEnergyCorrection_data},
+                producers={"global": jets.JetEnergyCorrectionData},
             ),
             samples=["data"],
         )
@@ -78,7 +78,7 @@ def add_jetCorrectionData(configuration: Configuration, era: str):
                         "jet_jes_tag_data": '"Summer19UL17_RunC_V5_DATA"',
                     },
                 },
-                producers={"global": jets.JetEnergyCorrection_data},
+                producers={"global": jets.JetEnergyCorrectionData},
             ),
             samples=["data"],
         )
@@ -90,7 +90,7 @@ def add_jetCorrectionData(configuration: Configuration, era: str):
                         "jet_jes_tag_data": '"Summer19UL17_RunD_V5_DATA"',
                     },
                 },
-                producers={"global": jets.JetEnergyCorrection_data},
+                producers={"global": jets.JetEnergyCorrectionData},
             ),
             samples=["data"],
         )
@@ -102,7 +102,7 @@ def add_jetCorrectionData(configuration: Configuration, era: str):
                         "jet_jes_tag_data": '"Summer19UL17_RunE_V5_DATA"',
                     },
                 },
-                producers={"global": jets.JetEnergyCorrection_data},
+                producers={"global": jets.JetEnergyCorrectionData},
             ),
             samples=["data"],
         )
@@ -114,7 +114,7 @@ def add_jetCorrectionData(configuration: Configuration, era: str):
                         "jet_jes_tag_data": '"Summer19UL17_RunF_V5_DATA"',
                     },
                 },
-                producers={"global": jets.JetEnergyCorrection_data},
+                producers={"global": jets.JetEnergyCorrectionData},
             ),
             samples=["data"],
         )
@@ -127,7 +127,7 @@ def add_jetCorrectionData(configuration: Configuration, era: str):
                         "jet_jes_tag_data": '"Summer19UL16_RunFGH_V7_DATA"',
                     },
                 },
-                producers={"global": jets.JetEnergyCorrection_data},
+                producers={"global": jets.JetEnergyCorrectionData},
             ),
             samples=["data"],
         )
@@ -140,7 +140,7 @@ def add_jetCorrectionData(configuration: Configuration, era: str):
                         "jet_jes_tag_data": '"Summer19UL16APV_RunBCD_V7_DATA"',
                     },
                 },
-                producers={"global": jets.JetEnergyCorrection_data},
+                producers={"global": jets.JetEnergyCorrectionData},
             ),
             samples=["data"],
         )
@@ -152,7 +152,7 @@ def add_jetCorrectionData(configuration: Configuration, era: str):
                         "jet_jes_tag_data": '"Summer19UL16APV_RunEF_V7_DATA"',
                     },
                 },
-                producers={"global": jets.JetEnergyCorrection_data},
+                producers={"global": jets.JetEnergyCorrectionData},
             ),
             samples=["data"],
         )

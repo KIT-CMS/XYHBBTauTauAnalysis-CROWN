@@ -16,8 +16,9 @@ AVAILABLE_SAMPLES = DEFAULT_SAMPLES + ["embedding", "embedding_mc"]
 
 
 def build_config(era, sample, scopes, shifts, available_sample_types,
-                 available_eras, available_scopes):
+                 available_eras, available_scopes, DAG_dir: str = "",):
     return common_config.build_config(
         SM_PROFILE, era, sample, scopes, shifts,
         available_sample_types, available_eras, available_scopes,
+        DAG_dir=DAG_dir,
     )

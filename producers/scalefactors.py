@@ -180,14 +180,14 @@ def _create_tau_id_vsjet_sf_producer(
         f"\"{{{vsjet_wp}}}\"", 
         f"\"{{{tau_ides_sf_vsele_wp}}}\"", 
         f"\"{{{tau_id_sf_vsjet_sf_dependence}}}\"", 
-        "\"{tau_id_sf_vsjet_tau_dm0_pt20to40_shift}\"", 
-        "\"{tau_id_sf_vsjet_tau_dm0_pt40toInf_shift}\"", 
-        "\"{tau_id_sf_vsjet_tau_dm1_pt20to40_shift}\"", 
-        "\"{tau_id_sf_vsjet_tau_dm1_pt40toInf_shift}\"", 
-        "\"{tau_id_sf_vsjet_tau_dm10_pt20to40_shift}\"",
-        "\"{tau_id_sf_vsjet_tau_dm10_pt40toInf_shift}\"",
-        "\"{tau_id_sf_vsjet_tau_dm11_pt20to40_shift}\"",
-        "\"{tau_id_sf_vsjet_tau_dm11_pt40toInf_shift}\"",
+        "\"{tau_id_sf_vsjet_tau_dm0_20to40_shift}\"", 
+        "\"{tau_id_sf_vsjet_tau_dm0_40toInf_shift}\"", 
+        "\"{tau_id_sf_vsjet_tau_dm1_20to40_shift}\"", 
+        "\"{tau_id_sf_vsjet_tau_dm1_40toInf_shift}\"", 
+        "\"{tau_id_sf_vsjet_tau_dm10_20to40_shift}\"",
+        "\"{tau_id_sf_vsjet_tau_dm10_40toInf_shift}\"",
+        "\"{tau_id_sf_vsjet_tau_dm11_20to40_shift}\"",
+        "\"{tau_id_sf_vsjet_tau_dm11_40toInf_shift}\"",
     ])
 
     return ExtendedVectorProducer(
@@ -655,7 +655,15 @@ SingleEleTriggerSF = ExtendedVectorProducer(
 # single muon trigger scale factor
 SingleMuTriggerSF = ExtendedVectorProducer(
     name="SingleMuTriggerSF",
-    call='physicsobject::muon::scalefactor::Trigger({df}, correctionManager, {output}, {input}, "{m_trigger_flag}", "{muon_sf_file}", "{m_trigger_sf_name}", "{m_trigger_variation}")',
+    call='''physicsobject::muon::scalefactor::Trigger(
+        {df},
+        correctionManager,
+        {output},
+        {input},
+        "{m_trigger_flag}",
+        "{muon_sf_file}",
+        "{m_trigger_sf_name}",
+        "{m_trigger_variation}")''',
     input={
         "mt": [q.pt_1, q.eta_1],
         "mm": [q.pt_1, q.eta_1],
@@ -764,7 +772,7 @@ DoubleEleTauTriggerSF = ProducerGroup(
 
 # muon leg scale factor
 TauTauTriggerLeg1SF = ExtendedVectorProducer(
-    name="DoubleTauTauTriggerLeg1SF",
+    name="TauTauTriggerLeg1SF",
     call='physicsobject::tau::scalefactor::Trigger({df}, correctionManager, {output}, {input}, "{tt_trigger_flag}", "{tau_trigger_sf_file}", "tau_trigger", "{tt_trigger_leg1_sf_name}", "Medium", "sf", "{tt_trigger_leg1_variation}")',
     input=[
         q.pt_1,
@@ -777,7 +785,7 @@ TauTauTriggerLeg1SF = ExtendedVectorProducer(
 
 # tau leg scale factor (for the Medium DeepTau WP)
 TauTauTriggerLeg2SF = ExtendedVectorProducer(
-    name="DoubleTauTauTriggerLeg2SF",
+    name="TauTauTriggerLeg2SF",
     call='physicsobject::tau::scalefactor::Trigger({df}, correctionManager, {output}, {input}, "{tt_trigger_flag}", "{tau_trigger_sf_file}", "tau_trigger", "{tt_trigger_leg2_sf_name}", "Medium", "sf", "{tt_trigger_leg2_variation}")',
     input=[
         q.pt_2,
@@ -790,7 +798,7 @@ TauTauTriggerLeg2SF = ExtendedVectorProducer(
 
 # producer group containing the scale factors for both legs of the double electron-tau trigger
 TauTauTriggerSF = ProducerGroup(
-    name="DoubleTauTauTriggerSF",
+    name="TauTauTriggerSF",
     call=None,
     input=None,
     output=None,
@@ -886,7 +894,7 @@ TTGenerateDoubleTauTriggerSF_MC = ProducerGroup(
 )
 BoostedTTGenerateFatjetTriggerSF_MC = Producer(
     name="BoostedTTGenerateFatjetTriggerSF_MC",
-    call='scalefactor::fatjet::trigger({df}, correctionManager, {input}, {output}, "{fatjet_trigger_sf_file}", "{fatjet_trigger_sf_name}", "{fatjet_trigger_sf_syst}")',
+    call='scalefactor::fatjet::trigger({df}, correctionManager, {output}, {input}, "{fatjet_trigger_sf_file}", "{fatjet_trigger_sf_name}", "{fatjet_trigger_sf_syst}")',
     input=[q.fj_leading_pt, q.fj_leading_msoftdrop],
     output=[q.trg_wgt_fatjet],
     scopes=["tt"],

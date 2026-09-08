@@ -32,9 +32,11 @@ from code_generation.configuration import Configuration
 from code_generation.modifiers import EraModifier, SampleModifier
 from code_generation.rules import AppendProducer, RemoveProducer, ReplaceProducer
 from code_generation.systematics import SystematicShift, SystematicShiftByQuantity
+from code_generation.utility.generate_DAG import create_graph
 
 from .constants import ERAS_RUN2, ERAS_RUN3, CORRECTIONLIB_CAMPAIGNS, ET_SCOPES, MT_SCOPES, TT_SCOPES, EE_SCOPES, MM_SCOPES, EM_SCOPES, SL_SCOPES, FH_SCOPES, HAD_TAU_SCOPES, ELECTRON_SCOPES, MUON_SCOPES, SCOPES, GLOBAL_SCOPES
 from .helpers import get_for_era
+from .scripts.SpecialSetups import ES_ID_SCHEME
 
 log = logging.getLogger(__name__)
 
@@ -851,11 +853,19 @@ def add_hadronic_tau_config(configuration: Configuration, era: str):
             ),
             "tau_ES_json_name": "tau_energy_scale",
             "tau_id_algorithm": tau_id,
-            "tau_es_vs_jet_wp": "Medium",
+            # "tau_es_vs_jet_wp": "Medium",
             "tau_ES_shift_DM0": "nom",
+            "tau_ES_shift_DM0_20to40": "nom",
+            "tau_ES_shift_DM0_40toInf": "nom",
             "tau_ES_shift_DM1": "nom",
+            "tau_ES_shift_DM1_20to40": "nom",
+            "tau_ES_shift_DM1_40toInf": "nom",
             "tau_ES_shift_DM10": "nom",
+            "tau_ES_shift_DM10_20to40": "nom",
+            "tau_ES_shift_DM10_40toInf": "nom",
             "tau_ES_shift_DM11": "nom",
+            "tau_ES_shift_DM11_20to40": "nom",
+            "tau_ES_shift_DM11_40toInf": "nom",
             "tau_elefake_es_DM0_barrel": "nom",
             "tau_elefake_es_DM0_endcap": "nom",
             "tau_elefake_es_DM1_barrel": "nom",
@@ -908,7 +918,7 @@ def add_hadronic_tau_config(configuration: Configuration, era: str):
                     # "VLoose": 3,
                     # "Loose": 4,
                     "Medium": 5,
-                    # "Tight": 6,
+                    "Tight": 6,
                     # "VTight": 7,
                     # "VVTight": 8,
                 }.items()
@@ -921,15 +931,15 @@ def add_hadronic_tau_config(configuration: Configuration, era: str):
     configuration.add_config_parameters(
         HAD_TAU_SCOPES,
         {
-            "tau_id_sf_vsjet_tau_dm0_pt20to40_shift": "nom",
-            "tau_id_sf_vsjet_tau_dm0_pt40toInf_shift": "nom",
-            "tau_id_sf_vsjet_tau_dm1_pt20to40_shift": "nom",
-            "tau_id_sf_vsjet_tau_dm1_pt40toInf_shift": "nom",
-            "tau_id_sf_vsjet_tau_dm10_pt20to40_shift": "nom",
-            "tau_id_sf_vsjet_tau_dm10_pt40toInf_shift": "nom",
-            "tau_id_sf_vsjet_tau_dm11_pt20to40_shift": "nom",
-            "tau_id_sf_vsjet_tau_dm11_pt40toInf_shift": "nom",
-            "tau_id_sf_vsjet_sf_dependence": "dm",  # dm for dm- and pt-binned SFs, "pt" for high-pt SFs
+            "tau_id_sf_vsjet_tau_dm0_20to40_shift": "nom",
+            "tau_id_sf_vsjet_tau_dm0_40toInf_shift": "nom",
+            "tau_id_sf_vsjet_tau_dm1_20to40_shift": "nom",
+            "tau_id_sf_vsjet_tau_dm1_40toInf_shift": "nom",
+            "tau_id_sf_vsjet_tau_dm10_20to40_shift": "nom",
+            "tau_id_sf_vsjet_tau_dm10_40toInf_shift": "nom",
+            "tau_id_sf_vsjet_tau_dm11_20to40_shift": "nom",
+            "tau_id_sf_vsjet_tau_dm11_40toInf_shift": "nom",
+            "tau_id_sf_vsjet_sf_dependence": "dm", # By default, use the DM-dependent SFs with the 'dm' flag. For analyses sensitive to high pT taus (pT>140 GeV), use the DM-dependent SFs for pT<140 and pT-binned SF for pT>140 GeV with flag 'pt'.
         },
     )
 
@@ -1277,7 +1287,7 @@ def add_ak4jet_config(configuration: Configuration, era: str, profile):
         "global",
         {
             "ak4jet_min_pt": 30.0,
-            "ak4jet_max_abs_eta": 2.5,
+            "ak4jet_max_abs_eta": 2.4,
             # Jet-ID working point for the `id >= id_wp` comparison in
             # `xyh::object_selection::select_jet`.
             # - Legacy CHS/PUPPI paths read a cumulative bitmask
@@ -1701,7 +1711,7 @@ def add_bjet_config(configuration: Configuration, era: str, sample_types: list[s
                     "2016preVFP": "TO_ADD",
                     "2016postVFP": "TO_ADD",
                     "2017": "TO_ADD",
-                    "2018": "TO_ADD",
+                    "2018": "payloads/btagging_efficiencies/upart/2018/btag_efficiency_et.json.gz",
                     "2022preEE": "TO_ADD",
                     "2022postEE": "TO_ADD",
                     "2023preBPix": "TO_ADD",
@@ -1723,7 +1733,7 @@ def add_bjet_config(configuration: Configuration, era: str, sample_types: list[s
                     "2016preVFP": "TO_ADD",
                     "2016postVFP": "TO_ADD",
                     "2017": "TO_ADD",
-                    "2018": "TO_ADD",
+                    "2018": "payloads/btagging_efficiencies/upart/2018/btag_efficiency_mt.json.gz",
                     "2022preEE": "TO_ADD",
                     "2022postEE": "TO_ADD",
                     "2023preBPix": "TO_ADD",
@@ -1745,7 +1755,7 @@ def add_bjet_config(configuration: Configuration, era: str, sample_types: list[s
                     "2016preVFP": "TO_ADD",
                     "2016postVFP": "TO_ADD",
                     "2017": "TO_ADD",
-                    "2018": "TO_ADD",
+                    "2018": "payloads/btagging_efficiencies/upart/2018/btag_efficiency_tt.json.gz",
                     "2022preEE": "TO_ADD",
                     "2022postEE": "TO_ADD",
                     "2023preBPix": "TO_ADD",
@@ -1832,6 +1842,7 @@ def add_bjet_config(configuration: Configuration, era: str, sample_types: list[s
                     "2016postVFP": "/cvmfs/cms-griddata.cern.ch/cat/metadata/BTV/Run2-2016postVFP-UL-NanoAODv9/2025-08-19/btagging.json.gz",
                     "2017": "/cvmfs/cms-griddata.cern.ch/cat/metadata/BTV/Run2-2017-UL-NanoAODv9/2025-08-19/btagging.json.gz",
                     "2018": "/cvmfs/cms-griddata.cern.ch/cat/metadata/BTV/Run2-2018-UL-NanoAODv9/2025-08-19/btagging.json.gz",
+                    # /cvmfs/cms-griddata.cern.ch/cat/metadata/BTV/Run2-2018-UL-NanoAODv15/2026-06-18/btagging.json.gz
                     "2022preEE": "/cvmfs/cms-griddata.cern.ch/cat/metadata/BTV/Run3-22CDSep23-Summer22-NanoAODv12/2025-08-20/btagging.json.gz",
                     "2022postEE": "/cvmfs/cms-griddata.cern.ch/cat/metadata/BTV/Run3-22EFGSep23-Summer22EE-NanoAODv12/2025-08-20/btagging.json.gz",
                     "2023preBPix": "/cvmfs/cms-griddata.cern.ch/cat/metadata/BTV/Run3-23CSep23-Summer23-NanoAODv12/2025-08-20/btagging.json.gz",
@@ -1849,7 +1860,7 @@ def add_bjet_config(configuration: Configuration, era: str, sample_types: list[s
             "bjet_sf_wp_name": EraModifier(
                 {
                     **{
-                        _era: "deepJet_wp_values"  # DeepJet
+                        _era: "deepJet_wp_values"  # DeepJet # UParTAK4_wp_values UParTAK4_light
                         for _era in ERAS_RUN2
                     },
                     **{
@@ -1931,7 +1942,7 @@ def add_bjet_config(configuration: Configuration, era: str, sample_types: list[s
             "bjet_sf_name": EraModifier(
                 {
                     **{
-                        _era: "deepJet_shape"  # DeepJet
+                        _era: "deepJet_shape"  # DeepJet # UParTAK4_comb
                         for _era in ERAS_RUN2
                     },
                     **{
@@ -2287,6 +2298,7 @@ def build_config(
     available_sample_types: List[str],
     available_eras: List[str],
     available_scopes: List[str],
+    DAG_dir: str = "",
 ):
 
     if profile.allowed_eras is not None and era not in profile.allowed_eras:
@@ -2308,6 +2320,8 @@ def build_config(
         available_eras,
         available_scopes,
     )
+    
+    configuration.ES_ID_SCHEME = ES_ID_SCHEME("dm_pt_binned")
 
     # Set sample flags manually
     # The configuration of is_data and is_embedding is set here for better readability, although
@@ -2546,7 +2560,7 @@ def build_config(
     )
 
     # SM 2018-v15 electron energy correction: point the Run-3-style MC producer
-    # (ElectronPtCorrectionMCRun3, selected below) at the pinned 2018-UL-v15 EGM
+    # (ElectronPtCorrectionMC, selected below) at the pinned 2018-UL-v15 EGM
     # scale+smearing payload. Its "SmearAndSyst" correction is structurally
     # identical to the Run-3 payloads (inputs syst/pt/r9/ScEta; syst categories
     # smear/esmear/escale/...), so the existing Run-3 C++ mechanism evaluates it
@@ -2730,31 +2744,24 @@ def build_config(
     # - In Run 3, the electon pt is not corrected at NanoAOD level, the full correction is applied
     #   based on correctionlib files.
     # The isolated SM 2018-v15 path uses the Run-3-style correctionlib MC
-    # producer (ElectronPtCorrectionMCRun3) even though 2018 is a Run-2 era:
+    # producer (ElectronPtCorrectionMC) even though 2018 is a Run-2 era:
     # v15 2018 UL NanoAOD does not ship the v9 Electron_dEsigmaUp/dEsigmaDown
     # branches the legacy Run-2 producer reads, but does ship the raw inputs
     # (Electron_deltaEtaSC, Electron_r9) the Run-3 producer needs. NMSSM keeps
     # the v9 Run-2 producer via get_for_era.
-    if use_sm_2018_v15_inputs:
-        electron_pt_correction_mc_producer = electrons.ElectronPtCorrectionMCRun3
+    if era in ERAS_RUN2:
+        if use_sm_2018_v15_inputs:
+                electron_pt_correction_mc_producer = electrons.ElectronPtCorrectionMC.get(era,"v15")
+        else:
+            electron_pt_correction_mc_producer = electrons.ElectronPtCorrectionMC.get(era, "v9")
+        # - In Run 2, the pt is already corrected, so this is just
+        electron_pt_correction_data_producer = electrons.ElectronPtCorrectionData.get(era, "v9")
+    
     else:
-        electron_pt_correction_mc_producer = get_for_era(
-            {
-                tuple(ERAS_RUN2): electrons.ElectronPtCorrectionMCRun2,
-                tuple(ERAS_RUN3): electrons.ElectronPtCorrectionMCRun3,
-            },
-            era,
-        )
-
-    # Electron pt correction for data
-    # - In Run 2, the pt is already corrected, so this is just 
-    electron_pt_correction_data_producer = get_for_era(
-        {
-            tuple(ERAS_RUN2): electrons.RenameElectronPt,
-            tuple(ERAS_RUN3): electrons.ElectronPtCorrectionDataRun3,
-        },
-        era,
-    )
+        electron_pt_correction_mc_producer = electrons.ElectronPtCorrectionMC.get(era, "v15")
+        electron_pt_correction_data_producer = electrons.ElectronPtCorrectionData.get(era, "v15")
+     
+    
 
     # Jet ID producer
     # For a detailed description, see producers/jets.py
@@ -2822,22 +2829,13 @@ def build_config(
     # - On the isolated SM 2018-v15 path, the AK4 PUPPI collection is used with
     #   no pileup ID (v15 ships no Jet_puId for PUPPI jets), so the without-PUID
     #   selection group is used instead of the legacy CHS-with-PUID group.
-    if profile.use_2018_v15_jet_path and era == "2018":
-        base_jet_selection_producers = [
-            jets.BaseJetSelectionWithoutPUID,
-        ]
+    if era in ERAS_RUN2:
+        if profile.use_2018_v15_jet_path and era == "2018":
+            base_jet_selection_producers = jets.BaseJetSelection.get(era, "v15")
+        else:
+            base_jet_selection_producers = jets.BaseJetSelection.get(era, "v9")
     else:
-        base_jet_selection_producers = get_for_era(
-            {
-                tuple(ERAS_RUN2): [
-                    jets.BaseJetSelectionWithPUID,
-                ],
-                tuple(ERAS_RUN3): [
-                    jets.BaseJetSelectionWithoutPUID,
-                ],
-            },
-            era,
-        )
+        base_jet_selection_producers = jets.BaseJetSelection.get(era, "v15")
 
     # AK8 jet ID producers
     # fat_jet_id_producers = get_for_era(
@@ -2878,7 +2876,8 @@ def build_config(
     # b jet identification scale factors
     bjet_id_sf_producer = get_for_era(
         {
-            tuple(ERAS_RUN2): scalefactors.BJetShapeDeepJet_SF,
+            # tuple(ERAS_RUN2): scalefactors.BJetShapeDeepJet_SF,
+            tuple(ERAS_RUN2): scalefactors.BJetWPUParT_SF,
             ("2022preEE", "2022postEE", "2023preBPix", "2023postBPix"): scalefactors.BJetShapePNet_SF,
             ("2024", "2025"): scalefactors.BJetWPUParT_SF,
         },
@@ -2900,6 +2899,7 @@ def build_config(
     # unresolved config parameter. Shared with add_bjet_config via
     # _use_strict_upart_btag so the two call sites can't drift apart.
     use_strict_upart_btag = _use_strict_upart_btag(profile, era)
+    use_strict_upart_btag = False
     strict_upart_btag_outputs = []
     if use_strict_upart_btag:
         upart_btag_variations = btag_payloads.discover_upart_variations(
@@ -3001,7 +3001,7 @@ def build_config(
             jets.Type1JetCollection,
         ]
         + prefire_weight_producers
-        + base_jet_selection_producers
+        + [base_jet_selection_producers]
         # + fat_jet_id_producers
         + jet_veto_map_producers
         + [
@@ -3075,7 +3075,7 @@ def build_config(
         HAD_TAU_SCOPES,
         [
             scalefactors.TauIDSF,
-            taus.TauEnergyCorrectionMC,
+            taus.TauEnergyCorrectionMC
         ]
     )
 
@@ -3340,6 +3340,7 @@ def build_config(
         RemoveProducer(
             producers=[
                 single_ele_trigger_sf,
+                scalefactors.EleID_SF,
             ],
             samples=profile_samples("data", "embedding", "embedding_mc"),
         ),
@@ -4143,176 +4144,6 @@ def build_config(
                 producers={"global": [event.LHE_Scale_weight]},
             )
         )
-    if sample in ["nmssm_Ybb", "nmssm_Ytautau"]:
-        configuration.add_shift(
-            SystematicShift(
-                "muRWeightUp",
-                shift_config={
-                    "global": {
-                        "muR": 2.0,
-                    }
-                },
-                producers={"global": [event.NMSSM_LHE_Scale_weight]},
-            )
-        )
-        configuration.add_shift(
-            SystematicShift(
-                "muRWeightDown",
-                shift_config={
-                    "global": {
-                        "muR": 0.5,
-                    }
-                },
-                producers={"global": [event.NMSSM_LHE_Scale_weight]},
-            )
-        )
-        configuration.add_shift(
-            SystematicShift(
-                "muFWeightUp",
-                shift_config={
-                    "global": {
-                        "muF": 2.0,
-                    }
-                },
-                producers={"global": [event.NMSSM_LHE_Scale_weight]},
-            )
-        )
-        configuration.add_shift(
-            SystematicShift(
-                "muFWeightDown",
-                shift_config={
-                    "global": {
-                        "muF": 0.5,
-                    }
-                },
-                producers={"global": [event.NMSSM_LHE_Scale_weight]},
-            )
-        )
-
-    #########################
-    # Lepton to tau fakes energy scalefactor shifts  #
-    #########################
-    if "dyjets" in sample or "electroweak_boson" in sample:
-        configuration.add_shift(
-            SystematicShift(
-                name="tauMuFakeEsDown",
-                shift_config={
-                    "mt": {
-                        "tau_mufake_es": "down",
-                    }
-                },
-                producers={"mt": [taus.TauPtCorrectionMC]},
-            ),
-            exclude_samples=profile_samples("data", "embedding", "embedding_mc"),
-        )
-        configuration.add_shift(
-            SystematicShift(
-                name="tauMuFakeEsUp",
-                shift_config={
-                    "mt": {
-                        "tau_mufake_es": "up",
-                    }
-                },
-                producers={"mt": [taus.TauPtCorrectionMC]},
-            ),
-            exclude_samples=profile_samples("data", "embedding", "embedding_mc"),
-        )
-        configuration.add_shift(
-            SystematicShift(
-                name="tauEleFakeEs1prongBarrelDown",
-                shift_config={
-                    "et": {
-                        "tau_elefake_es_DM0_barrel": "down",
-                    }
-                },
-                producers={"et": [taus.TauPtCorrectionMC]},
-            ),
-            exclude_samples=profile_samples("data", "embedding", "embedding_mc"),
-        )
-        configuration.add_shift(
-            SystematicShift(
-                name="tauEleFakeEs1prongBarrelUp",
-                shift_config={
-                    "et": {
-                        "tau_elefake_es_DM0_barrel": "up",
-                    }
-                },
-                producers={"et": [taus.TauPtCorrectionMC]},
-            ),
-            exclude_samples=profile_samples("data", "embedding", "embedding_mc"),
-        )
-        configuration.add_shift(
-            SystematicShift(
-                name="tauEleFakeEs1prongEndcapDown",
-                shift_config={
-                    "et": {
-                        "tau_elefake_es_DM0_endcap": "down",
-                    }
-                },
-                producers={"et": [taus.TauPtCorrectionMC]},
-            ),
-            exclude_samples=profile_samples("data", "embedding", "embedding_mc"),
-        )
-        configuration.add_shift(
-            SystematicShift(
-                name="tauEleFakeEs1prongEndcapUp",
-                shift_config={
-                    "et": {
-                        "tau_elefake_es_DM0_endcap": "up",
-                    }
-                },
-                producers={"et": [taus.TauPtCorrectionMC]},
-            ),
-            exclude_samples=profile_samples("data", "embedding", "embedding_mc"),
-        )
-        configuration.add_shift(
-            SystematicShift(
-                name="tauEleFakeEs1prong1pizeroBarrelDown",
-                shift_config={
-                    "et": {
-                        "tau_elefake_es_DM1_barrel": "down",
-                    }
-                },
-                producers={"et": [taus.TauPtCorrectionMC]},
-            ),
-            exclude_samples=profile_samples("data", "embedding", "embedding_mc"),
-        )
-        configuration.add_shift(
-            SystematicShift(
-                name="tauEleFakeEs1prong1pizeroBarrelUp",
-                shift_config={
-                    "et": {
-                        "tau_elefake_es_DM1_barrel": "up",
-                    }
-                },
-                producers={"et": [taus.TauPtCorrectionMC]},
-            ),
-            exclude_samples=profile_samples("data", "embedding", "embedding_mc"),
-        )
-        configuration.add_shift(
-            SystematicShift(
-                name="tauEleFakeEs1prong1pizeroEndcapDown",
-                shift_config={
-                    "et": {
-                        "tau_elefake_es_DM1_endcap": "down",
-                    }
-                },
-                producers={"et": [taus.TauPtCorrectionMC]},
-            ),
-            exclude_samples=profile_samples("data", "embedding", "embedding_mc"),
-        )
-        configuration.add_shift(
-            SystematicShift(
-                name="tauEleFakeEs1prong1pizeroEndcapUp",
-                shift_config={
-                    "et": {
-                        "tau_elefake_es_DM1_endcap": "up",
-                    }
-                },
-                producers={"et": [taus.TauPtCorrectionMC]},
-            ),
-            exclude_samples=profile_samples("data", "embedding", "embedding_mc"),
-        )
 
     #########################
     # Electron energy correction shifts
@@ -4677,6 +4508,7 @@ def build_config(
                             "ele_trigger_sf": [
                                 {
                                     "e_trigger_flagname": "trg_wgt_single_ele30",
+                                    "e_trigger_flag": "trg_single_ele30",
                                     "e_trigger_sf_name": "HLT_SF_Ele30_MVAiso90ID",
                                     "e_trigger_variation": f"sf{_variation}",
                                 },
@@ -4764,6 +4596,7 @@ def build_config(
                             "mu_trigger_sf": [
                                 {
                                     "m_trigger_flagname": "trg_wgt_single_mu24",
+                                    "m_trigger_flag": "trg_single_mu24",
                                     "m_trigger_sf_name": "NUM_IsoMu24_DEN_CutBasedIdTight_and_PFIsoTight",
                                     "m_trigger_variation": f"syst{_variation}",
                                 },
@@ -4841,17 +4674,18 @@ def build_config(
     #########################
     # TauID scale factor shifts, channel dependent # Tau energy scale shifts, dm dependent
     #########################
-    add_tauVariations(
-        configuration,
-        scalefactors.TauIDVsJetSF1,
-        scalefactors.TauIDVsJetSF2,
-        scalefactors.TauIDVsEleSF1,
-        scalefactors.TauIDVsEleSF2,
-        scalefactors.TauIDVsMuSF1,
-        scalefactors.TauIDVsMuSF2,
-        taus.TauPtCorrectionMC,
-        sample,
-    )
+    # add_tauVariations(
+    #     configuration,
+    #     scalefactors.TauIDVsJetSF1,
+    #     scalefactors.TauIDVsJetSF2,
+    #     scalefactors.TauIDVsEleSF1,
+    #     scalefactors.TauIDVsEleSF2,
+    #     scalefactors.TauIDVsMuSF1,
+    #     scalefactors.TauIDVsMuSF2,
+    #     taus.TauPtCorrectionMC,
+    #     sample,
+    # )
+    add_tauVariations(configuration, sample, era)
 
     #########################
     # Strict UParTAK4 b-tag event-weight outputs (SM 2018-v15 profile)
@@ -4877,7 +4711,7 @@ def build_config(
     # Add additional producers and SFs related to embedded samples
     #########################
     if sample == "embedding" or sample == "embedding_mc":
-        setup_embedding(configuration, HAD_TAU_SCOPES)
+        setup_embedding(configuration, HAD_TAU_SCOPES, era)
 
     #########################
     # Jet energy resolution and jet energy scale
@@ -4908,4 +4742,8 @@ def build_config(
     configuration.optimize()
     configuration.validate()
     configuration.report()
-    return configuration.expanded_configuration()
+    if DAG_dir:
+        NanoAOD_inputs = [n for n in dir(nanoAOD) if not n.startswith("__")] + [n for n in dir(nanoAOD_run2) if not n.startswith("__")]
+        create_graph(configuration, NanoAOD_inputs, DAG_dir, "CROWNelements")
+    configuration = configuration.expanded_configuration()
+    return configuration

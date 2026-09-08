@@ -4,7 +4,8 @@ Producers for electron energy scale corrections, object selections, and vetoes.
 
 from ..quantities import output as q
 from ..quantities import nanoAOD, nanoAOD_run2
-from code_generation.producer import Producer, ProducerGroup
+from code_generation.producer import Producer, ProducerGroup, SwitchProducer
+from code_generation.helpers import defaults
 
 from ..constants import EE_SCOPES, ET_SCOPES, ELECTRON_SCOPES, SCOPES, GLOBAL_SCOPES, ERAS_RUN2, ERAS_RUN3
 
@@ -60,62 +61,54 @@ ElectronPtSmearingSeed = Producer(
 )
 
 
-# Electron pt correction on MC events
-ElectronPtCorrectionMC = {
-    # TODO The Run 2 electron p_T corrections for NANOAOD v15 still need to be
-    # implemented. The corresponding correctionlib files have not been made
-    # available yet.
-    tuple(ERAS_RUN2): Producer(
-        name="ElectronPtCorrectionMC",
-        call="event::quantity::Rename<ROOT::RVec<float>>({df}, {output}, {input})",
-        input=[nanoAOD.Electron_pt],
-        output=[q.Electron_pt_corrected],
-        scopes=GLOBAL_SCOPES,
-    ),
-    tuple(ERAS_RUN3): ProducerGroup(
-        name="ElectronPtCorrectionMC",
-        call='physicsobject::electron::PtCorrectionMC({df}, correctionManager, {output}, {input}, "{ele_es_file}", "{ele_es_sf_mc_name}", "{ele_es_variation}")',
-        input=[
-            nanoAOD.Electron_pt,
-            nanoAOD.Electron_eta,
-            nanoAOD.Electron_deltaEtaSC,
-            nanoAOD.Electron_r9,
-        ],
-        output=[q.Electron_pt_corrected],
-        scopes=GLOBAL_SCOPES,
-        subproducers=[ElectronPtSmearingSeed],
-    ),
-}
-
-
-# Electron pt correction on data events
-ElectronPtCorrectionData = {
-    # TODO The Run 2 electron p_T corrections for NANOAOD v15 still need to be
-    # implemented. The corresponding correctionlib files have not been made
-    # available yet.
-    tuple(ERAS_RUN2): Producer(
-        name="ElectronPtCorrectionData",
-        call="event::quantity::Rename<ROOT::RVec<float>>({df}, {output}, {input})",
-        input=[nanoAOD.Electron_pt],
-        output=[q.Electron_pt_corrected],
-        scopes=GLOBAL_SCOPES,
-    ),
-    tuple(ERAS_RUN3): Producer(
-        name="ElectronPtCorrectionData",
-        call='physicsobject::electron::PtCorrectionData({df}, correctionManager, {output}, {input}, "{ele_es_file}", "{ele_es_sf_data_name}")',
-        input=[
-            nanoAOD.Electron_pt,
-            nanoAOD.Electron_eta,
-            nanoAOD.Electron_deltaEtaSC,
-            nanoAOD.Electron_seedGain,
-            nanoAOD.Electron_r9,
-            nanoAOD.run
-        ],
-        output=[q.Electron_pt_corrected],
-        scopes=GLOBAL_SCOPES,
-    ),
-}
-
+with defaults(scopes=GLOBAL_SCOPES, output=[q.Electron_pt_corrected]):
+    class ElectronPtCorrectionMC(SwitchProducer):
+        class run2:
+            v9 = Producer(name="ElectronPtCorrectionMC",
+                    call="event::quantity::Rename<ROOT::RVec<float>>({df}, {output}, {input})",
+                    input=[nanoAOD.Electron_pt],
+                    )
+            v15 = ProducerGroup(name="ElectronPtCorrectionMC",
+                    call='physicsobject::electron::PtCorrectionMC({df}, correctionManager, {output}, {input}, "{ele_es_file}", "{ele_es_sf_mc_name}", "{ele_es_variation}")',
+                    input=[
+                        nanoAOD.Electron_pt,
+                        nanoAOD.Electron_eta,
+                        nanoAOD.Electron_deltaEtaSC,
+                        nanoAOD.Electron_r9,
+                    ],
+                    subproducers=[ElectronPtSmearingSeed],
+                    ) 
+        
+        class run3:
+            v15 = ProducerGroup(name="ElectronPtCorrectionMC",
+                    call='physicsobject::electron::PtCorrectionMC({df}, correctionManager, {output}, {input}, "{ele_es_file}", "{ele_es_sf_mc_name}", "{ele_es_variation}")',
+                    input=[
+                        nanoAOD.Electron_pt,
+                        nanoAOD.Electron_eta,
+                        nanoAOD.Electron_deltaEtaSC,
+                        nanoAOD.Electron_r9,
+                    ],
+                    subproducers=[ElectronPtSmearingSeed],
+                    )
+    class ElectronPtCorrectionData(SwitchProducer):
+        class run2:
+            v9 = Producer(name="ElectronPtCorrectionData",
+                    call="event::quantity::Rename<ROOT::RVec<float>>({df}, {output}, {input})",
+                    input=[nanoAOD.Electron_pt],
+                    )
+        
+        class run3:
+            v15 = Producer(name="ElectronPtCorrectionData",
+                    call='physicsobject::electron::PtCorrectionData({df}, correctionManager, {output}, {input}, "{ele_es_file}", "{ele_es_sf_data_name}")',
+                    input=[
+                        nanoAOD.Electron_pt,
+                        nanoAOD.Electron_eta,
+                        nanoAOD.Electron_deltaEtaSC,
+                        nanoAOD.Electron_seedGain,
+                        nanoAOD.Electron_r9,
+                        nanoAOD.run
+                    ],
+                    )
 
 #
 # OBJECT SELECTION

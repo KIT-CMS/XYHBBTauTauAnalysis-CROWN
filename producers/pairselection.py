@@ -529,7 +529,7 @@ LVTau2Uncorrected = Producer(
 
 additionalBoostedTau = Producer(
     name="additionalBoostedTau",
-    call="ditau_pairselection::findAdditionalTau({df}, {input}, {output})",
+    call="ditau_pairselection::findAdditionalTau({df}, {output}, {input})",
     input=[
         q.good_boostedtaus_mask,
         q.boosteddileptonpair,

@@ -404,7 +404,19 @@ EMGenerateCrossTriggerFlags = ExtendedVectorProducer(
 
 TTGenerateDoubleTriggerFlagsEmbedding = ExtendedVectorProducer(
     name="TTGenerateDoubleTriggerFlagsEmbedding",
-    call="trigger::DoubleObjectFlag({df}, {output}, {input}, {p1_ptcut}, {p2_ptcut}, {p1_etacut}, {p2_etacut}, {p1_trigger_particle_id}, {p2_trigger_particle_id}, {p1_filterbit}, {p2_filterbit}, {max_deltaR_triggermatch})",
+    call='''trigger::DoubleObjectFlag(
+        {df},
+        {output},
+        {input},
+        {p1_ptcut},
+        {p2_ptcut},
+        {p1_etacut},
+        {p2_etacut},
+        {p1_trigger_particle_id},
+        {p2_trigger_particle_id},
+        {vec_open}{p1_filterbit}{vec_close},
+        {vec_open}{p2_filterbit}{vec_close},
+        {max_deltaR_triggermatch})''',
     input=[
         q.p4_1,
         q.p4_2,

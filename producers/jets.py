@@ -5,8 +5,9 @@ Producers for AK4 jet energy scale and resolution corrections, object selections
 from ..quantities import output as q
 from ..quantities import nanoAOD
 from analysis_configurations.quantities import nanoAODv9_run2, nanoAODv12_run3
-from code_generation.producer import Producer, ProducerGroup
+from code_generation.producer import Producer, ProducerGroup, SwitchProducer
 from code_generation.quantity import Quantity
+from code_generation.helpers import defaults
 
 from ..helpers import era_producer_groups
 from ..constants import GLOBAL_SCOPES, SCOPES, HAD_TAU_SCOPES, ERAS_RUN2
@@ -916,32 +917,59 @@ GoodBJetsWithoutPUID = ProducerGroup(
     ],
     scopes=GLOBAL_SCOPES,
 )
+with defaults(scopes=GLOBAL_SCOPES,call=None, input=None, output=None):
+    class BaseJetSelection(SwitchProducer):
+        # Producer group for jet and b jet selection in run 2 (CHS jets)
+        class run2:
+            v9 = ProducerGroup(
+                    name="GoodJetSelectionWithPUID",
+                    subproducers=[
+                        GoodJetsWithPUID,
+                        GoodBJetsWithPUID,
+                    ],
+                )
+            v15 = ProducerGroup(
+                    name="GoodJetSelectionWithoutPUID",
+                    subproducers=[
+                        GoodJetsWithoutPUID,
+                        GoodBJetsWithoutPUID,
+                    ],
+                )
+        
+        # Producer group for jet and b jet selection in run 3 (PUPPI jets)
+        class run3:
+            v15 = ProducerGroup(
+                name="GoodJetSelectionWithoutPUID",
+                subproducers=[
+                    GoodJetsWithoutPUID,
+                    GoodBJetsWithoutPUID,
+                ],
+            )
+        
 
-# Producer group for jet and b jet selection in run 2 (CHS jets)
-BaseJetSelectionWithPUID = ProducerGroup(
-    name="GoodJetSelectionWithPUID",
-    call=None,
-    input=None,
-    output=None,
-    scopes=GLOBAL_SCOPES,
-    subproducers=[
-        GoodJetsWithPUID,
-        GoodBJetsWithPUID,
-    ],
-)
+# BaseJetSelectionWithPUID = ProducerGroup(
+#     name="GoodJetSelectionWithPUID",
+#     call=None,
+#     input=None,
+#     output=None,
+#     scopes=GLOBAL_SCOPES,
+#     subproducers=[
+#         GoodJetsWithPUID,
+#         GoodBJetsWithPUID,
+#     ],
+# )
 
-# Producer group for jet and b jet selection in run 3 (PUPPI jets)
-BaseJetSelectionWithoutPUID = ProducerGroup(
-    name="GoodJetSelectionWithoutPUID",
-    call=None,
-    input=None,
-    output=None,
-    scopes=GLOBAL_SCOPES,
-    subproducers=[
-        GoodJetsWithoutPUID,
-        GoodBJetsWithoutPUID,
-    ],
-)
+# BaseJetSelectionWithoutPUID = ProducerGroup(
+#     name="GoodJetSelectionWithoutPUID",
+#     call=None,
+#     input=None,
+#     output=None,
+#     scopes=GLOBAL_SCOPES,
+#     subproducers=[
+#         GoodJetsWithoutPUID,
+#         GoodBJetsWithoutPUID,
+#     ],
+# )
 
 
 #

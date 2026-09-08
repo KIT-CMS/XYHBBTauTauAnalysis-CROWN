@@ -13,14 +13,16 @@ from .producers import triggers as triggers
 from .producers import electrons as electrons
 from .quantities import output as q
 from code_generation.configuration import Configuration
-from code_generation.systematics import SystematicShift
+from code_generation.systematics import SystematicShift, get_adjusted_add_shift_SystematicShift
 from code_generation.modifiers import EraModifier
-
+from code_generation.helpers import defaults
+from .scripts.SpecialSetups import ES_ID_SCHEME
+import numpy as np
 measure_tauES = False
 measure_eleES = False
 
 
-def setup_embedding(configuration: Configuration, scopes: List[str]):
+def setup_embedding(configuration: Configuration, scopes: List[str], era: str):
     configuration.add_config_parameters(
         "global",
         {
@@ -334,8 +336,8 @@ def setup_embedding(configuration: Configuration, scopes: List[str]):
             producers=[
                 embedding.TauEmbeddingMuonIDSF_1,
                 embedding.TauEmbeddingMuonIsoSF_1,
-                embedding.TauEmbeddingBoostedMuonIDSF_1,
-                embedding.TauEmbeddingBoostedMuonIsoSF_1,
+                # embedding.TauEmbeddingBoostedMuonIDSF_1,
+                # embedding.TauEmbeddingBoostedMuonIsoSF_1,
                 embedding.MTGenerateSingleMuonTriggerSF,
             ],
             samples=["embedding"],
@@ -347,8 +349,8 @@ def setup_embedding(configuration: Configuration, scopes: List[str]):
             producers=[
                 embedding.TauEmbeddingElectronIDSF_1,
                 embedding.TauEmbeddingElectronIsoSF_1,
-                embedding.TauEmbeddingBoostedElectronIDSF_1,
-                embedding.TauEmbeddingBoostedElectronIsoSF_1,
+                # embedding.TauEmbeddingBoostedElectronIDSF_1,
+                # embedding.TauEmbeddingBoostedElectronIsoSF_1,
                 embedding.ETGenerateSingleElectronTriggerSF,
             ],
             samples=["embedding"],
@@ -356,8 +358,8 @@ def setup_embedding(configuration: Configuration, scopes: List[str]):
     )
     configuration.add_modification_rule(
         ["tt"],
-        ReplaceProducer(
-            producers=[scalefactors.TTGenerateDoubleTauTriggerSF_MC, embedding.TTGenerateDoubleTauTriggerSF],
+        AppendProducer(
+            producers=[embedding.TTGenerateDoubleTauTriggerSF],
             samples=["embedding", "embedding_mc"],
         ),
     )
@@ -634,7 +636,7 @@ def setup_embedding(configuration: Configuration, scopes: List[str]):
         "tt",
         ReplaceProducer(
             producers=[
-                triggers.TTGenerateDoubleTriggerFlags,
+                triggers.TauTauTriggerFlags,
                 triggers.TTGenerateDoubleTriggerFlagsEmbedding,
             ],
             samples="embedding",
@@ -663,48 +665,6 @@ def setup_embedding(configuration: Configuration, scopes: List[str]):
     ## Tau ID SFs
     ######################
 
-    configuration.add_modification_rule(
-        ["et", "mt"],
-        ReplaceProducer(
-            producers=[
-                scalefactors.Tau_2_VsJetTauID_lt_SF,
-                embedding.Tau_2_VsJetTauID_lt_SF,
-            ],
-            samples="embedding",
-        ),
-    )
-    configuration.add_modification_rule(
-        "tt",
-        ReplaceProducer(
-            producers=[
-                scalefactors.Tau_1_VsJetTauID_SF,
-                embedding.Tau_1_VsJetTauID_tt_SF,
-            ],
-            samples="embedding",
-        ),
-    )
-    configuration.add_modification_rule(
-        "tt",
-        ReplaceProducer(
-            producers=[
-                scalefactors.Tau_2_VsJetTauID_tt_SF,
-                embedding.Tau_2_VsJetTauID_tt_SF,
-            ],
-            samples="embedding",
-        ),
-    )
-    configuration.add_outputs(
-        ["et", "mt"],
-        embedding.Tau_2_VsJetTauID_lt_SF.output_group,
-    )
-    configuration.add_outputs(
-        "tt",
-        [
-            embedding.Tau_1_VsJetTauID_tt_SF.output_group,
-            embedding.Tau_2_VsJetTauID_tt_SF.output_group,
-        ],
-    )
-
     # replace TauID producers for embedding samples
     configuration.add_config_parameters(
         ["mt", "et"],
@@ -714,19 +674,26 @@ def setup_embedding(configuration: Configuration, scopes: List[str]):
                     "2016preVFP": "data/embedding/tau_2016preVFPUL.json.gz",
                     "2016postVFP": "data/embedding/tau_2016postVFPUL.json.gz",
                     "2017": "data/embedding/tau_2017UL.json.gz",
-                    "2018": "data/jsonpog-integration/POG/TAU/2018_UL/tau_embed.json.gz",
+                    "2018": "payloads/Tau_ID_ES/embedding/DeepTau2018v2p5_id_es_embedding2018UL.json.gz",
                 }
             ),
-            "tau_emb_sf_vsjet_tauDM0_pt20to40": "nom",
-            "tau_emb_sf_vsjet_tauDM0_pt40toInf": "nom",
-            "tau_emb_sf_vsjet_tauDM1_pt20to40": "nom",
-            "tau_emb_sf_vsjet_tauDM1_pt40toInf": "nom",
-            "tau_emb_sf_vsjet_tauDM10_pt20to40": "nom",
-            "tau_emb_sf_vsjet_tauDM10_pt40toInf": "nom",
-            "tau_emb_sf_vsjet_tauDM11_pt20to40": "nom",
-            "tau_emb_sf_vsjet_tauDM11_pt40toInf": "nom",
-            "tau_emb_id_sf_correctionset": "test_DeepTau2017v2p1VSjet_pt-dm",
-            "tau_emb_vsjet_sf_dependence": "pt", 
+            "tau_emb_ES_json_name": configuration.ES_ID_SCHEME.embedding.tau_emb_ES_json_name,
+            "tau_emb_sf_vsjet_DM0": "nom",
+            "tau_emb_sf_vsjet_DM1": "nom",
+            "tau_emb_sf_vsjet_DM10": "nom",
+            "tau_emb_sf_vsjet_DM11": "nom",
+            "tau_emb_sf_vsjet_DM0_20to40": "nom",
+            "tau_emb_sf_vsjet_DM0_40toInf": "nom",
+            "tau_emb_sf_vsjet_DM1_20to40": "nom",
+            "tau_emb_sf_vsjet_DM1_40toInf": "nom",
+            "tau_emb_sf_vsjet_DM10_20to40": "nom",
+            "tau_emb_sf_vsjet_DM10_40toInf": "nom",
+            "tau_emb_sf_vsjet_DM11_20to40": "nom",
+            "tau_emb_sf_vsjet_DM11_40toInf": "nom",
+            "tau_emb_ES_WP": "Tight",
+            "tau_vsjet_vseleWP": "VVLoose",
+            "tau_emb_id_sf_correctionset": "DeepTau2018v2p5VSjet",
+            "tau_emb_vsjet_sf_dependence": configuration.ES_ID_SCHEME.embedding.tau_emb_vsjet_sf_dependence,
             "vsjet_tau_id_sf_embedding": [
                 {
                     "tau_1_vsjet_sf_outputname": "id_wgt_tau_vsJet_{wp}_1".format(
@@ -771,15 +738,26 @@ def setup_embedding(configuration: Configuration, scopes: List[str]):
                     "2016preVFP": "data/embedding/tau_2016preVFPUL.json.gz",
                     "2016postVFP": "data/embedding/tau_2016postVFPUL.json.gz",
                     "2017": "data/embedding/tau_2017UL.json.gz",
-                    "2018": "data/jsonpog-integration/POG/TAU/2018_UL/tau_embed.json.gz",
+                    "2018": "payloads/Tau_ID_ES/embedding/DeepTau2018v2p5_id_es_embedding2018UL.json.gz",
                 }
             ),
-            "tau_emb_sf_vsjet_tauDM0": "nom",
-            "tau_emb_sf_vsjet_tauDM1": "nom",
-            "tau_emb_sf_vsjet_tauDM10": "nom",
-            "tau_emb_sf_vsjet_tauDM11": "nom",
-            "tau_emb_id_sf_correctionset": "test_DeepTau2017v2p1VSjet_pt-dm",
-            "tau_emb_vsjet_sf_dependence": "dm", 
+            "tau_emb_ES_json_name": configuration.ES_ID_SCHEME.embedding.tau_emb_ES_json_name,
+            "tau_emb_sf_vsjet_DM0": "nom",
+            "tau_emb_sf_vsjet_DM1": "nom",
+            "tau_emb_sf_vsjet_DM10": "nom",
+            "tau_emb_sf_vsjet_DM11": "nom",
+            "tau_emb_sf_vsjet_DM0_20to40": "nom",
+            "tau_emb_sf_vsjet_DM0_40toInf": "nom",
+            "tau_emb_sf_vsjet_DM1_20to40": "nom",
+            "tau_emb_sf_vsjet_DM1_40toInf": "nom",
+            "tau_emb_sf_vsjet_DM10_20to40": "nom",
+            "tau_emb_sf_vsjet_DM10_40toInf": "nom",
+            "tau_emb_sf_vsjet_DM11_20to40": "nom",
+            "tau_emb_sf_vsjet_DM11_40toInf": "nom",
+            "tau_emb_ES_WP": "Tight",
+            "tau_vsjet_vseleWP": "VVLoose",
+            "tau_emb_id_sf_correctionset": "DeepTau2018v2p5VSjet",
+            "tau_emb_vsjet_sf_dependence": configuration.ES_ID_SCHEME.embedding.tau_emb_vsjet_sf_dependence, 
             "vsjet_tau_id_sf_embedding": [
                 {
                     "tau_1_vsjet_sf_outputname": "id_wgt_tau_vsJet_{wp}_1".format(
@@ -803,227 +781,192 @@ def setup_embedding(configuration: Configuration, scopes: List[str]):
             ],
         },
     )
-    # and add the variations for lt
-    for variation in ["Up", "Down"]:
-        configuration.add_shift(
-            SystematicShift(
-                name=f"vsJetTauDM0Pt20to40{variation}",
-                shift_config={
-                    ("et", "mt"): {"tau_emb_sf_vsjet_tauDM0_pt20to40": variation.lower()}
-                },
-                producers={("et", "mt"): embedding.Tau_2_VsJetTauID_lt_SF},
-            )
-        )
-        configuration.add_shift(
-            SystematicShift(
-                name=f"vsJetTauDM0Pt40toInf{variation}",
-                shift_config={
-                    ("et", "mt"): {"tau_emb_sf_vsjet_tauDM0_pt40toInf": variation.lower()}
-                },
-                producers={("et", "mt"): embedding.Tau_2_VsJetTauID_lt_SF},
-            )
-        )
-        configuration.add_shift(
-            SystematicShift(
-                name=f"vsJetTauDM1Pt20to40{variation}",
-                shift_config={
-                    ("et", "mt"): {"tau_emb_sf_vsjet_tauDM1_pt20to40": variation.lower()}
-                },
-                producers={("et", "mt"): embedding.Tau_2_VsJetTauID_lt_SF},
-            )
-        )
-        configuration.add_shift(
-            SystematicShift(
-                name=f"vsJetTauDM1Pt40toInf{variation}",
-                shift_config={
-                    ("et", "mt"): {"tau_emb_sf_vsjet_tauDM1_pt40toInf": variation.lower()}
-                },
-                producers={("et", "mt"): embedding.Tau_2_VsJetTauID_lt_SF},
-            )
-        )
-        configuration.add_shift(
-            SystematicShift(
-                name=f"vsJetTauDM10Pt20to40{variation}",
-                shift_config={
-                    ("et", "mt"): {"tau_emb_sf_vsjet_tauDM10_pt20to40": variation.lower()}
-                },
-                producers={("et", "mt"): embedding.Tau_2_VsJetTauID_lt_SF},
-            )
-        )
-        configuration.add_shift(
-            SystematicShift(
-                name=f"vsJetTauDM10Pt40toInf{variation}",
-                shift_config={
-                    ("et", "mt"): {"tau_emb_sf_vsjet_tauDM10_pt40toInf": variation.lower()}
-                },
-                producers={("et", "mt"): embedding.Tau_2_VsJetTauID_lt_SF},
-            )
-        )
-        configuration.add_shift(
-            SystematicShift(
-                name=f"vsJetTauDM11Pt20to40{variation}",
-                shift_config={
-                    ("et", "mt"): {"tau_emb_sf_vsjet_tauDM11_pt20to40": variation.lower()}
-                },
-                producers={("et", "mt"): embedding.Tau_2_VsJetTauID_lt_SF},
-            )
-        )
-        configuration.add_shift(
-            SystematicShift(
-                name=f"vsJetTauDM11Pt40toInf{variation}",
-                shift_config={
-                    ("et", "mt"): {"tau_emb_sf_vsjet_tauDM11_pt40toInf": variation.lower()}
-                },
-                producers={("et", "mt"): embedding.Tau_2_VsJetTauID_lt_SF},
-            )
-        )
-        
-        # dm binned variations
-        for dm in [0, 1, 10, 11]:
-            configuration.add_shift(
-                SystematicShift(
-                    name=f"vsJetTauDM{dm}{variation}",
-                    shift_config={
-                        ("tt"): {f"tau_emb_sf_vsjet_tauDM{dm}": variation.lower()}
-                    },
-                    producers={
-                        ("tt"): [
-                            embedding.Tau_1_VsJetTauID_tt_SF,
-                            embedding.Tau_2_VsJetTauID_tt_SF,
-                        ]
-                    },
-                )
-            )
+    configuration.add_modification_rule(
+        ["mt", "et", "tt"],
+        ReplaceProducer(
+            producers=[
+                taus.TauEnergyCorrectionMC,
+                configuration.ES_ID_SCHEME.embedding.producerGroupES,
+            ],
+            samples=["embedding"],
+        ),
+    )
+    configuration.add_modification_rule(
+        ["et", "mt"],
+        ReplaceProducer(
+            producers=[scalefactors.TauIDVsJetSF2,configuration.ES_ID_SCHEME.embedding.producerID_2],
+            samples=["embedding"],
+        ),
+    )
+    configuration.add_modification_rule(
+        ["tt"],
+        ReplaceProducer(
+            producers=[scalefactors.TauIDVsJetSF1, configuration.ES_ID_SCHEME.embedding.producerID_1],
+            samples=["embedding"],
+        ),
+    )
+    configuration.add_modification_rule(
+        ["tt"],
+        ReplaceProducer(
+            producers=[scalefactors.TauIDVsJetSF2, configuration.ES_ID_SCHEME.embedding.producerID_2],
+            samples=["embedding"],
+        ),
+    )
+    configuration.add_outputs(
+        ["et", "mt"],
+        configuration.ES_ID_SCHEME.embedding.producerID_2.output_group,
+    )
+    configuration.add_outputs(
+        "tt",
+        [
+            configuration.ES_ID_SCHEME.embedding.producerID_1.output_group,
+            configuration.ES_ID_SCHEME.embedding.producerID_2.output_group,
+        ],
+    )
+    # and add the variations for it
+    # !!! The corresponding producer has to be picked in taus.py, either the pt inclusive or exclusive one. They are named the same !!!
+    add_shift = get_adjusted_add_shift_SystematicShift(configuration)
+    with defaults(shift_map={"Up": "up", "Down": "down"}):
+        with defaults(scopes=("et", "mt")):
+            with defaults(producers=[configuration.ES_ID_SCHEME.embedding.producerID_2]):
+                for dm in ["DM0", "DM1", "DM10", "DM11"]:
+                    for var in configuration.ES_ID_SCHEME.pt_binning:
+                        add_shift(name=f"vsJetTau{dm}{var}", shift_key=f"tau_emb_sf_vsjet_{dm}{var}")
+
+        with defaults(scopes="tt", producers=[configuration.ES_ID_SCHEME.embedding.producerID_1, configuration.ES_ID_SCHEME.embedding.producerID_2]):
+            for dm in ["DM0", "DM1", "DM10", "DM11"]:
+                for var in configuration.ES_ID_SCHEME.pt_binning:
+                    add_shift(name=f"vsJetTau{dm}{var}", shift_key=f"tau_emb_sf_vsjet_{dm}{var}")
 
     #########################
     # Electron id/iso sf shifts
     #########################
     
-    # configuration.add_shift(
-    #     SystematicShift(
-    #         name="electronIdSFUp",
-    #         scopes=["et"],
-    #         shift_config={
-    #             ("et"): {"embedding_electron_id_extrapolation": 1.02},
-    #         },
-    #         producers={
-    #             ("et"): [
-    #                 embedding.TauEmbeddingElectronIDSF_1,
-    #             ],
-    #         },
-    #     ),
-    #     samples=["embedding", "embedding_mc"],
-    # )
-    # configuration.add_shift(
-    #     SystematicShift(
-    #         name="electronIdSFDown",
-    #         scopes=["et"],
-    #         shift_config={
-    #             ("et"): {"embedding_electron_id_extrapolation": 0.98},
-    #         },
-    #         producers={
-    #             ("et"): [
-    #                 embedding.TauEmbeddingElectronIDSF_1,
-    #             ],
-    #         },
-    #     ),
-    #     samples=["embedding", "embedding_mc"],
-    # )
-    # configuration.add_shift(
-    #     SystematicShift(
-    #         name="electronIsoSFUp",
-    #         scopes=["et"],
-    #         shift_config={
-    #             ("et"): {"embedding_electron_iso_extrapolation": 1.02},
-    #         },
-    #         producers={
-    #             ("et"): [
-    #                 embedding.TauEmbeddingElectronIsoSF_1,
-    #             ],
-    #         },
-    #     ),
-    #     samples=["embedding", "embedding_mc"],
-    # )
-    # configuration.add_shift(
-    #     SystematicShift(
-    #         name="electronIsoSFDown",
-    #         scopes=["et"],
-    #         shift_config={
-    #             ("et"): {"embedding_electron_iso_extrapolation": 0.98},
-    #         },
-    #         producers={
-    #             ("et"): [
-    #                 embedding.TauEmbeddingElectronIsoSF_1,
-    #             ],
-    #         },
-    #     ),
-    #     samples=["embedding", "embedding_mc"],
-    # )
+    configuration.add_shift(
+        SystematicShift(
+            name="electronIdSFUp",
+            scopes=["et"],
+            shift_config={
+                ("et"): {"embedding_electron_id_extrapolation": 1.02},
+            },
+            producers={
+                ("et"): [
+                    embedding.TauEmbeddingElectronIDSF_1,
+                ],
+            },
+        ),
+        samples=["embedding", "embedding_mc"],
+    )
+    configuration.add_shift(
+        SystematicShift(
+            name="electronIdSFDown",
+            scopes=["et"],
+            shift_config={
+                ("et"): {"embedding_electron_id_extrapolation": 0.98},
+            },
+            producers={
+                ("et"): [
+                    embedding.TauEmbeddingElectronIDSF_1,
+                ],
+            },
+        ),
+        samples=["embedding", "embedding_mc"],
+    )
+    configuration.add_shift(
+        SystematicShift(
+            name="electronIsoSFUp",
+            scopes=["et"],
+            shift_config={
+                ("et"): {"embedding_electron_iso_extrapolation": 1.02},
+            },
+            producers={
+                ("et"): [
+                    embedding.TauEmbeddingElectronIsoSF_1,
+                ],
+            },
+        ),
+        samples=["embedding", "embedding_mc"],
+    )
+    configuration.add_shift(
+        SystematicShift(
+            name="electronIsoSFDown",
+            scopes=["et"],
+            shift_config={
+                ("et"): {"embedding_electron_iso_extrapolation": 0.98},
+            },
+            producers={
+                ("et"): [
+                    embedding.TauEmbeddingElectronIsoSF_1,
+                ],
+            },
+        ),
+        samples=["embedding", "embedding_mc"],
+    )
 
     #########################
     # Muon id/iso sf shifts
     #########################
     
-    # configuration.add_shift(
-    #     SystematicShift(
-    #         name="muonIdSFUp",
-    #         scopes=["mt"],
-    #         shift_config={
-    #             ("mt"): {"embedding_muon_id_extrapolation": 1.02},
-    #         },
-    #         producers={
-    #             ("mt"): [
-    #                 embedding.TauEmbeddingMuonIDSF_1,
-    #             ],
-    #         },
-    #     ),
-    #     samples=["embedding", "embedding_mc"],
-    # )
-    # configuration.add_shift(
-    #     SystematicShift(
-    #         name="muonIdSFDown",
-    #         scopes=["mt"],
-    #         shift_config={
-    #             ("mt"): {"embedding_muon_id_extrapolation": 0.98},
-    #         },
-    #         producers={
-    #             ("mt"): [
-    #                 embedding.TauEmbeddingMuonIDSF_1,
-    #             ],
-    #         },
-    #     ),
-    #     samples=["embedding", "embedding_mc"],
-    # )
-    # configuration.add_shift(
-    #     SystematicShift(
-    #         name="muonIsoSFUp",
-    #         scopes=["mt"],
-    #         shift_config={
-    #             ("mt"): {"embedding_muon_iso_extrapolation": 1.02},
-    #         },
-    #         producers={
-    #             ("mt"): [
-    #                 embedding.TauEmbeddingMuonIsoSF_1,
-    #             ],
-    #         },
-    #     ),
-    #     samples=["embedding", "embedding_mc"],
-    # )
-    # configuration.add_shift(
-    #     SystematicShift(
-    #         name="muonIsoSFDown",
-    #         scopes=["mt"],
-    #         shift_config={
-    #             ("mt"): {"embedding_muon_iso_extrapolation": 0.98},
-    #         },
-    #         producers={
-    #             ("mt"): [
-    #                 embedding.TauEmbeddingMuonIsoSF_1,
-    #             ],
-    #         },
-    #     ),
-    #     samples=["embedding", "embedding_mc"],
-    # )
+    configuration.add_shift(
+        SystematicShift(
+            name="muonIdSFUp",
+            scopes=["mt"],
+            shift_config={
+                ("mt"): {"embedding_muon_id_extrapolation": 1.02},
+            },
+            producers={
+                ("mt"): [
+                    embedding.TauEmbeddingMuonIDSF_1,
+                ],
+            },
+        ),
+        samples=["embedding", "embedding_mc"],
+    )
+    configuration.add_shift(
+        SystematicShift(
+            name="muonIdSFDown",
+            scopes=["mt"],
+            shift_config={
+                ("mt"): {"embedding_muon_id_extrapolation": 0.98},
+            },
+            producers={
+                ("mt"): [
+                    embedding.TauEmbeddingMuonIDSF_1,
+                ],
+            },
+        ),
+        samples=["embedding", "embedding_mc"],
+    )
+    configuration.add_shift(
+        SystematicShift(
+            name="muonIsoSFUp",
+            scopes=["mt"],
+            shift_config={
+                ("mt"): {"embedding_muon_iso_extrapolation": 1.02},
+            },
+            producers={
+                ("mt"): [
+                    embedding.TauEmbeddingMuonIsoSF_1,
+                ],
+            },
+        ),
+        samples=["embedding", "embedding_mc"],
+    )
+    configuration.add_shift(
+        SystematicShift(
+            name="muonIsoSFDown",
+            scopes=["mt"],
+            shift_config={
+                ("mt"): {"embedding_muon_iso_extrapolation": 0.98},
+            },
+            producers={
+                ("mt"): [
+                    embedding.TauEmbeddingMuonIsoSF_1,
+                ],
+            },
+        ),
+        samples=["embedding", "embedding_mc"],
+    )
 
     #########################
     # Trigger shifts
@@ -1260,23 +1203,26 @@ def setup_embedding(configuration: Configuration, scopes: List[str]):
         configuration.add_config_parameters(
             "mt",
             {
-                "tau_ES_shift_DM0": 1.0,
-                "tau_ES_shift_DM1": 1.0,
-                "tau_ES_shift_DM10": 1.0,
-                "tau_ES_shift_DM11": 1.0,
+                "tau_ES_shift_DM0_byValue": 1.0,
+                "tau_ES_shift_DM1_byValue": 1.0,
+                "tau_ES_shift_DM10_byValue": 1.0,
+                "tau_ES_shift_DM11_byValue": 1.0,
             },
         )
         configuration.add_modification_rule(
             "mt",
             ReplaceProducer(
                 producers=[
-                    taus.TauEnergyCorrection,
-                    taus.TauEnergyCorrection_Embedding,
+                    configuration.ES_ID_SCHEME.embedding.producerGroupES,
+                    taus.TauEnergyCorrection_Embedding_Measurement,
                 ],
                 samples=["embedding"],
             ),
         )
-        tauESvariations = [-2.5 + 0.1 * i for i in range(0, 51)]
+        # tauESvariations = [x for x in np.arange(20.0, -20.0 - 0.1, -0.1).round(2).tolist() if x != 0 and x>=-20.0]
+        # tauESvariations = [x for x in np.arange(20.0, -20.0 - 0.2, -0.2).round(2).tolist() if x < -12.0 or x > 8.0] # even 
+        # tauESvariations = [x for x in np.arange(19.9, -20.0, -0.2).round(2).tolist()] # odd
+        tauESvariations = []
         for tauESvariation in tauESvariations:
             name = str(round(tauESvariation, 2)).replace("-", "minus").replace(".", "p")
             configuration.add_shift(
@@ -1284,13 +1230,13 @@ def setup_embedding(configuration: Configuration, scopes: List[str]):
                     name=f"EMBtauESshift_{name}",
                     shift_config={
                         ("mt"): {
-                            "tau_ES_shift_DM0": 1.0
+                            "tau_ES_shift_DM0_byValue": 1.0
                             + (round(tauESvariation / 100.0, 5)),
-                            "tau_ES_shift_DM1": 1.0
+                            "tau_ES_shift_DM1_byValue": 1.0
                             + (round(tauESvariation / 100.0, 5)),
-                            "tau_ES_shift_DM10": 1.0
+                            "tau_ES_shift_DM10_byValue": 1.0
                             + (round(tauESvariation / 100.0, 5)),
-                            "tau_ES_shift_DM11": 1.0
+                            "tau_ES_shift_DM11_byValue": 1.0
                             + (round(tauESvariation / 100.0, 5)),
                         }
                     },
@@ -1299,238 +1245,14 @@ def setup_embedding(configuration: Configuration, scopes: List[str]):
                 samples=["embedding"],
             )
     else:
-        tauES_2016preVFP = {  # ToDo: Measure these values for 2016preVFP and add them to the configuration
-            "up": 1.0 - 0.0,
-            "nominal": 1.0,
-            "down": 1.0 + 0.0,
-        }
-        tauES_2016postVFP = {  # ToDo: Measure these values for 2016postVFP and add them to the configuration
-            "up": 1.0 - 0.0,
-            "nominal": 1.0,
-            "down": 1.0 + 0.0,
-        }
-        tauES_2017 = (
-            {  # ToDo: Measure these values for 2017 and add them to the configuration
-                "up": 1.0 - 0.0,
-                "nominal": 1.0,
-                "down": 1.0 + 0.0,
-            }
-        )
-        tauES_2018 = {
-            "up": 0.9865 - 0.0039,
-            "nominal": 0.9865,
-            "down": 0.9865 + 0.0039,
-        }
-        configuration.add_config_parameters(
-            ["mt", "et", "tt"],
-            {
-                "tau_ES_shift_DM0": EraModifier(
-                    {
-                        "2016preVFP": tauES_2016preVFP["nominal"],
-                        "2016postVFP": tauES_2016postVFP["nominal"],
-                        "2017": tauES_2017["nominal"],
-                        "2018": tauES_2018["nominal"],
-                    }
-                ),
-                "tau_ES_shift_DM1": EraModifier(
-                    {
-                        "2016preVFP": tauES_2016preVFP["nominal"],
-                        "2016postVFP": tauES_2016postVFP["nominal"],
-                        "2017": tauES_2017["nominal"],
-                        "2018": tauES_2018["nominal"],
-                    }
-                ),
-                "tau_ES_shift_DM10": EraModifier(
-                    {
-                        "2016preVFP": tauES_2016preVFP["nominal"],
-                        "2016postVFP": tauES_2016postVFP["nominal"],
-                        "2017": tauES_2017["nominal"],
-                        "2018": tauES_2018["nominal"],
-                    }
-                ),
-                "tau_ES_shift_DM11": EraModifier(
-                    {
-                        "2016preVFP": tauES_2016preVFP["nominal"],
-                        "2016postVFP": tauES_2016postVFP["nominal"],
-                        "2017": tauES_2017["nominal"],
-                        "2018": tauES_2018["nominal"],
-                    }
-                ),
-            },
-        )
-        configuration.add_modification_rule(
-            ["mt", "et", "tt"],
-            ReplaceProducer(
-                producers=[
-                    taus.TauEnergyCorrection,
-                    taus.TauEnergyCorrection_Embedding,
-                ],
-                samples=["embedding"],
-            ),
-        )
-        configuration.add_modification_rule(
-            ["mt", "et", "tt"],
-            ReplaceProducer(
-                producers=[
-                    boostedtaus.boostedTauEnergyCorrection,
-                    boostedtaus.boostedTauEnergyCorrection_data,
-                ],
-                samples=["embedding"],
-            ),
-        )
-        # default values until we have the correct measured values
-        configuration.add_shift(
-            SystematicShift(
-                name="tauEs1prong0pizeroUp",
-                shift_config={
-                    ("mt", "et", "tt"): {
-                        "tau_ES_shift_DM0": EraModifier(
-                            {
-                                "2016preVFP": tauES_2016preVFP["up"],
-                                "2016postVFP": tauES_2016postVFP["up"],
-                                "2017": tauES_2017["up"],
-                                "2018": tauES_2018["up"],
-                            }
-                        )
-                    }
-                },
-                producers={("mt", "et", "tt"): taus.TauPtCorrection_byValue},
-            ),
-            samples=["embedding"],
-        )
-        configuration.add_shift(
-            SystematicShift(
-                name="tauEs1prong0pizeroDown",
-                shift_config={
-                    ("mt", "et", "tt"): {
-                        "tau_ES_shift_DM0": EraModifier(
-                            {
-                                "2016preVFP": tauES_2016preVFP["down"],
-                                "2016postVFP": tauES_2016postVFP["down"],
-                                "2017": tauES_2017["down"],
-                                "2018": tauES_2018["down"],
-                            }
-                        )
-                    }
-                },
-                producers={("mt", "et", "tt"): taus.TauPtCorrection_byValue},
-            ),
-            samples=["embedding"],
-        )
-        configuration.add_shift(
-            SystematicShift(
-                name="tauEs1prong1pizeroUp",
-                shift_config={
-                    ("mt", "et", "tt"): {
-                        "tau_ES_shift_DM1": EraModifier(
-                            {
-                                "2016preVFP": tauES_2016preVFP["up"],
-                                "2016postVFP": tauES_2016postVFP["up"],
-                                "2017": tauES_2017["up"],
-                                "2018": tauES_2018["up"],
-                            }
-                        )
-                    }
-                },
-                producers={("mt", "et", "tt"): taus.TauPtCorrection_byValue},
-            ),
-            samples=["embedding"],
-        )
-        configuration.add_shift(
-            SystematicShift(
-                name="tauEs1prong1pizeroDown",
-                shift_config={
-                    ("mt", "et", "tt"): {
-                        "tau_ES_shift_DM1": EraModifier(
-                            {
-                                "2016preVFP": tauES_2016preVFP["down"],
-                                "2016postVFP": tauES_2016postVFP["down"],
-                                "2017": tauES_2017["down"],
-                                "2018": tauES_2018["down"],
-                            }
-                        )
-                    }
-                },
-                producers={("mt", "et", "tt"): taus.TauPtCorrection_byValue},
-            ),
-            samples=["embedding"],
-        )
-        configuration.add_shift(
-            SystematicShift(
-                name="tauEs3prong0pizeroUp",
-                shift_config={
-                    ("mt", "et", "tt"): {
-                        "tau_ES_shift_DM10": EraModifier(
-                            {
-                                "2016preVFP": tauES_2016preVFP["up"],
-                                "2016postVFP": tauES_2016postVFP["up"],
-                                "2017": tauES_2017["up"],
-                                "2018": tauES_2018["up"],
-                            }
-                        )
-                    }
-                },
-                producers={("mt", "et", "tt"): taus.TauPtCorrection_byValue},
-            ),
-            samples=["embedding"],
-        )
-        configuration.add_shift(
-            SystematicShift(
-                name="tauEs3prong0pizeroDown",
-                shift_config={
-                    ("mt", "et", "tt"): {
-                        "tau_ES_shift_DM10": EraModifier(
-                            {
-                                "2016preVFP": tauES_2016preVFP["down"],
-                                "2016postVFP": tauES_2016postVFP["down"],
-                                "2017": tauES_2017["down"],
-                                "2018": tauES_2018["down"],
-                            }
-                        )
-                    }
-                },
-                producers={("mt", "et", "tt"): taus.TauPtCorrection_byValue},
-            ),
-            samples=["embedding"],
-        )
-        configuration.add_shift(
-            SystematicShift(
-                name="tauEs3prong1pizeroUp",
-                shift_config={
-                    ("mt", "et", "tt"): {
-                        "tau_ES_shift_DM11": EraModifier(
-                            {
-                                "2016preVFP": tauES_2016preVFP["up"],
-                                "2016postVFP": tauES_2016postVFP["up"],
-                                "2017": tauES_2017["up"],
-                                "2018": tauES_2018["up"],
-                            }
-                        )
-                    }
-                },
-                producers={("mt", "et", "tt"): taus.TauPtCorrection_byValue},
-            ),
-            samples=["embedding"],
-        )
-        configuration.add_shift(
-            SystematicShift(
-                name="tauEs3prong1pizeroDown",
-                shift_config={
-                    ("mt", "et", "tt"): {
-                        "tau_ES_shift_DM11": EraModifier(
-                            {
-                                "2016preVFP": tauES_2016preVFP["down"],
-                                "2016postVFP": tauES_2016postVFP["down"],
-                                "2017": tauES_2017["down"],
-                                "2018": tauES_2018["down"],
-                            }
-                        )
-                    }
-                },
-                producers={("mt", "et", "tt"): taus.TauPtCorrection_byValue},
-            ),
-            samples=["embedding"],
-        )
+        add_shift = get_adjusted_add_shift_SystematicShift(configuration)
+        with defaults(shift_map={"Up": "up", "Down": "down"}):
+            with defaults(scopes=("et", "mt", "tt")):
+                with defaults(producers=[configuration.ES_ID_SCHEME.embedding.producerGroupES],
+                                exclude_samples=["data"]):
+                            for dm in ["DM0", "DM1", "DM10", "DM11"]:
+                                for var in configuration.ES_ID_SCHEME.pt_binning:
+                                    add_shift(name=f"tauEs{dm}{var}", shift_key=f"tau_ES_shift_{dm}{var}")
 
     if measure_eleES:
         ###################
@@ -1547,7 +1269,7 @@ def setup_embedding(configuration: Configuration, scopes: List[str]):
             "global",
             ReplaceProducer(
                 producers=[
-                    electrons.ElectronPtCorrectionMC,
+                    electrons.ElectronPtCorrectionMC.get(era,"v15"),
                     electrons.ElectronPtCorrectionEmbedding,
                 ],
                 samples=["embedding"],
@@ -1597,7 +1319,7 @@ def setup_embedding(configuration: Configuration, scopes: List[str]):
             "global",
             ReplaceProducer(
                 producers=[
-                    electrons.ElectronPtCorrectionMC,
+                    electrons.ElectronPtCorrectionMC.get(era, "v15"),
                     electrons.ElectronPtCorrectionEmbedding,
                 ],
                 samples=["embedding"],
